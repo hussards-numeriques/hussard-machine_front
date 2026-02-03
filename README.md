@@ -26,7 +26,7 @@ npm install
 
 ### Running the Dev Server
 
-To start the development server (default port 5173):
+To start the development server (port 3000):
 
 ```bash
 npm run dev
