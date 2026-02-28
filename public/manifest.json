@@ -1,0 +1,17 @@
+{
+  "name": "Hussard Machine - Calcul Mental",
+  "short_name": "Hussard Machine",
+  "description": "Entraînement au calcul mental en multijoueur. Défie tes amis et améliore ta vitesse de calcul !",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#1e293b",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    }
+  ]
+}

@@ -37,6 +37,20 @@ Built with React 19, TypeScript, Vite, and Tailwind CSS.
 - Prefer functional components with hooks.
 - Use proper TypeScript types for all props and state.
 
+## SEO
+
+SEO is configured via static files, no library needed:
+
+- `index.html` - Meta tags (description, author, theme-color), canonical URL, Open Graph, Twitter Cards
+- `public/robots.txt` - Crawler directives + sitemap reference
+- `public/sitemap.xml` - Single-page sitemap
+- `public/manifest.json` - PWA manifest (name, icons, theme)
+- `public/icon.png` - Favicon and app icon
+
+Production URL: `https://hussard-machine-front.vercel.app/`
+
+When modifying SEO tags, update all occurrences (index.html, sitemap.xml, manifest.json).
+
 ## Validation
 
 All checks must pass before committing:
