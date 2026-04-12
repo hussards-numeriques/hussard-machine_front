@@ -1,16 +1,35 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { PodiumView } from './views/PodiumView';
 import type { Game } from './types';
 import { GameState } from './types';
+import type { GameClient } from './services/GameClient';
+
+vi.mock('./contexts/useAuth', () => ({
+  useAuth: () => ({
+    isAuthenticated: false,
+    client: { getAccessToken: () => null },
+    user: null,
+    isLoading: false,
+    login: vi.fn(),
+    register: vi.fn(),
+    logout: vi.fn(),
+  }),
+}));
 
 describe('PodiumView - Display final scores when game is finished', () => {
   let finishedGame: Game;
+  let mockClient: GameClient;
 
   beforeEach(() => {
     vi.mock('canvas-confetti', () => ({
       default: vi.fn(),
     }));
+
+    mockClient = {
+      createQuickGame: vi.fn().mockResolvedValue('NEW_GAME_ID'),
+    } as unknown as GameClient;
 
     finishedGame = {
       id: 'TEST1',
@@ -52,7 +71,16 @@ describe('PodiumView - Display final scores when game is finished', () => {
   });
 
   it('should display PodiumView when game state is FINISHED', () => {
-    render(<PodiumView game={finishedGame} currentPlayerId="player1" />);
+    render(
+      <MemoryRouter>
+        <PodiumView
+          game={finishedGame}
+          currentPlayerId="player1"
+          client={mockClient}
+          playerName="Player 1"
+        />
+      </MemoryRouter>
+    );
 
     expect(screen.getByText('Résultats Finaux')).toBeInTheDocument();
     expect(screen.getAllByText('Player 1').length).toBeGreaterThan(0);
@@ -66,7 +94,16 @@ describe('PodiumView - Display final scores when game is finished', () => {
   });
 
   it('should display players sorted by score in descending order in ranking', () => {
-    render(<PodiumView game={finishedGame} currentPlayerId="player1" />);
+    render(
+      <MemoryRouter>
+        <PodiumView
+          game={finishedGame}
+          currentPlayerId="player1"
+          client={mockClient}
+          playerName="Player 1"
+        />
+      </MemoryRouter>
+    );
 
     const rankingSection = screen.getByText('Classement complet').closest('div');
     expect(rankingSection).toBeInTheDocument();
@@ -79,13 +116,31 @@ describe('PodiumView - Display final scores when game is finished', () => {
   });
 
   it('should display winner with crown emoji', () => {
-    render(<PodiumView game={finishedGame} currentPlayerId="player1" />);
+    render(
+      <MemoryRouter>
+        <PodiumView
+          game={finishedGame}
+          currentPlayerId="player1"
+          client={mockClient}
+          playerName="Player 1"
+        />
+      </MemoryRouter>
+    );
 
     expect(screen.getByText(/👑 Player 1/)).toBeInTheDocument();
   });
 
   it('should display all player scores correctly', () => {
-    render(<PodiumView game={finishedGame} currentPlayerId="player1" />);
+    render(
+      <MemoryRouter>
+        <PodiumView
+          game={finishedGame}
+          currentPlayerId="player1"
+          client={mockClient}
+          playerName="Player 1"
+        />
+      </MemoryRouter>
+    );
 
     expect(screen.getAllByText('150 pts').length).toBeGreaterThan(0);
     expect(screen.getAllByText('100 pts').length).toBeGreaterThan(0);

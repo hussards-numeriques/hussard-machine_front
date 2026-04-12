@@ -65,7 +65,14 @@ export const GamePage: React.FC = () => {
     case GameState.IN_PROGRESS:
       return <GameView client={client} game={game} currentPlayerId={client.getPlayerId()} />;
     case GameState.FINISHED:
-      return <PodiumView game={game} currentPlayerId={client.getPlayerId()} />;
+      return (
+        <PodiumView
+          game={game}
+          currentPlayerId={client.getPlayerId()}
+          client={client}
+          playerName={playerName}
+        />
+      );
     default:
       return <div>État inconnu: {game.state}</div>;
   }

@@ -118,25 +118,6 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     </div>
   );
 
-  if (questionCountdown !== null) {
-    return (
-      <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
-        <div className="bg-white p-4 shadow-sm">
-          <div className="font-bold text-slate-500">
-            Question {displayedQuestionIndex + 1} / {game.questions.length}
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="text-9xl font-black text-primary animate-pulse">{questionCountdown}</div>
-          <div className="text-2xl font-bold text-slate-600 mt-8">Préparez-vous...</div>
-        </div>
-
-        <div className="p-4 max-w-lg mx-auto w-full">{scoreBoard}</div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
       <div className="bg-white p-4 shadow-sm">
@@ -147,23 +128,39 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full space-y-8">
         <div className="bg-white p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
-          <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
+          {questionCountdown !== null ? (
+            <>
+              <div className="text-9xl font-black text-primary animate-pulse">
+                {questionCountdown}
+              </div>
+              <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
+            </>
+          ) : (
+            <>
+              <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <Input
-              ref={inputRef}
-              type="number"
-              placeholder="?"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              disabled={hasAnswered}
-              autoFocus
-              className="text-4xl font-bold py-6"
-            />
-            <Button type="submit" size="lg" className="w-full" disabled={hasAnswered || !answer}>
-              {hasAnswered ? 'Réponse envoyée...' : 'Valider'}
-            </Button>
-          </form>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <Input
+                  ref={inputRef}
+                  type="number"
+                  placeholder="?"
+                  value={answer}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  disabled={hasAnswered}
+                  autoFocus
+                  className="text-4xl font-bold py-6"
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full"
+                  disabled={hasAnswered || !answer}
+                >
+                  {hasAnswered ? 'Réponse envoyée...' : 'Valider'}
+                </Button>
+              </form>
+            </>
+          )}
         </div>
 
         {scoreBoard}
