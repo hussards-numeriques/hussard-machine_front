@@ -71,8 +71,12 @@ export class GameClient {
     return data.game_id;
   }
 
-  public connect(gameId: string, playerName: string) {
+  public connect(gameId: string, playerName: string, token: string | null = null) {
     if (this.ws) {
+      this.ws.onopen = null;
+      this.ws.onmessage = null;
+      this.ws.onclose = null;
+      this.ws.onerror = null;
       this.ws.close();
     }
 
@@ -82,7 +86,7 @@ export class GameClient {
 
     this.ws.onopen = () => {
       console.log('Connected to game lobby');
-      this.send('JOIN', { name: playerName });
+      this.send('JOIN', { name: playerName, token });
     };
 
     this.ws.onmessage = (event) => {

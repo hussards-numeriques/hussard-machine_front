@@ -89,15 +89,41 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
   if (!currentQuestion) return <div>Chargement...</div>;
 
+  const truncateName = (name: string) => (name.length > 20 ? name.substring(0, 20) + '...' : name);
+
+  const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
+
+  const scoreBoard = (
+    <div className="w-full space-y-2">
+      {sortedPlayers.map((player) => {
+        const isMe = player.id === currentPlayerId;
+        return (
+          <div
+            key={player.id}
+            className={`flex items-center gap-2 text-sm rounded-xl px-2 py-1 ${
+              isMe ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500'
+            }`}
+          >
+            <span className="w-32 shrink-0 truncate">{truncateName(player.name)}</span>
+            <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${isMe ? 'bg-primary' : 'bg-slate-400'}`}
+                style={{ width: `${Math.min((player.score / 1000) * 100, 100)}%` }}
+              />
+            </div>
+            <span className="shrink-0">{player.score} pts</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   if (questionCountdown !== null) {
     return (
-      <div className="flex flex-col min-h-screen bg-slate-50">
-        <div className="bg-white p-4 shadow-sm flex justify-between items-center">
+      <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
+        <div className="bg-white p-4 shadow-sm">
           <div className="font-bold text-slate-500">
             Question {displayedQuestionIndex + 1} / {game.questions.length}
-          </div>
-          <div className="font-bold text-primary">
-            Score: {game.players.find((p) => p.id === currentPlayerId)?.score || 0}
           </div>
         </div>
 
@@ -105,18 +131,17 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
           <div className="text-9xl font-black text-primary animate-pulse">{questionCountdown}</div>
           <div className="text-2xl font-bold text-slate-600 mt-8">Préparez-vous...</div>
         </div>
+
+        <div className="p-4 max-w-lg mx-auto w-full">{scoreBoard}</div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      <div className="bg-white p-4 shadow-sm flex justify-between items-center">
+    <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
+      <div className="bg-white p-4 shadow-sm">
         <div className="font-bold text-slate-500">
           Question {displayedQuestionIndex + 1} / {game.questions.length}
-        </div>
-        <div className="font-bold text-primary">
-          Score: {game.players.find((p) => p.id === currentPlayerId)?.score || 0}
         </div>
       </div>
 
@@ -141,24 +166,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
           </form>
         </div>
 
-        <div className="w-full space-y-2">
-          {game.players
-            .filter((p) => p.id !== currentPlayerId)
-            .map((player) => (
-              <div key={player.id} className="flex items-center gap-2 text-sm text-slate-500">
-                <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold">
-                  {player.name.substring(0, 1)}
-                </div>
-                <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
-                  <div
-                    className="bg-primary h-full transition-all duration-500"
-                    style={{ width: `${(player.score / 1000) * 100}%` }}
-                  ></div>
-                </div>
-                <span>{player.score} pts</span>
-              </div>
-            ))}
-        </div>
+        {scoreBoard}
       </div>
     </div>
   );

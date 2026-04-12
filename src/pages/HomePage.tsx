@@ -1,55 +1,61 @@
 import React from 'react';
-import { GameClient } from '../services/GameClient';
+import { useNavigate } from 'react-router-dom';
+import { useGame } from '../contexts/useGame';
+import { useAuth } from '../contexts/useAuth';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 
-interface HomeViewProps {
-  client: GameClient;
-  onJoin: (gameId: string, playerName: string) => void;
-}
-
-export const HomeView: React.FC<HomeViewProps> = ({ client, onJoin }) => {
+export const HomePage: React.FC = () => {
+  const { client } = useGame();
+  const { user, isAuthenticated, client: authClient } = useAuth();
+  const navigate = useNavigate();
   const [name, setName] = React.useState('');
   const [code, setCode] = React.useState('');
   const [mode, setMode] = React.useState<'MENU' | 'JOIN'>('MENU');
   const [error, setError] = React.useState('');
 
-  const handleCreate = async () => {
-    if (!name.trim()) {
+  const effectiveName = isAuthenticated && user ? user.username : name;
+
+  const goToGame = (gameId: string, playerName: string) => {
+    const token = isAuthenticated ? authClient.getAccessToken() : null;
+    navigate(`/game/${gameId}`, { state: { playerName, token } });
+  };
+
+  const requireName = (): boolean => {
+    if (!effectiveName.trim()) {
       setError("Entre ton pseudo d'abord !");
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const handleCreate = async () => {
+    if (!requireName()) return;
     try {
       const gameId = await client.createLobby();
-      onJoin(gameId, name);
+      goToGame(gameId, effectiveName);
     } catch {
       setError('Erreur lors de la création');
     }
   };
 
   const handleQuickGame = async () => {
-    if (!name.trim()) {
-      setError("Entre ton pseudo d'abord !");
-      return;
-    }
+    if (!requireName()) return;
     try {
       const gameId = await client.createQuickGame();
-      onJoin(gameId, name);
+      goToGame(gameId, effectiveName);
     } catch {
       setError('Erreur lors de la création de la partie rapide');
     }
   };
 
   const handleJoin = () => {
-    if (!name.trim()) {
-      setError("Entre ton pseudo d'abord !");
-      return;
-    }
+    if (!requireName()) return;
     if (!code.trim()) {
       setError('Entre le code du salon !');
       return;
     }
-    onJoin(code, name);
+    goToGame(code, effectiveName);
   };
 
   return (
@@ -61,14 +67,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ client, onJoin }) => {
       </h1>
 
       <div className="w-full space-y-4 bg-white p-8 rounded-3xl shadow-xl border-2 border-slate-100">
-        <div className="space-y-2">
-          <label className="font-bold text-slate-600 ml-2">Ton Pseudo</label>
-          <Input
-            placeholder="SuperMaths..."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+        {isAuthenticated && user ? (
+          <div className="text-center text-slate-600 font-bold">
+            Connecté en tant que <span className="text-primary-dark">{user.username}</span>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <label className="font-bold text-slate-600 ml-2">Ton Pseudo</label>
+            <Input
+              placeholder="SuperMaths..."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        )}
 
         {mode === 'MENU' ? (
           <div className="flex flex-col gap-4 pt-4">
