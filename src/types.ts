@@ -37,6 +37,29 @@ export const GameState = {
 
 export type GameState = (typeof GameState)[keyof typeof GameState];
 
+export interface GameHistoryEntry {
+  id: string;
+  played_at: string;
+  duration_seconds: number;
+  is_quick_game: boolean;
+  questions_count: number;
+  winner_display_name: string | null;
+  my_rank: number;
+  my_score: number;
+  my_correct_answers: number;
+  my_total_answers: number;
+  experience_gained: number;
+}
+
+export interface PlayerProfile {
+  username: string;
+  level: string;
+  experience: number;
+  grade: string;
+  can_promote: boolean;
+  history: GameHistoryEntry[];
+}
+
 export interface Game {
   id: string;
   state: GameState;
