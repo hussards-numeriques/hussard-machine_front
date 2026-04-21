@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hussard-machine-front.vercel.app/sitemap.xml
+Sitemap: https://www.calc-rush.fr/sitemap.xml

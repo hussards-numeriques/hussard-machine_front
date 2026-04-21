@@ -1,6 +1,6 @@
 {
-  "name": "Hussard Machine - Calcul Mental",
-  "short_name": "Hussard Machine",
+  "name": "Calc Rush - Calcul Mental",
+  "short_name": "Calc Rush",
   "description": "Entraînement au calcul mental en multijoueur. Défie tes amis et améliore ta vitesse de calcul !",
   "start_url": "/",
   "display": "standalone",

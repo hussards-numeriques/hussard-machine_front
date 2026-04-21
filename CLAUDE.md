@@ -1,8 +1,8 @@
-# CLAUDE.md - hussard-machine_front
+# CLAUDE.md - calc-rush_front
 
 ## Project Overview
 
-Frontend application for Hussard Machine - a multiplayer mental math training application.
+Frontend application for Calc Rush - a multiplayer mental math training application.
 Built with React 19, TypeScript, Vite, and Tailwind CSS.
 
 ## Commands
@@ -47,7 +47,7 @@ SEO is configured via static files, no library needed:
 - `public/manifest.json` - PWA manifest (name, icons, theme)
 - `public/icon.png` - Favicon and app icon
 
-Production URL: `https://hussard-machine-front.vercel.app/`
+Production URL: `https://www.calc-rush.fr/`
 
 When modifying SEO tags, update all occurrences (index.html, sitemap.xml, manifest.json).
 

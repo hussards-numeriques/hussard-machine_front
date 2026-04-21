@@ -61,9 +61,9 @@ export const HomePage: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 max-w-md mx-auto w-full">
       <h1 className="text-5xl font-black text-primary-dark text-center">
-        Hussard
+        Calc
         <br />
-        Machine
+        Rush
       </h1>
 
       <div className="w-full space-y-4 bg-white p-8 rounded-3xl shadow-xl border-2 border-slate-100">

@@ -1,6 +1,6 @@
-# Hussard Machine - Frontend
+# Calc Rush - Frontend
 
-The web interface for Hussard Machine, built with React and Vite.
+The web interface for Calc Rush, built with React and Vite.
 
 ## Stack
 
@@ -83,6 +83,6 @@ npm run preview
 To build the frontend image (served via Nginx):
 
 ```bash
-docker build -t hussard-frontend .
-docker run -p 80:80 hussard-frontend
+docker build -t calc-rush-frontend .
+docker run -p 80:80 calc-rush-frontend
 ```
