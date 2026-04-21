@@ -60,11 +60,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 max-w-md mx-auto w-full">
-      <h1 className="text-5xl font-black text-primary-dark text-center">
-        Calc
-        <br />
-        Rush
-      </h1>
+      <h1 className="text-5xl font-black text-primary-dark text-center">Calc Rush</h1>
 
       <div className="w-full space-y-4 bg-white p-8 rounded-3xl shadow-xl border-2 border-slate-100">
         {isAuthenticated && user ? (
@@ -84,14 +80,15 @@ export const HomePage: React.FC = () => {
 
         {mode === 'MENU' ? (
           <div className="flex flex-col gap-4 pt-4">
-            <Button size="lg" onClick={handleCreate}>
+            <Button size="lg" onClick={handleQuickGame}>
+              Partie Rapide
+            </Button>
+            <br />
+            <Button variant="secondary" size="lg" onClick={handleCreate}>
               Créer un salon
             </Button>
             <Button variant="secondary" size="lg" onClick={() => setMode('JOIN')}>
               Rejoindre un salon
-            </Button>
-            <Button variant="secondary" size="lg" onClick={handleQuickGame}>
-              Partie Rapide
             </Button>
           </div>
         ) : (
