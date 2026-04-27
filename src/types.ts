@@ -37,6 +37,16 @@ export const GameState = {
 
 export type GameState = (typeof GameState)[keyof typeof GameState];
 
+export interface GameHistoryParticipant {
+  display_name: string;
+  is_bot: boolean;
+  final_rank: number;
+  score: number;
+  correct_answers: number;
+  total_answers: number;
+  experience_gained: number;
+}
+
 export interface GameHistoryEntry {
   id: string;
   played_at: string;
@@ -49,6 +59,7 @@ export interface GameHistoryEntry {
   my_correct_answers: number;
   my_total_answers: number;
   experience_gained: number;
+  participants: GameHistoryParticipant[];
 }
 
 export interface PlayerProfile {
@@ -58,6 +69,13 @@ export interface PlayerProfile {
   grade: string;
   can_promote: boolean;
   history: GameHistoryEntry[];
+}
+
+export interface GameConfig {
+  experience_per_grade: number;
+  promotion_threshold: number;
+  grades: string[];
+  levels: string[];
 }
 
 export interface Game {

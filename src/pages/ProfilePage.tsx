@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import type { GameHistoryEntry, PlayerProfile } from '../types';
+import type { GameConfig, GameHistoryEntry, PlayerProfile } from '../types';
 
 const getApiUrl = (): string => {
   const url = import.meta.env.VITE_API_URL ?? '';
   return typeof url === 'string' && url.endsWith('/') ? url.slice(0, -1) : (url as string);
 };
-
-const PROMOTION_THRESHOLD = 400;
 
 const GRADE_STYLES: Record<string, string> = {
   BRONZE: 'bg-amber-100 text-amber-800 border-amber-300',
@@ -16,6 +14,14 @@ const GRADE_STYLES: Record<string, string> = {
   GOLD: 'bg-yellow-100 text-yellow-700 border-yellow-300',
   PLATINE: 'bg-violet-100 text-violet-700 border-violet-300',
   DIAMOND: 'bg-cyan-100 text-cyan-700 border-cyan-300',
+};
+
+const GRADE_BAR_COLORS: Record<string, string> = {
+  BRONZE: 'bg-amber-400',
+  SILVER: 'bg-slate-400',
+  GOLD: 'bg-yellow-400',
+  PLATINE: 'bg-violet-400',
+  DIAMOND: 'bg-cyan-400',
 };
 
 const GRADE_LABELS: Record<string, string> = {
@@ -65,59 +71,165 @@ const GradeBadge: React.FC<{ grade: string }> = ({ grade }) => (
   </span>
 );
 
-const ExperienceBar: React.FC<{ experience: number; canPromote: boolean }> = ({
-  experience,
-  canPromote,
-}) => {
-  const pct = Math.min((experience / PROMOTION_THRESHOLD) * 100, 100);
+const SegmentedXpBar: React.FC<{
+  experience: number;
+  canPromote: boolean;
+  config: GameConfig;
+}> = ({ experience, canPromote, config }) => {
+  const gradeIndex = Math.min(
+    Math.floor(experience / config.experience_per_grade),
+    config.grades.length - 1
+  );
+  const progressInGrade = canPromote
+    ? config.experience_per_grade
+    : experience % config.experience_per_grade;
+
+  const nextGrade = config.grades[gradeIndex + 1];
+
   return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-xs font-bold text-slate-500">
+    <div className="space-y-2">
+      <div className="flex gap-1">
+        {config.grades.map((grade, i) => (
+          <div key={grade} className="flex-1 text-center">
+            <span
+              className={`text-xs font-bold ${i === gradeIndex ? 'text-slate-800' : 'text-slate-400'}`}
+            >
+              {GRADE_LABELS[grade] ?? grade}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-1">
+        {config.grades.map((grade, i) => {
+          let fill = 0;
+          if (i < gradeIndex) {
+            fill = 100;
+          } else if (i === gradeIndex) {
+            fill = (progressInGrade / config.experience_per_grade) * 100;
+          }
+          return (
+            <div
+              key={grade}
+              className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"
+            >
+              <div
+                className={`h-full rounded-full transition-all ${GRADE_BAR_COLORS[grade] ?? 'bg-primary'}`}
+                style={{ width: `${fill}%` }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-between text-xs text-slate-500">
         <span>{experience} XP</span>
-        <span>{PROMOTION_THRESHOLD} XP</span>
+        {canPromote ? (
+          <span className="font-bold text-emerald-600 animate-pulse">
+            ✨ Grade max — promotion disponible !
+          </span>
+        ) : nextGrade != null ? (
+          <span>
+            {config.experience_per_grade - progressInGrade} XP pour{' '}
+            {GRADE_LABELS[nextGrade] ?? nextGrade}
+          </span>
+        ) : null}
       </div>
-      <div className="h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-        <div
-          className="h-full bg-primary rounded-full transition-all"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      {canPromote && (
-        <p className="text-xs font-bold text-emerald-600 text-center animate-pulse">
-          ✨ Promotion disponible !
-        </p>
-      )}
     </div>
   );
 };
 
-const HistoryRow: React.FC<{ entry: GameHistoryEntry }> = ({ entry }) => {
+const HistoryRow: React.FC<{
+  entry: GameHistoryEntry;
+  isExpanded: boolean;
+  onToggle: () => void;
+}> = ({ entry, isExpanded, onToggle }) => {
   const medal = RANK_MEDALS[entry.my_rank - 1] ?? `#${entry.my_rank}`;
+  const sortedParticipants = [...entry.participants].sort((a, b) => a.final_rank - b.final_rank);
+
   return (
-    <div className="flex items-center gap-4 p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 hover:bg-white transition-colors">
-      <div className="text-2xl w-8 text-center">{medal}</div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-bold text-slate-700">{formatDate(entry.played_at)}</span>
-          {entry.is_quick_game && (
-            <span className="text-xs bg-secondary/20 text-yellow-800 font-bold px-2 py-0.5 rounded-full">
-              Rapide
-            </span>
+    <div className="rounded-2xl border-2 border-slate-100 bg-slate-50 overflow-hidden">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="w-full flex items-center gap-4 p-4 hover:bg-white transition-colors text-left"
+      >
+        <div className="text-2xl w-8 text-center">{medal}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-bold text-slate-700">{formatDate(entry.played_at)}</span>
+            {entry.is_quick_game && (
+              <span className="text-xs bg-secondary/20 text-yellow-800 font-bold px-2 py-0.5 rounded-full">
+                Rapide
+              </span>
+            )}
+          </div>
+          <div className="text-xs text-slate-500 mt-0.5">
+            {entry.my_correct_answers}/{entry.my_total_answers} bonnes réponses · {entry.my_score}{' '}
+            pts · {formatDuration(entry.duration_seconds)}
+          </div>
+        </div>
+        <div className="text-right shrink-0">
+          <div
+            className={`text-sm font-black ${entry.experience_gained >= 0 ? 'text-primary' : 'text-red-500'}`}
+          >
+            {entry.experience_gained >= 0 ? '+' : ''}
+            {entry.experience_gained} XP
+          </div>
+          {entry.winner_display_name && (
+            <div className="text-xs text-slate-400 truncate max-w-24">
+              🏆 {entry.winner_display_name}
+            </div>
           )}
         </div>
-        <div className="text-xs text-slate-500 mt-0.5">
-          {entry.my_correct_answers}/{entry.my_total_answers} bonnes réponses · {entry.my_score} pts
-          · {formatDuration(entry.duration_seconds)}
+        <div className="text-slate-400 text-xs shrink-0">{isExpanded ? '▲' : '▼'}</div>
+      </button>
+
+      {isExpanded && (
+        <div className="border-t border-slate-100 px-4 pb-4">
+          <table className="w-full text-xs mt-3">
+            <thead>
+              <tr className="text-slate-400 font-bold border-b border-slate-100">
+                <th className="text-left py-1">Rang</th>
+                <th className="text-left py-1">Joueur</th>
+                <th className="text-right py-1">Réponses</th>
+                <th className="text-right py-1">Points</th>
+                <th className="text-right py-1">XP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedParticipants.map((p) => (
+                <tr
+                  key={`${p.display_name}-${p.final_rank}`}
+                  className="border-b border-slate-50 last:border-0"
+                >
+                  <td className="py-1.5 font-bold text-slate-600">
+                    {RANK_MEDALS[p.final_rank - 1] ?? `#${p.final_rank}`}
+                  </td>
+                  <td className="py-1.5">
+                    <span
+                      className={`font-bold ${p.is_bot ? 'text-violet-500' : 'text-slate-700'}`}
+                    >
+                      {p.display_name}
+                      {p.is_bot && (
+                        <span className="ml-1 text-xs font-normal text-violet-400">(bot)</span>
+                      )}
+                    </span>
+                  </td>
+                  <td className="py-1.5 text-right text-slate-500">
+                    {p.correct_answers}/{p.total_answers}
+                  </td>
+                  <td className="py-1.5 text-right font-bold text-slate-700">{p.score}</td>
+                  <td
+                    className={`py-1.5 text-right font-black ${p.experience_gained >= 0 ? 'text-primary' : 'text-red-500'}`}
+                  >
+                    {p.experience_gained >= 0 ? '+' : ''}
+                    {p.experience_gained}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div className="text-right shrink-0">
-        <div className="text-sm font-black text-primary">+{entry.experience_gained} XP</div>
-        {entry.winner_display_name && (
-          <div className="text-xs text-slate-400 truncate max-w-24">
-            🏆 {entry.winner_display_name}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
@@ -125,8 +237,27 @@ const HistoryRow: React.FC<{ entry: GameHistoryEntry }> = ({ entry }) => {
 export const ProfilePage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading, client } = useAuth();
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
+  const [config, setConfig] = useState<GameConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [promoting, setPromoting] = useState(false);
+  const [promoteError, setPromoteError] = useState<string | null>(null);
+  const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const response = await fetch(`${getApiUrl()}/game/config`);
+        if (response.ok) {
+          const data = (await response.json()) as GameConfig;
+          setConfig(data);
+        }
+      } catch {
+        // config non critique, on continue sans
+      }
+    };
+    void fetchConfig();
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated || authLoading) return;
@@ -155,6 +286,41 @@ export const ProfilePage: React.FC = () => {
 
     void fetchProfile();
   }, [isAuthenticated, authLoading, client]);
+
+  const handlePromote = async () => {
+    setPromoting(true);
+    setPromoteError(null);
+    try {
+      const response = await client.authorizedFetch(`${getApiUrl()}/me/promote`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        setPromoteError('La promotion a échoué. Réessaie.');
+        return;
+      }
+      const refreshed = await client.authorizedFetch(`${getApiUrl()}/me/details`);
+      if (refreshed.ok) {
+        const data = (await refreshed.json()) as PlayerProfile;
+        setProfile(data);
+      }
+    } catch {
+      setPromoteError('Erreur réseau.');
+    } finally {
+      setPromoting(false);
+    }
+  };
+
+  const toggleEntry = (id: string) => {
+    setExpandedEntries((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   if (authLoading || loading) {
     return (
@@ -194,6 +360,7 @@ export const ProfilePage: React.FC = () => {
 
   const gradeStyle = GRADE_STYLES[profile.grade];
   const gradeBg = gradeStyle?.split(' ')[0] ?? 'bg-slate-100';
+  const nextLevelKey = config ? config.levels[config.levels.indexOf(profile.level) + 1] : undefined;
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
@@ -213,7 +380,31 @@ export const ProfilePage: React.FC = () => {
           </div>
         </div>
 
-        <ExperienceBar experience={profile.experience} canPromote={profile.can_promote} />
+        {config ? (
+          <SegmentedXpBar
+            experience={profile.experience}
+            canPromote={profile.can_promote}
+            config={config}
+          />
+        ) : (
+          <div className="text-xs text-slate-400">{profile.experience} XP</div>
+        )}
+
+        {profile.can_promote && (
+          <div className="space-y-1">
+            <button
+              type="button"
+              onClick={() => void handlePromote()}
+              disabled={promoting}
+              className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
+            >
+              {promoting
+                ? 'Promotion en cours...'
+                : `Monter en ${LEVEL_LABELS[nextLevelKey ?? ''] ?? nextLevelKey ?? 'niveau suivant'}`}
+            </button>
+            {promoteError && <p className="text-xs text-red-500 text-center">{promoteError}</p>}
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-6 space-y-4">
@@ -231,16 +422,27 @@ export const ProfilePage: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {profile.history.map((entry) => (
-              <HistoryRow key={entry.id} entry={entry} />
+              <HistoryRow
+                key={entry.id}
+                entry={entry}
+                isExpanded={expandedEntries.has(entry.id)}
+                onToggle={() => toggleEntry(entry.id)}
+              />
             ))}
           </div>
         )}
       </div>
 
-      <div className="text-center pb-8">
+      <div className="text-center space-y-2 pb-8">
+        <Link
+          to="/how-it-works"
+          className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
+        >
+          Comment fonctionne le système de grades ? →
+        </Link>
         <Link
           to="/"
-          className="text-sm font-bold text-slate-400 hover:text-primary transition-colors"
+          className="block text-sm font-bold text-slate-400 hover:text-primary transition-colors"
         >
           ← Retour à l'accueil
         </Link>
