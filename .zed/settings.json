@@ -1,5 +1,4 @@
 {
-  "base_keymap": "Cursor",
   "languages": {
     "TypeScript": {
       "format_on_save": "on",
@@ -51,24 +50,6 @@
       }
     }
   },
-  "autosave": "on_focus_change",
-  "confirm_quit": true,
-  "file_scan_exclusions": [
-    "**/node_modules",
-    "**/dist",
-    "**/dist-ssr",
-    "**/.vite",
-    "**/coverage",
-    "**/.git",
-    "**/.svn",
-    "**/.hg",
-    "**/.jj",
-    "**/CVS",
-    "**/.DS_Store",
-    "**/Thumbs.db",
-    "**/.classpath",
-    "**/.settings"
-  ],
   "edit_predictions": {
     "disabled_globs": [
       "**/.env*",
