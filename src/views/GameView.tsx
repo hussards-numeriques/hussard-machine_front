@@ -1,8 +1,10 @@
 import React from 'react';
 import { GameClient } from '../services/GameClient';
-import type { Game } from '../types';
+import type { Game, Question } from '../types';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
+import { resolveCategoryLabel } from '../services/questionCategoryLabels';
 
 interface GameViewProps {
   client: GameClient;
@@ -30,6 +32,34 @@ const logQuestionSkipWarning = (fromIndex: number, toIndex: number) => {
   );
 };
 
+const computeRemainingSeconds = (question: Question, startTime: number | undefined): number => {
+  if (startTime === undefined) return question.time_limit_seconds;
+  const elapsed = Date.now() / 1000 - startTime;
+  const remaining = question.time_limit_seconds - elapsed;
+  return Math.max(0, Math.ceil(remaining));
+};
+
+const useQuestionTimer = (
+  question: Question | undefined,
+  startTime: number | undefined
+): number | null => {
+  const [remaining, setRemaining] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    if (!question) {
+      setRemaining(null);
+      return;
+    }
+    setRemaining(computeRemainingSeconds(question, startTime));
+    const interval = window.setInterval(() => {
+      setRemaining(computeRemainingSeconds(question, startTime));
+    }, 250);
+    return () => window.clearInterval(interval);
+  }, [question, startTime]);
+
+  return remaining;
+};
+
 export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerId }) => {
   const [answer, setAnswer] = React.useState('');
   const [lastSubmittedId, setLastSubmittedId] = React.useState<string | null>(null);
@@ -37,6 +67,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   const [displayedQuestionIndex, setDisplayedQuestionIndex] = React.useState<number>(
     game.current_question_index
   );
+  const categoryLabels = useQuestionCategoryLabels();
 
   React.useEffect(() => {
     const { shouldUpdate, isQuestionSkipped } = shouldUpdateDisplayedQuestionIndex(
@@ -79,6 +110,11 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     }
   }, [currentQuestion?.id, lastSubmittedId]);
 
+  const remainingSeconds = useQuestionTimer(
+    questionCountdown === null ? currentQuestion : undefined,
+    game.start_time_current_question
+  );
+
   const handleSubmit = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!answer || hasAnswered) return;
@@ -118,6 +154,10 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     </div>
   );
 
+  const categoryLabel = resolveCategoryLabel(categoryLabels, currentQuestion.category);
+  const isTimerActive = questionCountdown === null && remainingSeconds !== null;
+  const isTimerLow = isTimerActive && remainingSeconds !== null && remainingSeconds <= 3;
+
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
       <div className="bg-white p-4 shadow-sm">
@@ -137,6 +177,19 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
             </>
           ) : (
             <>
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <span className="uppercase tracking-wider font-semibold text-slate-400">
+                  {categoryLabel}
+                </span>
+                {isTimerActive && (
+                  <span
+                    className={`tabular-nums font-bold ${isTimerLow ? 'text-red-500' : 'text-slate-400'}`}
+                  >
+                    {remainingSeconds}s
+                  </span>
+                )}
+              </div>
+
               <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
 
               <form onSubmit={handleSubmit} className="space-y-6">

@@ -16,6 +16,7 @@ export interface Question {
   id: string;
   statement: string;
   answer: number;
+  category: string;
   time_limit_seconds: number;
 }
 
