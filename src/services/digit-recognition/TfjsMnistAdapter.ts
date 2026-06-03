@@ -18,7 +18,10 @@ export class TfjsMnistAdapter implements DigitRecognitionPort {
     this.loadPromise ??= (async () => {
       this.tf = await import('@tensorflow/tfjs');
       this.model = await this.tf.loadLayersModel(MODEL_URL);
-    })();
+    })().catch((err: unknown) => {
+      this.loadPromise = null;
+      throw err;
+    });
     return this.loadPromise;
   }
 
