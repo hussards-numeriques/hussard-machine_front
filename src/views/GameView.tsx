@@ -1,10 +1,9 @@
 import React from 'react';
 import { GameClient } from '../services/GameClient';
 import type { Game, Question } from '../types';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
 import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
 import { resolveCategoryLabel } from '../services/questionCategoryLabels';
+import { AnswerInput } from '../components/AnswerInput';
 
 interface GameViewProps {
   client: GameClient;
@@ -61,8 +60,6 @@ const useQuestionTimer = (
 };
 
 export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerId }) => {
-  const [answer, setAnswer] = React.useState('');
-  const [lastSubmittedId, setLastSubmittedId] = React.useState<string | null>(null);
   const [questionCountdown, setQuestionCountdown] = React.useState<number | null>(null);
   const [displayedQuestionIndex, setDisplayedQuestionIndex] = React.useState<number>(
     game.current_question_index
@@ -102,26 +99,10 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     };
   }, [client]);
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  React.useEffect(() => {
-    if (currentQuestion?.id !== lastSubmittedId) {
-      setAnswer('');
-      inputRef.current?.focus();
-    }
-  }, [currentQuestion?.id, lastSubmittedId]);
-
   const remainingSeconds = useQuestionTimer(
     questionCountdown === null ? currentQuestion : undefined,
     game.start_time_current_question
   );
-
-  const handleSubmit = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!answer || hasAnswered) return;
-
-    client.submitAnswer(parseInt(answer, 10));
-    setLastSubmittedId(currentQuestion.id);
-  };
 
   if (!currentQuestion) return <div>Chargement...</div>;
 
@@ -192,26 +173,13 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
               <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <Input
-                  ref={inputRef}
-                  type="number"
-                  placeholder="?"
-                  value={answer}
-                  onChange={(e) => setAnswer(e.target.value)}
-                  disabled={hasAnswered}
-                  autoFocus
-                  className="text-4xl font-bold py-6"
-                />
-                <Button
-                  type="submit"
-                  size="lg"
-                  className="w-full"
-                  disabled={hasAnswered || !answer}
-                >
-                  {hasAnswered ? 'Réponse envoyée...' : 'Valider'}
-                </Button>
-              </form>
+              <AnswerInput
+                onSubmit={(value) => {
+                  if (hasAnswered) return;
+                  client.submitAnswer(value);
+                }}
+                disabled={hasAnswered}
+              />
             </>
           )}
         </div>
