@@ -13,16 +13,12 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
 
   const getCtx = () => canvasRef.current?.getContext('2d') ?? null;
 
-  const fillWhite = () => {
+  React.useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx = getCtx();
+    const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  };
-
-  React.useEffect(() => {
-    fillWhite();
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -63,7 +59,11 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     setStrokes([]);
     setError(null);
     currentStroke.current = [];
-    fillWhite();
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
 
   const handleValidate = async () => {
@@ -92,6 +92,7 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       />
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       <div className="flex gap-3">
