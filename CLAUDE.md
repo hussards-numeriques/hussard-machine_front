@@ -72,6 +72,6 @@ Or use the validation script: `./scripts/validate.sh`
 
 - update public/manifest.json
 - update public/sitemap.xml
-- add an version commit with npm
+- add an version commit with (npm version patch|minor|major)
 - add an entry in CHANGELOG.md
 - check if doc need to be update using doc/index.md
