@@ -71,15 +71,18 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     setIsRecognizing(true);
     setError(null);
 
-    const result = await digitRecognitionPort.recognize(canvasRef.current, strokes);
-    setIsRecognizing(false);
-
-    if (result === null) {
-      setError('Impossible de lire, réessaie');
-      return;
+    try {
+      const result = await digitRecognitionPort.recognize(canvasRef.current, strokes);
+      if (result === null) {
+        setError('Impossible de lire, réessaie');
+        return;
+      }
+      onSubmit(result);
+    } catch {
+      setError('Erreur de reconnaissance, réessaie');
+    } finally {
+      setIsRecognizing(false);
     }
-
-    onSubmit(result);
   };
 
   return (
