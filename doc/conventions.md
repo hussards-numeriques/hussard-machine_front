@@ -1,83 +1,83 @@
-# Conventions — Patterns et règles de code
+# Conventions — Code patterns and rules
 
 ## TypeScript
 
-- Mode strict activé — pas de `any` (sauf les deux endroits déjà annotés `eslint-disable` dans `GameClient`)
-- Interfaces préférées aux `type` pour les objets de données
-- Types partagés dans `src/types.ts`, types locaux à un service dans le fichier du service
-- Les props de composants sont déclarées comme `interface` locale dans le fichier du composant
+- Strict mode enabled — no `any` (except the two places already annotated `eslint-disable` in `GameClient`)
+- Interfaces preferred over `type` for data objects
+- Shared types in `src/types.ts`, service-local types in the service file
+- Component props are declared as a local `interface` in the component file
 
-## Composants React
+## React components
 
-- Fonctionnels uniquement, avec hooks
-- Export nommé (pas de `export default` pour les composants)
-- Les hooks custom (`useGame`, `useAuth`, etc.) lancent une erreur si utilisés hors de leur Provider
+- Functional only, with hooks
+- Named exports (no `export default` for components)
+- Custom hooks (`useGame`, `useAuth`, etc.) throw an error if used outside their Provider
 
-## Pattern port / adapter
+## Port / adapter pattern
 
-Utilisé pour les abstractions avec plusieurs implémentations possibles :
+Used for abstractions with multiple possible implementations:
 
 ```
 feature/
-├── port.ts     ← interface TypeScript (contrat)
-├── adapter.ts  ← logique de sélection de l'implémentation
-├── index.ts    ← export de l'instance/composant résolu
+├── port.ts     ← TypeScript interface (contract)
+├── adapter.ts  ← implementation selection logic
+├── index.ts    ← exports the resolved instance/component
 ├── ImplA.tsx
 └── ImplB.tsx
 ```
 
-Exemples existants : `AnswerInput/`, `services/digit-recognition/`
+Existing examples: `AnswerInput/`, `services/digit-recognition/`
 
-À utiliser dès qu'il y a plusieurs implémentations ou que l'implémentation peut changer (device, feature flag, test).
+Use whenever there are multiple implementations or the implementation may change (device, feature flag, test).
 
 ## Styles (Tailwind CSS)
 
-- Classes utilitaires uniquement, pas de CSS custom sauf `App.css` et `index.css`
-- Utilitaire `cn()` (clsx + tailwind-merge) pour les classes conditionnelles :
+- Utility classes only, no custom CSS except `App.css` and `index.css`
+- `cn()` utility (clsx + tailwind-merge) for conditional classes:
   ```typescript
   import { cn } from '../lib/utils';
   cn('base-class', condition && 'conditional-class', className);
   ```
-- Couleurs projet définies dans `tailwind.config.js` : `primary`, `primary-dark`, `secondary`
-- Pas de composants Tailwind UI ou de bibliothèque CSS tierce
+- Project colors defined in `tailwind.config.js`: `primary`, `primary-dark`, `secondary`
+- No Tailwind UI components or third-party CSS library
 
-## Commentaires
+## Comments
 
-Aucun commentaire dans le code. Si une logique doit être expliquée, l'extraire dans une fonction ou un composant bien nommé.
+No comments in code. If logic needs explanation, extract it into a well-named function or component.
 
-Exception tolérée : directives linter (`// eslint-disable-next-line`).
+Tolerated exception: linter directives (`// eslint-disable-next-line`).
 
 ## Tests
 
-Framework : Vitest + @testing-library/react
+Framework: Vitest + @testing-library/react
 
-- Fichiers de test : `*.spec.ts` ou `*.spec.tsx` à côté du fichier testé
-- `src/test-setup.ts` importe `@testing-library/jest-dom` pour les matchers DOM
-- `src/test.spec.ts` : test de smoke global
-- Les tests de composants avec media queries utilisent `vi.stubGlobal` pour mocker `matchMedia`
+- Test files: `*.spec.ts` or `*.spec.tsx` next to the tested file
+- `src/test-setup.ts` imports `@testing-library/jest-dom` for DOM matchers
+- `src/test.spec.ts`: global smoke test
+- Component tests with media queries use `vi.stubGlobal` to mock `matchMedia`
 
-## Validation avant commit
+## Pre-commit validation
 
 ```bash
 npm run lint         # ESLint
 npx prettier --check .
-npx tsc --noEmit     # vérification des types
+npx tsc --noEmit     # type checking
 npm run test         # Vitest
 ```
 
-Ou en une commande : `./scripts/validate.sh`
+Or in one command: `./scripts/validate.sh`
 
-Le hook pre-commit Husky exécute cette validation automatiquement.
+The Husky pre-commit hook runs this validation automatically.
 
-## Variables d'environnement
+## Environment variables
 
-Toutes les variables d'env doivent être préfixées `VITE_` pour être accessibles dans le code via `import.meta.env.VITE_XXX`.
+All env variables must be prefixed with `VITE_` to be accessible in code via `import.meta.env.VITE_XXX`.
 
-## Commandes de dev
+## Dev commands
 
 ```bash
-npm install          # installation des dépendances
-npm run dev          # serveur de développement (Vite)
-npm run build        # build de production
-npm run test         # tests en mode run (non interactif)
+npm install          # install dependencies
+npm run dev          # development server (Vite)
+npm run build        # production build
+npm run test         # tests in run mode (non-interactive)
 ```

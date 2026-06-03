@@ -1,89 +1,89 @@
-# Auth — Authentification
+# Auth — Authentication
 
-L'authentification est optionnelle : un joueur peut jouer sans compte. Le compte permet de sauvegarder l'XP et l'historique des parties.
+Authentication is optional: a player can play without an account. An account allows saving XP and game history.
 
 ## AuthClient (src/services/AuthClient.ts)
 
-Client HTTP vers le service FastAuth (`VITE_FASTAUTH_URL`).
+HTTP client for the FastAuth service (`VITE_FASTAUTH_URL`).
 
-### Stockage des tokens
+### Token storage
 
-Les tokens sont stockés dans `localStorage` :
+Tokens are stored in `localStorage`:
 
-| Clé                | Contenu                      |
-| ------------------ | ---------------------------- |
-| `hm_access_token`  | JWT d'accès (court lifetime) |
-| `hm_refresh_token` | JWT de rafraîchissement      |
+| Key                | Content                     |
+| ------------------ | --------------------------- |
+| `hm_access_token`  | Access JWT (short lifetime) |
+| `hm_refresh_token` | Refresh JWT                 |
 
-### Méthodes publiques
+### Public methods
 
-| Méthode                       | Endpoint                     | Description                                                                               |
-| ----------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------- |
-| `login(payload)`              | `POST /api/v1/auth/login`    | Form URL-encoded. Stocke les tokens.                                                      |
-| `register(payload)`           | `POST /api/v1/auth/register` | JSON. Stocke les tokens.                                                                  |
-| `logout()`                    | `POST /api/v1/auth/logout`   | Efface les tokens. Erreurs réseau ignorées.                                               |
-| `fetchMe()`                   | `GET /api/v1/auth/me`        | Retourne `AuthUser`.                                                                      |
-| `authorizedFetch(url, init?)` | —                            | `fetch` avec header `Authorization: Bearer <token>`. Retry automatique après refresh 401. |
-| `getAccessToken()`            | —                            | Lit depuis localStorage.                                                                  |
-| `clearTokens()`               | —                            | Supprime les deux clés de localStorage.                                                   |
+| Method                        | Endpoint                     | Description                                                                             |
+| ----------------------------- | ---------------------------- | --------------------------------------------------------------------------------------- |
+| `login(payload)`              | `POST /api/v1/auth/login`    | Form URL-encoded. Stores tokens.                                                        |
+| `register(payload)`           | `POST /api/v1/auth/register` | JSON. Stores tokens.                                                                    |
+| `logout()`                    | `POST /api/v1/auth/logout`   | Clears tokens. Network errors ignored.                                                  |
+| `fetchMe()`                   | `GET /api/v1/auth/me`        | Returns `AuthUser`.                                                                     |
+| `authorizedFetch(url, init?)` | —                            | `fetch` with `Authorization: Bearer <token>` header. Automatic retry after 401 refresh. |
+| `getAccessToken()`            | —                            | Reads from localStorage.                                                                |
+| `clearTokens()`               | —                            | Removes both localStorage keys.                                                         |
 
 ### Refresh token
 
-`authorizedFetch` gère automatiquement le refresh :
+`authorizedFetch` automatically handles refresh:
 
-1. Requête initiale avec access token
-2. Si 401 → appel à `GET /api/v1/auth/refresh` avec le refresh token
-3. Si succès → re-tente la requête initiale avec le nouveau token
-4. Si le refresh échoue → `clearTokens()`, retourne la réponse 401
+1. Initial request with access token
+2. If 401 → calls `GET /api/v1/auth/refresh` with the refresh token
+3. If success → retries the initial request with the new token
+4. If refresh fails → `clearTokens()`, returns the 401 response
 
-Un verrou (`refreshInFlight`) évite les appels parallèles au refresh.
+A lock (`refreshInFlight`) prevents parallel refresh calls.
 
-### Erreurs
+### Errors
 
-`AuthError` étend `Error` et ajoute un champ `status: number`. Le message est extrait du corps JSON (`detail` string ou `detail[0].msg`).
+`AuthError` extends `Error` and adds a `status: number` field. The message is extracted from the JSON body (`detail` string or `detail[0].msg`).
 
 ## AuthContext (src/contexts/)
 
-| Fichier            | Rôle                                               |
-| ------------------ | -------------------------------------------------- |
-| `AuthContext.ts`   | Définit `AuthContextValue`                         |
-| `AuthProvider.tsx` | Hydratation au mount, expose login/register/logout |
-| `useAuth.ts`       | Hook `useAuth()`                                   |
+| File               | Role                                              |
+| ------------------ | ------------------------------------------------- |
+| `AuthContext.ts`   | Defines `AuthContextValue`                        |
+| `AuthProvider.tsx` | Hydration on mount, exposes login/register/logout |
+| `useAuth.ts`       | `useAuth()` hook                                  |
 
-### Interface AuthContextValue
+### AuthContextValue interface
 
 ```typescript
 {
   client: AuthClient;
   user: AuthUser | null;
   isAuthenticated: boolean; // = user !== null
-  isLoading: boolean; // true pendant l'hydratation initiale
+  isLoading: boolean; // true during initial hydration
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
 }
 ```
 
-### Hydratation au démarrage
+### Hydration on startup
 
-`AuthProvider` tente de récupérer le profil au mount :
+`AuthProvider` attempts to fetch the profile on mount:
 
-1. Si pas d'access token en localStorage → `isLoading = false`, `user = null`
-2. Si token présent → `fetchMe()` pour hydrater `user`
-3. Si `fetchMe()` échoue (token expiré, invalide) → `clearTokens()`, `user = null`
+1. If no access token in localStorage → `isLoading = false`, `user = null`
+2. If token present → `fetchMe()` to hydrate `user`
+3. If `fetchMe()` fails (expired/invalid token) → `clearTokens()`, `user = null`
 
-### Placement dans l'arbre React
+### Placement in the React tree
 
-`AuthProvider` est monté dans `AppLayout`. Il n'enveloppe **pas** `GameLayout` (la page `/game/:id` n'a pas de header ni de contexte auth directement — mais `PodiumView` importe `useAuth` via l'arbre si besoin via `AppLayout`).
+`AuthProvider` is mounted in `AppLayout`. It does **not** wrap `GameLayout` (the `/game/:id` page has no header or auth context directly — but `PodiumView` can access `useAuth` via the tree if needed through `AppLayout`).
 
-> **Note :** `GameLayout` enveloppe uniquement `GameProvider`. Si une page dans `GameLayout` a besoin d'`AuthContext`, il faut soit remonter `AuthProvider` dans `App.tsx`, soit utiliser un autre mécanisme (actuellement `PodiumView` accède à `useAuth` parce qu'il est rendu dans `GamePage` qui est lui dans `AppLayout` → `GameLayout` via le routeur).
+> **Note:** `GameLayout` wraps only `GameProvider`. If a page in `GameLayout` needs `AuthContext`, either move `AuthProvider` up into `App.tsx`, or use another mechanism (currently `PodiumView` accesses `useAuth` because it is rendered in `GamePage`, which is inside `AppLayout` → `GameLayout` via the router).
 
 ## AuthModal (src/components/AuthModal.tsx)
 
-Modale de connexion/inscription déclenchée depuis `Header`. Utilise `useAuth()` pour appeler `login()` ou `register()`. Se ferme via `onClose()` passé en prop.
+Login/register modal triggered from `Header`. Uses `useAuth()` to call `login()` or `register()`. Closes via `onClose()` passed as a prop.
 
-## Ajouter une feature liée à l'auth
+## Adding an auth-related feature
 
-- Appel API authentifié → utiliser `authClient.authorizedFetch(url, options)` (gère le refresh automatiquement)
-- Protéger une page → vérifier `isAuthenticated` et `isLoading` avant d'afficher le contenu
-- Nouvelle info utilisateur → étendre `AuthUser` dans `AuthClient.ts` et `AuthContextValue` si elle doit être exposée
+- Authenticated API call → use `authClient.authorizedFetch(url, options)` (handles refresh automatically)
+- Protect a page → check `isAuthenticated` and `isLoading` before rendering content
+- New user info → extend `AuthUser` in `AuthClient.ts` and `AuthContextValue` if it needs to be exposed

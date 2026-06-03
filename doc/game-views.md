@@ -1,22 +1,22 @@
-# Game Views — Les 3 vues de jeu
+# Game Views — The 3 game views
 
-Les trois vues sont rendues par `GamePage` selon `game.state`. Elles reçoivent toutes `client`, `game` et `currentPlayerId` (= `client.getPlayerId()`).
+The three views are rendered by `GamePage` based on `game.state`. They all receive `client`, `game`, and `currentPlayerId` (= `client.getPlayerId()`).
 
 ## LobbyView (src/views/LobbyView.tsx)
 
-**Quand :** `game.state === 'WAITING'` ou `'COUNTDOWN'`
+**When:** `game.state === 'WAITING'` or `'COUNTDOWN'`
 
-Affiche la liste des joueurs et les boutons d'action.
+Displays the player list and action buttons.
 
-### Comportements clés
+### Key behaviors
 
-- **Code du salon** : affiché en grand si `!game.is_quick_game`
-- **Partie Rapide** : affiche "Partie Rapide" à la place du code
-- **Prêt/Pas prêt** : `client.setReady(!isReady)` — bascule l'état du joueur courant
-- **Lancer** : visible uniquement si `canStart && !game.is_quick_game`
+- **Lobby code**: displayed prominently if `!game.is_quick_game`
+- **Quick game**: shows "Quick Game" instead of the code
+- **Ready/Not ready**: `client.setReady(!isReady)` — toggles the current player's state
+- **Start**: visible only if `canStart && !game.is_quick_game`
   - `canStart` = `game.players.length >= 1 && game.players.every(p => p.is_ready)`
-  - Les parties rapides démarrent automatiquement côté serveur
-- **Décompte** : quand `game.state === 'COUNTDOWN'`, le texte "Démarrage..." s'anime
+  - Quick games start automatically server-side
+- **Countdown**: when `game.state === 'COUNTDOWN'`, the "Starting..." text animates
 
 ### Props
 
@@ -32,30 +32,30 @@ Affiche la liste des joueurs et les boutons d'action.
 
 ## GameView (src/views/GameView.tsx)
 
-**Quand :** `game.state === 'IN_PROGRESS'`
+**When:** `game.state === 'IN_PROGRESS'`
 
-Affiche la question courante, le timer, le scoreboard et le composant de saisie.
+Displays the current question, timer, scoreboard, and input component.
 
-### Gestion de l'index de question
+### Question index management
 
-Le serveur peut incrémenter `current_question_index` de 1 en 1 (progression normale) ou sauter plusieurs questions. La vue maintient un `displayedQuestionIndex` local pour éviter les flashs :
+The server may increment `current_question_index` by 1 (normal progression) or skip several questions. The view maintains a local `displayedQuestionIndex` to avoid flashes:
 
-- Avance seulement si `currentIndex === displayedIndex + 1` (progression normale)
-- En cas de saut (`currentIndex > displayedIndex + 1`), affiche directement la nouvelle question et log un warning
+- Advances only if `currentIndex === displayedIndex + 1` (normal progression)
+- On skip (`currentIndex > displayedIndex + 1`), displays the new question directly and logs a warning
 
 ### Timer (`useQuestionTimer`)
 
-Hook local qui calcule les secondes restantes à partir de `question.time_limit_seconds` et `game.start_time_current_question` (timestamp Unix). Se rafraîchit toutes les 250 ms.
+Local hook that calculates remaining seconds from `question.time_limit_seconds` and `game.start_time_current_question` (Unix timestamp). Refreshes every 250ms.
 
-Quand `questionCountdown !== null` (décompte inter-question actif), le timer est mis en pause.
+When `questionCountdown !== null` (inter-question countdown active), the timer is paused.
 
-### Décompte inter-questions (`questionCountdown`)
+### Inter-question countdown (`questionCountdown`)
 
-`GameClient.onQuestionCountdown` est branché dans un `useEffect`. Quand le serveur envoie `QUESTION_COUNTDOWN { seconds: 0 }`, le décompte est effacé et la question s'affiche.
+`GameClient.onQuestionCountdown` is wired in a `useEffect`. When the server sends `QUESTION_COUNTDOWN { seconds: 0 }`, the countdown is cleared and the question is shown.
 
-### Saisie de réponse
+### Answer input
 
-Le composant `AnswerInput` est désactivé (`disabled`) dès que le joueur a déjà répondu à la question courante :
+The `AnswerInput` component is disabled when the player has already answered the current question:
 
 ```typescript
 const hasAnswered = game.answers.some(
@@ -65,21 +65,21 @@ const hasAnswered = game.answers.some(
 
 ### Scoreboard
 
-Trié par score décroissant. La barre de progression est relative à 1000 pts (max visuel).
+Sorted by descending score. The progress bar is relative to 1000 pts (visual max).
 
 ---
 
 ## PodiumView (src/views/PodiumView.tsx)
 
-**Quand :** `game.state === 'FINISHED'`
+**When:** `game.state === 'FINISHED'`
 
-Affiche le podium (top 3 en colonnes) et le classement complet.
+Displays the podium (top 3 in columns) and full rankings.
 
-### Comportements clés
+### Key behaviors
 
-- **Confettis** : lancés au montage via `canvas-confetti`
-- **Rejouer** : crée une nouvelle `quickGame` et navigue vers elle en passant `{ playerName, token }` dans le state de navigation
-- **Retour accueil** : `navigate('/')`
+- **Confetti**: launched on mount via `canvas-confetti`
+- **Play again**: creates a new `quickGame` and navigates to it passing `{ playerName, token }` in navigation state
+- **Back home**: `navigate('/')`
 
 ### Props
 
@@ -87,16 +87,16 @@ Affiche le podium (top 3 en colonnes) et le classement complet.
 {
   game: Game;
   currentPlayerId: string | null;
-  client: GameClient; // pour créer la nouvelle partie via createQuickGame()
-  playerName: string; // pour rejoindre la nouvelle partie
+  client: GameClient; // to create the new game via createQuickGame()
+  playerName: string; // to join the new game
 }
 ```
 
 ---
 
-## Ajouter un élément UI dans une vue de jeu
+## Adding a UI element to a game view
 
-1. La donnée existe dans `Game` → lire directement depuis `game`
-2. La donnée vient d'un nouveau message WS → voir [game-flow.md](game-flow.md) pour ajouter la callback
-3. Nouvel état de jeu → ajouter dans `GameState` (types.ts) et le `switch` de `GamePage`
-4. Nouveau composant réutilisable → le placer dans `src/components/` avec son interface dans un `port.ts` si plusieurs implémentations possibles
+1. Data exists in `Game` → read directly from `game`
+2. Data comes from a new WS message → see [game-flow.md](game-flow.md) to add the callback
+3. New game state → add to `GameState` (types.ts) and the `switch` in `GamePage`
+4. New reusable component → place in `src/components/` with its interface in a `port.ts` if multiple implementations are possible

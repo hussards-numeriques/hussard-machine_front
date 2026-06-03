@@ -1,68 +1,68 @@
-# Calc Rush — Documentation LLM
+# Calc Rush — LLM Documentation
 
-Calc Rush est une application web de **calcul mental multijoueur**. Les joueurs rejoignent un salon, répondent à des questions de maths en temps réel, et sont classés par score. Le frontend est en React 19 + TypeScript + Tailwind CSS, connecté à un backend via REST et WebSocket.
+Calc Rush is a **multiplayer mental math** web application. Players join a lobby, answer math questions in real time, and are ranked by score. The frontend is built with React 19 + TypeScript + Tailwind CSS, connected to a backend via REST and WebSocket.
 
-URL de production : `https://www.calc-rush.fr/`
-
----
-
-## Comment utiliser cette documentation
-
-Identifie la feature concernée ci-dessous, lis le fichier correspondant, puis agis.
-Pour comprendre l'organisation générale du code (arborescence, stack, flux de données), commence par [architecture.md](architecture.md).
+Production URL: `https://www.calc-rush.fr/`
 
 ---
 
-## Index des features
+## How to use this documentation
+
+Identify the relevant feature below, read the corresponding file, then act.
+To understand the general code organization (file tree, stack, data flow), start with [architecture.md](architecture.md).
+
+---
+
+## Feature index
 
 ### [architecture.md](architecture.md)
 
-Stack technique, variables d'environnement, arborescence complète du projet et flux de données principal. **Point de départ si tu ne connais pas le projet.**
+Tech stack, environment variables, full project file tree, and main data flow. **Starting point if you don't know the project.**
 
 ### [game-flow.md](game-flow.md)
 
-Tout ce qui concerne le cycle de vie d'une partie : états du jeu (`WAITING → COUNTDOWN → IN_PROGRESS → FINISHED`), `GameClient` (WebSocket + REST), protocole de messages WS, `GameContext`.
-→ À lire pour : ajouter un message WS, modifier la logique de démarrage, toucher au contexte Game.
+Everything about the game lifecycle: game states (`WAITING → COUNTDOWN → IN_PROGRESS → FINISHED`), `GameClient` (WebSocket + REST), WS message protocol, `GameContext`.
+→ Read when: adding a WS message, modifying start logic, touching the Game context.
 
 ### [game-views.md](game-views.md)
 
-Les trois vues rendues pendant une partie : `LobbyView` (salon d'attente), `GameView` (question + timer + scoreboard), `PodiumView` (résultats + confettis).
-→ À lire pour : modifier l'affichage pendant la partie, ajouter un élément UI à une vue de jeu.
+The three views rendered during a game: `LobbyView` (waiting lobby), `GameView` (question + timer + scoreboard), `PodiumView` (results + confetti).
+→ Read when: modifying in-game display, adding a UI element to a game view.
 
 ### [answer-input.md](answer-input.md)
 
-Le composant `AnswerInput` et son pattern port/adapter : `KeyboardInput` (desktop) vs `HandwritingInput` (tactile). Détail complet du pipeline de reconnaissance de chiffres manuscrits (TensorFlow.js MNIST, segmentation des traits).
-→ À lire pour : modifier la saisie de réponse, ajouter un mode de saisie, toucher à la reconnaissance manuscrite.
+The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (desktop) vs `HandwritingInput` (touch). Full details of the handwritten digit recognition pipeline (TensorFlow.js MNIST, stroke segmentation).
+→ Read when: modifying answer input, adding an input mode, touching handwriting recognition.
 
 ### [auth.md](auth.md)
 
-`AuthClient` (login, register, logout, refresh token automatique), `AuthContext`/`AuthProvider`, `AuthModal`. L'authentification est optionnelle — les joueurs non connectés peuvent jouer mais ne sauvegardent pas leur XP.
-→ À lire pour : ajouter un appel API authentifié, modifier le flux de connexion, protéger une page.
+`AuthClient` (login, register, logout, automatic token refresh), `AuthContext`/`AuthProvider`, `AuthModal`. Authentication is optional — unauthenticated players can play but don't save their XP.
+→ Read when: adding an authenticated API call, modifying the login flow, protecting a page.
 
 ### [player-profile.md](player-profile.md)
 
-Page profil : affichage du niveau scolaire, du grade (Bronze → Diamant), de la barre XP segmentée, de l'historique des parties, et du bouton de promotion.
-→ À lire pour : ajouter une stat au profil, modifier le système de grades/niveaux, toucher à l'historique.
+Profile page: display of school level, grade (Bronze → Diamond), segmented XP bar, game history, and promotion button.
+→ Read when: adding a stat to the profile, modifying the grade/level system, touching history.
 
 ### [routing.md](routing.md)
 
-Structure des routes (`AppLayout` vs `GameLayout`), rôle de `GamePage` comme orchestrateur des vues, convention de navigation avec state.
-→ À lire pour : ajouter une page, modifier la navigation, comprendre comment `GamePage` passe d'une vue à l'autre.
+Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.
+→ Read when: adding a page, modifying navigation, understanding how `GamePage` switches between views.
 
 ### [conventions.md](conventions.md)
 
-Règles TypeScript, pattern port/adapter, styles Tailwind, absence de commentaires, commandes de validation, tests.
-→ À lire avant d'écrire du code pour respecter les patterns existants.
+TypeScript rules, port/adapter pattern, Tailwind styles, no comments policy, validation commands, tests.
+→ Read before writing code to follow existing patterns.
 
 ---
 
-## Dépendances clés
+## Key dependencies
 
-| Package                             | Usage                                 |
-| ----------------------------------- | ------------------------------------- |
-| `react-router-dom` v7               | Routing SPA                           |
-| `@tensorflow/tfjs` v4               | Reconnaissance de chiffres manuscrits |
-| `canvas-confetti`                   | Animations podium                     |
-| `clsx` + `tailwind-merge`           | Composition de classes CSS            |
-| `zod` + `@tanstack/react-form`      | Validation de formulaires (AuthModal) |
-| `vitest` + `@testing-library/react` | Tests unitaires                       |
+| Package                             | Usage                         |
+| ----------------------------------- | ----------------------------- |
+| `react-router-dom` v7               | SPA routing                   |
+| `@tensorflow/tfjs` v4               | Handwritten digit recognition |
+| `canvas-confetti`                   | Podium animations             |
+| `clsx` + `tailwind-merge`           | CSS class composition         |
+| `zod` + `@tanstack/react-form`      | Form validation (AuthModal)   |
+| `vitest` + `@testing-library/react` | Unit tests                    |

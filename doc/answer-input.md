@@ -1,19 +1,19 @@
-# Answer Input — Saisie de réponse
+# Answer Input — Answer submission
 
-Le composant `AnswerInput` permet au joueur de soumettre sa réponse numérique. Il s'adapte au type d'appareil : clavier sur desktop, saisie manuscrite sur tactile.
+The `AnswerInput` component allows the player to submit their numeric answer. It adapts to the device type: keyboard on desktop, handwriting on touch.
 
-## Pattern port / adapter
+## Port / adapter pattern
 
 ```
 src/components/AnswerInput/
-├── port.ts          ← interface commune AnswerInputProps
-├── adapter.ts       ← sélectionne l'implémentation selon le device
-├── index.ts         ← exporte le composant résolu
+├── port.ts          ← common interface AnswerInputProps
+├── adapter.ts       ← selects the implementation based on device
+├── index.ts         ← exports the resolved component
 ├── KeyboardInput.tsx
 └── HandwritingInput.tsx
 ```
 
-### Port (interface commune)
+### Port (common interface)
 
 ```typescript
 // port.ts
@@ -33,9 +33,9 @@ export const getAnswerInputComponent = (): React.FC<AnswerInputProps> => {
 };
 ```
 
-L'adapter est appelé une seule fois à l'import (`index.ts`) pour éviter de re-évaluer `matchMedia` à chaque render.
+The adapter is called once at import (`index.ts`) to avoid re-evaluating `matchMedia` on every render.
 
-### Utilisation dans GameView
+### Usage in GameView
 
 ```typescript
 import { AnswerInput } from '../components/AnswerInput';
@@ -53,51 +53,51 @@ import { AnswerInput } from '../components/AnswerInput';
 
 ## KeyboardInput (src/components/AnswerInput/KeyboardInput.tsx)
 
-Champ texte numérique avec bouton "Valider". Soumission par Enter ou clic.
+Numeric text field with a "Submit" button. Submission via Enter or click.
 
 ---
 
 ## HandwritingInput (src/components/AnswerInput/HandwritingInput.tsx)
 
-Canvas de dessin libre avec reconnaissance de chiffres manuscrits via TensorFlow.js.
+Free-draw canvas with handwritten digit recognition via TensorFlow.js.
 
-### Interactions pointer
+### Pointer interactions
 
-Utilise les événements `PointerEvent` (compatible stylet, doigt, souris) :
+Uses `PointerEvent` events (compatible with stylus, finger, mouse):
 
-- `onPointerDown` → début de trait, capture le pointeur
-- `onPointerMove` → dessin en temps réel
-- `onPointerUp` / `onPointerCancel` → fin de trait, stocke dans `strokes`
+- `onPointerDown` → stroke start, captures the pointer
+- `onPointerMove` → real-time drawing
+- `onPointerUp` / `onPointerCancel` → stroke end, stores in `strokes`
 
-### État local
+### Local state
 
 ```typescript
-strokes: Stroke[]         // traits complétés
-currentStroke: Ref<Point[]> // trait en cours (ref pour éviter les re-renders)
-isRecognizing: boolean    // true pendant l'appel TensorFlow
-error: string | null      // message d'erreur si reconnaissance échoue
+strokes: Stroke[]           // completed strokes
+currentStroke: Ref<Point[]> // current stroke (ref to avoid re-renders)
+isRecognizing: boolean      // true during TensorFlow call
+error: string | null        // error message if recognition fails
 ```
 
 ### Validation
 
-Au clic sur "Valider" :
+On "Submit" click:
 
-1. Appelle `digitRecognitionPort.recognize(canvas, strokes)`
-2. Si `null` → affiche "Impossible de lire, réessaie"
-3. Si valeur → appelle `onSubmit(value)`
+1. Calls `digitRecognitionPort.recognize(canvas, strokes)`
+2. If `null` → displays "Cannot read, please try again"
+3. If value → calls `onSubmit(value)`
 
 ---
 
-## Reconnaissance de chiffres (src/services/digit-recognition/)
+## Digit recognition (src/services/digit-recognition/)
 
-### Pattern port / adapter
+### Port / adapter pattern
 
 ```
 digit-recognition/
-├── port.ts               ← interface DigitRecognitionPort
-├── index.ts              ← exporte l'instance singleton TfjsMnistAdapter
-├── TfjsMnistAdapter.ts   ← implémentation TensorFlow.js
-└── segmentation.ts       ← algorithme de segmentation
+├── port.ts               ← DigitRecognitionPort interface
+├── index.ts              ← exports the TfjsMnistAdapter singleton instance
+├── TfjsMnistAdapter.ts   ← TensorFlow.js implementation
+└── segmentation.ts       ← segmentation algorithm
 ```
 
 ### Interface
@@ -111,35 +111,35 @@ interface DigitRecognitionPort {
 
 ### TfjsMnistAdapter
 
-Modèle MNIST chargé en lazy depuis GCS (`tfjs-examples/mnist-transfer-cnn`). Le chargement est déclenché au premier appel à `recognize()` et mis en cache (`loadPromise`).
+MNIST model lazily loaded from GCS (`tfjs-examples/mnist-transfer-cnn`). Loading is triggered on the first call to `recognize()` and cached (`loadPromise`).
 
-Pipeline de reconnaissance :
+Recognition pipeline:
 
-1. `segmentStrokes(strokes)` → liste de `DigitRegion` (un par chiffre)
-2. Si la première région ressemble à un signe moins (`isMinusSign`) → `isNegative = true`
-3. Pour chaque région : `renderRegion()` → canvas 28×28 → `predictDigit()` → chiffre 0-9
-4. Concatène les chiffres en entier, applique le signe
+1. `segmentStrokes(strokes)` → list of `DigitRegion` (one per digit)
+2. If the first region looks like a minus sign (`isMinusSign`) → `isNegative = true`
+3. For each region: `renderRegion()` → 28×28 canvas → `predictDigit()` → digit 0-9
+4. Concatenates digits into an integer, applies the sign
 
 ### Segmentation (segmentation.ts)
 
-Algorithme de clustering des traits par chevauchement horizontal :
+Stroke clustering algorithm by horizontal overlap:
 
-1. Chaque trait → une `DigitRegion` avec sa `BoundingBox`
-2. Fusion itérative : si deux régions se chevauchent horizontalement → fusionnées en une
-3. Tri des régions par `minX` (gauche → droite)
+1. Each stroke → a `DigitRegion` with its `BoundingBox`
+2. Iterative merge: if two regions overlap horizontally → merged into one
+3. Regions sorted by `minX` (left → right)
 
-`isMinusSign` : une région est un signe moins si `height < width * 0.3` et `width > canvasWidth * 0.05`.
+`isMinusSign`: a region is a minus sign if `height < width * 0.3` and `width > canvasWidth * 0.05`.
 
 ---
 
-## Ajouter une nouvelle implémentation d'input
+## Adding a new input implementation
 
-1. Créer `MonInput.tsx` qui implémente `AnswerInputProps` (port.ts)
-2. Modifier `adapter.ts` pour retourner `MonInput` selon la condition souhaitée
-3. Aucune autre modification nécessaire — `GameView` utilise `AnswerInput` de façon opaque
+1. Create `MyInput.tsx` implementing `AnswerInputProps` (port.ts)
+2. Modify `adapter.ts` to return `MyInput` based on the desired condition
+3. No other changes needed — `GameView` uses `AnswerInput` opaquely
 
-## Remplacer la reconnaissance de chiffres
+## Replacing digit recognition
 
-1. Créer une classe qui implémente `DigitRecognitionPort`
-2. Modifier `src/services/digit-recognition/index.ts` pour exporter la nouvelle instance
-3. Aucune autre modification nécessaire
+1. Create a class implementing `DigitRecognitionPort`
+2. Modify `src/services/digit-recognition/index.ts` to export the new instance
+3. No other changes needed

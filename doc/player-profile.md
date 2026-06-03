@@ -1,14 +1,14 @@
-# Player Profile — Profil joueur
+# Player Profile
 
-## Vue d'ensemble
+## Overview
 
-La page `ProfilePage` (`src/pages/ProfilePage.tsx`) est accessible uniquement aux utilisateurs authentifiés via `/profile`. Elle affiche :
+The `ProfilePage` (`src/pages/ProfilePage.tsx`) is accessible only to authenticated users at `/profile`. It displays:
 
-- Le pseudo et l'avatar (initiales)
-- Le niveau scolaire (ex : CM2, 6ème) et le grade (Bronze → Diamant)
-- Une barre d'XP segmentée par grade
-- Le bouton de promotion de niveau si `can_promote === true`
-- L'historique des parties jouées
+- Username and avatar (initials)
+- School level (e.g. CM2, 6ème) and grade (Bronze → Diamond)
+- A segmented XP bar by grade
+- The level promotion button if `can_promote === true`
+- Game history
 
 ## Types (src/types.ts)
 
@@ -17,9 +17,9 @@ La page `ProfilePage` (`src/pages/ProfilePage.tsx`) est accessible uniquement au
 ```typescript
 interface PlayerProfile {
   username: string;
-  level: string; // clé parmi les niveaux (ex: 'CM2', 'SIXIEME')
-  experience: number; // XP total cumulé
-  grade: string; // clé parmi les grades (ex: 'BRONZE', 'GOLD')
+  level: string; // key among levels (e.g. 'CM2', 'SIXIEME')
+  experience: number; // total cumulated XP
+  grade: string; // key among grades (e.g. 'BRONZE', 'GOLD')
   can_promote: boolean;
   history: GameHistoryEntry[];
 }
@@ -29,7 +29,7 @@ interface PlayerProfile {
 
 ```typescript
 interface GameConfig {
-  experience_per_grade: number; // XP nécessaire par grade
+  experience_per_grade: number; // XP required per grade
   promotion_threshold: number;
   grades: string[]; // ['BRONZE', 'SILVER', 'GOLD', 'PLATINE', 'DIAMOND']
   levels: string[]; // ['CP', 'CE1', 'CE2', 'CM1', 'CM2', 'SIXIEME', ...]
@@ -50,41 +50,41 @@ interface GameHistoryEntry {
   my_score: number;
   my_correct_answers: number;
   my_total_answers: number;
-  experience_gained: number; // peut être négatif
+  experience_gained: number; // can be negative
   participants: GameHistoryParticipant[];
 }
 ```
 
-## Appels API
+## API calls
 
-| Appel             | Endpoint                         | Description                                                        |
-| ----------------- | -------------------------------- | ------------------------------------------------------------------ |
-| Chargement config | `GET /game/config`               | Publique. Grades, niveaux, XP par grade.                           |
-| Chargement profil | `GET /me/details` (authentifié)  | Profil complet avec historique. 404 si premier joueur.             |
-| Promotion         | `POST /me/promote` (authentifié) | Monte d'un niveau si `can_promote`. Retourne le profil mis à jour. |
+| Call         | Endpoint                           | Description                                                   |
+| ------------ | ---------------------------------- | ------------------------------------------------------------- |
+| Load config  | `GET /game/config`                 | Public. Grades, levels, XP per grade.                         |
+| Load profile | `GET /me/details` (authenticated)  | Full profile with history. 404 if first-time player.          |
+| Promotion    | `POST /me/promote` (authenticated) | Promotes one level if `can_promote`. Returns updated profile. |
 
-Les appels `/me/...` passent par `authClient.authorizedFetch()` (refresh token automatique).
+`/me/...` calls go through `authClient.authorizedFetch()` (automatic token refresh).
 
-## Système de grades et niveaux
+## Grade and level system
 
-**Grades** (dans l'ordre) : BRONZE → SILVER → GOLD → PLATINE → DIAMOND
+**Grades** (in order): BRONZE → SILVER → GOLD → PLATINE → DIAMOND
 
-Chaque grade nécessite `experience_per_grade` XP. La barre XP est segmentée visuellement en autant de cases que de grades.
+Each grade requires `experience_per_grade` XP. The XP bar is visually segmented into as many sections as there are grades.
 
-**Niveaux scolaires** (dans l'ordre) : CP → CE1 → CE2 → CM1 → CM2 → SIXIÈME → CINQUIÈME → QUATRIÈME → TROISIÈME → SECONDE → PREMIÈRE → TERMINALE
+**School levels** (in order): CP → CE1 → CE2 → CM1 → CM2 → SIXIÈME → CINQUIÈME → QUATRIÈME → TROISIÈME → SECONDE → PREMIÈRE → TERMINALE
 
-La **promotion** change le niveau scolaire (pas le grade). Elle est disponible quand `can_promote === true`, c'est-à-dire quand le joueur a atteint le grade DIAMOND au niveau courant.
+**Promotion** changes the school level (not the grade). It is available when `can_promote === true`, meaning the player has reached the DIAMOND grade at their current level.
 
-## Composants internes à ProfilePage
+## Internal components of ProfilePage
 
-| Composant        | Rôle                                                        |
-| ---------------- | ----------------------------------------------------------- |
-| `GradeBadge`     | Badge coloré affichant le label du grade                    |
-| `SegmentedXpBar` | Barre XP multi-segments, une case par grade                 |
-| `HistoryRow`     | Ligne d'historique expandable avec tableau des participants |
+| Component        | Role                                          |
+| ---------------- | --------------------------------------------- |
+| `GradeBadge`     | Colored badge displaying the grade label      |
+| `SegmentedXpBar` | Multi-segment XP bar, one section per grade   |
+| `HistoryRow`     | Expandable history row with participant table |
 
-## Ajouter une feature profil
+## Adding a profile feature
 
-- Nouvelle stat → ajouter dans `PlayerProfile` (types.ts) et dans le rendu de `ProfilePage`
-- Nouveau badge / rang → ajouter dans les maps `GRADE_STYLES`, `GRADE_LABELS`, etc. en haut de `ProfilePage`
-- Nouvelle action sur le profil → ajouter un bouton + `authClient.authorizedFetch(url, { method: 'POST' })`
+- New stat → add to `PlayerProfile` (types.ts) and in `ProfilePage` rendering
+- New badge / rank → add to the `GRADE_STYLES`, `GRADE_LABELS`, etc. maps at the top of `ProfilePage`
+- New profile action → add a button + `authClient.authorizedFetch(url, { method: 'POST' })`
