@@ -1,5 +1,10 @@
 # Calc Rush Front
 
+## [0.4.0] - 2026-06-03
+
+- Saisie manuscrite sur mobile via reconnaissance de chiffres (TensorFlow.js MNIST)
+- Pattern port/adapter : `HandwritingInput` (tactile) et `KeyboardInput` (desktop)
+
 ## [0.2.0] - 2026-04-21
 
 - Change app name from "Hussard Machine" to "Calc Rush"
