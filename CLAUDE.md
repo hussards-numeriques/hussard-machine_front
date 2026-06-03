@@ -1,5 +1,9 @@
 # CLAUDE.md - calc-rush_front
 
+## Discover the project
+
+@doc/index.md
+
 ## Project Overview
 
 Frontend application for Calc Rush - a multiplayer mental math training application.
