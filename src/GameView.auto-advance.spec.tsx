@@ -20,19 +20,7 @@ describe('GameView - Auto-advance when all players answered', () => {
   let mockGame: Game;
 
   beforeEach(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn().mockImplementation((query: string) => ({
-        matches: false,
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })),
-    });
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: false }));
 
     mockWebSocket = {
       send: vi.fn(),
@@ -98,6 +86,7 @@ describe('GameView - Auto-advance when all players answered', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.clearAllMocks();
   });
 
