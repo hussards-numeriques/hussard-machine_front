@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
+import { GameLayout } from './layouts/GameLayout';
 import { HomePage } from './pages/HomePage';
 import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -12,10 +13,12 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="game/:gameId" element={<GamePage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="how-it-works" element={<HowItWorksPage />} />
+        </Route>
+        <Route element={<GameLayout />}>
+          <Route path="game/:gameId" element={<GamePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
