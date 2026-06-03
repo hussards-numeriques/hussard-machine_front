@@ -11,11 +11,15 @@ export class TfjsMnistAdapter implements DigitRecognitionPort {
     ReturnType<(typeof import('@tensorflow/tfjs'))['loadLayersModel']>
   > | null = null;
   private tf: typeof import('@tensorflow/tfjs') | null = null;
+  private loadPromise: Promise<void> | null = null;
 
   private async ensureLoaded(): Promise<void> {
     if (this.model) return;
-    this.tf = await import('@tensorflow/tfjs');
-    this.model = await this.tf.loadLayersModel(MODEL_URL);
+    this.loadPromise ??= (async () => {
+      this.tf = await import('@tensorflow/tfjs');
+      this.model = await this.tf.loadLayersModel(MODEL_URL);
+    })();
+    return this.loadPromise;
   }
 
   private renderRegion(region: DigitRegion): HTMLCanvasElement {
@@ -58,8 +62,9 @@ export class TfjsMnistAdapter implements DigitRecognitionPort {
       const img = tf.browser.fromPixels(digitCanvas, 1);
       const normalized = tf.scalar(1).sub(img.toFloat().div(255));
       const batched = normalized.expandDims(0);
-      const prediction = this.model!.predict(batched) as ReturnType<typeof tf.tensor>;
-      return Array.from(prediction.argMax(1).dataSync())[0];
+      const predictions = this.model!.predict(batched);
+      const prediction = Array.isArray(predictions) ? predictions[0] : predictions;
+      return prediction.argMax(1).dataSync()[0];
     });
   }
 
