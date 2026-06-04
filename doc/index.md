@@ -31,7 +31,7 @@ The three views rendered during a game: `LobbyView` (waiting lobby), `GameView` 
 
 ### [answer-input.md](answer-input.md)
 
-The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (desktop) vs `HandwritingInput` (touch). Full details of the handwritten digit recognition pipeline (TensorFlow.js MNIST, stroke segmentation).
+The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (desktop) vs `HandwritingInput` (touch). Full details of the handwritten digit recognition pipeline (digit-by-digit input, client-side ONNX MNIST via onnxruntime-web).
 → Read when: modifying answer input, adding an input mode, touching handwriting recognition.
 
 ### [auth.md](auth.md)
@@ -61,7 +61,7 @@ TypeScript rules, port/adapter pattern, Tailwind styles, no comments policy, val
 | Package                             | Usage                         |
 | ----------------------------------- | ----------------------------- |
 | `react-router-dom` v7               | SPA routing                   |
-| `@tensorflow/tfjs` v4               | Handwritten digit recognition |
+| `onnxruntime-web` v1                | Handwritten digit recognition |
 | `canvas-confetti`                   | Podium animations             |
 | `clsx` + `tailwind-merge`           | CSS class composition         |
 | `zod` + `@tanstack/react-form`      | Form validation (AuthModal)   |

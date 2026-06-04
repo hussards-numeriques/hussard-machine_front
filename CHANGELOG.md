@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [0.4.2] - 2026-06-04
+
+- Fix handwriting recognition (was failing 100% on a dead external model URL)
+- Switch digit recognition to client-side `onnxruntime-web` with a bundled MNIST model (`public/models/mnist-12.onnx`) — no external dependency, works offline
+- Rework `HandwritingInput` to digit-by-digit input (sign ±, backspace, debounced recognition), removing fragile multi-digit stroke segmentation
+- Remove `@tensorflow/tfjs` dependency
+
 ## [0.4.1] - 2026-06-03
 
 - Translate all documentation and changelog entries to English

@@ -9,7 +9,7 @@
 | Vite             | 7       | bundler / dev server          |
 | Tailwind CSS     | 3       | utility styles                |
 | React Router DOM | 7       | SPA routing                   |
-| TensorFlow.js    | 4       | handwritten digit recognition |
+| onnxruntime-web  | 1       | handwritten digit recognition |
 | Vitest           | 4       | unit tests                    |
 | Husky            | 9       | git hooks (pre-commit)        |
 
@@ -96,10 +96,10 @@ calc-rush_front/
 │   │   ├── questionCategoryLabels.ts # Resolves question category labels
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
-│   │       ├── index.ts              # Exports the singleton instance (TfjsMnistAdapter)
-│   │       ├── TfjsMnistAdapter.ts   # TensorFlow.js MNIST implementation
-│   │       ├── segmentation.ts       # Stroke segmentation algorithm into digits
-│   │       └── segmentation.spec.ts
+│   │       ├── index.ts              # Exports the singleton instance (OnnxMnistAdapter)
+│   │       ├── OnnxMnistAdapter.ts   # onnxruntime-web MNIST implementation
+│   │       ├── preprocessing.ts      # Pure canvas-pixels → 28×28 tensor helpers
+│   │       └── preprocessing.spec.ts
 │   │
 │   └── lib/
 │       ├── utils.ts                  # cn() utility (clsx + tailwind-merge)

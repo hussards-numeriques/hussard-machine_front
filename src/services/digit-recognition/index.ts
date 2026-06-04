@@ -1,5 +1,5 @@
-import { TfjsMnistAdapter } from './TfjsMnistAdapter';
+import { OnnxMnistAdapter } from './OnnxMnistAdapter';
 import type { DigitRecognitionPort } from './port';
 
-export const digitRecognitionPort: DigitRecognitionPort = new TfjsMnistAdapter();
+export const digitRecognitionPort: DigitRecognitionPort = new OnnxMnistAdapter();
 export type { DigitRecognitionPort };

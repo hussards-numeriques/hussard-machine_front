@@ -59,32 +59,41 @@ Numeric text field with a "Submit" button. Submission via Enter or click.
 
 ## HandwritingInput (src/components/AnswerInput/HandwritingInput.tsx)
 
-Free-draw canvas with handwritten digit recognition via TensorFlow.js.
+Draw canvas with handwritten digit recognition, **one digit at a time**. The player
+writes a single digit; it is recognized and appended to the running answer, then the
+canvas clears for the next digit. This avoids the unsolved problem of segmenting
+touching/overlapping multi-digit handwriting.
 
 ### Pointer interactions
 
 Uses `PointerEvent` events (compatible with stylus, finger, mouse):
 
-- `onPointerDown` → stroke start, captures the pointer
+- `onPointerDown` → stroke start, captures the pointer, cancels any pending recognition
 - `onPointerMove` → real-time drawing
-- `onPointerUp` / `onPointerCancel` → stroke end, stores in `strokes`
+- `onPointerUp` / `onPointerCancel` → (re)arms a debounce timer (`RECOGNIZE_DELAY_MS`,
+  700 ms) so multi-stroke digits (4, 5, 7) are completed before recognition fires
 
 ### Local state
 
 ```typescript
-strokes: Stroke[]           // completed strokes
-currentStroke: Ref<Point[]> // current stroke (ref to avoid re-renders)
-isRecognizing: boolean      // true during TensorFlow call
-error: string | null        // error message if recognition fails
+digits: string; // accumulated answer digits
+isNegative: boolean; // sign toggled via the ± button
+isRecognizing: boolean; // true during an ONNX inference
+error: string | null; // error message if recognition fails
 ```
 
-### Validation
+### Flow
 
-On "Submit" click:
+1. On debounce expiry → `digitRecognitionPort.recognizeDigit(canvas)`
+2. If `null` → displays "Impossible de lire, réessaie", keeps the drawing
+3. If a digit → appends to `digits` and clears the canvas
 
-1. Calls `digitRecognitionPort.recognize(canvas, strokes)`
-2. If `null` → displays "Cannot read, please try again"
-3. If value → calls `onSubmit(value)`
+### Controls
+
+- **±** — toggles the sign
+- **⌫** — removes the last digit
+- **Effacer** — clears the whole answer and the canvas
+- **Valider** — parses `digits` with the sign and calls `onSubmit(value)` (disabled when empty)
 
 ---
 
@@ -95,9 +104,9 @@ On "Submit" click:
 ```
 digit-recognition/
 ├── port.ts               ← DigitRecognitionPort interface
-├── index.ts              ← exports the TfjsMnistAdapter singleton instance
-├── TfjsMnistAdapter.ts   ← TensorFlow.js implementation
-└── segmentation.ts       ← segmentation algorithm
+├── index.ts              ← exports the OnnxMnistAdapter singleton instance
+├── OnnxMnistAdapter.ts   ← onnxruntime-web implementation
+└── preprocessing.ts      ← pure canvas-pixels → 28×28 tensor helpers
 ```
 
 ### Interface
@@ -105,30 +114,33 @@ digit-recognition/
 ```typescript
 // port.ts
 interface DigitRecognitionPort {
-  recognize(canvas: HTMLCanvasElement, strokes: Stroke[]): Promise<number | null>;
+  recognizeDigit(canvas: HTMLCanvasElement): Promise<number | null>; // 0-9 or null
 }
 ```
 
-### TfjsMnistAdapter
+### OnnxMnistAdapter
 
-MNIST model lazily loaded from GCS (`tfjs-examples/mnist-transfer-cnn`). Loading is triggered on the first call to `recognize()` and cached (`loadPromise`).
+Runs **client-side** with `onnxruntime-web`. The MNIST model is bundled in the app
+(`public/models/mnist-12.onnx`, ONNX Model Zoo, ~26 KB) and loaded via a relative URL —
+no external dependency, works offline. The session is lazily created on the first call
+and cached (`loadPromise`). Input tensor `Input3` `[1,1,28,28]`, output `Plus214_Output_0` `[1,10]`.
 
-Recognition pipeline:
+Recognition pipeline (single digit):
 
-1. `segmentStrokes(strokes)` → list of `DigitRegion` (one per digit)
-2. If the first region looks like a minus sign (`isMinusSign`) → `isNegative = true`
-3. For each region: `renderRegion()` → 28×28 canvas → `predictDigit()` → digit 0-9
-4. Concatenates digits into an integer, applies the sign
+1. Read canvas pixels (`getImageData`)
+2. `toMnistInput()` → find the ink bounding box, scale it into a 20×20 box centered in
+   28×28 (MNIST convention), produce a `Float32Array` (bright ink on dark background)
+3. Run the ONNX session → logits → `argMax` → digit 0-9 (empty canvas → `null`)
 
-### Segmentation (segmentation.ts)
+### Preprocessing (preprocessing.ts)
 
-Stroke clustering algorithm by horizontal overlap:
+Pure, framework-free functions (unit-tested without a real canvas):
 
-1. Each stroke → a `DigitRegion` with its `BoundingBox`
-2. Iterative merge: if two regions overlap horizontally → merged into one
-3. Regions sorted by `minX` (left → right)
+- `findInkBox(data, width, height)` → tight bounding box of non-white pixels, or `null`
+- `toMnistInput(data, width, height)` → centered 28×28 `Float32Array`, or `null`
 
-`isMinusSign`: a region is a minus sign if `height < width * 0.3` and `width > canvasWidth * 0.05`.
+The onnxruntime-web `.wasm` is emitted as a hashed Vite asset (`optimizeDeps.exclude`),
+served from the app itself.
 
 ---
 
