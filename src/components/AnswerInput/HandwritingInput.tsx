@@ -119,29 +119,39 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
         onPointerCancel={handlePointerUp}
       />
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-      <div className="flex gap-3">
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="flex-1 min-w-0 px-0"
+            onClick={() => setIsNegative((s) => !s)}
+            disabled={disabled}
+          >
+            ±
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="flex-1 min-w-0 px-0"
+            onClick={handleBackspace}
+            disabled={disabled || digits.length === 0}
+          >
+            ⌫
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="flex-1 min-w-0 px-0"
+            onClick={handleClearAll}
+            disabled={disabled}
+          >
+            Effacer
+          </Button>
+        </div>
         <Button
-          variant="secondary"
           size="lg"
-          onClick={() => setIsNegative((s) => !s)}
-          disabled={disabled}
-        >
-          ±
-        </Button>
-        <Button
-          variant="secondary"
-          size="lg"
-          onClick={handleBackspace}
-          disabled={disabled || digits.length === 0}
-        >
-          ⌫
-        </Button>
-        <Button variant="secondary" size="lg" onClick={handleClearAll} disabled={disabled}>
-          Effacer
-        </Button>
-        <Button
-          size="lg"
-          className="flex-1"
+          className="w-full"
           onClick={handleValidate}
           disabled={disabled || isRecognizing || digits.length === 0}
         >
