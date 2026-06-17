@@ -91,9 +91,10 @@ error: string | null; // error message if recognition fails
 ### Controls
 
 - **±** — toggles the sign
-- **⌫** — removes the last digit
-- **Effacer** — clears the whole answer and the canvas
+- **⌫** — removes the last digit (use repeatedly to clear the whole answer)
 - **Valider** — parses `digits` with the sign and calls `onSubmit(value)` (disabled when empty)
+
+All three controls sit on a single row (no dedicated "clear all" button).
 
 ---
 
