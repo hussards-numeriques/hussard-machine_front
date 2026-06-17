@@ -98,16 +98,8 @@ export class GameClient {
       }
     };
 
-    this.ws.onclose = (event) => {
-      console.log('Disconnected', {
-        code: event.code,
-        reason: event.reason,
-        wasClean: event.wasClean,
-      });
-      if (!event.wasClean) {
-        const reasonSuffix = event.reason ? ` — ${event.reason}` : '';
-        this.onError(`Connexion fermée (code ${event.code})${reasonSuffix}`);
-      }
+    this.ws.onclose = () => {
+      console.log('Disconnected');
     };
 
     this.ws.onerror = (e) => {

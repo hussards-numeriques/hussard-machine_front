@@ -85,13 +85,6 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     setDigits((prev) => prev.slice(0, -1));
   };
 
-  const handleClearAll = () => {
-    setError(null);
-    setDigits('');
-    setIsNegative(false);
-    if (canvasRef.current) fillWhite(canvasRef.current);
-  };
-
   const handleValidate = () => {
     if (digits.length === 0) return;
     const value = parseInt(digits, 10);
@@ -119,39 +112,28 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
         onPointerCancel={handlePointerUp}
       />
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-      <div className="space-y-3">
-        <div className="flex gap-2">
-          <Button
-            variant="secondary"
-            size="lg"
-            className="flex-1 min-w-0 px-0"
-            onClick={() => setIsNegative((s) => !s)}
-            disabled={disabled}
-          >
-            ±
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="flex-1 min-w-0 px-0"
-            onClick={handleBackspace}
-            disabled={disabled || digits.length === 0}
-          >
-            ⌫
-          </Button>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="flex-1 min-w-0 px-0"
-            onClick={handleClearAll}
-            disabled={disabled}
-          >
-            Effacer
-          </Button>
-        </div>
+      <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          size="lg"
+          className="flex-1 min-w-0 px-0"
+          onClick={() => setIsNegative((s) => !s)}
+          disabled={disabled}
+        >
+          ±
+        </Button>
+        <Button
+          variant="secondary"
+          size="lg"
+          className="flex-1 min-w-0 px-0"
+          onClick={handleBackspace}
+          disabled={disabled || digits.length === 0}
+        >
+          ⌫
+        </Button>
         <Button
           size="lg"
-          className="w-full"
+          className="flex-1 min-w-0 px-0"
           onClick={handleValidate}
           disabled={disabled || isRecognizing || digits.length === 0}
         >

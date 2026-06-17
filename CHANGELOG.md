@@ -1,5 +1,10 @@
 # Calc Rush Front
 
+## [0.4.3] - 2026-06-18
+
+- Remove "Effacer" button in mobile handwriting input, replace it with "Valider" so all controls fit on one row
+- Remove unsolicited WS disconnect error toast and debug logging
+
 ## [0.4.2] - 2026-06-04
 
 - Fix handwriting recognition (was failing 100% on a dead external model URL)
