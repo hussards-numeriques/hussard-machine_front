@@ -19,6 +19,26 @@ export default {
       },
       animation: {
         'bounce-short': 'bounce 0.5s infinite',
+        'pop-in': 'pop-in 0.4s ease-out',
+        shake: 'shake 0.4s ease-in-out',
+        'combo-grow': 'combo-grow 0.4s ease-out',
+      },
+      keyframes: {
+        'pop-in': {
+          '0%': { transform: 'scale(0.6)', opacity: '0' },
+          '60%': { transform: 'scale(1.1)', opacity: '1' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-6px)' },
+          '75%': { transform: 'translateX(6px)' },
+        },
+        'combo-grow': {
+          '0%': { transform: 'scale(0.8)' },
+          '50%': { transform: 'scale(1.15)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
     },
   },
