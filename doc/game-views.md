@@ -63,6 +63,17 @@ const hasAnswered = game.answers.some(
 );
 ```
 
+### Feedback en jeu
+
+Dérivé du `Game` (aucun appel backend dédié). Voir `src/lib/feedback.ts`.
+
+- **À la soumission** (`AnswerFeedbackPop`) : remplace l'`AnswerInput` une fois que le joueur a répondu. Affiche `+points` (vert, `animate-pop-in`) ou `Raté` (rouge, `animate-shake`) + « En attente des autres joueurs… ». Ne révèle pas la bonne réponse.
+- **Compte à rebours inter-question** (`CorrectionCard`) : remplace l'écran « Préparez-vous » dès la 2ᵉ question. Rappel du calcul, réponse donnée (vert si correcte ; rouge barré + bonne réponse en vert sinon ; `⏱ Pas de réponse` au timeout), points gagnés, `ComboBadge`.
+- **Combo** (`ComboBadge`) : `🔥 xN` à partir de 2 bonnes réponses consécutives (`computeCombo`). Purement visuel, n'influence pas le score.
+- **Scoreboard** (`AnimatedScore`) : la valeur de score pulse à chaque hausse ; la barre conserve sa transition existante.
+
+Composants : `src/components/GameFeedback/{AnswerFeedbackPop,CorrectionCard,ComboBadge,AnimatedScore}.tsx`.
+
 ### Scoreboard
 
 Sorted by descending score. The progress bar is relative to 1000 pts (visual max).
