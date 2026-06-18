@@ -4,6 +4,10 @@ import type { Game, Question } from '../types';
 import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
 import { resolveCategoryLabel } from '../services/questionCategoryLabels';
 import { AnswerInput } from '../components/AnswerInput';
+import { computeFeedback } from '../lib/feedback';
+import { CorrectionCard } from '../components/GameFeedback/CorrectionCard';
+import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop';
+import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
 
 interface GameViewProps {
   client: GameClient;
@@ -84,6 +88,10 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   const hasAnswered = game.answers.some(
     (answer) => answer.question_id === currentQuestion?.id && answer.player_id === currentPlayerId
   );
+  const myCurrentAnswer =
+    game.answers.find(
+      (answer) => answer.question_id === currentQuestion?.id && answer.player_id === currentPlayerId
+    ) ?? null;
 
   React.useEffect(() => {
     client.setQuestionCountdownCallback((seconds: number) => {
@@ -128,7 +136,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
                 style={{ width: `${Math.min((player.score / 1000) * 100, 100)}%` }}
               />
             </div>
-            <span className="shrink-0">{player.score} pts</span>
+            <AnimatedScore score={player.score} />
           </div>
         );
       })}
@@ -150,12 +158,21 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
       <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full space-y-8">
         <div className="bg-white p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
           {questionCountdown !== null ? (
-            <>
-              <div className="text-9xl font-black text-primary animate-pulse">
-                {questionCountdown}
-              </div>
-              <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
-            </>
+            currentPlayerId && computeFeedback(game, currentPlayerId, displayedQuestionIndex) ? (
+              <CorrectionCard
+                game={game}
+                playerId={currentPlayerId}
+                questionIndex={displayedQuestionIndex}
+                countdown={questionCountdown}
+              />
+            ) : (
+              <>
+                <div className="text-9xl font-black text-primary animate-pulse">
+                  {questionCountdown}
+                </div>
+                <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
+              </>
+            )
           ) : (
             <>
               <div className="flex items-center justify-between gap-2 text-xs">
@@ -173,13 +190,26 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
               <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
 
-              <AnswerInput
-                onSubmit={(value) => {
-                  if (hasAnswered) return;
-                  client.submitAnswer(value);
-                }}
-                disabled={hasAnswered}
-              />
+              {myCurrentAnswer ? (
+                <div className="space-y-2">
+                  <AnswerFeedbackPop
+                    key={currentQuestion.id}
+                    isCorrect={myCurrentAnswer.is_correct}
+                    pointsEarned={myCurrentAnswer.points_earned}
+                  />
+                  <div className="text-sm font-semibold text-slate-400">
+                    En attente des autres joueurs…
+                  </div>
+                </div>
+              ) : (
+                <AnswerInput
+                  onSubmit={(value) => {
+                    if (hasAnswered) return;
+                    client.submitAnswer(value);
+                  }}
+                  disabled={hasAnswered}
+                />
+              )}
             </>
           )}
         </div>

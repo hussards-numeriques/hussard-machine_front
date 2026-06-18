@@ -158,6 +158,6 @@ describe('GameView - Auto-advance when all players answered', () => {
 
     expect(screen.getByText('Question 1 / 2')).toBeInTheDocument();
     expect(screen.getByText('2 + 2')).toBeInTheDocument();
-    expect(screen.getByText('Réponse envoyée...')).toBeInTheDocument();
+    expect(screen.getByText('En attente des autres joueurs…')).toBeInTheDocument();
   });
 });
