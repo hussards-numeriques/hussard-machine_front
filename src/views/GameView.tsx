@@ -85,13 +85,11 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   }, [game.current_question_index, displayedQuestionIndex]);
 
   const currentQuestion = game.questions[displayedQuestionIndex];
-  const hasAnswered = game.answers.some(
-    (answer) => answer.question_id === currentQuestion?.id && answer.player_id === currentPlayerId
-  );
   const myCurrentAnswer =
     game.answers.find(
       (answer) => answer.question_id === currentQuestion?.id && answer.player_id === currentPlayerId
     ) ?? null;
+  const hasAnswered = myCurrentAnswer !== null;
 
   React.useEffect(() => {
     client.setQuestionCountdownCallback((seconds: number) => {
