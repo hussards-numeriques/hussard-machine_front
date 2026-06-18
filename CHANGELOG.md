@@ -1,5 +1,9 @@
 # Calc Rush Front
 
+## [0.4.4] - 2026-06-18
+
+- Restyle the end-of-game `PodiumView` to follow the light theme charter (consistent with Lobby/Game views) instead of the standalone dark background
+
 ## [0.4.3] - 2026-06-18
 
 - Remove "Effacer" button in mobile handwriting input, replace it with "Valider" so all controls fit on one row
