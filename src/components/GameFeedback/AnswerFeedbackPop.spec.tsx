@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import { AnswerFeedbackPop } from './AnswerFeedbackPop';
 
 describe('AnswerFeedbackPop', () => {
@@ -17,5 +17,20 @@ describe('AnswerFeedbackPop', () => {
 
     // Then
     expect(screen.getByText('Raté')).toBeInTheDocument();
+  });
+
+  it('fades out after about a second', () => {
+    // Given
+    vi.useFakeTimers();
+    render(<AnswerFeedbackPop isCorrect pointsEarned={135} />);
+
+    // When
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    // Then
+    expect(screen.getByText('+135').className).toContain('opacity-0');
+    vi.useRealTimers();
   });
 });
