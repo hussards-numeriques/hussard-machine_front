@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [0.5.0] - 2026-06-19
+
+- In-game feedback after each answer: on submit, a `+points` (green) or `Raté` (red) pop briefly appears then fades, without revealing the correct answer, leaving a "waiting for other players" state
+- Correction card during the inter-question countdown: the calculation, the given answer (green when correct, or red strikethrough with the expected answer in green), points earned, and a combo badge
+- Combo badge (`🔥 xN`) for consecutive correct answers (visual only, no scoring impact)
+- Animated score in the scoreboard (pulses on increase)
+
 ## [0.4.4] - 2026-06-18
 
 - Restyle the end-of-game `PodiumView` to follow the light theme charter (consistent with Lobby/Game views) instead of the standalone dark background
