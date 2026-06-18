@@ -125,3 +125,10 @@ Tout est dérivé du `Game` déjà reçu.
 - Barre de score animée à la hausse.
 - `./scripts/validate.sh` passe (lint, prettier, tsc, tests).
 - Fonctions pures `computeFeedback` / `computeCombo` couvertes par des tests.
+
+## Mise à jour de la doc
+
+Conformément au protocole du `CLAUDE.md` front : mettre à jour `doc/` après les changements
+(via `doc/index.md`). Au minimum, documenter le flux de feedback/correction en jeu et les
+nouveaux composants (`AnswerFeedbackPop`, `CorrectionCard`, `ComboBadge`) là où la doc
+décrit le déroulé d'une partie côté front.
