@@ -29,4 +29,9 @@ describe('Footer', () => {
       '/privacy-policy'
     );
   });
+
+  it('links to the terms of sale page', () => {
+    render(<Footer />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('link', { name: 'CGV' })).toHaveAttribute('href', '/terms-of-sale');
+  });
 });

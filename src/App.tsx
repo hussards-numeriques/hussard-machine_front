@@ -5,6 +5,7 @@ import { HomePage } from './pages/HomePage';
 import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
 import { TermsPage } from './pages/TermsPage';
+import { TermsOfSalePage } from './pages/TermsOfSalePage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
@@ -17,6 +18,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="terms" element={<TermsPage />} />
+          <Route path="terms-of-sale" element={<TermsOfSalePage />} />
           <Route path="how-it-works" element={<HowItWorksPage />} />
           <Route path="legal-notice" element={<LegalNoticePage />} />
           <Route path="privacy-policy" element={<PrivacyPolicyPage />} />

@@ -1,5 +1,9 @@
 # Calc Rush Front
 
+## [0.5.3] - 2026-06-19
+
+- Terms of sale page (`/terms-of-sale`, "page en construction" placeholder, same pattern as `/terms`), linked from the footer
+
 ## [0.5.2] - 2026-06-19
 
 - Legal notice (`/legal-notice`) and privacy policy (`/privacy-policy`) pages, linked from the footer
