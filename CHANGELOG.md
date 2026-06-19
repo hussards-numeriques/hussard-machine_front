@@ -1,5 +1,9 @@
 # Calc Rush Front
 
+## [0.5.1] - 2026-06-19
+
+- Discreet footer on the home page only: copyright notice and a link to the external contact page
+
 ## [0.5.0] - 2026-06-19
 
 - In-game feedback after each answer: on submit, a `+points` (green) or `Raté` (red) pop briefly appears then fades, without revealing the correct answer, leaving a "waiting for other players" state
