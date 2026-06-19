@@ -38,8 +38,27 @@ Use whenever there are multiple implementations or the implementation may change
   import { cn } from '../lib/utils';
   cn('base-class', condition && 'conditional-class', className);
   ```
-- Project colors defined in `tailwind.config.js`: `primary`, `primary-dark`, `secondary`
-- No Tailwind UI components or third-party CSS library
+- Project colors defined in `tailwind.config.js`: `primary`, `primary-dark`, `primary-light`, `secondary`
+- No Tailwind UI components or third-party CSS library, no shared `Card`/page-layout component — each page repeats the utility classes below
+
+### Page card patterns
+
+Two recurring patterns for full-page content, picked by content length:
+
+- **Long content** (sections, multiple paragraphs) — e.g. `HowItWorksPage`, `LegalNoticePage`, `PrivacyPolicyPage`:
+  - Wrapper: `min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6`
+  - Card: `bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-8 space-y-6`
+  - Sections: `space-y-3`, left-aligned
+- **Short content** (single message, form, error/loading state) — e.g. `TermsPage`, `ProfilePage` error/loading states:
+  - Wrapper: `min-h-screen flex items-center justify-center p-4`
+  - Card: `max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4`
+
+Shared typography across both patterns:
+
+- Title: `text-3xl font-black text-primary-dark`
+- Section heading: `text-xl font-black text-slate-700`
+- Body text: `text-slate-600 text-sm leading-relaxed`
+- Back link: `text-sm font-bold text-slate-400 hover:text-primary transition-colors`
 
 ## Comments
 

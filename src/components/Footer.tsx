@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Footer: React.FC = () => {
   const year = new Date().getFullYear();
@@ -15,6 +16,12 @@ export const Footer: React.FC = () => {
         >
           Contact
         </a>
+        <Link to="/legal-notice" className="hover:text-primary transition-colors">
+          Mentions légales
+        </Link>
+        <Link to="/privacy-policy" className="hover:text-primary transition-colors">
+          Confidentialité
+        </Link>
       </div>
     </footer>
   );

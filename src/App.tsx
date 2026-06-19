@@ -6,6 +6,8 @@ import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
 import { TermsPage } from './pages/TermsPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
+import { LegalNoticePage } from './pages/LegalNoticePage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="profile" element={<ProfilePage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="how-it-works" element={<HowItWorksPage />} />
+          <Route path="legal-notice" element={<LegalNoticePage />} />
+          <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
         </Route>
         <Route element={<GameLayout />}>
           <Route path="game/:gameId" element={<GamePage />} />

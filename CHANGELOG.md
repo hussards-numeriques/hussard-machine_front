@@ -1,5 +1,10 @@
 # Calc Rush Front
 
+## [0.5.2] - 2026-06-19
+
+- Legal notice (`/legal-notice`) and privacy policy (`/privacy-policy`) pages, linked from the footer
+- Document the graphic charter (page card patterns, typography) in `doc/conventions.md`
+
 ## [0.5.1] - 2026-06-19
 
 - Discreet footer on the home page only: copyright notice and a link to the external contact page

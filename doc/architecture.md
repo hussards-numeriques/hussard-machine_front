@@ -60,7 +60,9 @@ calc-rush_front/
 │   │   ├── GamePage.tsx              # Orchestrates the 3 views based on game.state
 │   │   ├── ProfilePage.tsx           # Player profile, XP, history
 │   │   ├── HowItWorksPage.tsx        # Explanatory page for the grade system
-│   │   └── TermsPage.tsx             # Terms of service
+│   │   ├── TermsPage.tsx             # Terms of service
+│   │   ├── LegalNoticePage.tsx       # Legal notice (editor, hosting, IP)
+│   │   └── PrivacyPolicyPage.tsx     # Privacy policy (GDPR, data collected)
 │   │
 │   ├── views/
 │   │   ├── LobbyView.tsx             # Waiting lobby (WAITING / COUNTDOWN)
@@ -71,6 +73,7 @@ calc-rush_front/
 │   │   ├── Button.tsx                # Reusable button (variant, size)
 │   │   ├── Input.tsx                 # Reusable text field
 │   │   ├── Header.tsx                # Fixed header (nav + auth)
+│   │   ├── Footer.tsx                # Discreet footer (home page only): copyright + legal links
 │   │   ├── AuthModal.tsx             # Login / register modal
 │   │   └── AnswerInput/
 │   │       ├── port.ts               # AnswerInputProps interface

@@ -51,8 +51,8 @@ Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orches
 
 ### [conventions.md](conventions.md)
 
-TypeScript rules, port/adapter pattern, Tailwind styles, no comments policy, validation commands, tests.
-→ Read before writing code to follow existing patterns.
+TypeScript rules, port/adapter pattern, Tailwind styles **(graphic charter: page card patterns, typography, color tokens)**, no comments policy, validation commands, tests.
+→ Read before writing code to follow existing patterns, especially before creating a new page (pick the right card pattern).
 
 ---
 
