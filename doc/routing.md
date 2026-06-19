@@ -20,6 +20,10 @@ Default layout for all non-game pages. Provides:
 - `AuthProvider` (user session management)
 - `GameProvider` (shared WebSocket client — used by HomePage to create games)
 - Fixed `Header` at the top
+- `Footer` — rendered only when `location.pathname === '/'`, hidden on all
+  other routes (`/profile`, `/terms`, `/how-it-works`). Discreet copyright
+  notice + link to an external contact page (no dedicated contact page in
+  Calc Rush).
 
 ## GameLayout (src/layouts/GameLayout.tsx)
 
