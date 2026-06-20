@@ -7,7 +7,6 @@ export const Footer: React.FC = () => {
   return (
     <footer className="py-6 text-center text-xs text-slate-400">
       <div className="flex justify-center items-center gap-3">
-        <span>© {year} Calc Rush. Tous droits réservés.</span>
         <a
           href="https://www.alextraveylan.fr/fr/contact"
           target="_blank"
@@ -26,6 +25,7 @@ export const Footer: React.FC = () => {
           Confidentialité
         </Link>
       </div>
+      <div className="mt-2">© {year} Calc Rush. Tous droits réservés.</div>
     </footer>
   );
 };

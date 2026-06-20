@@ -1,5 +1,9 @@
 # Calc Rush Front
 
+## [0.5.5] - 2026-06-21
+
+- Move the footer copyright notice to its own line below the links for better readability
+
 ## [0.5.4] - 2026-06-21
 
 - Fix Vercel 404 on SPA deep links (e.g. reloading `/game/:gameId`): add a `vercel.json` rewrite serving `index.html` so the app boots and React Router handles the route — a game URL without navigation state then redirects to `/`
