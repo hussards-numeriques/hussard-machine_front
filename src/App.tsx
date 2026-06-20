@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AppLayout } from './layouts/AppLayout';
 import { GameLayout } from './layouts/GameLayout';
 import { HomePage } from './pages/HomePage';
@@ -26,6 +26,7 @@ function App() {
         <Route element={<GameLayout />}>
           <Route path="game/:gameId" element={<GamePage />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
