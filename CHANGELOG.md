@@ -1,5 +1,10 @@
 # Calc Rush Front
 
+## [0.5.4] - 2026-06-21
+
+- Fix Vercel 404 on SPA deep links (e.g. reloading `/game/:gameId`): add a `vercel.json` rewrite serving `index.html` so the app boots and React Router handles the route — a game URL without navigation state then redirects to `/`
+- Catch-all route redirecting any unmatched path to `/`
+
 ## [0.5.3] - 2026-06-19
 
 - Terms of sale page (`/terms-of-sale`, "page en construction" placeholder, same pattern as `/terms`), linked from the footer
