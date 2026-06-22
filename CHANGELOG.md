@@ -1,5 +1,9 @@
 # Calc Rush Front
 
+## [0.6.2] - 2026-06-23
+
+- Make the streak badge's `secured` daily-quest icon clickable like the other states, opening a popover with a live `HH:MM:SS` countdown to the next quest reset (assumed 00:00 UTC, since the backend doesn't expose a precise reset time)
+
 ## [0.6.1] - 2026-06-22
 
 - Turn `/how-it-works` into a help/FAQ page assembling two explanatory components: `GradeGuide` (XP, grades, levels — extracted from the page) and a new `StreakGuide` explaining daily streaks (principle, tier thresholds with their evolving flame icons, the daily-quest states, and the freeze / last-chance safety net)
