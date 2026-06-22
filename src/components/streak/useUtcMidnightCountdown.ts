@@ -21,6 +21,8 @@ export function useUtcMidnightCountdown(active: boolean): string {
       return;
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFormatted(formatRemaining(new Date()));
     const interval = setInterval(() => {
       setFormatted(formatRemaining(new Date()));
     }, 1000);

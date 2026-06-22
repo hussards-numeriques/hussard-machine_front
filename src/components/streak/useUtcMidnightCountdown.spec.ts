@@ -33,4 +33,17 @@ describe('useUtcMidnightCountdown', () => {
     });
     expect(result.current).toBe(initial);
   });
+
+  it('syncs countdown value immediately when transitioning from inactive to active', () => {
+    const { result, rerender } = renderHook(({ active }) => useUtcMidnightCountdown(active), {
+      initialProps: { active: false },
+    });
+    const inactiveValue = result.current;
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(result.current).toBe(inactiveValue);
+    rerender({ active: true });
+    expect(result.current).toBe('00:00:01');
+  });
 });
