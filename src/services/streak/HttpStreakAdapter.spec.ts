@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { HttpStreakAdapter } from './HttpStreakAdapter';
-import type { StreakResponse } from './port';
+import type { AuthorizedFetch, StreakResponse } from './port';
 
 const sample: StreakResponse = {
   current_count: 7,
@@ -10,7 +10,7 @@ const sample: StreakResponse = {
 
 describe('HttpStreakAdapter', () => {
   it('fetches /me/streak via the provided authorizedFetch and returns the parsed body', async () => {
-    const authorizedFetch = vi.fn(
+    const authorizedFetch = vi.fn<AuthorizedFetch>(
       async () => new Response(JSON.stringify(sample), { status: 200 })
     );
     const adapter = new HttpStreakAdapter();
