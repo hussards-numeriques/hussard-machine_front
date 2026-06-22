@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AuthContext, type AuthContextValue } from '../../contexts/AuthContext';
 import { StreakContext, type StreakContextValue } from '../../contexts/StreakContext';
 import type { StreakResponse } from '../../services/streak';
@@ -80,5 +80,14 @@ describe('StreakBadge', () => {
     renderBadge(true, { current_count: 8, played_today: false, freeze_available_on: iso });
     fireEvent.click(screen.getByRole('button', { name: /quête/i }));
     expect(screen.getByText(/dans 3 jours/i)).toBeInTheDocument();
+  });
+
+  it('opens a secured popover with a live countdown to UTC midnight', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-22T23:59:58.000Z'));
+    renderBadge(true, { current_count: 12, played_today: true, freeze_available_on: null });
+    fireEvent.click(screen.getByRole('button', { name: /quête/i }));
+    expect(screen.getByText(/00:00:02/)).toBeInTheDocument();
+    vi.useRealTimers();
   });
 });

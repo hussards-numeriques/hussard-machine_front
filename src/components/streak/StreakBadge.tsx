@@ -5,6 +5,7 @@ import { deriveStreakStatus } from '../../services/streak/status';
 import { cn } from '../../lib/utils';
 import { StreakFlame, getStreakTier } from './StreakFlame';
 import { DailyQuestIcon, type QuestState } from './DailyQuestIcon';
+import { useUtcMidnightCountdown } from './useUtcMidnightCountdown';
 
 const dayLabel = (days: number): string => (days <= 1 ? `${days} jour` : `${days} jours`);
 
@@ -27,27 +28,34 @@ export const StreakBadge: React.FC = () => {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [open]);
 
-  if (!isAuthenticated || !streak) {
+  const status = streak ? deriveStreakStatus(streak) : null;
+
+  const questState: QuestState | null = streak
+    ? streak.played_today
+      ? 'secured'
+      : status?.lastChance
+        ? 'last-chance'
+        : status?.atRisk
+          ? 'soft-risk'
+          : 'neutral'
+    : null;
+
+  const countdown = useUtcMidnightCountdown(open && questState === 'secured');
+
+  if (!isAuthenticated || !streak || !status) {
     return null;
   }
 
-  const status = deriveStreakStatus(streak);
   const tier = getStreakTier(status.count);
 
-  const questState: QuestState = streak.played_today
-    ? 'secured'
-    : status.lastChance
-      ? 'last-chance'
-      : status.atRisk
-        ? 'soft-risk'
-        : 'neutral';
-
-  const clickable = questState === 'soft-risk' || questState === 'last-chance';
+  const clickable = questState !== 'neutral';
 
   const popoverMessage =
     questState === 'last-chance'
       ? `Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans ${dayLabel(status.daysUntilFreeze ?? 0)}.`
-      : 'Joue aujourd’hui pour sécuriser ta série !';
+      : questState === 'secured'
+        ? `Série sécurisée pour aujourd'hui ! Prochaine quête dans ${countdown}.`
+        : 'Joue aujourd’hui pour sécuriser ta série !';
 
   return (
     <div ref={containerRef} className="relative">
