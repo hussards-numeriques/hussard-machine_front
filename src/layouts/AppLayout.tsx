@@ -4,19 +4,22 @@ import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
 import { AuthProvider } from '../contexts/AuthProvider';
 import { GameProvider } from '../contexts/GameProvider';
+import { StreakProvider } from '../contexts/StreakProvider';
 
 export const AppLayout: React.FC = () => {
   const location = useLocation();
 
   return (
     <AuthProvider>
-      <GameProvider>
-        <div className="min-h-screen bg-slate-50">
-          <Header />
-          <Outlet />
-          {location.pathname === '/' && <Footer />}
-        </div>
-      </GameProvider>
+      <StreakProvider>
+        <GameProvider>
+          <div className="min-h-screen bg-slate-50">
+            <Header />
+            <Outlet />
+            {location.pathname === '/' && <Footer />}
+          </div>
+        </GameProvider>
+      </StreakProvider>
     </AuthProvider>
   );
 };
