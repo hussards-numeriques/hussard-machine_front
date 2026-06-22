@@ -22,6 +22,11 @@ export default {
         'pop-in': 'pop-in 0.4s ease-out',
         shake: 'shake 0.4s ease-in-out',
         'combo-grow': 'combo-grow 0.4s ease-out',
+        'flame-flicker': 'flame-flicker 1.2s ease-in-out infinite',
+        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+        'particle-rise': 'particle-rise 1.8s linear infinite',
+        'gold-shimmer': 'gold-shimmer 2.5s ease-in-out infinite',
+        'quest-pulse': 'quest-pulse 1s ease-in-out infinite',
       },
       keyframes: {
         'pop-in': {
@@ -38,6 +43,27 @@ export default {
           '0%': { transform: 'scale(0.8)' },
           '50%': { transform: 'scale(1.15)' },
           '100%': { transform: 'scale(1)' },
+        },
+        'flame-flicker': {
+          '0%, 100%': { transform: 'scale(1) translateY(0)' },
+          '50%': { transform: 'scale(1.06) translateY(-0.5px)' },
+        },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.55' },
+          '50%': { opacity: '0.9' },
+        },
+        'particle-rise': {
+          '0%': { transform: 'translateY(0)', opacity: '0' },
+          '20%': { opacity: '1' },
+          '100%': { transform: 'translateY(-9px)', opacity: '0' },
+        },
+        'gold-shimmer': {
+          '0%, 100%': { opacity: '0.75', filter: 'saturate(1)' },
+          '50%': { opacity: '1', filter: 'saturate(1.4)' },
+        },
+        'quest-pulse': {
+          '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+          '50%': { transform: 'scale(1.18)', opacity: '0.65' },
         },
       },
     },
