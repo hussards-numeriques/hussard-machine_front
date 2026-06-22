@@ -68,7 +68,7 @@ Rendered in `Header`, **authenticated users only** (returns `null` if `!isAuthen
 
 1. The current count (`status.count`), colored per tier, hidden if the streak is dead (`!isAlive`)
 2. `StreakFlame` (muted/grayscale if `!isAlive`)
-3. `DailyQuestIcon`, wrapped in a button when `questState` is `'soft-risk'` or `'last-chance'` (opens a risk popover on click, closed on outside click)
+3. `DailyQuestIcon`, wrapped in a button when `questState` is not `'neutral'` (opens a popover on click, closed on outside click). For `'secured'`, the popover shows a live `HH:MM:SS` countdown to the next daily quest reset, assumed to be 00:00 UTC since the backend doesn't expose a precise reset time (`useUtcMidnightCountdown` hook, ticking only while the popover is open).
 
 `questState` derivation: `played_today` → `'secured'`; else `lastChance` → `'last-chance'`; else `atRisk` → `'soft-risk'`; else `'neutral'`.
 
