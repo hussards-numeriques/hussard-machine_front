@@ -10,7 +10,9 @@ Première cible : un composant dans le header, à gauche du bouton username.
 Les icônes de flamme doivent être réutilisables ailleurs plus tard (ex. joueurs en
 partie, quand l'API exposera le streak par joueur).
 
-La donnée vient de la route back `GET /me/streak` (voir `FRONT_STREAK_CHANGES.md`).
+La donnée vient de la route back `GET /me/streak`. Elle est isolée derrière un port
+(architecture hexagonale, cohérente avec le pattern port/adapter existant —
+`digit-recognition`), pour ne pas coupler le domaine streak à l'API HTTP externe.
 
 ## Data source
 
@@ -38,26 +40,86 @@ lastChance = atRisk && !freezeReady;
 
 ## Architecture
 
-### Data layer
+### Data layer — port/adapter (hexagonal)
 
-- `src/types.ts` : ajout de `StreakResponse`.
-- `src/services/AuthClient.ts` : ajout de `fetchStreak(): Promise<StreakResponse>`
-  utilisant `authorizedFetch` sur `${getApiUrl()}/me/streak`. `getApiUrl()` suit le
-  même pattern que dans `ProfilePage`/`questionCategoryLabels` (base API, pas FastAuth).
-- `src/contexts/StreakContext.ts`, `StreakProvider.tsx`, `useStreak.ts` :
-  - `StreakProvider` se place **dans** `AuthProvider` (lit `useAuth`).
-  - Fetch au mount **uniquement si authentifié** ; re-fetch sur changement d'auth
-    (login/logout vide ou recharge l'état).
-  - Expose `{ streak: StreakResponse | null, isLoading: boolean, refresh: () => Promise<void> }`.
-  - `refresh()` servira plus tard à rafraîchir après une partie.
-  - `useStreak()` throw si utilisé hors provider (pattern `useAuth`).
+`src/services/streak/` (calqué sur `src/services/digit-recognition/`) :
 
-### Lib helper
+```
+port.ts                  → contrat + types (StreakResponse, AuthorizedFetch, StreakRepository)
+HttpStreakAdapter.ts     → implémentation HTTP (getApiUrl, GET /me/streak, parse JSON)
+HttpStreakAdapter.spec.ts
+status.ts                → logique domaine pure (deriveStreakStatus)
+status.spec.ts
+index.ts                 → instance résolue + ré-exports
+```
 
-- `src/lib/daysUntil.ts` : `daysUntil(dateStr: string): number` — nombre de jours
-  calendaires entre aujourd'hui (horloge locale, minuit) et la date donnée. Calcul
-  côté front pour rester correct même si la réponse est cachée après minuit.
-  Testé isolément.
+**`port.ts`** — contrat sans détail HTTP :
+
+```ts
+export interface StreakResponse {
+  current_count: number;        // longueur effective (0 = morte ou aucune série)
+  played_today: boolean;        // partie déjà jouée aujourd'hui
+  freeze_available_on: string | null; // date recharge freeze (YYYY-MM-DD, UTC) ; null = dispo
+}
+
+export type AuthorizedFetch = (input: string, init?: RequestInit) => Promise<Response>;
+
+export interface StreakRepository {
+  fetchStreak(authorizedFetch: AuthorizedFetch): Promise<StreakResponse>;
+}
+```
+
+**`HttpStreakAdapter.ts`** — implémente `StreakRepository`. `getApiUrl()` suit le même
+pattern que `ProfilePage`/`questionCategoryLabels` (`VITE_API_URL`, base API, pas
+FastAuth). Reçoit `authorizedFetch` en paramètre → **aucune dépendance à `AuthClient`**
+(réutilise le refresh de token sans coupler le domaine). Throw si la réponse n'est pas OK.
+
+**`index.ts`** : `export const streakRepository: StreakRepository = new HttpStreakAdapter();`
++ ré-export des types (exactement comme `digitRecognitionPort`).
+
+**`status.ts`** — logique domaine pure, testable isolément (remplace un helper `daysUntil`
+isolé) :
+
+```ts
+export interface StreakStatus {
+  count: number;
+  isAlive: boolean;
+  freezeReady: boolean;
+  atRisk: boolean;
+  lastChance: boolean;
+  daysUntilFreeze: number | null; // null si freezeReady
+}
+
+export function deriveStreakStatus(streak: StreakResponse, now?: Date): StreakStatus;
+```
+
+États dérivés (conformes au guide back) :
+
+```ts
+isAlive    = current_count > 0;
+freezeReady = freeze_available_on === null;
+atRisk     = isAlive && !played_today;
+lastChance = atRisk && !freezeReady;
+daysUntilFreeze = freezeReady ? null : jours calendaires entre now (minuit local) et freeze_available_on;
+```
+
+`now` injectable pour les tests. Calcul côté front (horloge locale) → reste correct même
+si la réponse est cachée après minuit.
+
+**`AuthClient` reste inchangé** (on consomme seulement son `authorizedFetch`).
+
+### Context / hook
+
+`src/contexts/StreakContext.ts`, `StreakProvider.tsx`, `useStreak.ts` :
+
+- `StreakProvider` se place **dans** `AuthProvider` (lit `useAuth` pour `client` +
+  `isAuthenticated`).
+- Au mount / changement d'auth : si authentifié, appelle
+  `streakRepository.fetchStreak(client.authorizedFetch)` (lié au client). Sinon vide l'état.
+- Expose `{ streak: StreakResponse | null, isLoading: boolean, refresh: () => Promise<void> }`.
+  L'état stocké est la donnée **brute** ; les composants dérivent via `deriveStreakStatus`.
+- `refresh()` servira plus tard à rafraîchir après une partie.
+- `useStreak()` throw si utilisé hors provider (pattern `useAuth`).
 
 ### Composant header — `StreakBadge`
 
@@ -80,7 +142,9 @@ lastChance = atRisk && !freezeReady;
 
 `src/components/streak/DailyQuestIcon.tsx`
 
-États (props dérivées passées par `StreakBadge`) :
+États dérivés via `deriveStreakStatus(streak)` (champs `played_today`, `isAlive`,
+`atRisk`, `freezeReady`, `lastChance`, `daysUntilFreeze`), passés en props par
+`StreakBadge` :
 
 | Condition                     | Apparence                          | Cliquable | Message popover                                                                 |
 | ----------------------------- | ---------------------------------- | --------- | ------------------------------------------------------------------------------ |
@@ -89,7 +153,7 @@ lastChance = atRisk && !freezeReady;
 | `lastChance`                  | cible rouge **pulsante**           | oui       | « Dernière chance… ❄ Filet de sécurité de retour dans N jours. »            |
 | `!isAlive` (count 0)          | cible neutre                       | non       | —                                                                              |
 
-- **N** = `daysUntil(freeze_available_on)`.
+- **N** = `daysUntilFreeze` (issu de `deriveStreakStatus`).
 
 ### Popover
 
@@ -145,7 +209,11 @@ particules montantes, scintillement doré, pulsation rouge de l'icône last chan
 
 ## Tests
 
-- `src/lib/daysUntil.spec.ts` : bornes, aujourd'hui, dates passées/futures.
+- `src/services/streak/status.spec.ts` : `deriveStreakStatus` — isAlive/atRisk/
+  freezeReady/lastChance selon les combinaisons ; `daysUntilFreeze` (bornes,
+  aujourd'hui, dates futures) avec `now` injecté.
+- `src/services/streak/HttpStreakAdapter.spec.ts` : appelle la bonne URL via
+  `authorizedFetch` mocké, parse la réponse, throw si non-OK.
 - `src/components/streak/StreakFlame/index.spec.tsx` : la factory rend le bon palier
   par count, bornes incluses ; `count === 0`.
 - `src/components/streak/StreakBadge.spec.tsx` : masquage si non-authentifié ;
