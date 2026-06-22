@@ -438,7 +438,7 @@ export const ProfilePage: React.FC = () => {
           to="/how-it-works"
           className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
         >
-          Comment fonctionne le système de grades ? →
+          Aide & FAQ : grades, séries… →
         </Link>
         <Link
           to="/"

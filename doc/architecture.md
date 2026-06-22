@@ -59,7 +59,7 @@ calc-rush_front/
 │   │   ├── HomePage.tsx              # Home: create/join a game
 │   │   ├── GamePage.tsx              # Orchestrates the 3 views based on game.state
 │   │   ├── ProfilePage.tsx           # Player profile, XP, history
-│   │   ├── HowItWorksPage.tsx        # Explanatory page for the grade system
+│   │   ├── HowItWorksPage.tsx        # Help/FAQ shell: assembles GradeGuide + StreakGuide
 │   │   ├── TermsPage.tsx             # Terms of service
 │   │   ├── LegalNoticePage.tsx       # Legal notice (editor, hosting, IP)
 │   │   └── PrivacyPolicyPage.tsx     # Privacy policy (GDPR, data collected)
@@ -75,6 +75,8 @@ calc-rush_front/
 │   │   ├── Header.tsx                # Fixed header (nav + auth)
 │   │   ├── Footer.tsx                # Discreet footer (home page only): copyright + legal links
 │   │   ├── AuthModal.tsx             # Login / register modal
+│   │   ├── grade/
+│   │   │   └── GradeGuide.tsx        # Explanatory card: XP, grades, levels (fetches /game/config)
 │   │   └── AnswerInput/
 │   │       ├── port.ts               # AnswerInputProps interface
 │   │       ├── adapter.ts            # Selects KeyboardInput or HandwritingInput by device

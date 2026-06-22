@@ -93,6 +93,10 @@ Evolving flame icon, one component per tier, selected by `getStreakTier(count)`:
 
 Small SVG status icon with 4 states (`QuestState`): `'secured'` (green check), `'soft-risk'` (amber ring), `'last-chance'` (red ring, pulsing via `animate-quest-pulse`), `'neutral'` (slate ring, e.g. streak not started or already dead).
 
+### StreakGuide
+
+Static explanatory card (no props, no fetch) rendered by the help page (`HowItWorksPage`, route `/how-it-works`). Four sections: principle, tiers (maps over `STREAK_TIERS` rendering each `tier.Flame` + threshold), the daily quest (the 4 `DailyQuestIcon` states), and the freeze / last-chance safety net. Reuses `STREAK_TIERS` and `DailyQuestIcon` — no new data layer.
+
 ## Future reuse
 
 `StreakFlame` is designed to be reused later to show **per-player streaks during a game** (e.g. next to a player's name in the scoreboard). The backend doesn't expose per-player streak data yet — only the current user's own streak via `/me/streak` — so this is not wired up yet.

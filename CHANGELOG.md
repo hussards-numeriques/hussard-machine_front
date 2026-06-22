@@ -1,5 +1,10 @@
 # Calc Rush Front
 
+## [0.6.1] - 2026-06-22
+
+- Turn `/how-it-works` into a help/FAQ page assembling two explanatory components: `GradeGuide` (XP, grades, levels — extracted from the page) and a new `StreakGuide` explaining daily streaks (principle, tier thresholds with their evolving flame icons, the daily-quest states, and the freeze / last-chance safety net)
+- Retitle the page "Aide & FAQ" and update the profile link accordingly
+
 ## [0.6.0] - 2026-06-22
 
 - Daily streak badge in the header (authenticated users): current count, evolving flame icon by tier (ember → orange → amber → blue → violet → gold), and a daily-quest icon reflecting whether today is secured, at risk, or last chance before the streak breaks
