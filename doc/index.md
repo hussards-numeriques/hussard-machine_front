@@ -44,6 +44,11 @@ The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (deskt
 Profile page: display of school level, grade (Bronze → Diamond), segmented XP bar, game history, and promotion button.
 → Read when: adding a stat to the profile, modifying the grade/level system, touching history.
 
+### [streak.md](streak.md)
+
+Daily streak: route `/me/streak`, hex port `services/streak` (`deriveStreakStatus`), `StreakProvider`/`useStreak`, and components `StreakBadge` / `StreakFlame` (evolving flame by tier) / `DailyQuestIcon`.
+→ Read when: modifying the streak display, the tier thresholds, or reusing the flame icon elsewhere.
+
 ### [routing.md](routing.md)
 
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.

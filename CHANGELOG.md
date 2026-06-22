@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.6.0] - 2026-06-22
+
+- Daily streak badge in the header (authenticated users): current count, evolving flame icon by tier (ember → orange → amber → blue → violet → gold), and a daily-quest icon reflecting whether today is secured, at risk, or last chance before the streak breaks
+- Risk popover on the daily-quest icon explaining the freeze safety net cooldown
+- `GET /me/streak` integration via a new hexagonal `services/streak` port/adapter and `StreakProvider`/`useStreak` context, mounted inside `AuthProvider` in both layouts
+
 ## [0.5.5] - 2026-06-21
 
 - Move the footer copyright notice to its own line below the links for better readability
