@@ -30,7 +30,7 @@ export const StreakBadge: React.FC = () => {
 
   const status = streak ? deriveStreakStatus(streak) : null;
 
-  const questState: QuestState | null = streak
+  const questState: QuestState = streak
     ? streak.played_today
       ? 'secured'
       : status?.lastChance
@@ -38,7 +38,7 @@ export const StreakBadge: React.FC = () => {
         : status?.atRisk
           ? 'soft-risk'
           : 'neutral'
-    : null;
+    : 'neutral';
 
   const countdown = useUtcMidnightCountdown(open && questState === 'secured');
 

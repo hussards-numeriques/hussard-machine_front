@@ -13,6 +13,7 @@ const authValue = (isAuthenticated: boolean): AuthContextValue => ({
   login: async () => {},
   register: async () => {},
   logout: async () => {},
+  reloadUser: async () => {},
 });
 
 const renderBadge = (isAuthenticated: boolean, streak: StreakResponse | null) => {
