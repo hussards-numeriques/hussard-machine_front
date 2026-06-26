@@ -65,6 +65,10 @@ export class AuthClient {
     localStorage.removeItem(REFRESH_TOKEN_KEY);
   }
 
+  public loginWithGoogle(): void {
+    window.location.href = `${this.baseUrl}/api/v1/auth/google/login`;
+  }
+
   public async login(payload: LoginPayload): Promise<TokenResponse> {
     const form = new URLSearchParams();
     form.append('username', payload.username);
@@ -181,6 +185,30 @@ export class AuthClient {
 
     return this.refreshInFlight;
   }
+}
+
+export function parseOAuthFragment(hash: string): { tokens?: TokenResponse; error?: string } {
+  const raw = hash.startsWith('#') ? hash.slice(1) : hash;
+  const params = new URLSearchParams(raw);
+
+  const error = params.get('error');
+  if (error) {
+    return { error };
+  }
+
+  const accessToken = params.get('access_token');
+  const refreshToken = params.get('refresh_token');
+  if (accessToken && refreshToken) {
+    return {
+      tokens: {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        token_type: params.get('token_type') ?? 'bearer',
+      },
+    };
+  }
+
+  return {};
 }
 
 async function extractMessage(response: Response): Promise<string> {

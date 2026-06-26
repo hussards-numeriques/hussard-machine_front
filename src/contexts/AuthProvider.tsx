@@ -58,6 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const reloadUser = async () => {
+    const me = await client.fetchMe();
+    setUser(me);
+  };
+
   const value: AuthContextValue = {
     client,
     user,
@@ -66,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout,
+    reloadUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
