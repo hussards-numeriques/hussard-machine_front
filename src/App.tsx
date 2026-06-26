@@ -9,6 +9,7 @@ import { TermsOfSalePage } from './pages/TermsOfSalePage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="how-it-works" element={<HowItWorksPage />} />
           <Route path="legal-notice" element={<LegalNoticePage />} />
           <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="auth/callback" element={<OAuthCallbackPage />} />
         </Route>
         <Route element={<GameLayout />}>
           <Route path="game/:gameId" element={<GamePage />} />
