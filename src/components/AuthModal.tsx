@@ -216,6 +216,28 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
+const GoogleButton = () => {
+  const { client } = useAuth();
+  return (
+    <div className="space-y-4">
+      <Button
+        type="button"
+        variant="secondary"
+        size="lg"
+        className="w-full"
+        onClick={() => client.loginWithGoogle()}
+      >
+        Continuer avec Google
+      </Button>
+      <div className="flex items-center gap-3 text-slate-400 text-sm font-bold">
+        <span className="h-px flex-1 bg-slate-200" />
+        ou
+        <span className="h-px flex-1 bg-slate-200" />
+      </div>
+    </div>
+  );
+};
+
 export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
   const [mode, setMode] = useState<Mode>('LOGIN');
 
@@ -243,6 +265,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             ×
           </button>
         </div>
+
+        <GoogleButton />
 
         {mode === 'LOGIN' ? <LoginForm onClose={onClose} /> : <RegisterForm onClose={onClose} />}
 
