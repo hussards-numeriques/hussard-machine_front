@@ -16,7 +16,7 @@ Built with React 19, TypeScript, Vite, and Tailwind CSS.
 - Build: `npm run build`
 - Lint: `npm run lint`
 - Format check: `npx prettier --check .`
-- Type check: `npx tsc --noEmit`
+- Type check: `npx tsc -b`
 - Test: `npm run test`
 - All checks: `./scripts/validate.sh`
 
@@ -62,7 +62,7 @@ All checks must pass before committing:
 ```bash
 npm run lint
 npx prettier --check .
-npx tsc --noEmit
+npx tsc -b
 npm run test
 ```
 

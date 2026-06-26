@@ -1,4 +1,6 @@
+set -e
+
 npm run lint
 npx prettier --check .
-npx tsc --noEmit
+npx tsc -b
 npm run test

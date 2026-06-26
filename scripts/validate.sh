@@ -19,7 +19,7 @@ npx prettier --check .
 
 echo ""
 echo "TypeScript (type checking)..."
-npx tsc --noEmit
+npx tsc -b
 
 echo ""
 echo "Vitest (tests)..."
