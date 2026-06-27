@@ -1,5 +1,20 @@
 # Calc Rush Front
 
+## [0.8.0] - 2026-06-27
+
+### Added
+
+- Rushy mascot (speedy calculator): reusable `<Mascot>` component (5 poses).
+- New icon set generated from the component: SVG + ICO favicon, PWA icons 192/512 + maskable, OG social banner 1200×630.
+
+### Changed
+
+- `index.html` and `manifest.json` rewired to the new assets.
+
+### Removed
+
+- Old generic `public/icon.png`.
+
 ## [0.7.0] - 2026-06-26
 
 - Add a "Continuer avec Google" button to the auth modal: it redirects to the FastAuth backend OAuth2 flow, and after Google consent the backend redirects back to a new `/auth/callback` route with the tokens in the URL fragment; `OAuthCallbackPage` stores them, reloads the user and returns home. The username defaults to the Google first name.
