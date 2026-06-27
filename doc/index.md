@@ -49,6 +49,13 @@ Profile page: display of school level, grade (Bronze → Diamond), segmented XP 
 Daily streak: route `/me/streak`, hex port `services/streak` (`deriveStreakStatus`), `StreakProvider`/`useStreak`, and components `StreakBadge` / `StreakFlame` (evolving flame by tier) / `DailyQuestIcon`.
 → Read when: modifying the streak display, the tier thresholds, or reusing the flame icon elsewhere.
 
+### [mascot.md](mascot.md)
+
+Rushy, la mascotte (calculatrice speedy) : composant `<Mascot>` et ses 5 poses,
+charte/anatomie, et le pipeline de génération des assets statiques (favicon, PWA,
+bannière OG) via `npm run generate:icons`.
+→ Read when: afficher la mascotte dans l'app, ajouter une pose, ou régénérer les icônes.
+
 ### [routing.md](routing.md)
 
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.
