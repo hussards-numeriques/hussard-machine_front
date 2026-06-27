@@ -44,6 +44,11 @@ vitesse ambre.
 2. Ajouter la valeur à `MascotPose` et à `POSE_CONTENT`.
 3. Ajouter un cas au test `Mascot.spec.tsx`.
 
+> Les ids de gradient (`rushyGrad`, `rushyGradB`) sont statiques. Tant qu'on
+> n'affiche pas deux poses à gradient sur une même page c'est sans effet ; le
+> jour où on intègre `<Mascot>` plusieurs fois in-app, passer à un id unique par
+> instance (`useId()`) pour éviter les ids dupliqués dans le DOM.
+
 ## Régénérer les assets
 
 Après toute modif du composant :
