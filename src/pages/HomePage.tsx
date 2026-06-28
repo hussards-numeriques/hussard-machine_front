@@ -4,8 +4,11 @@ import { useGame } from '../contexts/useGame';
 import { useAuth } from '../contexts/useAuth';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
+import { Mascot } from '../components/Mascot';
+import { useShinySession } from '../hooks/useShinySession';
 
 export const HomePage: React.FC = () => {
+  const isShiny = useShinySession();
   const { client } = useGame();
   const { user, isAuthenticated, client: authClient } = useAuth();
   const navigate = useNavigate();
@@ -60,7 +63,8 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 max-w-md mx-auto w-full">
-      <h1 className="text-5xl font-black text-primary-dark text-center">Calc Rush</h1>
+      <h1 className="sr-only">Calc Rush</h1>
+      <Mascot pose="joyeux" shiny={isShiny} title="Rushy" className="w-28 h-28 sm:w-36 sm:h-36" />
 
       <div className="w-full space-y-4 bg-white p-8 rounded-3xl shadow-xl border-2 border-slate-100">
         {isAuthenticated && user ? (
