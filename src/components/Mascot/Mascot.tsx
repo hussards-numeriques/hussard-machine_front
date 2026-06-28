@@ -1,11 +1,12 @@
 import React from 'react';
-import { POSE_CONTENT, type MascotPose } from './poses';
+import { POSE_CONTENT, SHINY_POSE_CONTENT, type MascotPose } from './poses';
 
 interface MascotProps {
   pose?: MascotPose;
   size?: number;
   className?: string;
   title?: string;
+  shiny?: boolean;
 }
 
 export const Mascot: React.FC<MascotProps> = ({
@@ -13,6 +14,7 @@ export const Mascot: React.FC<MascotProps> = ({
   size = 256,
   className,
   title,
+  shiny = false,
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -25,6 +27,6 @@ export const Mascot: React.FC<MascotProps> = ({
     aria-label={title ?? 'Rushy'}
   >
     {title ? <title>{title}</title> : null}
-    {POSE_CONTENT[pose]}
+    {shiny ? SHINY_POSE_CONTENT[pose] : POSE_CONTENT[pose]}
   </svg>
 );

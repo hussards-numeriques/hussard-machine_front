@@ -30,4 +30,9 @@ describe('Mascot', () => {
     expect(svg?.getAttribute('width')).toBe('128');
     expect(svg?.getAttribute('height')).toBe('128');
   });
+
+  it('renders the shiny joyeux pose with emerald colors', () => {
+    const { container } = render(<Mascot pose="joyeux" shiny />);
+    expect(container.innerHTML).toContain('#10b981');
+  });
 });

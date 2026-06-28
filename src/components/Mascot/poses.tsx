@@ -256,3 +256,96 @@ export const POSE_CONTENT: Record<MascotPose, React.ReactNode> = {
   champion: <Champion />,
   tete: <Tete />,
 };
+
+const ShinyIconBackground: React.FC = () => (
+  <>
+    <defs>
+      <linearGradient id="rushyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#10b981" />
+        <stop offset="1" stopColor="#065f46" />
+      </linearGradient>
+    </defs>
+    <rect width="256" height="256" rx="60" fill="url(#rushyGrad)" />
+  </>
+);
+
+const ShinySpeedLines: React.FC = () => (
+  <g stroke="#d946ef" strokeWidth="7" strokeLinecap="round" opacity="0.9">
+    <line x1="18" y1="96" x2="60" y2="96" />
+    <line x1="12" y1="128" x2="66" y2="128" />
+    <line x1="20" y1="160" x2="56" y2="160" />
+  </g>
+);
+
+const ShinyRunnerLimbs: React.FC = () => (
+  <>
+    <g stroke="#065f46" strokeWidth="14" strokeLinecap="round">
+      <path d="M116 158 L104 190" />
+      <path d="M150 158 L170 184" />
+    </g>
+    <ellipse cx="100" cy="194" rx="17" ry="10" fill="#d946ef" />
+    <ellipse cx="176" cy="188" rx="17" ry="10" fill="#d946ef" />
+    <path d="M96 118 L72 132" stroke="#065f46" strokeWidth="12" strokeLinecap="round" />
+    <circle cx="68" cy="134" r="9" fill="#fff" />
+    <rect x="86" y="54" width="92" height="112" rx="24" fill="#fff" />
+  </>
+);
+
+const ShinyFrontArmHigh: React.FC = () => (
+  <>
+    <path d="M172 116 L196 96" stroke="#065f46" strokeWidth="12" strokeLinecap="round" />
+    <circle cx="199" cy="93" r="9" fill="#fff" />
+  </>
+);
+
+const ShinyFaceJoyeux: React.FC = () => (
+  <>
+    <circle cx="117" cy="86" r="8.5" fill="#fff" />
+    <circle cx="149" cy="86" r="8.5" fill="#fff" />
+    <circle cx="119" cy="87" r="4.4" fill="#1e293b" />
+    <circle cx="151" cy="87" r="4.4" fill="#1e293b" />
+    <path d="M118 99 Q133 110 148 99 Z" fill="#d946ef" />
+  </>
+);
+
+const ShinyRunnerButtons: React.FC = () => (
+  <>
+    <g fill="#a7f3d0">
+      <rect x="98" y="124" width="20" height="16" rx="5" />
+      <rect x="122" y="124" width="20" height="16" rx="5" />
+      <rect x="98" y="146" width="20" height="12" rx="5" />
+      <rect x="122" y="146" width="20" height="12" rx="5" />
+    </g>
+    <rect x="146" y="124" width="20" height="34" rx="6" fill="#d946ef" />
+  </>
+);
+
+const ShinySparkle: React.FC = () => (
+  <path d="M196 56 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 z" fill="#d946ef" />
+);
+
+const ShinyJoyeuxRunner: React.FC = () => (
+  <g transform="rotate(-8 128 132)">
+    <ShinyRunnerLimbs />
+    <ShinyFrontArmHigh />
+    <RunnerScreen />
+    <ShinyFaceJoyeux />
+    <ShinyRunnerButtons />
+  </g>
+);
+
+// eslint-disable-next-line react-refresh/only-export-components
+export const SHINY_POSE_CONTENT: Record<MascotPose, React.ReactNode> = {
+  joyeux: (
+    <>
+      <ShinyIconBackground />
+      <ShinySpeedLines />
+      <ShinyJoyeuxRunner />
+      <ShinySparkle />
+    </>
+  ),
+  determine: POSE_CONTENT.determine,
+  clindoeil: POSE_CONTENT.clindoeil,
+  champion: POSE_CONTENT.champion,
+  tete: POSE_CONTENT.tete,
+};
