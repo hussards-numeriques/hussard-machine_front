@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.8.1] - 2026-06-28
+
+### Fixed
+
+- Podium: truncate long player names to one line to prevent overflow onto the title.
+
 ## [0.8.0] - 2026-06-27
 
 ### Added

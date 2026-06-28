@@ -51,7 +51,9 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
         {/* 2nd Place */}
         {sortedPlayers[1] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <div className="font-bold text-slate-600">{sortedPlayers[1].name}</div>
+            <div className="font-bold text-slate-600 w-full text-center truncate">
+              {sortedPlayers[1].name}
+            </div>
             <div className="w-full bg-slate-200 h-32 rounded-t-xl flex items-end justify-center pb-2 font-bold text-2xl text-slate-600 border-t-4 border-slate-300">
               2
             </div>
@@ -62,7 +64,9 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
         {/* 1st Place */}
         {winner && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <div className="font-bold text-amber-500 text-xl">👑 {winner.name}</div>
+            <div className="font-bold text-amber-500 text-xl w-full text-center truncate">
+              👑 {winner.name}
+            </div>
             <div className="w-full bg-secondary h-48 rounded-t-xl flex items-end justify-center pb-2 font-bold text-4xl text-yellow-900 border-t-4 border-yellow-300 shadow-[0_0_30px_rgba(251,191,36,0.4)]">
               1
             </div>
@@ -73,7 +77,9 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
         {/* 3rd Place */}
         {sortedPlayers[2] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <div className="font-bold text-slate-600">{sortedPlayers[2].name}</div>
+            <div className="font-bold text-slate-600 w-full text-center truncate">
+              {sortedPlayers[2].name}
+            </div>
             <div className="w-full bg-orange-300 h-24 rounded-t-xl flex items-end justify-center pb-2 font-bold text-2xl text-orange-900 border-t-4 border-orange-400">
               3
             </div>
