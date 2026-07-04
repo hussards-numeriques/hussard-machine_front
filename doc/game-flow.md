@@ -31,9 +31,16 @@ Class encapsulating the WebSocket connection and REST calls for game creation.
 client.connect(gameId, playerName, token?)
 // → opens ws://{host}/ws/game/{gameId}
 // → immediately sends JOIN { name, token }
+
+client.disconnect()
+// → detaches handlers and closes the socket (called by GamePage's effect cleanup)
 ```
 
 The optional JWT token links the game session to an authenticated account (for XP).
+
+Incoming messages are validated with zod (`serverMessageSchema` in `src/services/gameSchemas.ts`,
+a discriminated union on `type`); malformed messages are logged and dropped. Outgoing messages
+are typed by the `ClientMessage` union in `GameClient.ts`.
 
 ### Incoming WebSocket messages
 
@@ -106,7 +113,7 @@ interface Game {
 
 ## How to add a game flow feature
 
-1. If the backend sends a new WS message → add the `case` in `GameClient.handleMessage()`
+1. If the backend sends a new WS message → add its schema to `serverMessageSchema` (`src/services/gameSchemas.ts`) then the `case` in `GameClient.handleMessage()`
 2. If the UI must react to it → expose a callback via `setXxxCallback()` (same pattern as `setQuestionCountdownCallback`)
 3. If state must be shared between components → add it to `GameContextValue` and `GameProvider`
 4. If it's a new game state → add it to `GameState` and the `switch` in `GamePage`

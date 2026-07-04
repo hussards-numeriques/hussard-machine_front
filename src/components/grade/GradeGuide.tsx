@@ -1,60 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import type { GameConfig } from '../../types';
-
-const getApiUrl = (): string => {
-  const url = import.meta.env.VITE_API_URL ?? '';
-  return typeof url === 'string' && url.endsWith('/') ? url.slice(0, -1) : (url as string);
-};
-
-const GRADE_LABELS: Record<string, string> = {
-  BRONZE: 'Bronze',
-  SILVER: 'Argent',
-  GOLD: 'Or',
-  PLATINE: 'Platine',
-  DIAMOND: 'Diamant',
-};
-
-const GRADE_STYLES: Record<string, string> = {
-  BRONZE: 'bg-amber-100 text-amber-800 border-amber-300',
-  SILVER: 'bg-slate-100 text-slate-600 border-slate-300',
-  GOLD: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-  PLATINE: 'bg-violet-100 text-violet-700 border-violet-300',
-  DIAMOND: 'bg-cyan-100 text-cyan-700 border-cyan-300',
-};
-
-const LEVEL_LABELS: Record<string, string> = {
-  CP: 'CP',
-  CE1: 'CE1',
-  CE2: 'CE2',
-  CM1: 'CM1',
-  CM2: 'CM2',
-  SIXIEME: '6ème',
-  CINQUIEME: '5ème',
-  QUATRIEME: '4ème',
-  TROISIEME: '3ème',
-  SECONDE: 'Seconde',
-  PREMIERE: '1ère',
-  TERMINALE: 'Terminale',
-};
+import React from 'react';
+import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../../lib/grades';
+import { useGameConfig } from '../../hooks/useGameConfig';
 
 export const GradeGuide: React.FC = () => {
-  const [config, setConfig] = useState<GameConfig | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        const response = await fetch(`${getApiUrl()}/game/config`);
-        if (response.ok) {
-          const data = (await response.json()) as GameConfig;
-          setConfig(data);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    void fetchConfig();
-  }, []);
+  const { data: config, isLoading: loading } = useGameConfig();
 
   return (
     <div className="bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-8 space-y-6">
@@ -83,9 +32,9 @@ export const GradeGuide: React.FC = () => {
               {config.grades.map((grade, i) => (
                 <div
                   key={grade}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-2xl border ${GRADE_STYLES[grade] ?? 'bg-slate-100 border-slate-200'}`}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-2xl border ${resolveGradeStyle(grade)}`}
                 >
-                  <span className="font-black text-sm">{GRADE_LABELS[grade] ?? grade}</span>
+                  <span className="font-black text-sm">{resolveGradeLabel(grade)}</span>
                   <span className="text-xs opacity-70">{i * config.experience_per_grade} XP</span>
                 </div>
               ))}
@@ -104,7 +53,7 @@ export const GradeGuide: React.FC = () => {
                   key={level}
                   className="px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20"
                 >
-                  {LEVEL_LABELS[level] ?? level}
+                  {resolveLevelLabel(level)}
                 </span>
               ))}
             </div>

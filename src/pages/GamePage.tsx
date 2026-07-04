@@ -26,6 +26,9 @@ export const GamePage: React.FC = () => {
     }
     resetGame();
     client.connect(gameId, playerName, token);
+    return () => {
+      client.disconnect();
+    };
   }, [client, gameId, playerName, token, navigate, resetGame]);
 
   const handleBackHome = () => {

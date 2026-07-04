@@ -96,8 +96,13 @@ calc-rush_front/
 │   │   └── useGame.ts                # useGame() hook
 │   │
 │   ├── services/
+│   │   ├── apiConfig.ts              # Single source for API/WS base URLs (VITE_API_URL)
+│   │   ├── http.ts                   # AuthorizedFetch type + ApiError
 │   │   ├── AuthClient.ts             # Auth HTTP client (login, register, refresh token)
 │   │   ├── GameClient.ts             # Game WebSocket client (connect, submitAnswer, etc.)
+│   │   ├── gameSchemas.ts            # zod schemas for Game + WS server messages
+│   │   ├── gameConfig.ts             # GET /game/config (zod-validated)
+│   │   ├── profile.ts                # GET /me/details, POST /me/promote (zod-validated)
 │   │   ├── questionCategoryLabels.ts # Resolves question category labels
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
@@ -106,9 +111,16 @@ calc-rush_front/
 │   │       ├── preprocessing.ts      # Pure canvas-pixels → 28×28 tensor helpers
 │   │       └── preprocessing.spec.ts
 │   │
+│   ├── hooks/
+│   │   ├── useGameConfig.ts          # TanStack Query hook for /game/config
+│   │   ├── usePlayerProfile.ts       # TanStack Query hooks for profile + promotion
+│   │   └── useShinySession.ts        # Shiny mascot easter egg
+│   │
 │   └── lib/
 │       ├── utils.ts                  # cn() utility (clsx + tailwind-merge)
-│       └── useQuestionCategoryLabels.ts  # Hook to load labels from the API
+│       ├── grades.ts                 # Grade/level unions, labels, styles (single source)
+│       ├── gradeProgress.ts          # Pure XP → segmented-bar progress computation
+│       └── useQuestionCategoryLabels.ts  # TanStack Query hook to load labels from the API
 │
 ├── index.html                        # Root HTML (SEO meta, Open Graph)
 ├── CLAUDE.md                         # LLM instructions (commands, conventions)
@@ -125,10 +137,10 @@ calc-rush_front/
 
 ```
 main.tsx
-  └── App.tsx (BrowserRouter)
+  └── App.tsx (QueryClientProvider > BrowserRouter)
         ├── AppLayout (AuthProvider > GameProvider > Header)
         │     ├── HomePage      → client.createLobby() / createQuickGame() → navigate(/game/:id)
-        │     ├── ProfilePage   → authClient.authorizedFetch(/me/details)
+        │     ├── ProfilePage   → usePlayerProfile() / useGameConfig() (TanStack Query)
         │     └── ...
         └── GameLayout (GameProvider)
               └── GamePage      → client.connect(gameId) via WebSocket

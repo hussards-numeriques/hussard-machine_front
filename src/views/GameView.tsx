@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameClient } from '../services/GameClient';
-import type { Game, Question } from '../types';
+import type { Answer, Game, Player, Question } from '../types';
 import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
 import { resolveCategoryLabel } from '../services/questionCategoryLabels';
 import { AnswerInput } from '../components/AnswerInput';
@@ -63,6 +63,107 @@ const useQuestionTimer = (
   return remaining;
 };
 
+const truncateName = (name: string) => (name.length > 20 ? name.substring(0, 20) + '...' : name);
+
+const ScoreBoard: React.FC<{ players: Player[]; currentPlayerId: string | null }> = ({
+  players,
+  currentPlayerId,
+}) => {
+  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+
+  return (
+    <div className="w-full space-y-2">
+      {sortedPlayers.map((player) => {
+        const isMe = player.id === currentPlayerId;
+        return (
+          <div
+            key={player.id}
+            className={`flex items-center gap-2 text-sm rounded-xl px-2 py-1 ${
+              isMe ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500'
+            }`}
+          >
+            <span className="w-32 shrink-0 truncate">{truncateName(player.name)}</span>
+            <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ${isMe ? 'bg-primary' : 'bg-slate-400'}`}
+                style={{ width: `${Math.min((player.score / 1000) * 100, 100)}%` }}
+              />
+            </div>
+            <AnimatedScore score={player.score} />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const IntermissionCard: React.FC<{
+  game: Game;
+  playerId: string | null;
+  questionIndex: number;
+  countdown: number;
+}> = ({ game, playerId, questionIndex, countdown }) => {
+  if (playerId && computeFeedback(game, playerId, questionIndex)) {
+    return (
+      <CorrectionCard
+        game={game}
+        playerId={playerId}
+        questionIndex={questionIndex}
+        countdown={countdown}
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className="text-9xl font-black text-primary animate-pulse">{countdown}</div>
+      <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
+    </>
+  );
+};
+
+const QuestionCard: React.FC<{
+  question: Question;
+  categoryLabel: string;
+  remainingSeconds: number | null;
+  myAnswer: Answer | null;
+  onSubmit: (value: number) => void;
+}> = ({ question, categoryLabel, remainingSeconds, myAnswer, onSubmit }) => {
+  const isTimerLow = remainingSeconds !== null && remainingSeconds <= 3;
+
+  return (
+    <>
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span className="uppercase tracking-wider font-semibold text-slate-400">
+          {categoryLabel}
+        </span>
+        {remainingSeconds !== null && (
+          <span
+            className={`tabular-nums font-bold ${isTimerLow ? 'text-red-500' : 'text-slate-400'}`}
+          >
+            {remainingSeconds}s
+          </span>
+        )}
+      </div>
+
+      <div className="text-6xl font-black text-slate-800">{question.statement}</div>
+
+      {myAnswer ? (
+        <div className="space-y-2">
+          <AnswerFeedbackPop
+            key={question.id}
+            isCorrect={myAnswer.is_correct}
+            pointsEarned={myAnswer.points_earned}
+          />
+          <div className="text-sm font-semibold text-slate-400">En attente des autres joueurs…</div>
+        </div>
+      ) : (
+        <AnswerInput onSubmit={onSubmit} disabled={false} />
+      )}
+    </>
+  );
+};
+
 export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerId }) => {
   const [questionCountdown, setQuestionCountdown] = React.useState<number | null>(null);
   const [displayedQuestionIndex, setDisplayedQuestionIndex] = React.useState<number>(
@@ -112,38 +213,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
   if (!currentQuestion) return <div>Chargement...</div>;
 
-  const truncateName = (name: string) => (name.length > 20 ? name.substring(0, 20) + '...' : name);
-
-  const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
-
-  const scoreBoard = (
-    <div className="w-full space-y-2">
-      {sortedPlayers.map((player) => {
-        const isMe = player.id === currentPlayerId;
-        return (
-          <div
-            key={player.id}
-            className={`flex items-center gap-2 text-sm rounded-xl px-2 py-1 ${
-              isMe ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500'
-            }`}
-          >
-            <span className="w-32 shrink-0 truncate">{truncateName(player.name)}</span>
-            <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
-              <div
-                className={`h-full transition-all duration-500 ${isMe ? 'bg-primary' : 'bg-slate-400'}`}
-                style={{ width: `${Math.min((player.score / 1000) * 100, 100)}%` }}
-              />
-            </div>
-            <AnimatedScore score={player.score} />
-          </div>
-        );
-      })}
-    </div>
-  );
-
   const categoryLabel = resolveCategoryLabel(categoryLabels, currentQuestion.category);
-  const isTimerActive = questionCountdown === null && remainingSeconds !== null;
-  const isTimerLow = isTimerActive && remainingSeconds !== null && remainingSeconds <= 3;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
@@ -156,63 +226,27 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
       <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full space-y-8">
         <div className="bg-white p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
           {questionCountdown !== null ? (
-            currentPlayerId && computeFeedback(game, currentPlayerId, displayedQuestionIndex) ? (
-              <CorrectionCard
-                game={game}
-                playerId={currentPlayerId}
-                questionIndex={displayedQuestionIndex}
-                countdown={questionCountdown}
-              />
-            ) : (
-              <>
-                <div className="text-9xl font-black text-primary animate-pulse">
-                  {questionCountdown}
-                </div>
-                <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
-              </>
-            )
+            <IntermissionCard
+              game={game}
+              playerId={currentPlayerId}
+              questionIndex={displayedQuestionIndex}
+              countdown={questionCountdown}
+            />
           ) : (
-            <>
-              <div className="flex items-center justify-between gap-2 text-xs">
-                <span className="uppercase tracking-wider font-semibold text-slate-400">
-                  {categoryLabel}
-                </span>
-                {isTimerActive && (
-                  <span
-                    className={`tabular-nums font-bold ${isTimerLow ? 'text-red-500' : 'text-slate-400'}`}
-                  >
-                    {remainingSeconds}s
-                  </span>
-                )}
-              </div>
-
-              <div className="text-6xl font-black text-slate-800">{currentQuestion.statement}</div>
-
-              {myCurrentAnswer ? (
-                <div className="space-y-2">
-                  <AnswerFeedbackPop
-                    key={currentQuestion.id}
-                    isCorrect={myCurrentAnswer.is_correct}
-                    pointsEarned={myCurrentAnswer.points_earned}
-                  />
-                  <div className="text-sm font-semibold text-slate-400">
-                    En attente des autres joueurs…
-                  </div>
-                </div>
-              ) : (
-                <AnswerInput
-                  onSubmit={(value) => {
-                    if (hasAnswered) return;
-                    client.submitAnswer(value);
-                  }}
-                  disabled={hasAnswered}
-                />
-              )}
-            </>
+            <QuestionCard
+              question={currentQuestion}
+              categoryLabel={categoryLabel}
+              remainingSeconds={remainingSeconds}
+              myAnswer={myCurrentAnswer}
+              onSubmit={(value) => {
+                if (hasAnswered) return;
+                client.submitAnswer(value);
+              }}
+            />
           )}
         </div>
 
-        {scoreBoard}
+        <ScoreBoard players={game.players} currentPlayerId={currentPlayerId} />
       </div>
     </div>
   );

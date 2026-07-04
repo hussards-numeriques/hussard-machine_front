@@ -63,7 +63,7 @@ interface GameHistoryEntry {
 | Load profile | `GET /me/details` (authenticated)  | Full profile with history. 404 if first-time player.          |
 | Promotion    | `POST /me/promote` (authenticated) | Promotes one level if `can_promote`. Returns updated profile. |
 
-`/me/...` calls go through `authClient.authorizedFetch()` (automatic token refresh).
+Every call is defined in a `services/` module (`gameConfig.ts`, `profile.ts`), validated with a zod schema, and consumed via a TanStack Query hook (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer` in `src/hooks/`). `/me/...` calls go through `client.authorizedFetch()` (automatic token refresh) passed as the fetcher to the service function.
 
 ## Grade and level system
 
@@ -85,6 +85,6 @@ Each grade requires `experience_per_grade` XP. The XP bar is visually segmented 
 
 ## Adding a profile feature
 
-- New stat → add to `PlayerProfile` (types.ts) and in `ProfilePage` rendering
-- New badge / rank → add to the `GRADE_STYLES`, `GRADE_LABELS`, etc. maps at the top of `ProfilePage`
-- New profile action → add a button + `authClient.authorizedFetch(url, { method: 'POST' })`
+- New stat → add to `PlayerProfile` (types.ts), its zod schema (`services/gameSchemas.ts` or `services/profile.ts`) and in `ProfilePage` rendering
+- New badge / rank → add to the label/style `Record<Grade, string>` maps in `src/lib/grades.ts`
+- New profile action → add a service function in `services/profile.ts` and a `useMutation` hook in `src/hooks/usePlayerProfile.ts`

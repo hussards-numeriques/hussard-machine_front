@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
+import { renderWithQueryClient } from '../test-utils';
 import { AppLayout } from './AppLayout';
 
 const renderAt = (path: string) =>
-  render(
+  renderWithQueryClient(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route element={<AppLayout />}>

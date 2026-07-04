@@ -1,5 +1,15 @@
 # Calc Rush Front
 
+## [0.9.0] - 2026-07-05
+
+### Changed
+
+- REST data fetching migrated to TanStack Query (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer`): caching, deduplication, retries and loading/error states are no longer hand-rolled with `useEffect`/`useState`.
+- Every HTTP/WebSocket payload entering the app is now validated with a zod schema at the service boundary (`services/gameSchemas.ts`, `services/profile.ts`, `services/gameConfig.ts`); malformed WS messages are logged and dropped instead of crashing.
+- API/WS base URL resolution centralized in `services/apiConfig.ts`; grade/level labels, styles and XP-bar math centralized in `lib/grades.ts` and `lib/gradeProgress.ts` (previously duplicated inline in `ProfilePage`).
+- `GameClient.connect()` now detaches handlers and closes any previous socket via a new `disconnect()` method before opening a new one.
+- Documented the resulting conventions (discriminated unions, TanStack Query boundaries, service/zod boundary) in `CLAUDE.md` and `doc/conventions.md`.
+
 ## [0.8.1] - 2026-06-28
 
 ### Fixed

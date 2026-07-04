@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithQueryClient } from './test-utils';
 import { GameView } from './views/GameView';
 import { GameClient } from './services/GameClient';
 import type { Game } from './types';
@@ -91,7 +92,7 @@ describe('GameView - Auto-advance when all players answered', () => {
   });
 
   it('should display next question when backend auto-advances after all players answered', async () => {
-    const { rerender } = render(
+    const { rerender } = renderWithQueryClient(
       <GameView client={client} game={mockGame} currentPlayerId="player1" />
     );
 
@@ -131,7 +132,7 @@ describe('GameView - Auto-advance when all players answered', () => {
   });
 
   it('should not advance if not all players have answered', () => {
-    const { rerender } = render(
+    const { rerender } = renderWithQueryClient(
       <GameView client={client} game={mockGame} currentPlayerId="player1" />
     );
 

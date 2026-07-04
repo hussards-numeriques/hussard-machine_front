@@ -1,33 +1,16 @@
 import type { Game } from '../types';
+import { getApiUrl, getWsUrl } from './apiConfig';
+import { createdGameSchema, serverMessageSchema, type ServerMessage } from './gameSchemas';
 
 type GameUpdateCallback = (game: Game) => void;
 type ErrorCallback = (error: string) => void;
 type QuestionCountdownCallback = (seconds: number) => void;
 
-const getApiUrl = () => {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  if (apiUrl) {
-    return apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
-  }
-
-  return '';
-};
-
-const getWsUrl = (path: string) => {
-  const apiUrl = import.meta.env.VITE_API_URL;
-
-  if (apiUrl) {
-    const wsProtocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
-    const wsHost = apiUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
-
-    return `${wsProtocol}://${wsHost}${path}`;
-  }
-
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const host = window.location.host;
-
-  return `${protocol}//${host}${path}`;
-};
+type ClientMessage =
+  | { type: 'JOIN'; payload: { name: string; token: string | null } }
+  | { type: 'READY'; payload: { is_ready: boolean } }
+  | { type: 'START_GAME'; payload: Record<string, never> }
+  | { type: 'SUBMIT_ANSWER'; payload: { value: number } };
 
 export class GameClient {
   private ws: WebSocket | null = null;
@@ -55,8 +38,7 @@ export class GameClient {
     if (!response.ok) {
       throw new Error('Failed to create lobby');
     }
-    const data = await response.json();
-    return data.game_id;
+    return createdGameSchema.parse(await response.json()).game_id;
   }
 
   public async createQuickGame(): Promise<string> {
@@ -67,18 +49,22 @@ export class GameClient {
     if (!response.ok) {
       throw new Error('Failed to create quick game');
     }
-    const data = await response.json();
-    return data.game_id;
+    return createdGameSchema.parse(await response.json()).game_id;
   }
 
-  public connect(gameId: string, playerName: string, token: string | null = null) {
+  public disconnect() {
     if (this.ws) {
       this.ws.onopen = null;
       this.ws.onmessage = null;
       this.ws.onclose = null;
       this.ws.onerror = null;
       this.ws.close();
+      this.ws = null;
     }
+  }
+
+  public connect(gameId: string, playerName: string, token: string | null = null) {
+    this.disconnect();
 
     const wsUrl = getWsUrl(`/ws/game/${gameId}`);
 
@@ -86,16 +72,24 @@ export class GameClient {
 
     this.ws.onopen = () => {
       console.log('Connected to game lobby');
-      this.send('JOIN', { name: playerName, token });
+      this.send({ type: 'JOIN', payload: { name: playerName, token } });
     };
 
-    this.ws.onmessage = (event) => {
+    this.ws.onmessage = (event: MessageEvent<string>) => {
+      let data: unknown;
       try {
-        const data = JSON.parse(event.data);
-        this.handleMessage(data);
+        data = JSON.parse(event.data);
       } catch (e) {
         console.error('Failed to parse message', e);
+        return;
       }
+
+      const parsed = serverMessageSchema.safeParse(data);
+      if (!parsed.success) {
+        console.error('Unexpected message shape', parsed.error, data);
+        return;
+      }
+      this.handleMessage(parsed.data);
     };
 
     this.ws.onclose = () => {
@@ -108,47 +102,45 @@ export class GameClient {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handleMessage(data: any) {
-    switch (data.type) {
+  private handleMessage(message: ServerMessage) {
+    switch (message.type) {
       case 'PLAYER_JOINED':
-        this.playerId = data.payload.player_id;
-        this.onGameUpdate(data.payload.game);
+        this.playerId = message.payload.player_id;
+        this.onGameUpdate(message.payload.game);
         break;
       case 'GAME_UPDATE':
-        this.onGameUpdate(data.payload);
+        this.onGameUpdate(message.payload);
         break;
       case 'COUNTDOWN':
-        console.log('Countdown:', data.payload.seconds);
+        console.log('Countdown:', message.payload.seconds);
         break;
       case 'QUESTION_COUNTDOWN':
         if (this.onQuestionCountdown) {
-          this.onQuestionCountdown(data.payload.seconds);
+          this.onQuestionCountdown(message.payload.seconds);
         }
         break;
       case 'ERROR':
-        this.onError(data.payload);
+        this.onError(message.payload);
         break;
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private send(type: string, payload: any) {
+  private send(message: ClientMessage) {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type, payload }));
+      this.ws.send(JSON.stringify(message));
     }
   }
 
   public setReady(isReady: boolean) {
-    this.send('READY', { is_ready: isReady });
+    this.send({ type: 'READY', payload: { is_ready: isReady } });
   }
 
   public startGame() {
-    this.send('START_GAME', {});
+    this.send({ type: 'START_GAME', payload: {} });
   }
 
   public submitAnswer(value: number) {
-    this.send('SUBMIT_ANSWER', { value });
+    this.send({ type: 'SUBMIT_ANSWER', payload: { value } });
   }
 
   public getPlayerId() {

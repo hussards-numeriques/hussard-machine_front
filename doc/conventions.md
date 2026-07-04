@@ -2,10 +2,19 @@
 
 ## TypeScript
 
-- Strict mode enabled — no `any` (except the two places already annotated `eslint-disable` in `GameClient`)
+- Strict mode enabled — no `any`, anywhere
 - Interfaces preferred over `type` for data objects
 - Shared types in `src/types.ts`, service-local types in the service file
 - Component props are declared as a local `interface` in the component file
+- Domain enums (grades, levels, WS message types) are string-literal unions; lookups use `Record<Union, string>` so the compiler flags missing entries (see `src/lib/grades.ts`)
+
+## Server state & data fetching
+
+- REST data goes through TanStack Query (`useQuery`/`useMutation`); query hooks live in `src/hooks/` (e.g. `useGameConfig`, `usePlayerProfile`). The `QueryClient` is created in `App.tsx` (HTTP errors are not retried)
+- The real-time game flow stays on `GameClient` + `GameContext` (WebSocket push, not request/response)
+- API/WS base URLs are resolved only by `src/services/apiConfig.ts`; every endpoint is defined in a `src/services/` module — components never call `fetch` or build URLs
+- Every payload entering the app (HTTP responses, WS messages) is validated with a zod schema in the service layer; components consume already-validated types
+- Component tests that render query hooks use `renderWithQueryClient` from `src/test-utils.tsx`
 
 ## React components
 

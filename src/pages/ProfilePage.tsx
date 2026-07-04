@@ -1,51 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import type { GameConfig, GameHistoryEntry, PlayerProfile } from '../types';
-
-const getApiUrl = (): string => {
-  const url = import.meta.env.VITE_API_URL ?? '';
-  return typeof url === 'string' && url.endsWith('/') ? url.slice(0, -1) : (url as string);
-};
-
-const GRADE_STYLES: Record<string, string> = {
-  BRONZE: 'bg-amber-100 text-amber-800 border-amber-300',
-  SILVER: 'bg-slate-100 text-slate-600 border-slate-300',
-  GOLD: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-  PLATINE: 'bg-violet-100 text-violet-700 border-violet-300',
-  DIAMOND: 'bg-cyan-100 text-cyan-700 border-cyan-300',
-};
-
-const GRADE_BAR_COLORS: Record<string, string> = {
-  BRONZE: 'bg-amber-400',
-  SILVER: 'bg-slate-400',
-  GOLD: 'bg-yellow-400',
-  PLATINE: 'bg-violet-400',
-  DIAMOND: 'bg-cyan-400',
-};
-
-const GRADE_LABELS: Record<string, string> = {
-  BRONZE: 'Bronze',
-  SILVER: 'Argent',
-  GOLD: 'Or',
-  PLATINE: 'Platine',
-  DIAMOND: 'Diamant',
-};
-
-const LEVEL_LABELS: Record<string, string> = {
-  CP: 'CP',
-  CE1: 'CE1',
-  CE2: 'CE2',
-  CM1: 'CM1',
-  CM2: 'CM2',
-  SIXIEME: '6ème',
-  CINQUIEME: '5ème',
-  QUATRIEME: '4ème',
-  TROISIEME: '3ème',
-  SECONDE: 'Seconde',
-  PREMIERE: '1ère',
-  TERMINALE: 'Terminale',
-};
+import type { GameConfig, GameHistoryEntry } from '../types';
+import { ApiError } from '../services/http';
+import { useGameConfig } from '../hooks/useGameConfig';
+import { usePlayerProfile, usePromotePlayer } from '../hooks/usePlayerProfile';
+import {
+  resolveGradeBarColor,
+  resolveGradeLabel,
+  resolveGradeStyle,
+  resolveLevelLabel,
+} from '../lib/grades';
+import { computeGradeProgress } from '../lib/gradeProgress';
 
 const RANK_MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -65,9 +31,9 @@ function formatDuration(seconds: number): string {
 
 const GradeBadge: React.FC<{ grade: string }> = ({ grade }) => (
   <span
-    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${GRADE_STYLES[grade] ?? 'bg-slate-100 text-slate-600 border-slate-300'}`}
+    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${resolveGradeStyle(grade)}`}
   >
-    {GRADE_LABELS[grade] ?? grade}
+    {resolveGradeLabel(grade)}
   </span>
 );
 
@@ -76,49 +42,37 @@ const SegmentedXpBar: React.FC<{
   canPromote: boolean;
   config: GameConfig;
 }> = ({ experience, canPromote, config }) => {
-  const gradeIndex = Math.min(
-    Math.floor(experience / config.experience_per_grade),
-    config.grades.length - 1
+  const { nextGrade, xpToNextGrade, segments } = computeGradeProgress(
+    experience,
+    canPromote,
+    config
   );
-  const progressInGrade = canPromote
-    ? config.experience_per_grade
-    : experience % config.experience_per_grade;
-
-  const nextGrade = config.grades[gradeIndex + 1];
 
   return (
     <div className="space-y-2">
       <div className="flex gap-1">
-        {config.grades.map((grade, i) => (
-          <div key={grade} className="flex-1 text-center">
+        {segments.map((segment) => (
+          <div key={segment.grade} className="flex-1 text-center">
             <span
-              className={`text-xs font-bold ${i === gradeIndex ? 'text-slate-800' : 'text-slate-400'}`}
+              className={`text-xs font-bold ${segment.isCurrent ? 'text-slate-800' : 'text-slate-400'}`}
             >
-              {GRADE_LABELS[grade] ?? grade}
+              {resolveGradeLabel(segment.grade)}
             </span>
           </div>
         ))}
       </div>
       <div className="flex gap-1">
-        {config.grades.map((grade, i) => {
-          let fill = 0;
-          if (i < gradeIndex) {
-            fill = 100;
-          } else if (i === gradeIndex) {
-            fill = (progressInGrade / config.experience_per_grade) * 100;
-          }
-          return (
+        {segments.map((segment) => (
+          <div
+            key={segment.grade}
+            className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"
+          >
             <div
-              key={grade}
-              className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"
-            >
-              <div
-                className={`h-full rounded-full transition-all ${GRADE_BAR_COLORS[grade] ?? 'bg-primary'}`}
-                style={{ width: `${fill}%` }}
-              />
-            </div>
-          );
-        })}
+              className={`h-full rounded-full transition-all ${resolveGradeBarColor(segment.grade)}`}
+              style={{ width: `${segment.fillPercent}%` }}
+            />
+          </div>
+        ))}
       </div>
       <div className="flex justify-between text-xs text-slate-500">
         <span>{experience} XP</span>
@@ -128,8 +82,7 @@ const SegmentedXpBar: React.FC<{
           </span>
         ) : nextGrade != null ? (
           <span>
-            {config.experience_per_grade - progressInGrade} XP pour{' '}
-            {GRADE_LABELS[nextGrade] ?? nextGrade}
+            {xpToNextGrade} XP pour {resolveGradeLabel(nextGrade)}
           </span>
         ) : null}
       </div>
@@ -234,80 +187,45 @@ const HistoryRow: React.FC<{
   );
 };
 
+const ProfileNotice: React.FC<{ message: string }> = ({ message }) => (
+  <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
+      <h1 className="text-3xl font-black text-primary-dark">Profil</h1>
+      <p className="text-slate-600">{message}</p>
+      <Link to="/" className="inline-block text-primary font-bold hover:underline">
+        Retour à l'accueil
+      </Link>
+    </div>
+  </div>
+);
+
+const profileErrorMessage = (error: unknown): string => {
+  if (error instanceof ApiError && error.status === 404) {
+    return 'Compte introuvable. Rejoins une partie pour créer ton profil !';
+  }
+  if (error instanceof ApiError) {
+    return 'Impossible de charger ton profil.';
+  }
+  return 'Erreur réseau, réessaie plus tard.';
+};
+
 export const ProfilePage: React.FC = () => {
-  const { isAuthenticated, isLoading: authLoading, client } = useAuth();
-  const [profile, setProfile] = useState<PlayerProfile | null>(null);
-  const [config, setConfig] = useState<GameConfig | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [promoting, setPromoting] = useState(false);
-  const [promoteError, setPromoteError] = useState<string | null>(null);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { data: config } = useGameConfig();
+  const profileQuery = usePlayerProfile();
+  const promotion = usePromotePlayer();
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        const response = await fetch(`${getApiUrl()}/game/config`);
-        if (response.ok) {
-          const data = (await response.json()) as GameConfig;
-          setConfig(data);
-        }
-      } catch {
-        // config non critique, on continue sans
-      }
-    };
-    void fetchConfig();
-  }, []);
+  const profile = profileQuery.data;
+  const promoting = promotion.isPending;
+  const promoteError = promotion.isError
+    ? promotion.error instanceof ApiError
+      ? 'La promotion a échoué. Réessaie.'
+      : 'Erreur réseau.'
+    : null;
 
-  useEffect(() => {
-    if (!isAuthenticated || authLoading) return;
-
-    const fetchProfile = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await client.authorizedFetch(`${getApiUrl()}/me/details`);
-        if (response.status === 404) {
-          setError('Compte introuvable. Rejoins une partie pour créer ton profil !');
-          return;
-        }
-        if (!response.ok) {
-          setError('Impossible de charger ton profil.');
-          return;
-        }
-        const data = (await response.json()) as PlayerProfile;
-        setProfile(data);
-      } catch {
-        setError('Erreur réseau, réessaie plus tard.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchProfile();
-  }, [isAuthenticated, authLoading, client]);
-
-  const handlePromote = async () => {
-    setPromoting(true);
-    setPromoteError(null);
-    try {
-      const response = await client.authorizedFetch(`${getApiUrl()}/me/promote`, {
-        method: 'POST',
-      });
-      if (!response.ok) {
-        setPromoteError('La promotion a échoué. Réessaie.');
-        return;
-      }
-      const refreshed = await client.authorizedFetch(`${getApiUrl()}/me/details`);
-      if (refreshed.ok) {
-        const data = (await refreshed.json()) as PlayerProfile;
-        setProfile(data);
-      }
-    } catch {
-      setPromoteError('Erreur réseau.');
-    } finally {
-      setPromoting(false);
-    }
+  const handlePromote = () => {
+    promotion.mutate();
   };
 
   const toggleEntry = (id: string) => {
@@ -322,7 +240,7 @@ export const ProfilePage: React.FC = () => {
     });
   };
 
-  if (authLoading || loading) {
+  if (authLoading || profileQuery.isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-slate-400 text-lg font-bold animate-pulse">Chargement...</div>
@@ -331,35 +249,20 @@ export const ProfilePage: React.FC = () => {
   }
 
   if (!isAuthenticated) {
+    return <ProfileNotice message="Connecte-toi pour voir ton profil." />;
+  }
+
+  if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
-          <h1 className="text-3xl font-black text-primary-dark">Profil</h1>
-          <p className="text-slate-600">Connecte-toi pour voir ton profil.</p>
-          <Link to="/" className="inline-block text-primary font-bold hover:underline">
-            Retour à l'accueil
-          </Link>
-        </div>
-      </div>
+      <ProfileNotice
+        message={
+          profileQuery.isError ? profileErrorMessage(profileQuery.error) : 'Données indisponibles.'
+        }
+      />
     );
   }
 
-  if (error ?? !profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
-          <h1 className="text-3xl font-black text-primary-dark">Profil</h1>
-          <p className="text-slate-500">{error ?? 'Données indisponibles.'}</p>
-          <Link to="/" className="inline-block text-primary font-bold hover:underline">
-            Retour à l'accueil
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const gradeStyle = GRADE_STYLES[profile.grade];
-  const gradeBg = gradeStyle?.split(' ')[0] ?? 'bg-slate-100';
+  const gradeBg = resolveGradeStyle(profile.grade).split(' ')[0];
   const nextLevelKey = config ? config.levels[config.levels.indexOf(profile.level) + 1] : undefined;
 
   return (
@@ -373,7 +276,7 @@ export const ProfilePage: React.FC = () => {
             <h1 className="text-2xl font-black text-slate-800">{profile.username}</h1>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm font-bold text-slate-600 bg-white/60 px-2 py-0.5 rounded-full">
-                {LEVEL_LABELS[profile.level] ?? profile.level}
+                {resolveLevelLabel(profile.level)}
               </span>
               <GradeBadge grade={profile.grade} />
             </div>
@@ -394,13 +297,13 @@ export const ProfilePage: React.FC = () => {
           <div className="space-y-1">
             <button
               type="button"
-              onClick={() => void handlePromote()}
+              onClick={handlePromote}
               disabled={promoting}
               className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
             >
               {promoting
                 ? 'Promotion en cours...'
-                : `Monter en ${LEVEL_LABELS[nextLevelKey ?? ''] ?? nextLevelKey ?? 'niveau suivant'}`}
+                : `Monter en ${nextLevelKey != null ? resolveLevelLabel(nextLevelKey) : 'niveau suivant'}`}
             </button>
             {promoteError && <p className="text-xs text-red-500 text-center">{promoteError}</p>}
           </div>

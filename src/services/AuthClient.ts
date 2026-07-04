@@ -1,16 +1,26 @@
-export interface AuthUser {
-  id: string;
-  email: string;
-  username: string;
-  created_at: string;
-  updated_at: string;
-}
+import { z } from 'zod';
 
-export interface TokenResponse {
-  access_token: string;
-  refresh_token: string;
-  token_type: string;
-}
+const authUserSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  username: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export type AuthUser = z.infer<typeof authUserSchema>;
+
+const tokenResponseSchema = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+  token_type: z.string(),
+});
+
+export type TokenResponse = z.infer<typeof tokenResponseSchema>;
+
+const errorDetailSchema = z.object({
+  detail: z.union([z.string(), z.array(z.object({ msg: z.string() }))]),
+});
 
 export interface RegisterPayload {
   email: string;
@@ -84,7 +94,7 @@ export class AuthClient {
       throw new AuthError(response.status, await extractMessage(response));
     }
 
-    const tokens = (await response.json()) as TokenResponse;
+    const tokens = tokenResponseSchema.parse(await response.json());
     this.setTokens(tokens);
     return tokens;
   }
@@ -100,7 +110,7 @@ export class AuthClient {
       throw new AuthError(response.status, await extractMessage(response));
     }
 
-    const tokens = (await response.json()) as TokenResponse;
+    const tokens = tokenResponseSchema.parse(await response.json());
     this.setTokens(tokens);
     return tokens;
   }
@@ -125,7 +135,7 @@ export class AuthClient {
     if (!response.ok) {
       throw new AuthError(response.status, await extractMessage(response));
     }
-    return (await response.json()) as AuthUser;
+    return authUserSchema.parse(await response.json());
   }
 
   public async authorizedFetch(input: string, init: RequestInit = {}): Promise<Response> {
@@ -173,7 +183,7 @@ export class AuthClient {
           this.clearTokens();
           return null;
         }
-        const tokens = (await response.json()) as TokenResponse;
+        const tokens = tokenResponseSchema.parse(await response.json());
         this.setTokens(tokens);
         return tokens;
       } catch {
@@ -212,16 +222,18 @@ export function parseOAuthFragment(hash: string): { tokens?: TokenResponse; erro
 }
 
 async function extractMessage(response: Response): Promise<string> {
+  const fallback = `Request failed (${response.status})`;
   try {
-    const data = await response.json();
-    if (typeof data?.detail === 'string') {
-      return data.detail;
+    const parsed = errorDetailSchema.safeParse(await response.json());
+    if (!parsed.success) {
+      return fallback;
     }
-    if (Array.isArray(data?.detail) && data.detail[0]?.msg) {
-      return data.detail[0].msg;
+    const { detail } = parsed.data;
+    if (typeof detail === 'string') {
+      return detail;
     }
+    return detail[0]?.msg ?? fallback;
   } catch {
-    /* fall through */
+    return fallback;
   }
-  return `Request failed (${response.status})`;
 }

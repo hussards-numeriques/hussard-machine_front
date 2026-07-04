@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithQueryClient } from './test-utils';
 import { GameView } from './views/GameView';
 import { GameClient } from './services/GameClient';
 import type { Game } from './types';
@@ -69,7 +70,7 @@ describe('GameView - feedback', () => {
     });
 
     // When
-    render(<GameView client={client} game={answered} currentPlayerId="p1" />);
+    renderWithQueryClient(<GameView client={client} game={answered} currentPlayerId="p1" />);
 
     // Then
     expect(screen.getByText('+135')).toBeInTheDocument();

@@ -1,39 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
-import { streakRepository, type StreakResponse } from '../services/streak';
+import { streakRepository } from '../services/streak';
 import { StreakContext, type StreakContextValue } from './StreakContext';
 
 export const StreakProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { client, isAuthenticated } = useAuth();
-  const [streak, setStreak] = useState<StreakResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['streak'],
+    queryFn: () =>
+      streakRepository.fetchStreak((input, init) => client.authorizedFetch(input, init)),
+    enabled: isAuthenticated,
+  });
 
   const refresh = useCallback(async () => {
-    if (!isAuthenticated) {
-      setStreak(null);
-      setIsLoading(false);
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const data = await streakRepository.fetchStreak((input, init) =>
-        client.authorizedFetch(input, init)
-      );
-      setStreak(data);
-    } catch {
-      setStreak(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [client, isAuthenticated]);
-
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    await refetch();
+  }, [refetch]);
 
   const value: StreakContextValue = useMemo(
-    () => ({ streak, isLoading, refresh }),
-    [streak, isLoading, refresh]
+    () => ({ streak: isAuthenticated ? (data ?? null) : null, isLoading, refresh }),
+    [data, isAuthenticated, isLoading, refresh]
   );
 
   return <StreakContext.Provider value={value}>{children}</StreakContext.Provider>;

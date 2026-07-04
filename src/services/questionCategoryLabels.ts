@@ -1,27 +1,16 @@
-const getApiUrl = (): string => {
-  const url = import.meta.env.VITE_API_URL ?? '';
-  return url.endsWith('/') ? url.slice(0, -1) : url;
-};
+import { z } from 'zod';
+import { getApiUrl } from './apiConfig';
 
 export type QuestionCategoryLabels = Record<string, string>;
 
-let cachedLabelsPromise: Promise<QuestionCategoryLabels> | null = null;
+const questionCategoryLabelsSchema = z.record(z.string(), z.string());
 
-export const fetchQuestionCategoryLabels = (): Promise<QuestionCategoryLabels> => {
-  if (cachedLabelsPromise === null) {
-    cachedLabelsPromise = fetch(`${getApiUrl()}/question-categories/labels`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Failed to fetch category labels (${response.status})`);
-        }
-        return response.json() as Promise<QuestionCategoryLabels>;
-      })
-      .catch((error) => {
-        cachedLabelsPromise = null;
-        throw error;
-      });
+export const fetchQuestionCategoryLabels = async (): Promise<QuestionCategoryLabels> => {
+  const response = await fetch(`${getApiUrl()}/question-categories/labels`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch category labels (${response.status})`);
   }
-  return cachedLabelsPromise;
+  return questionCategoryLabelsSchema.parse(await response.json());
 };
 
 export const resolveCategoryLabel = (

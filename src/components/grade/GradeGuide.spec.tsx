@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { renderWithQueryClient } from '../../test-utils';
 import { GradeGuide } from './GradeGuide';
 
 const config = {
@@ -16,7 +17,7 @@ afterEach(() => {
 describe('GradeGuide', () => {
   it('renders grades and levels from the fetched config', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => config }));
-    render(<GradeGuide />);
+    renderWithQueryClient(<GradeGuide />);
     await waitFor(() => expect(screen.getByText('Bronze')).toBeInTheDocument());
     expect(screen.getByText('Diamant')).toBeInTheDocument();
     expect(screen.getByText('6ème')).toBeInTheDocument();
@@ -27,7 +28,7 @@ describe('GradeGuide', () => {
       'fetch',
       vi.fn(() => new Promise(() => {}))
     );
-    render(<GradeGuide />);
+    renderWithQueryClient(<GradeGuide />);
     expect(screen.getByText(/Chargement des seuils/i)).toBeInTheDocument();
   });
 });
