@@ -17,9 +17,9 @@ export interface ConnectToQuickGameParams {
   token?: string | null;
 }
 
-type JoinPayload =
-  | { name: string; token: string | null; game_id: string }
-  | { name: string; token: string | null; player_id: string | null };
+export type JoinPayload =
+  | { name: string; token: string | null; game_id: string; player_id?: never }
+  | { name: string; token: string | null; player_id: string | null; game_id?: never };
 
 type ClientMessage =
   | { type: 'JOIN'; payload: JoinPayload }

@@ -83,7 +83,7 @@ const ScoreBoard: React.FC<{ players: Player[]; currentPlayerId: string | null }
             key={player.id}
             className={`flex items-center gap-2 text-sm rounded-xl px-2 py-1 ${
               !player.is_connected
-                ? 'text-slate-300'
+                ? 'text-slate-400'
                 : isMe
                   ? 'bg-primary/10 text-primary font-bold'
                   : 'text-slate-500'

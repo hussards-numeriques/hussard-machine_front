@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { GameClient } from './GameClient';
+import { GameClient, type JoinPayload } from './GameClient';
 
 describe('GameClient - /ws/play protocol', () => {
   let sentMessages: string[];
@@ -112,5 +112,16 @@ describe('GameClient - /ws/play protocol', () => {
     emitPlayerJoined(ws, 'account-player-id');
     expect(client.getPlayerId()).toBe('account-player-id');
     expect(localStorage.getItem('hm_guest_player_id')).toBe('stale-guest-id');
+  });
+
+  it('type-level: JoinPayload rejects having both game_id and player_id', () => {
+    // @ts-expect-error a JOIN payload must never carry both game_id and player_id
+    const invalid: JoinPayload = {
+      name: 'Alice',
+      token: null,
+      game_id: 'ABCD',
+      player_id: 'guest-1',
+    };
+    expect(invalid).toBeDefined();
   });
 });

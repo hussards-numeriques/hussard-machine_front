@@ -33,7 +33,7 @@ export const GamePage: React.FC = () => {
     return () => {
       client.disconnect();
     };
-  }, [client, gameId, playerName, token, navigate, resetGame]);
+  }, [client, gameId, playerName, token, navigate, resetGame, location.key]);
 
   const handleBackHome = () => {
     resetGame();
