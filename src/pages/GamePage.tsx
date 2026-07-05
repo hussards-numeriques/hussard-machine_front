@@ -7,7 +7,7 @@ import { GameView } from '../views/GameView';
 import { PodiumView } from '../views/PodiumView';
 
 export const GamePage: React.FC = () => {
-  const { gameId } = useParams<{ gameId: string }>();
+  const { gameId } = useParams<{ gameId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { client, game, error, resetGame } = useGame();
@@ -20,12 +20,16 @@ export const GamePage: React.FC = () => {
   const token = locationState?.token ?? null;
 
   useEffect(() => {
-    if (!gameId || !playerName) {
+    if (!playerName) {
       navigate('/', { replace: true });
       return;
     }
     resetGame();
-    client.connect(gameId, playerName, token);
+    if (gameId) {
+      client.connectToLobby({ gameId, playerName, token });
+    } else {
+      client.connectToQuickGame({ playerName, token });
+    }
     return () => {
       client.disconnect();
     };
@@ -69,12 +73,7 @@ export const GamePage: React.FC = () => {
       return <GameView client={client} game={game} currentPlayerId={client.getPlayerId()} />;
     case GameState.FINISHED:
       return (
-        <PodiumView
-          game={game}
-          currentPlayerId={client.getPlayerId()}
-          client={client}
-          playerName={playerName}
-        />
+        <PodiumView game={game} currentPlayerId={client.getPlayerId()} playerName={playerName} />
       );
     default:
       return <div>État inconnu: {game.state}</div>;

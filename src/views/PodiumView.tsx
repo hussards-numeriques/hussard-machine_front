@@ -4,35 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { cn } from '../lib/utils';
-import { GameClient } from '../services/GameClient';
 import { useAuth } from '../contexts/useAuth';
 
 interface PodiumViewProps {
   game: Game;
   currentPlayerId: string | null;
-  client: GameClient;
   playerName: string;
 }
 
-export const PodiumView: React.FC<PodiumViewProps> = ({
-  game,
-  currentPlayerId,
-  client,
-  playerName,
-}) => {
+export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, playerName }) => {
   const navigate = useNavigate();
   const { isAuthenticated, client: authClient } = useAuth();
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
   const winner = sortedPlayers[0];
 
-  const handleReplay = async () => {
-    try {
-      const gameId = await client.createQuickGame();
-      const token = isAuthenticated ? authClient.getAccessToken() : null;
-      navigate(`/game/${gameId}`, { state: { playerName, token } });
-    } catch {
-      navigate('/');
-    }
+  const handleReplay = () => {
+    const token = isAuthenticated ? authClient.getAccessToken() : null;
+    navigate('/game', { state: { playerName, token } });
   };
 
   React.useEffect(() => {

@@ -6,15 +6,33 @@ type GameUpdateCallback = (game: Game) => void;
 type ErrorCallback = (error: string) => void;
 type QuestionCountdownCallback = (seconds: number) => void;
 
+export interface ConnectToLobbyParams {
+  gameId: string;
+  playerName: string;
+  token?: string | null;
+}
+
+export interface ConnectToQuickGameParams {
+  playerName: string;
+  token?: string | null;
+}
+
+type JoinPayload =
+  | { name: string; token: string | null; game_id: string }
+  | { name: string; token: string | null; player_id: string | null };
+
 type ClientMessage =
-  | { type: 'JOIN'; payload: { name: string; token: string | null } }
+  | { type: 'JOIN'; payload: JoinPayload }
   | { type: 'READY'; payload: { is_ready: boolean } }
   | { type: 'START_GAME'; payload: Record<string, never> }
   | { type: 'SUBMIT_ANSWER'; payload: { value: number } };
 
+const GUEST_PLAYER_ID_KEY = 'hm_guest_player_id';
+
 export class GameClient {
   private ws: WebSocket | null = null;
   private playerId: string | null = null;
+  private persistGuestId = false;
   private onGameUpdate: GameUpdateCallback;
   private onError: ErrorCallback;
   private onQuestionCountdown: QuestionCountdownCallback | null = null;
@@ -41,17 +59,6 @@ export class GameClient {
     return createdGameSchema.parse(await response.json()).game_id;
   }
 
-  public async createQuickGame(): Promise<string> {
-    const url = this.apiUrl ? `${this.apiUrl}/quick-games` : '/api/quick-games';
-    const response = await fetch(url, {
-      method: 'POST',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to create quick game');
-    }
-    return createdGameSchema.parse(await response.json()).game_id;
-  }
-
   public disconnect() {
     if (this.ws) {
       this.ws.onopen = null;
@@ -63,16 +70,27 @@ export class GameClient {
     }
   }
 
-  public connect(gameId: string, playerName: string, token: string | null = null) {
+  public connectToLobby({ gameId, playerName, token = null }: ConnectToLobbyParams) {
+    this.persistGuestId = false;
+    this.openSocket({ name: playerName, token, game_id: gameId });
+  }
+
+  public connectToQuickGame({ playerName, token = null }: ConnectToQuickGameParams) {
+    this.persistGuestId = token === null;
+    const playerId = token === null ? localStorage.getItem(GUEST_PLAYER_ID_KEY) : null;
+    this.openSocket({ name: playerName, token, player_id: playerId });
+  }
+
+  private openSocket(joinPayload: JoinPayload) {
     this.disconnect();
 
-    const wsUrl = getWsUrl(`/ws/game/${gameId}`);
+    const wsUrl = getWsUrl('/ws/play');
 
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = () => {
-      console.log('Connected to game lobby');
-      this.send({ type: 'JOIN', payload: { name: playerName, token } });
+      console.log('Connected to /ws/play');
+      this.send({ type: 'JOIN', payload: joinPayload });
     };
 
     this.ws.onmessage = (event: MessageEvent<string>) => {
@@ -106,6 +124,9 @@ export class GameClient {
     switch (message.type) {
       case 'PLAYER_JOINED':
         this.playerId = message.payload.player_id;
+        if (this.persistGuestId) {
+          localStorage.setItem(GUEST_PLAYER_ID_KEY, message.payload.player_id);
+        }
         this.onGameUpdate(message.payload.game);
         break;
       case 'GAME_UPDATE':

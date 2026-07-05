@@ -82,7 +82,7 @@ describe('GameView - Auto-advance when all players answered', () => {
       start_time_current_question: Date.now() / 1000,
     };
 
-    client.connect('TEST1', 'Player 1');
+    client.connectToLobby({ gameId: 'TEST1', playerName: 'Player 1' });
     if (mockWebSocket.onopen) {
       mockWebSocket.onopen({} as Event);
     }

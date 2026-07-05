@@ -37,7 +37,7 @@ function App() {
             <Route path="auth/callback" element={<OAuthCallbackPage />} />
           </Route>
           <Route element={<GameLayout />}>
-            <Route path="game/:gameId" element={<GamePage />} />
+            <Route path="game/:gameId?" element={<GamePage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

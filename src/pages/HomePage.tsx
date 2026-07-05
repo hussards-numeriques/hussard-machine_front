@@ -42,14 +42,10 @@ export const HomePage: React.FC = () => {
     }
   };
 
-  const handleQuickGame = async () => {
+  const handleQuickGame = () => {
     if (!requireName()) return;
-    try {
-      const gameId = await client.createQuickGame();
-      goToGame(gameId, effectiveName);
-    } catch {
-      setError('Erreur lors de la création de la partie rapide');
-    }
+    const token = isAuthenticated ? authClient.getAccessToken() : null;
+    navigate('/game', { state: { playerName: effectiveName, token } });
   };
 
   const handleJoin = () => {

@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { PodiumView } from './views/PodiumView';
 import type { Game } from './types';
 import { GameState } from './types';
-import type { GameClient } from './services/GameClient';
 
 vi.mock('./contexts/useAuth', () => ({
   useAuth: () => ({
@@ -20,16 +19,11 @@ vi.mock('./contexts/useAuth', () => ({
 
 describe('PodiumView - Display final scores when game is finished', () => {
   let finishedGame: Game;
-  let mockClient: GameClient;
 
   beforeEach(() => {
     vi.mock('canvas-confetti', () => ({
       default: vi.fn(),
     }));
-
-    mockClient = {
-      createQuickGame: vi.fn().mockResolvedValue('NEW_GAME_ID'),
-    } as unknown as GameClient;
 
     finishedGame = {
       id: 'TEST1',
@@ -76,12 +70,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
   it('should display PodiumView when game state is FINISHED', () => {
     render(
       <MemoryRouter>
-        <PodiumView
-          game={finishedGame}
-          currentPlayerId="player1"
-          client={mockClient}
-          playerName="Player 1"
-        />
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
       </MemoryRouter>
     );
 
@@ -99,12 +88,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
   it('should display players sorted by score in descending order in ranking', () => {
     render(
       <MemoryRouter>
-        <PodiumView
-          game={finishedGame}
-          currentPlayerId="player1"
-          client={mockClient}
-          playerName="Player 1"
-        />
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
       </MemoryRouter>
     );
 
@@ -121,12 +105,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
   it('should display winner with crown emoji', () => {
     render(
       <MemoryRouter>
-        <PodiumView
-          game={finishedGame}
-          currentPlayerId="player1"
-          client={mockClient}
-          playerName="Player 1"
-        />
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
       </MemoryRouter>
     );
 
@@ -136,12 +115,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
   it('should display all player scores correctly', () => {
     render(
       <MemoryRouter>
-        <PodiumView
-          game={finishedGame}
-          currentPlayerId="player1"
-          client={mockClient}
-          playerName="Player 1"
-        />
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
       </MemoryRouter>
     );
 
