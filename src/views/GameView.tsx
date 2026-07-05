@@ -75,14 +75,21 @@ const ScoreBoard: React.FC<{ players: Player[]; currentPlayerId: string | null }
     <div className="w-full space-y-2">
       {sortedPlayers.map((player) => {
         const isMe = player.id === currentPlayerId;
+        const displayName = player.is_connected
+          ? truncateName(player.name)
+          : `${truncateName(player.name)} (déconnecté)`;
         return (
           <div
             key={player.id}
             className={`flex items-center gap-2 text-sm rounded-xl px-2 py-1 ${
-              isMe ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500'
+              !player.is_connected
+                ? 'text-slate-300'
+                : isMe
+                  ? 'bg-primary/10 text-primary font-bold'
+                  : 'text-slate-500'
             }`}
           >
-            <span className="w-32 shrink-0 truncate">{truncateName(player.name)}</span>
+            <span className="w-32 shrink-0 truncate">{displayName}</span>
             <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
               <div
                 className={`h-full transition-all duration-500 ${isMe ? 'bg-primary' : 'bg-slate-400'}`}
