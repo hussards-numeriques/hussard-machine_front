@@ -53,9 +53,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
               key={player.id}
               className={cn(
                 'flex items-center gap-4 p-4 rounded-xl border-2 transition-all',
-                player.is_ready
-                  ? 'border-emerald-200 bg-emerald-50'
-                  : 'border-slate-100 bg-slate-50'
+                !player.is_connected
+                  ? 'border-slate-100 bg-slate-50 opacity-50'
+                  : player.is_ready
+                    ? 'border-emerald-200 bg-emerald-50'
+                    : 'border-slate-100 bg-slate-50'
               )}
             >
               <div
@@ -68,9 +70,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
               </div>
               <div className="flex-1">
                 <div className="font-bold text-slate-800">{player.name}</div>
-                <div className="text-xs text-slate-500">{player.is_bot ? 'Robot' : 'Humain'}</div>
+                <div className="text-xs text-slate-500">
+                  {!player.is_connected ? 'Déconnecté' : player.is_bot ? 'Robot' : 'Humain'}
+                </div>
               </div>
-              {player.is_ready && (
+              {player.is_connected && player.is_ready && (
                 <div className="text-emerald-500">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
