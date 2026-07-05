@@ -66,7 +66,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
       ],
       current_question_index: 2,
       answers: [],
-      start_time_current_question: undefined,
+      start_time_current_question: null,
     };
   });
 

@@ -86,6 +86,6 @@ export interface Game {
   questions: Question[];
   current_question_index: number;
   answers: Answer[];
-  start_time_current_question?: number;
+  start_time_current_question: number | null;
   is_quick_game?: boolean;
 }

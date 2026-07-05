@@ -35,8 +35,8 @@ const logQuestionSkipWarning = (fromIndex: number, toIndex: number) => {
   );
 };
 
-const computeRemainingSeconds = (question: Question, startTime: number | undefined): number => {
-  if (startTime === undefined) return question.time_limit_seconds;
+const computeRemainingSeconds = (question: Question, startTime: number | null): number => {
+  if (startTime === null) return question.time_limit_seconds;
   const elapsed = Date.now() / 1000 - startTime;
   const remaining = question.time_limit_seconds - elapsed;
   return Math.max(0, Math.ceil(remaining));
@@ -44,7 +44,7 @@ const computeRemainingSeconds = (question: Question, startTime: number | undefin
 
 const useQuestionTimer = (
   question: Question | undefined,
-  startTime: number | undefined
+  startTime: number | null
 ): number | null => {
   const [remaining, setRemaining] = React.useState<number | null>(null);
 

@@ -19,6 +19,7 @@ const baseGame = (): Game => ({
   ],
   current_question_index: 2,
   answers: [],
+  start_time_current_question: null,
 });
 
 describe('computeFeedback', () => {

@@ -40,7 +40,7 @@ export const gameSchema = z.object({
   questions: z.array(questionSchema),
   current_question_index: z.number(),
   answers: z.array(answerSchema),
-  start_time_current_question: z.number().optional(),
+  start_time_current_question: z.number().nullable(),
   is_quick_game: z.boolean().optional(),
 }) satisfies z.ZodType<Game>;
 

@@ -18,6 +18,7 @@ const game = (answers: Game['answers']): Game => ({
   ],
   current_question_index: 0,
   answers,
+  start_time_current_question: null,
 });
 
 describe('CorrectionCard', () => {
