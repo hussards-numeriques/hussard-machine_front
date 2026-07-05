@@ -8,6 +8,7 @@ export interface Player {
   name: string;
   is_bot: boolean;
   is_ready: boolean;
+  is_connected: boolean;
   score: number;
   bot_config: BotConfig | null;
 }

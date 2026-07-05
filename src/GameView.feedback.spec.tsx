@@ -34,7 +34,17 @@ describe('GameView - feedback', () => {
   const game = (overrides: Partial<Game>): Game => ({
     id: 'G1',
     state: 'IN_PROGRESS',
-    players: [{ id: 'p1', name: 'Me', is_bot: false, is_ready: true, score: 0, bot_config: null }],
+    players: [
+      {
+        id: 'p1',
+        name: 'Me',
+        is_bot: false,
+        is_ready: true,
+        is_connected: true,
+        score: 0,
+        bot_config: null,
+      },
+    ],
     questions: [
       {
         id: 'q1',
@@ -55,7 +65,15 @@ describe('GameView - feedback', () => {
     // Given
     const answered = game({
       players: [
-        { id: 'p1', name: 'Me', is_bot: false, is_ready: true, score: 135, bot_config: null },
+        {
+          id: 'p1',
+          name: 'Me',
+          is_bot: false,
+          is_ready: true,
+          is_connected: true,
+          score: 135,
+          bot_config: null,
+        },
       ],
       answers: [
         {

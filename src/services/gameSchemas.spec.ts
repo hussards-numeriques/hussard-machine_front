@@ -13,6 +13,7 @@ const backendGamePayload = {
       bot_config: null,
       player_account_id: null,
       is_bot: false,
+      is_connected: true,
     },
   ],
   questions: [],

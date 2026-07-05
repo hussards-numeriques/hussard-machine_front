@@ -12,6 +12,7 @@ const playerSchema = z.object({
   name: z.string(),
   is_bot: z.boolean(),
   is_ready: z.boolean(),
+  is_connected: z.boolean(),
   score: z.number(),
   bot_config: botConfigSchema.nullable(),
 }) satisfies z.ZodType<Player>;
