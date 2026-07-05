@@ -1,5 +1,20 @@
 # Calc Rush Front
 
+## [0.10.0] - 2026-07-05
+
+### Changed
+
+- Migrated to the backend's unique `WS /ws/play` endpoint, replacing the per-game `WS /ws/game/{game_id}`. `GameClient.connect()` is replaced by two strictly-typed entry points: `connectToLobby({ gameId, playerName, token })` (private lobby by code — the only path that ever sends `game_id`) and `connectToQuickGame({ playerName, token })` (quick game / resume — the only path that ever sends `player_id`). The two are mutually exclusive at the type level (`JoinPayload` discriminated union in `GameClient.ts`).
+- `POST /quick-games` is removed; quick games are now created/resumed entirely through the `JOIN` WebSocket message. `HomePage`'s "Partie Rapide" and `PodiumView`'s "Rejouer" now navigate straight to `/game` (no id) instead of calling REST first.
+- The game route is now `game/:gameId?` (optional): a private lobby keeps its code in the URL, a quick game/resume has none — `GamePage` picks the right `connect*` method based on whether `gameId` is present.
+- Guest players are recognized across reconnects via a `player_id` persisted in `localStorage` (`hm_guest_player_id`); authenticated players are recognized via their `token` alone and never touch this storage.
+- `Player.is_connected` (new field, reflecting real-time connection status even mid-game) is now displayed: `LobbyView` and `GameView`'s scoreboard grey out disconnected players instead of assuming they vanished.
+
+### Fixed
+
+- `GameView`: accept an explicit `null` for `start_time_current_question` (the backend sends `null`, not omission, while a question hasn't started).
+- `GamePage`'s connect effect now also depends on `location.key`, so "Rejouer" after a quick game (which reuses the `/game` path) actually reconnects instead of silently doing nothing.
+
 ## [0.9.0] - 2026-07-05
 
 ### Changed

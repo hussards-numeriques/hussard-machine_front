@@ -13,7 +13,7 @@ BrowserRouter
 │   ├── /legal-notice → LegalNoticePage
 │   └── /privacy-policy → PrivacyPolicyPage
 └── GameLayout      (GameProvider)
-    └── /game/:gameId → GamePage
+    └── /game/:gameId? → GamePage   (gameId optional — see below)
 ```
 
 ## AppLayout (src/layouts/AppLayout.tsx)
@@ -48,20 +48,26 @@ switch (game.state) {
 
 ### Accessing the game page
 
-Navigation to `/game/:gameId` **must** go through `navigate()` with a state:
+Navigation to the game route **must** go through `navigate()` with a state:
 
 ```typescript
-navigate(`/game/${gameId}`, {
-  state: { playerName: string, token: string | null },
-});
+navigate(`/game/${gameId}`, { state: { playerName: string, token: string | null } }); // private lobby by code
+navigate('/game', { state: { playerName: string, token: string | null } }); // quick game / resume
 ```
 
-If `playerName` is absent from the state, `GamePage` redirects to `/`.
+If `playerName` is absent from the state, `GamePage` redirects to `/`. `gameId` (from the URL) is
+what `GamePage` uses to decide which `GameClient` method to call — see
+[game-flow.md](game-flow.md#websocket-connection): present → `connectToLobby`, absent →
+`connectToQuickGame`. The connect effect also depends on `location.key` so that navigating to the
+same path again (e.g. "Rejouer" after a quick game, which reuses `/game` with no id) still
+triggers a fresh connect — without it, React sees no changed dependency and skips the effect.
 
 ## Navigation between pages
 
-- `HomePage` → creates a game → `navigate('/game/:id', { state })`
-- `PodiumView` → play again → creates a quickGame → `navigate('/game/:id', { state })`
+- `HomePage` → "Créer un salon" → `createLobby()` (REST) → `navigate('/game/:id', { state })`
+- `HomePage` → "Rejoindre un salon" → `navigate('/game/:code', { state })` (code typed by the user, not created via REST)
+- `HomePage` → "Partie Rapide" → `navigate('/game', { state })` (no REST call, no id — the backend picks the game on `JOIN`)
+- `PodiumView` → "Rejouer" → `navigate('/game', { state })` (same as quick game — always resumes/creates via `JOIN`, never reuses the finished game's id)
 - `PodiumView` → back → `navigate('/')`
 - `Header` → `← Home` link on all pages except `/`
 

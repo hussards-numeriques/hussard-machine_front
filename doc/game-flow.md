@@ -20,21 +20,44 @@ Class encapsulating the WebSocket connection and REST calls for game creation.
 
 ### REST calls
 
-| Method              | Endpoint                | Description                                    |
-| ------------------- | ----------------------- | ---------------------------------------------- |
-| `createLobby()`     | `POST /api/lobbies`     | Creates a multiplayer lobby, returns `game_id` |
-| `createQuickGame()` | `POST /api/quick-games` | Creates a quick game (bots), returns `game_id` |
+| Method          | Endpoint            | Description                                                            |
+| --------------- | ------------------- | ---------------------------------------------------------------------- |
+| `createLobby()` | `POST /api/lobbies` | Creates a private multiplayer lobby, returns `game_id` (the join code) |
+
+There is no REST call to start a quick game — it's created (or resumed) entirely through the
+`JOIN` WebSocket message below.
 
 ### WebSocket connection
 
+All game traffic goes through a single, unique endpoint: `ws://{host}/ws/play`. Which game a
+player ends up in is decided by which `connect*` method is called and what it sends in `JOIN`,
+never by the URL:
+
 ```typescript
-client.connect(gameId, playerName, token?)
-// → opens ws://{host}/ws/game/{gameId}
-// → immediately sends JOIN { name, token }
+client.connectToLobby({ gameId, playerName, token? })
+// → opens ws://{host}/ws/play, sends JOIN { name, token, game_id: gameId }
+// → used only to join a private lobby by its code, for the very first time joining it
+
+client.connectToQuickGame({ playerName, token? })
+// → opens ws://{host}/ws/play, sends JOIN { name, token, player_id }
+// → used for quick games and for resuming ANY unfinished game (quick or private lobby):
+//   the backend picks the player's non-finished game if any, else a WAITING quick game,
+//   else creates a new quick game. Never send game_id here.
 
 client.disconnect()
 // → detaches handlers and closes the socket (called by GamePage's effect cleanup)
 ```
+
+`game_id` and `player_id` are mutually exclusive on the wire (enforced by the `JoinPayload`
+discriminated union in `GameClient.ts`) — a `JOIN` never carries both.
+
+`player_id` matters only for guests (no `token`): `GameClient` reads it from `localStorage`
+(`hm_guest_player_id`) before sending `connectToQuickGame`, and persists whatever value comes back
+in the next `PLAYER_JOINED` — this is how the backend recognizes a returning guest across
+reconnects. Authenticated players are recognized via `token` alone; `GameClient` never reads or
+writes the guest `player_id` when a `token` is present. The in-memory player id used by
+`getPlayerId()` (see below) is unrelated to this persistence and is always updated on
+`PLAYER_JOINED`, guest or not.
 
 The optional JWT token links the game session to an authenticated account (for XP).
 
@@ -94,7 +117,8 @@ The `onQuestionCountdown` callback is optional, set/unset by `GameView` via `set
 }
 ```
 
-`resetGame()` is called by `GamePage` on each navigation to `/game/:id` to start from a clean state.
+`resetGame()` is called by `GamePage` on each navigation to the game route (`/game/:gameId` for a
+private lobby by code, or `/game` for a quick game / resume) to start from a clean state.
 
 ## Game type (src/types.ts)
 
@@ -110,6 +134,15 @@ interface Game {
   is_quick_game?: boolean;
 }
 ```
+
+## Player connection status
+
+`Player.is_connected` (`src/types.ts`) reflects real-time connection state, including mid-game —
+a socket drop during `COUNTDOWN`/`IN_PROGRESS`/`FINISHED` does **not** remove the player from
+`game.players` (score preserved, reconnect via `connectToQuickGame` restores `is_connected: true`).
+`LobbyView` and `GameView`'s scoreboard both grey out disconnected players instead of assuming
+they vanished. The only case where a disconnected player is actually removed from the list is a
+lobby still in `WAITING` state — that's done backend-side, no front handling needed.
 
 ## How to add a game flow feature
 
