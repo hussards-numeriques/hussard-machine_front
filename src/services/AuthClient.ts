@@ -182,6 +182,10 @@ export class AuthClient {
     return fetch(input, { ...init, headers: retryHeaders });
   }
 
+  public async refreshSession(): Promise<TokenResponse | null> {
+    return this.tryRefresh();
+  }
+
   private refreshInFlight: Promise<TokenResponse | null> | null = null;
 
   private async tryRefresh(): Promise<TokenResponse | null> {
@@ -201,7 +205,9 @@ export class AuthClient {
           headers: { Authorization: `Bearer ${refreshToken}` },
         });
         if (!response.ok) {
-          this.clearTokens();
+          if (response.status === 401) {
+            return this.recoverFromLostRefreshRace(refreshToken);
+          }
           return null;
         }
         const tokens = tokenResponseSchema.parse(await response.json());
@@ -215,6 +221,20 @@ export class AuthClient {
     })();
 
     return this.refreshInFlight;
+  }
+
+  private recoverFromLostRefreshRace(usedRefreshToken: string): TokenResponse | null {
+    const storedRefreshToken = this.getRefreshToken();
+    const storedAccessToken = this.getAccessToken();
+    if (storedRefreshToken && storedAccessToken && storedRefreshToken !== usedRefreshToken) {
+      return {
+        access_token: storedAccessToken,
+        refresh_token: storedRefreshToken,
+        token_type: 'bearer',
+      };
+    }
+    this.clearTokens();
+    return null;
   }
 }
 
