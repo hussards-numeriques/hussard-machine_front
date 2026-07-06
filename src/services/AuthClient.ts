@@ -35,6 +35,7 @@ export interface LoginPayload {
 
 const ACCESS_TOKEN_KEY = 'hm_access_token';
 const REFRESH_TOKEN_KEY = 'hm_refresh_token';
+const CACHED_USER_KEY = 'hm_auth_user';
 
 const getBaseUrl = (): string => {
   const url = import.meta.env.VITE_FASTAUTH_URL ?? 'http://localhost:8000';
@@ -70,9 +71,27 @@ export class AuthClient {
     localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh_token);
   }
 
+  public getCachedUser(): AuthUser | null {
+    const raw = localStorage.getItem(CACHED_USER_KEY);
+    if (!raw) {
+      return null;
+    }
+    try {
+      const parsed = authUserSchema.safeParse(JSON.parse(raw));
+      return parsed.success ? parsed.data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  public setCachedUser(user: AuthUser): void {
+    localStorage.setItem(CACHED_USER_KEY, JSON.stringify(user));
+  }
+
   public clearTokens(): void {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(CACHED_USER_KEY);
   }
 
   public loginWithGoogle(): void {
@@ -135,7 +154,9 @@ export class AuthClient {
     if (!response.ok) {
       throw new AuthError(response.status, await extractMessage(response));
     }
-    return authUserSchema.parse(await response.json());
+    const user = authUserSchema.parse(await response.json());
+    this.setCachedUser(user);
+    return user;
   }
 
   public async authorizedFetch(input: string, init: RequestInit = {}): Promise<Response> {
