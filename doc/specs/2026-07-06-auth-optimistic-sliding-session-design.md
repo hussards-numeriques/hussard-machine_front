@@ -97,3 +97,4 @@ async     : refreshSession() → rotation, expiration J+7
 - Refresh périodique pendant qu'un onglet reste ouvert plusieurs jours (le
   refresh sur 401 existant couvre ce cas).
 - Tokens OAuth dans le fragment d'URL (faiblesse connue, chantier backend).
+- Course multi-onglets résiduelle : la récupération de `recoverFromLostRefreshRace` suppose que l'onglet gagnant a déjà écrit ses tokens dans le localStorage quand le 401 du perdant arrive. Deux rechargements strictement simultanés peuvent encore déconnecter les deux onglets (auto-réparé à la connexion suivante). Le refresh proactif à chaque chargement augmente la probabilité de cette course par rapport à l'ancien comportement ; durcissement possible plus tard via BroadcastChannel/événements `storage`.

@@ -65,6 +65,7 @@ A lock (`refreshInFlight`) prevents parallel refresh calls.
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
+  reloadUser: () => Promise<void>;
 }
 ```
 
