@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- No more guest flash on load for logged-in players: `AuthProvider` now renders optimistically from a cached profile (`hm_auth_user`, zod-validated) and validates the session in the background.
+- Sliding 7-day session: the app proactively calls `/auth/refresh` on every load (token rotation resets the 7-day expiry), so regular players stay logged in indefinitely.
+- Logout-on-error is now reserved for confirmed 401s: network failures or fastauth downtime no longer clear tokens. A refresh that loses a multi-tab rotation race adopts the winning tab's tokens instead of logging everyone out.
+
 ## [0.10.0] - 2026-07-05
 
 ### Changed

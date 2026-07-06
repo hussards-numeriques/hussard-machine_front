@@ -10,10 +10,11 @@ HTTP client for the FastAuth service (`VITE_FASTAUTH_URL`).
 
 Tokens are stored in `localStorage`:
 
-| Key                | Content                     |
-| ------------------ | --------------------------- |
-| `hm_access_token`  | Access JWT (short lifetime) |
-| `hm_refresh_token` | Refresh JWT                 |
+| Key                | Content                                           |
+| ------------------ | ------------------------------------------------- |
+| `hm_access_token`  | Access JWT (short lifetime)                       |
+| `hm_refresh_token` | Refresh JWT                                       |
+| `hm_auth_user`     | Cached `AuthUser` profile (zod-validated on read) |
 
 ### Public methods
 
@@ -25,7 +26,10 @@ Tokens are stored in `localStorage`:
 | `fetchMe()`                   | `GET /api/v1/auth/me`        | Returns `AuthUser`.                                                                     |
 | `authorizedFetch(url, init?)` | —                            | `fetch` with `Authorization: Bearer <token>` header. Automatic retry after 401 refresh. |
 | `getAccessToken()`            | —                            | Reads from localStorage.                                                                |
-| `clearTokens()`               | —                            | Removes both localStorage keys.                                                         |
+| `clearTokens()`               | —                            | Removes the three localStorage keys (tokens + cached profile).                          |
+| `refreshSession()`            | `GET /api/v1/auth/refresh`   | Proactive refresh (token rotation). Returns new tokens or `null`.                       |
+| `getCachedUser()`             | —                            | Reads the cached profile from localStorage (`null` if absent or invalid).               |
+| `setCachedUser(user)`         | —                            | Writes the profile cache. Called automatically by `fetchMe()`.                          |
 
 ### Refresh token
 
@@ -34,7 +38,7 @@ Tokens are stored in `localStorage`:
 1. Initial request with access token
 2. If 401 → calls `GET /api/v1/auth/refresh` with the refresh token
 3. If success → retries the initial request with the new token
-4. If refresh fails → `clearTokens()`, returns the 401 response
+4. If refresh fails with a 401 → `clearTokens()` — unless another tab already rotated the tokens (the refresh token in localStorage changed), in which case the other tab's tokens are adopted. Non-401 failures (network, 5xx) never clear tokens.
 
 A lock (`refreshInFlight`) prevents parallel refresh calls.
 
@@ -66,11 +70,11 @@ A lock (`refreshInFlight`) prevents parallel refresh calls.
 
 ### Hydration on startup
 
-`AuthProvider` attempts to fetch the profile on mount:
+`AuthProvider` renders optimistically, then validates in the background:
 
-1. If no access token in localStorage → `isLoading = false`, `user = null`
-2. If token present → `fetchMe()` to hydrate `user`
-3. If `fetchMe()` fails (expired/invalid token) → `clearTokens()`, `user = null`
+1. Synchronous init: if a refresh token exists, `user` starts from the cached profile (`hm_auth_user`) — the UI renders logged-in on first paint, no guest flash. `isLoading` is only `true` when tokens exist without a cached profile.
+2. On mount: `refreshSession()` (rotation → the 7-day expiry slides forward on every visit) then `fetchMe()` to refresh `user` and the cache.
+3. Downgrade to guest **only** on a confirmed 401 (`clearTokens()` + `user = null`). Network errors keep the optimistic state.
 
 ### Placement in the React tree
 
