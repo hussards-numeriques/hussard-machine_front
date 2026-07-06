@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AuthClient,
+  AuthError,
   type AuthUser,
   type LoginPayload,
   type RegisterPayload,
@@ -9,24 +10,34 @@ import { AuthContext, type AuthContextValue } from './AuthContext';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const client = useMemo(() => new AuthClient(), []);
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<AuthUser | null>(() =>
+    client.getRefreshToken() ? client.getCachedUser() : null
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    () => client.getRefreshToken() !== null && client.getCachedUser() === null
+  );
 
   useEffect(() => {
     let cancelled = false;
 
     const hydrate = async () => {
-      if (!client.getAccessToken()) {
+      if (!client.getRefreshToken()) {
         setIsLoading(false);
         return;
       }
       try {
+        await client.refreshSession();
         const me = await client.fetchMe();
         if (!cancelled) {
           setUser(me);
         }
-      } catch {
-        client.clearTokens();
+      } catch (error) {
+        if (error instanceof AuthError && error.status === 401) {
+          client.clearTokens();
+          if (!cancelled) {
+            setUser(null);
+          }
+        }
       } finally {
         if (!cancelled) {
           setIsLoading(false);
