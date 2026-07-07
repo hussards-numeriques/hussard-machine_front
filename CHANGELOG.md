@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.11.1] - 2026-07-07
+
+### Added
+
+- Lobby: a "Quitter" button lets a player leave the waiting room and return home. It appears only while the player is not ready (a ready player must first click "Je ne suis plus prêt"), sits next to "Je suis prêt !", and returns to the home screen with no confirmation. Leaving closes the WebSocket via `GamePage`'s existing cleanup; no dedicated leave message is sent.
+
 ## [0.11.0] - 2026-07-07
 
 ### Changed

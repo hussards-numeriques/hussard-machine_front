@@ -68,7 +68,14 @@ export const GamePage: React.FC = () => {
   switch (game.state) {
     case GameState.WAITING:
     case GameState.COUNTDOWN:
-      return <LobbyView client={client} game={game} currentPlayerId={client.getPlayerId()} />;
+      return (
+        <LobbyView
+          client={client}
+          game={game}
+          currentPlayerId={client.getPlayerId()}
+          onLeave={handleBackHome}
+        />
+      );
     case GameState.IN_PROGRESS:
       return <GameView client={client} game={game} currentPlayerId={client.getPlayerId()} />;
     case GameState.FINISHED:

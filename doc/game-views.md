@@ -17,6 +17,7 @@ Displays the player list and action buttons.
   - `canStart` = `game.players.length >= 1 && game.players.every(p => p.is_ready)`
   - Quick games start automatically server-side
 - **Countdown**: when `game.state === 'COUNTDOWN'`, the "Starting..." text animates
+- **Quitter**: shown only while `!isReady`; calls `onLeave` (wired to `GamePage.handleBackHome`) to return to the home screen. A ready player must first click "Je ne suis plus prêt" to reveal it.
 
 ### Props
 
@@ -25,6 +26,7 @@ Displays the player list and action buttons.
   client: GameClient;
   game: Game;
   currentPlayerId: string | null;
+  onLeave: () => void;
 }
 ```
 

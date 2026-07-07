@@ -8,9 +8,10 @@ interface LobbyViewProps {
   client: GameClient;
   game: Game;
   currentPlayerId: string | null;
+  onLeave: () => void;
 }
 
-export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlayerId }) => {
+export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlayerId, onLeave }) => {
   const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
   const isReady = currentPlayer?.is_ready;
 
@@ -92,6 +93,12 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
       </div>
 
       <div className="fixed bottom-8 left-0 right-0 px-4 flex justify-center gap-4">
+        {!isReady && (
+          <Button size="lg" variant="secondary" onClick={onLeave} className="shadow-xl">
+            Quitter
+          </Button>
+        )}
+
         <Button
           size="lg"
           variant={isReady ? 'secondary' : 'primary'}
