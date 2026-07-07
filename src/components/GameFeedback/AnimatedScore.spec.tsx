@@ -21,6 +21,6 @@ describe('AnimatedScore', () => {
     });
 
     // Then
-    expect(screen.getByText('135 pts').className).toContain('animate-combo-grow');
+    expect(screen.getByText('135 pts').className).toContain('animate-score-pulse');
   });
 });

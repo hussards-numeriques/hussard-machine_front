@@ -22,7 +22,7 @@ const game = (answers: Game['answers']): Game => ({
 });
 
 describe('CorrectionCard', () => {
-  it('shows the given answer in success state with the earned points', () => {
+  it('shows the statement and earned points without the answer value in success state', () => {
     // Given
     const g = game([
       {
@@ -40,8 +40,9 @@ describe('CorrectionCard', () => {
 
     // Then
     expect(screen.getByText('Bonne réponse')).toBeInTheDocument();
-    expect(screen.getByText('56')).toBeInTheDocument();
+    expect(screen.getByText('7 x 8')).toBeInTheDocument();
     expect(screen.getByText('+135')).toBeInTheDocument();
+    expect(screen.queryByText('56')).not.toBeInTheDocument();
   });
 
   it('shows the wrong given answer and the expected answer on failure', () => {

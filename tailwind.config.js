@@ -21,7 +21,7 @@ export default {
         'bounce-short': 'bounce 0.5s infinite',
         'pop-in': 'pop-in 0.4s ease-out',
         shake: 'shake 0.4s ease-in-out',
-        'combo-grow': 'combo-grow 0.4s ease-out',
+        'score-pulse': 'score-pulse 0.4s ease-out',
         'flame-flicker': 'flame-flicker 1.2s ease-in-out infinite',
         'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
         'particle-rise': 'particle-rise 1.8s linear infinite',
@@ -39,7 +39,7 @@ export default {
           '25%': { transform: 'translateX(-6px)' },
           '75%': { transform: 'translateX(6px)' },
         },
-        'combo-grow': {
+        'score-pulse': {
           '0%': { transform: 'scale(0.8)' },
           '50%': { transform: 'scale(1.15)' },
           '100%': { transform: 'scale(1)' },

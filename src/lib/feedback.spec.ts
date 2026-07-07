@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeFeedback, computeCombo } from './feedback';
+import { computeFeedback } from './feedback';
 import type { Game } from '../types';
 
 const baseGame = (): Game => ({
@@ -82,101 +82,5 @@ describe('computeFeedback', () => {
 
     // When / Then
     expect(computeFeedback(game, 'p1', 9)).toBeNull();
-  });
-});
-
-describe('computeCombo', () => {
-  it('counts consecutive correct answers ending at the given index', () => {
-    // Given
-    const game = baseGame();
-    game.answers = [
-      {
-        player_id: 'p1',
-        question_id: 'q1',
-        value: 4,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-      {
-        player_id: 'p1',
-        question_id: 'q2',
-        value: 6,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-      {
-        player_id: 'p1',
-        question_id: 'q3',
-        value: 56,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-    ];
-
-    // When / Then
-    expect(computeCombo(game, 'p1', 2)).toBe(3);
-  });
-
-  it('resets the combo on a wrong answer', () => {
-    // Given
-    const game = baseGame();
-    game.answers = [
-      {
-        player_id: 'p1',
-        question_id: 'q1',
-        value: 4,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-      {
-        player_id: 'p1',
-        question_id: 'q2',
-        value: 9,
-        timestamp: 0,
-        is_correct: false,
-        points_earned: 0,
-      },
-      {
-        player_id: 'p1',
-        question_id: 'q3',
-        value: 56,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-    ];
-
-    // When / Then
-    expect(computeCombo(game, 'p1', 2)).toBe(1);
-  });
-
-  it('resets the combo on a missing (timed out) answer', () => {
-    // Given
-    const game = baseGame();
-    game.answers = [
-      {
-        player_id: 'p1',
-        question_id: 'q1',
-        value: 4,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-      {
-        player_id: 'p1',
-        question_id: 'q3',
-        value: 56,
-        timestamp: 0,
-        is_correct: true,
-        points_earned: 100,
-      },
-    ];
-
-    // When / Then
-    expect(computeCombo(game, 'p1', 2)).toBe(1);
   });
 });

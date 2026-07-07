@@ -1,5 +1,15 @@
 # Calc Rush Front
 
+## [0.11.2] - 2026-07-07
+
+### Changed
+
+- In-game inter-question recap (`CorrectionCard`): a correct answer no longer repeats the answer value (redundant with the statement) — only the statement, earned points, and countdown are shown. Wrong/timeout still display `given → expected`.
+
+### Removed
+
+- The in-game consecutive-correct-answer combo (`ComboBadge` + `computeCombo`), which was purely cosmetic and duplicated the daily streak shown on the home screen (computed by the backend). The `combo-grow` keyframe/animation was renamed `score-pulse`, its only remaining use being the score bump in `AnimatedScore`.
+
 ## [0.11.1] - 2026-07-07
 
 ### Added

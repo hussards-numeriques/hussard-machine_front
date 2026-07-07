@@ -18,7 +18,7 @@ export const AnimatedScore: React.FC<AnimatedScoreProps> = ({ score }) => {
   }, [score]);
 
   return (
-    <span className={cn('shrink-0 tabular-nums', pulse && 'animate-combo-grow text-green-600')}>
+    <span className={cn('shrink-0 tabular-nums', pulse && 'animate-score-pulse text-green-600')}>
       {score} pts
     </span>
   );

@@ -34,15 +34,3 @@ export const computeFeedback = (
     pointsEarned: answer.points_earned,
   };
 };
-
-export const computeCombo = (game: Game, playerId: string, uptoIndex: number): number => {
-  let combo = 0;
-  for (let index = uptoIndex; index >= 0; index -= 1) {
-    const question = game.questions[index];
-    if (!question) break;
-    const answer = findPlayerAnswer(game, playerId, question.id);
-    if (!answer || !answer.is_correct) break;
-    combo += 1;
-  }
-  return combo;
-};
