@@ -59,7 +59,7 @@ calc-rush_front/
 │   │   ├── HomePage.tsx              # Home: create/join a game
 │   │   ├── GamePage.tsx              # Orchestrates the 3 views based on game.state
 │   │   ├── ProfilePage.tsx           # Player profile, XP, history
-│   │   ├── HowItWorksPage.tsx        # Help/FAQ shell: assembles GradeGuide + StreakGuide
+│   │   ├── ProgressionPage.tsx       # Progression & rewards shell: assembles GradeGuide + StreakGuide
 │   │   ├── TermsPage.tsx             # Terms of service
 │   │   ├── LegalNoticePage.tsx       # Legal notice (editor, hosting, IP)
 │   │   └── PrivacyPolicyPage.tsx     # Privacy policy (GDPR, data collected)

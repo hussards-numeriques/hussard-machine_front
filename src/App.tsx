@@ -8,7 +8,7 @@ import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
 import { TermsPage } from './pages/TermsPage';
 import { TermsOfSalePage } from './pages/TermsOfSalePage';
-import { HowItWorksPage } from './pages/HowItWorksPage';
+import { ProgressionPage } from './pages/ProgressionPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
@@ -31,7 +31,7 @@ function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="terms-of-sale" element={<TermsOfSalePage />} />
-            <Route path="how-it-works" element={<HowItWorksPage />} />
+            <Route path="progression" element={<ProgressionPage />} />
             <Route path="legal-notice" element={<LegalNoticePage />} />
             <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="auth/callback" element={<OAuthCallbackPage />} />

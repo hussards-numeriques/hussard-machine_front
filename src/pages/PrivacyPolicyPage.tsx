@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 export const PrivacyPolicyPage: React.FC = () => {
   return (
@@ -65,15 +64,6 @@ export const PrivacyPolicyPage: React.FC = () => {
             timothee.demares@gmail.com.
           </p>
         </section>
-      </div>
-
-      <div className="text-center pb-8">
-        <Link
-          to="/"
-          className="text-sm font-bold text-slate-400 hover:text-primary transition-colors"
-        >
-          ← Retour à l'accueil
-        </Link>
       </div>
     </div>
   );

@@ -336,18 +336,12 @@ export const ProfilePage: React.FC = () => {
         )}
       </div>
 
-      <div className="text-center space-y-2 pb-8">
+      <div className="text-center pb-8">
         <Link
-          to="/how-it-works"
+          to="/progression"
           className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
         >
-          Aide & FAQ : grades, séries… →
-        </Link>
-        <Link
-          to="/"
-          className="block text-sm font-bold text-slate-400 hover:text-primary transition-colors"
-        >
-          ← Retour à l'accueil
+          Progression & récompenses →
         </Link>
       </div>
     </div>

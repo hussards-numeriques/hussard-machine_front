@@ -1,5 +1,15 @@
 # Calc Rush Front
 
+## [0.11.3] - 2026-07-07
+
+### Changed
+
+- The "Aide & FAQ" page (grades + streaks guides) is renamed **"Progression & récompenses"** — the old title matched neither an FAQ nor help content. Its route moves from `/how-it-works` to `/progression` and the component `HowItWorksPage` becomes `ProgressionPage`. The profile link label follows suit.
+
+### Removed
+
+- Redundant "Retour à l'accueil" buttons at the bottom of the legal pages (`TermsPage`, `TermsOfSalePage`, `LegalNoticePage`, `PrivacyPolicyPage`) and the profile page: the header already exposes a "← Accueil" link on every non-home route.
+
 ## [0.11.2] - 2026-07-07
 
 ### Changed

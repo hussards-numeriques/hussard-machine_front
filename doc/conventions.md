@@ -54,7 +54,7 @@ Use whenever there are multiple implementations or the implementation may change
 
 Two recurring patterns for full-page content, picked by content length:
 
-- **Long content** (sections, multiple paragraphs) — e.g. `HowItWorksPage`, `LegalNoticePage`, `PrivacyPolicyPage`:
+- **Long content** (sections, multiple paragraphs) — e.g. `ProgressionPage`, `LegalNoticePage`, `PrivacyPolicyPage`:
   - Wrapper: `min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6`
   - Card: `bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-8 space-y-6`
   - Sections: `space-y-3`, left-aligned

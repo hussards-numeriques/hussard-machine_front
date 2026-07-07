@@ -95,7 +95,7 @@ Small SVG status icon with 4 states (`QuestState`): `'secured'` (green check), `
 
 ### StreakGuide
 
-Static explanatory card (no props, no fetch) rendered by the help page (`HowItWorksPage`, route `/how-it-works`). Four sections: principle, tiers (maps over `STREAK_TIERS` rendering each `tier.Flame` + threshold), the daily quest (the 4 `DailyQuestIcon` states), and the freeze / last-chance safety net. Reuses `STREAK_TIERS` and `DailyQuestIcon` — no new data layer.
+Static explanatory card (no props, no fetch) rendered by the progression page (`ProgressionPage`, route `/progression`). Four sections: principle, tiers (maps over `STREAK_TIERS` rendering each `tier.Flame` + threshold), the daily quest (the 4 `DailyQuestIcon` states), and the freeze / last-chance safety net. Reuses `STREAK_TIERS` and `DailyQuestIcon` — no new data layer.
 
 ## Future reuse
 

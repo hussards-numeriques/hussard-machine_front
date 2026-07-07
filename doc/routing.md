@@ -9,7 +9,7 @@ BrowserRouter
 │   ├── /profile    → ProfilePage
 │   ├── /terms      → TermsPage
 │   ├── /terms-of-sale → TermsOfSalePage
-│   ├── /how-it-works → HowItWorksPage
+│   ├── /progression → ProgressionPage
 │   ├── /legal-notice → LegalNoticePage
 │   └── /privacy-policy → PrivacyPolicyPage
 └── GameLayout      (GameProvider)
@@ -24,7 +24,7 @@ Default layout for all non-game pages. Provides:
 - `GameProvider` (shared WebSocket client — used by HomePage to create games)
 - Fixed `Header` at the top
 - `Footer` — rendered only when `location.pathname === '/'`, hidden on all
-  other routes (`/profile`, `/terms`, `/terms-of-sale`, `/how-it-works`,
+  other routes (`/profile`, `/terms`, `/terms-of-sale`, `/progression`,
   `/legal-notice`, `/privacy-policy`). Discreet copyright notice + link to an
   external contact page (no dedicated contact page in Calc Rush) + links to
   `/terms-of-sale`, `/legal-notice` and `/privacy-policy`.
