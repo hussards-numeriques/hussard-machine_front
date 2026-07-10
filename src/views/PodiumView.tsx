@@ -46,6 +46,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
               grade={sortedPlayers[1].grade}
               isBot={sortedPlayers[1].is_bot}
               size="md"
+              showGradeRing={false}
             />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-slate-600 truncate">{sortedPlayers[1].name}</span>
@@ -61,7 +62,13 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
         {/* 1st Place */}
         {winner && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <PlayerAvatar name={winner.name} grade={winner.grade} isBot={winner.is_bot} size="lg" />
+            <PlayerAvatar
+              name={winner.name}
+              grade={winner.grade}
+              isBot={winner.is_bot}
+              size="lg"
+              showGradeRing={false}
+            />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-amber-500 text-xl truncate">👑 {winner.name}</span>
               <PlayerStreak count={winner.daily_streak} size={18} />
@@ -81,6 +88,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
               grade={sortedPlayers[2].grade}
               isBot={sortedPlayers[2].is_bot}
               size="md"
+              showGradeRing={false}
             />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-slate-600 truncate">{sortedPlayers[2].name}</span>

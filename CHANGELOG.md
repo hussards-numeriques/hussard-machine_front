@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.12.1] - 2026-07-10
+
+### Changed
+
+- On the final podium, the grade-colored ring around avatars now appears only in the "Classement complet" list; the top-3 columns no longer show it, removing the visual duplication. `PlayerAvatar` gains a `showGradeRing` prop (default `true`) to opt out.
+
 ## [0.12.0] - 2026-07-10
 
 ### Added

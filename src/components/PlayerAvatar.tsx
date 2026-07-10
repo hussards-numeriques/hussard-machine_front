@@ -9,6 +9,7 @@ interface PlayerAvatarProps {
   grade: string;
   isBot: boolean;
   size?: AvatarSize;
+  showGradeRing?: boolean;
 }
 
 const SIZE_CLASSES: Record<AvatarSize, { circle: string; text: string; ring: string }> = {
@@ -17,18 +18,23 @@ const SIZE_CLASSES: Record<AvatarSize, { circle: string; text: string; ring: str
   lg: { circle: 'w-16 h-16', text: 'text-2xl', ring: 'ring-4 ring-offset-2' },
 };
 
-export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({ name, grade, isBot, size = 'md' }) => {
+export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
+  name,
+  grade,
+  isBot,
+  size = 'md',
+  showGradeRing = true,
+}) => {
   const initials = name.substring(0, 2).toUpperCase();
   const { circle, text, ring } = SIZE_CLASSES[size];
 
   return (
     <div
       className={cn(
-        'shrink-0 rounded-full flex items-center justify-center font-bold text-white ring-offset-white',
+        'shrink-0 rounded-full flex items-center justify-center font-bold text-white',
         circle,
         text,
-        ring,
-        resolveGradeRingColor(grade),
+        showGradeRing && ['ring-offset-white', ring, resolveGradeRingColor(grade)],
         isBot ? 'bg-slate-400' : 'bg-primary'
       )}
     >

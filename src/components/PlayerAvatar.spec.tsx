@@ -17,4 +17,9 @@ describe('PlayerAvatar', () => {
     render(<PlayerAvatar name="Botty" grade="BRONZE" isBot />);
     expect(screen.getByText('BO').className).toContain('bg-slate-400');
   });
+
+  it('omits the grade ring when showGradeRing is false', () => {
+    render(<PlayerAvatar name="Bob" grade="DIAMOND" isBot={false} showGradeRing={false} />);
+    expect(screen.getByText('BO').className).not.toContain('ring-cyan-400');
+  });
 });

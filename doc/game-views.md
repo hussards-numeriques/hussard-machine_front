@@ -110,10 +110,10 @@ Displays the podium (top 3 in columns) and full rankings.
 
 Each `Player` snapshot carries `level`, `grade` and `daily_streak` (set at game entry, immutable during the game — see the backend contract). Two shared components surface them:
 
-- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar with a **grade-colored ring** (`resolveGradeRingColor` in `src/lib/grades.ts`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring.
+- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar with a **grade-colored ring** (`resolveGradeRingColor` in `src/lib/grades.ts`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring. The ring can be turned off with `showGradeRing={false}`.
 - `PlayerStreak` (`src/components/PlayerStreak.tsx`): the streak flame + count, or `null` when `daily_streak <= 0` (see `doc/streak.md`).
 
-Wired into `LobbyView` (player cards) and `PodiumView` (top-3 columns + full ranking). **Not** shown in the in-game `GameView` scoreboard by design. `level` is intentionally not displayed anywhere yet.
+Wired into `LobbyView` (player cards) and `PodiumView`. On the podium the grade ring is shown only in the full ranking; the top-3 columns pass `showGradeRing={false}` to avoid duplicating it. **Not** shown in the in-game `GameView` scoreboard by design. `level` is intentionally not displayed anywhere yet.
 
 ## Adding a UI element to a game view
 
