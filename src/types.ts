@@ -10,6 +10,9 @@ export interface Player {
   is_ready: boolean;
   is_connected: boolean;
   score: number;
+  level: string;
+  grade: string;
+  daily_streak: number;
   bot_config: BotConfig | null;
 }
 

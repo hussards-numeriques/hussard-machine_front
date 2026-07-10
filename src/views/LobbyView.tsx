@@ -2,6 +2,8 @@ import React from 'react';
 import { GameClient } from '../services/GameClient';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
+import { PlayerAvatar } from '../components/PlayerAvatar';
+import { PlayerStreak } from '../components/PlayerStreak';
 import { cn } from '../lib/utils';
 
 interface LobbyViewProps {
@@ -61,16 +63,12 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                     : 'border-slate-100 bg-slate-50'
               )}
             >
-              <div
-                className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold text-white',
-                  player.is_bot ? 'bg-slate-400' : 'bg-primary'
-                )}
-              >
-                {player.name.substring(0, 2).toUpperCase()}
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-slate-800">{player.name}</div>
+              <PlayerAvatar name={player.name} grade={player.grade} isBot={player.is_bot} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-slate-800 truncate">{player.name}</span>
+                  <PlayerStreak count={player.daily_streak} />
+                </div>
                 <div className="text-xs text-slate-500">
                   {!player.is_connected ? 'Déconnecté' : player.is_bot ? 'Robot' : 'Humain'}
                 </div>

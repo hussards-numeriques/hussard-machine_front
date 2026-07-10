@@ -97,6 +97,6 @@ Small SVG status icon with 4 states (`QuestState`): `'secured'` (green check), `
 
 Static explanatory card (no props, no fetch) rendered by the progression page (`ProgressionPage`, route `/progression`). Four sections: principle, tiers (maps over `STREAK_TIERS` rendering each `tier.Flame` + threshold), the daily quest (the 4 `DailyQuestIcon` states), and the freeze / last-chance safety net. Reuses `STREAK_TIERS` and `DailyQuestIcon` — no new data layer.
 
-## Future reuse
+## Per-player streak during a game
 
-`StreakFlame` is designed to be reused later to show **per-player streaks during a game** (e.g. next to a player's name in the scoreboard). The backend doesn't expose per-player streak data yet — only the current user's own streak via `/me/streak` — so this is not wired up yet.
+Each `Player` carries a `daily_streak` snapshot (see `doc/game-views.md`, "player vitrine"). `StreakFlame` is reused via the shared `PlayerStreak` component (`src/components/PlayerStreak.tsx`): it renders `null` when `count <= 0`, otherwise the tier flame plus the count colored with `getStreakTier(count).valueColorClass`. Wired into `LobbyView` and `PodiumView`.

@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.12.0] - 2026-07-10
+
+### Added
+
+- Player vitrine during a game: each player now shows a **grade-colored ring** around its avatar (League-of-Legends style) and its **daily-streak flame + count**. Driven by three new per-player fields (`level`, `grade`, `daily_streak`) snapshotted at game entry by the backend and validated in `playerSchema`. Wired into the lobby (`LobbyView`) and the final podium (`PodiumView` — top-3 columns + full ranking); bots display their (default bronze) ring too. New shared components `PlayerAvatar` and `PlayerStreak` (reusing `StreakFlame`), plus `resolveGradeRingColor` in `lib/grades`. `level` is captured but not displayed yet (reserved for future cross-level rules), and the in-game scoreboard is intentionally left unchanged.
+
 ## [0.11.3] - 2026-07-07
 
 ### Changed
