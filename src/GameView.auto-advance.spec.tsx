@@ -65,6 +65,7 @@ describe('GameView - Auto-advance when all players answered', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
         {
           id: 'player2',
@@ -77,6 +78,7 @@ describe('GameView - Auto-advance when all players answered', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
       ],
       questions: [

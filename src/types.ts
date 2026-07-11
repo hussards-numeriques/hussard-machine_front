@@ -3,6 +3,12 @@ export interface BotConfig {
   average_response_time: number;
 }
 
+export interface PlayerTitle {
+  id: string;
+  label: string;
+  rarity: string;
+}
+
 export interface Player {
   id: string;
   name: string;
@@ -13,6 +19,7 @@ export interface Player {
   level: string;
   grade: string;
   daily_streak: number;
+  title: PlayerTitle | null;
   bot_config: BotConfig | null;
 }
 

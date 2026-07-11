@@ -20,6 +20,7 @@ describe('LobbyView - disconnected players', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
       {
         id: 'p2',
@@ -32,6 +33,7 @@ describe('LobbyView - disconnected players', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
     ],
     questions: [],
@@ -68,6 +70,7 @@ describe('LobbyView - leave button', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
     ],
     questions: [],

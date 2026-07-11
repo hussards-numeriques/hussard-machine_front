@@ -46,6 +46,7 @@ describe('GameView - scoreboard connection status', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
       {
         id: 'p2',
@@ -58,6 +59,7 @@ describe('GameView - scoreboard connection status', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
     ],
     questions: [

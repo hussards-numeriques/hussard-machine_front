@@ -1,11 +1,17 @@
 import { z } from 'zod';
 import { GameState } from '../types';
-import type { Answer, BotConfig, Game, Player, Question } from '../types';
+import type { Answer, BotConfig, Game, Player, PlayerTitle, Question } from '../types';
 
 const botConfigSchema = z.object({
   correctness_probability: z.number(),
   average_response_time: z.number(),
 }) satisfies z.ZodType<BotConfig>;
+
+const titleSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  rarity: z.string(),
+}) satisfies z.ZodType<PlayerTitle>;
 
 const playerSchema = z.object({
   id: z.string(),
@@ -17,6 +23,7 @@ const playerSchema = z.object({
   level: z.string(),
   grade: z.string(),
   daily_streak: z.number(),
+  title: titleSchema.nullable(),
   bot_config: botConfigSchema.nullable(),
 }) satisfies z.ZodType<Player>;
 

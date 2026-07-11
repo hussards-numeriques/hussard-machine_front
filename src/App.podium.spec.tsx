@@ -40,6 +40,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
         {
           id: 'player2',
@@ -52,6 +53,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
         {
           id: 'player3',
@@ -64,6 +66,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
       ],
       questions: [

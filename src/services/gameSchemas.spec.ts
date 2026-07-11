@@ -13,6 +13,7 @@ const backendGamePayload = {
       level: 'QUATRIEME',
       grade: 'GOLD',
       daily_streak: 30,
+      title: null,
       bot_config: null,
       player_account_id: null,
       is_bot: false,
@@ -49,5 +50,40 @@ describe('serverMessageSchema', () => {
 
     if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
     expect(message.payload.start_time_current_question).toBe(1751700000.5);
+  });
+
+  it('parses a player title snapshot', () => {
+    const message = serverMessageSchema.parse({
+      type: 'GAME_UPDATE',
+      payload: {
+        ...backendGamePayload,
+        players: [
+          {
+            ...backendGamePayload.players[0],
+            title: { id: 'win-streak-bronze', label: 'Petit Conquérant', rarity: 'BRONZE' },
+          },
+        ],
+      },
+    });
+
+    if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
+    expect(message.payload.players[0].title).toEqual({
+      id: 'win-streak-bronze',
+      label: 'Petit Conquérant',
+      rarity: 'BRONZE',
+    });
+  });
+
+  it('parses a player with no equipped title as null', () => {
+    const message = serverMessageSchema.parse({
+      type: 'GAME_UPDATE',
+      payload: {
+        ...backendGamePayload,
+        players: [{ ...backendGamePayload.players[0], title: null }],
+      },
+    });
+
+    if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
+    expect(message.payload.players[0].title).toBeNull();
   });
 });

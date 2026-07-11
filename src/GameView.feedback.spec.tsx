@@ -46,6 +46,7 @@ describe('GameView - feedback', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
+        title: null,
       },
     ],
     questions: [
@@ -79,6 +80,7 @@ describe('GameView - feedback', () => {
           grade: 'BRONZE',
           daily_streak: 0,
           bot_config: null,
+          title: null,
         },
       ],
       answers: [
