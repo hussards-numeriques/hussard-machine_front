@@ -136,3 +136,42 @@ describe('PodiumView - Display final scores when game is finished', () => {
     expect(screen.getAllByText('50 pts').length).toBeGreaterThan(0);
   });
 });
+
+describe('PodiumView - player title', () => {
+  it('shows the equipped title under the name in the full ranking but not in the top-3 columns', () => {
+    const gameWithTitle: Game = {
+      id: 'TEST2',
+      state: GameState.FINISHED,
+      players: [
+        {
+          id: 'player1',
+          name: 'Player 1',
+          is_bot: false,
+          is_ready: true,
+          is_connected: true,
+          score: 150,
+          level: 'CP',
+          grade: 'BRONZE',
+          daily_streak: 0,
+          bot_config: null,
+          title: { id: 'win-streak-gold', label: "Légende de l'Arène", rarity: 'GOLD' },
+        },
+      ],
+      questions: [],
+      current_question_index: 0,
+      answers: [],
+      start_time_current_question: null,
+    };
+
+    render(
+      <MemoryRouter>
+        <PodiumView game={gameWithTitle} currentPlayerId="player1" playerName="Player 1" />
+      </MemoryRouter>
+    );
+
+    const rankingSection = screen.getByText('Classement complet').closest('div');
+    const titleEls = screen.getAllByText(/Légende de l'Arène/);
+    expect(titleEls).toHaveLength(1);
+    expect(rankingSection?.contains(titleEls[0])).toBe(true);
+  });
+});

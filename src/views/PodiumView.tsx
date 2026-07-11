@@ -5,6 +5,7 @@ import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { PlayerStreak } from '../components/PlayerStreak';
+import { PlayerTitle } from '../components/PlayerTitle';
 import { cn } from '../lib/utils';
 import { useAuth } from '../contexts/useAuth';
 
@@ -84,15 +85,20 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
           <div
             key={p.id}
             className={cn(
-              'flex justify-between py-3 px-4 rounded-lg mb-2',
+              'flex items-center justify-between py-3 px-4 rounded-lg mb-2',
               p.id === currentPlayerId ? 'bg-primary/10 text-primary font-bold' : 'bg-slate-50'
             )}
           >
             <div className="flex items-center gap-3 min-w-0">
               <span className="font-mono w-6 shrink-0">{i + 1}.</span>
               <PlayerAvatar name={p.name} grade={p.grade} isBot={p.is_bot} size="sm" />
-              <span className="font-bold truncate">{p.name}</span>
-              <PlayerStreak count={p.daily_streak} size={16} />
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold truncate">{p.name}</span>
+                  <PlayerStreak count={p.daily_streak} size={16} />
+                </div>
+                <PlayerTitle title={p.title} />
+              </div>
             </div>
             <span className="font-mono shrink-0">{p.score} pts</span>
           </div>
