@@ -4,6 +4,7 @@ import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { PlayerStreak } from '../components/PlayerStreak';
+import { PlayerTitle } from '../components/PlayerTitle';
 import { cn } from '../lib/utils';
 
 interface LobbyViewProps {
@@ -69,6 +70,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                   <span className="font-bold text-slate-800 truncate">{player.name}</span>
                   <PlayerStreak count={player.daily_streak} />
                 </div>
+                <PlayerTitle title={player.title} />
                 <div className="text-xs text-slate-500">
                   {!player.is_connected ? 'Déconnecté' : player.is_bot ? 'Robot' : 'Humain'}
                 </div>

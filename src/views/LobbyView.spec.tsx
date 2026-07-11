@@ -104,3 +104,56 @@ describe('LobbyView - leave button', () => {
     expect(screen.queryByText('Quitter')).not.toBeInTheDocument();
   });
 });
+
+describe('LobbyView - player title', () => {
+  const gameWithTitle: Game = {
+    id: 'ABCD',
+    state: 'WAITING',
+    players: [
+      {
+        id: 'p1',
+        name: 'Alice',
+        is_bot: false,
+        is_ready: false,
+        is_connected: true,
+        score: 0,
+        level: 'CP',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: { id: 'win-streak-gold', label: "Légende de l'Arène", rarity: 'GOLD' },
+      },
+    ],
+    questions: [],
+    current_question_index: -1,
+    answers: [],
+    start_time_current_question: null,
+  };
+
+  const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+
+  it('shows the equipped title under the player name', () => {
+    render(
+      <LobbyView client={mockClient} game={gameWithTitle} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.getByText(/Légende de l'Arène/)).toBeInTheDocument();
+  });
+
+  it('shows nothing extra when the player has no title', () => {
+    const gameWithoutTitle: Game = {
+      ...gameWithTitle,
+      players: [{ ...gameWithTitle.players[0], title: null }],
+    };
+    render(
+      <LobbyView
+        client={mockClient}
+        game={gameWithoutTitle}
+        currentPlayerId="p1"
+        onLeave={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByText(/☆/)).not.toBeInTheDocument();
+  });
+});
