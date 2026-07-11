@@ -41,16 +41,8 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
         {/* 2nd Place */}
         {sortedPlayers[1] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <PlayerAvatar
-              name={sortedPlayers[1].name}
-              grade={sortedPlayers[1].grade}
-              isBot={sortedPlayers[1].is_bot}
-              size="md"
-              showGradeRing={false}
-            />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-slate-600 truncate">{sortedPlayers[1].name}</span>
-              <PlayerStreak count={sortedPlayers[1].daily_streak} size={16} />
             </div>
             <div className="w-full bg-slate-200 h-32 rounded-t-xl flex items-end justify-center pb-2 font-bold text-2xl text-slate-600 border-t-4 border-slate-300">
               2
@@ -62,16 +54,8 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
         {/* 1st Place */}
         {winner && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <PlayerAvatar
-              name={winner.name}
-              grade={winner.grade}
-              isBot={winner.is_bot}
-              size="lg"
-              showGradeRing={false}
-            />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-amber-500 text-xl truncate">👑 {winner.name}</span>
-              <PlayerStreak count={winner.daily_streak} size={18} />
             </div>
             <div className="w-full bg-secondary h-48 rounded-t-xl flex items-end justify-center pb-2 font-bold text-4xl text-yellow-900 border-t-4 border-yellow-300 shadow-[0_0_30px_rgba(251,191,36,0.4)]">
               1
@@ -83,16 +67,8 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
         {/* 3rd Place */}
         {sortedPlayers[2] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
-            <PlayerAvatar
-              name={sortedPlayers[2].name}
-              grade={sortedPlayers[2].grade}
-              isBot={sortedPlayers[2].is_bot}
-              size="md"
-              showGradeRing={false}
-            />
             <div className="flex items-center justify-center gap-1 w-full">
               <span className="font-bold text-slate-600 truncate">{sortedPlayers[2].name}</span>
-              <PlayerStreak count={sortedPlayers[2].daily_streak} size={16} />
             </div>
             <div className="w-full bg-orange-300 h-24 rounded-t-xl flex items-end justify-center pb-2 font-bold text-2xl text-orange-900 border-t-4 border-orange-400">
               3
