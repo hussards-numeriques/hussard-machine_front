@@ -39,7 +39,7 @@ describe('QuestProgressCard', () => {
 
     expect(screen.getByText('Équiper')).toBeInTheDocument();
     expect(screen.getByText('Top Player (10)')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /top player/i })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('button')).toHaveLength(1);
   });
 
   it('shows Équipé and calls onEquip(null) when the equipped tier is clicked', () => {
