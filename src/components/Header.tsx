@@ -50,6 +50,13 @@ export const Header: React.FC = () => {
                     >
                       Mon profil
                     </Link>
+                    <Link
+                      to="/quests"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 border-t border-slate-100"
+                    >
+                      Quêtes &amp; Titres
+                    </Link>
                     <button
                       type="button"
                       onClick={handleLogout}
