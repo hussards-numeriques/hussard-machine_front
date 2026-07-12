@@ -49,6 +49,14 @@ Profile page: display of school level, grade (Bronze → Diamond), segmented XP 
 Daily streak: route `/me/streak`, hex port `services/streak` (`deriveStreakStatus`), `StreakProvider`/`useStreak`, and components `StreakBadge` / `StreakFlame` (evolving flame by tier) / `DailyQuestIcon`.
 → Read when: modifying the streak display, the tier thresholds, or reusing the flame icon elsewhere.
 
+### [quests-titles.md](quests-titles.md)
+
+Quêtes progressives et titres cosmétiques : route `/quests`, service hexagonal
+`services/quests` (`GET /quests`, `GET /me/titles`, `PUT /me/selected-title`), composants
+`PlayerTitle` / `QuestProgressCard` / `TitleUnlockToast`, et la détection de déblocage par
+diff (`useTitleUnlocks`).
+→ Read when: modifying quest/title display, thresholds, or the unlock-toast detection.
+
 ### [mascot.md](mascot.md)
 
 Rushy, la mascotte (calculatrice speedy) : composant `<Mascot>` et ses 5 poses,

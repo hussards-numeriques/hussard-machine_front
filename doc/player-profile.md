@@ -10,6 +10,8 @@ The `ProfilePage` (`src/pages/ProfilePage.tsx`) is accessible only to authentica
 - The level promotion button if `can_promote === true`
 - Game history
 
+The title equipped via `/quests` (see `doc/quests-titles.md`) is not shown on this page — it surfaces in the lobby/podium and on `/quests` itself.
+
 ## Types (src/types.ts)
 
 ### PlayerProfile

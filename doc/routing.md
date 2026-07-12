@@ -7,6 +7,7 @@ BrowserRouter
 ├── AppLayout       (AuthProvider > GameProvider > Header)
 │   ├── /           → HomePage
 │   ├── /profile    → ProfilePage
+│   ├── /quests     → QuestsPage
 │   ├── /terms      → TermsPage
 │   ├── /terms-of-sale → TermsOfSalePage
 │   ├── /progression → ProgressionPage
@@ -24,7 +25,7 @@ Default layout for all non-game pages. Provides:
 - `GameProvider` (shared WebSocket client — used by HomePage to create games)
 - Fixed `Header` at the top
 - `Footer` — rendered only when `location.pathname === '/'`, hidden on all
-  other routes (`/profile`, `/terms`, `/terms-of-sale`, `/progression`,
+  other routes (`/profile`, `/quests`, `/terms`, `/terms-of-sale`, `/progression`,
   `/legal-notice`, `/privacy-policy`). Discreet copyright notice + link to an
   external contact page (no dedicated contact page in Calc Rush) + links to
   `/terms-of-sale`, `/legal-notice` and `/privacy-policy`.
@@ -70,6 +71,7 @@ triggers a fresh connect — without it, React sees no changed dependency and sk
 - `PodiumView` → "Rejouer" → `navigate('/game', { state })` (same as quick game — always resumes/creates via `JOIN`, never reuses the finished game's id)
 - `PodiumView` → back → `navigate('/')`
 - `Header` → `← Home` link on all pages except `/`
+- `Header` → user menu → "Quêtes & Titres" → `navigate('/quests')` (authenticated users only, see `doc/quests-titles.md`)
 
 ## Adding a new page
 
