@@ -5,12 +5,14 @@ import { GameState } from '../types';
 import { LobbyView } from '../views/LobbyView';
 import { GameView } from '../views/GameView';
 import { PodiumView } from '../views/PodiumView';
+import { useTitleUnlocks } from '../hooks/useTitleUnlocks';
 
 export const GamePage: React.FC = () => {
   const { gameId } = useParams<{ gameId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const { client, game, error, resetGame } = useGame();
+  const newTitles = useTitleUnlocks(game?.state ?? null, game?.id);
 
   const locationState = (location.state ?? null) as {
     playerName?: string;
@@ -80,7 +82,12 @@ export const GamePage: React.FC = () => {
       return <GameView client={client} game={game} currentPlayerId={client.getPlayerId()} />;
     case GameState.FINISHED:
       return (
-        <PodiumView game={game} currentPlayerId={client.getPlayerId()} playerName={playerName} />
+        <PodiumView
+          game={game}
+          currentPlayerId={client.getPlayerId()}
+          playerName={playerName}
+          newTitles={newTitles}
+        />
       );
     default:
       return <div>État inconnu: {game.state}</div>;

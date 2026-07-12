@@ -1,10 +1,24 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GamePage } from './GamePage';
 import { GameContext, type GameContextValue } from '../contexts/GameContext';
 import type { GameClient } from '../services/GameClient';
 import type { Game } from '../types';
+
+vi.mock('../contexts/useAuth', () => ({
+  useAuth: () => ({
+    client: { authorizedFetch: vi.fn() },
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+    login: vi.fn(),
+    register: vi.fn(),
+    logout: vi.fn(),
+    reloadUser: vi.fn(),
+  }),
+}));
 
 const ReplayTrigger: React.FC = () => {
   const navigate = useNavigate();
@@ -43,17 +57,21 @@ describe('GamePage - reconnecting on same-path navigation (replay)', () => {
       resetGame,
     };
 
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
     render(
-      <MemoryRouter
-        initialEntries={[{ pathname: '/game', state: { playerName: 'Alice', token: null } }]}
-      >
-        <GameContext.Provider value={contextValue}>
-          <Routes>
-            <Route path="/game" element={<GamePage />} />
-          </Routes>
-          <ReplayTrigger />
-        </GameContext.Provider>
-      </MemoryRouter>
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter
+          initialEntries={[{ pathname: '/game', state: { playerName: 'Alice', token: null } }]}
+        >
+          <GameContext.Provider value={contextValue}>
+            <Routes>
+              <Route path="/game" element={<GamePage />} />
+            </Routes>
+            <ReplayTrigger />
+          </GameContext.Provider>
+        </MemoryRouter>
+      </QueryClientProvider>
     );
 
     expect(connectToQuickGame).toHaveBeenCalledTimes(1);

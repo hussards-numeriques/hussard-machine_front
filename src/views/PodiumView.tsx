@@ -8,14 +8,22 @@ import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
 import { cn } from '../lib/utils';
 import { useAuth } from '../contexts/useAuth';
+import { TitleUnlockToast } from '../components/quests/TitleUnlockToast';
+import type { MyTitle } from '../services/quests';
 
 interface PodiumViewProps {
   game: Game;
   currentPlayerId: string | null;
   playerName: string;
+  newTitles?: MyTitle[];
 }
 
-export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, playerName }) => {
+export const PodiumView: React.FC<PodiumViewProps> = ({
+  game,
+  currentPlayerId,
+  playerName,
+  newTitles = [],
+}) => {
   const navigate = useNavigate();
   const { isAuthenticated, client: authClient } = useAuth();
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
@@ -36,6 +44,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({ game, currentPlayerId, p
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">
+      <TitleUnlockToast titles={newTitles} />
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
 
       <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md pb-8">
