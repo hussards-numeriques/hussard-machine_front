@@ -114,7 +114,7 @@ Each `Player` snapshot carries `level`, `grade`, `daily_streak` and `title` (set
 - `PlayerStreak` (`src/components/PlayerStreak.tsx`): the streak flame + count, or `null` when `daily_streak <= 0` (see `doc/streak.md`).
 - `PlayerTitle` (`src/components/PlayerTitle.tsx`): the equipped title label colored by rarity, or `null` when `title === null` (see `doc/quests-titles.md`).
 
-Wired into `LobbyView` (player cards) and `PodiumView`. On the podium the grade ring and the title are shown only in the full ranking; the top-3 columns pass `showGradeRing={false}` and never read `title`, to avoid crowding those constrained columns. **Not** shown in the in-game `GameView` scoreboard by design. `level` is intentionally not displayed anywhere yet.
+Wired into `LobbyView` (player cards) and `PodiumView`. The podium's top-3 columns show only the player's name — no avatar, grade ring, streak, or title — to keep those columns uncluttered. `PlayerAvatar`/`PlayerStreak`/`PlayerTitle` are used only in the full-ranking list below. **Not** shown in the in-game `GameView` scoreboard by design. `level` is intentionally not displayed anywhere yet.
 
 ## Adding a UI element to a game view
 
