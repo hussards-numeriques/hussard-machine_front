@@ -13,9 +13,11 @@ export const AppLayout: React.FC = () => {
     <AuthProvider>
       <StreakProvider>
         <GameProvider>
-          <div className="min-h-screen bg-slate-50">
+          <div className="min-h-screen flex flex-col bg-slate-50">
             <Header />
-            <Outlet />
+            <main className="flex-1 flex flex-col">
+              <Outlet />
+            </main>
             {location.pathname === '/' && <Footer />}
           </div>
         </GameProvider>

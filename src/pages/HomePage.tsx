@@ -58,7 +58,7 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 max-w-md mx-auto w-full">
+    <div className="flex flex-1 flex-col items-center justify-center p-4 space-y-8 max-w-md mx-auto w-full">
       <h1 className="sr-only">Calc Rush</h1>
       <Mascot pose="joyeux" shiny={isShiny} title="Rushy" className="w-28 h-28 sm:w-36 sm:h-36" />
 

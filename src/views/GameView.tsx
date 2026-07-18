@@ -223,10 +223,20 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   const categoryLabel = resolveCategoryLabel(categoryLabels, currentQuestion.category);
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 pt-16">
-      <div className="bg-white p-4 shadow-sm">
-        <div className="font-bold text-slate-500">
-          Question {displayedQuestionIndex + 1} / {game.questions.length}
+    <div className="flex flex-col min-h-screen bg-slate-50">
+      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm p-4 shadow-sm">
+        <div className="max-w-lg mx-auto w-full space-y-2">
+          <div className="font-bold text-slate-500">
+            Question {displayedQuestionIndex + 1} / {game.questions.length}
+          </div>
+          <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-500"
+              style={{
+                width: `${((displayedQuestionIndex + 1) / game.questions.length) * 100}%`,
+              }}
+            />
+          </div>
         </div>
       </div>
 
