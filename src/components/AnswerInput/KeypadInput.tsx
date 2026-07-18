@@ -1,19 +1,21 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../Button';
 import type { AnswerInputProps } from './port';
 
 const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
 export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
-  const [digits, setDigits] = React.useState('');
-  const [isNegative, setIsNegative] = React.useState(false);
+  const [digits, setDigits] = useState('');
+  const [isNegative, setIsNegative] = useState(false);
 
-  React.useEffect(() => {
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
     if (!disabled) {
       setDigits('');
       setIsNegative(false);
     }
   }, [disabled]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const appendDigit = (digit: string) => setDigits((prev) => prev + digit);
   const handleBackspace = () => setDigits((prev) => prev.slice(0, -1));

@@ -47,4 +47,17 @@ describe('KeypadInput', () => {
     expect(screen.getByRole('button', { name: '5' })).toBeDisabled();
     expect(screen.getByRole('button', { name: '±' })).toBeDisabled();
   });
+
+  it('resets state when transitioning from disabled to enabled', () => {
+    const onSubmit = vi.fn();
+    const { rerender } = render(<KeypadInput onSubmit={onSubmit} disabled={false} />);
+    press('5');
+    press('3');
+    press('±');
+    expect(screen.getByTestId('current-answer')).toHaveTextContent('−53');
+    rerender(<KeypadInput onSubmit={onSubmit} disabled={true} />);
+    rerender(<KeypadInput onSubmit={onSubmit} disabled={false} />);
+    expect(screen.getByTestId('current-answer')).toHaveTextContent('');
+    expect(screen.getByRole('button', { name: 'Valider' })).toBeDisabled();
+  });
 });
