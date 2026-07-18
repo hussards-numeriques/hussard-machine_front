@@ -4,6 +4,7 @@
 
 ### Added
 
+- Answer input: a new on-screen numeric **keypad** mode (`KeypadInput`, telephone layout) joins keyboard and handwriting, and a new `/settings` page (linked from the header user menu) lets a signed-in player choose their answer-input mode — Automatique / Clavier / Écriture manuscrite / Pavé numérique. The choice is persisted per-device in `localStorage` (`useAnswerInputMode`), defaulting to `auto` (the prior adaptive behavior: handwriting on touch, keyboard otherwise). The resolution logic is now a pure function (`resolveAnswerInputMode` in `mode.ts`) and the device-specific components are selected from a lookup map (`ANSWER_INPUT_COMPONENTS`), resolved reactively on every render instead of once at import.
 - Quests & titles: players unlock cosmetic titles (`BRONZE`/`SILVER`/`GOLD`/`DIAMOND` rarities) by progressing through quests, and can equip one from a new `/quests` page (linked from the header user menu). The equipped title is snapshotted per-player at `JOIN` (like `level`/`grade`/`daily_streak`) and shown in the lobby and the podium's full ranking (not the top-3 columns). No WS event fires on unlock; the podium detects new titles by diffing `GET /me/titles` against a lobby-time snapshot and shows an auto-dismissing toast (`useTitleUnlocks`, `TitleUnlockToast`).
 
 ## [0.12.1] - 2026-07-10

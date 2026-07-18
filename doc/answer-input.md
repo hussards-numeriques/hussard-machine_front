@@ -1,16 +1,27 @@
 # Answer Input — Answer submission
 
-The `AnswerInput` component allows the player to submit their numeric answer. It adapts to the device type: keyboard on desktop, handwriting on touch.
+The `AnswerInput` component allows the player to submit their numeric answer. It supports
+four **modes** — `keyboard`, `handwriting`, `keypad`, and an `auto` mode that adapts to the
+device type (handwriting on touch, keyboard otherwise). The player can override the mode
+per-device from the `/settings` page; the choice is persisted in `localStorage`.
 
 ## Port / adapter pattern
 
 ```
 src/components/AnswerInput/
-├── port.ts          ← common interface AnswerInputProps
-├── adapter.ts       ← selects the implementation based on device
-├── index.ts         ← exports the resolved component
+├── port.ts               ← common interface AnswerInputProps
+├── mode.ts                ← AnswerInputMode union, labels/descriptions, resolveAnswerInputMode
+├── adapter.ts             ← ANSWER_INPUT_COMPONENTS map (resolved mode → component)
+├── index.ts               ← AnswerInput: reads the stored mode, resolves it, renders from the map
 ├── KeyboardInput.tsx
-└── HandwritingInput.tsx
+├── HandwritingInput.tsx
+└── KeypadInput.tsx
+
+src/hooks/
+└── useAnswerInputMode.ts  ← localStorage-backed store for the selected mode
+
+src/pages/
+└── SettingsPage.tsx       ← lets the player pick their answer-input mode
 ```
 
 ### Port (common interface)
@@ -23,17 +34,52 @@ interface AnswerInputProps {
 }
 ```
 
-### Adapter
+### Mode resolution (mode.ts)
 
 ```typescript
-// adapter.ts
-export const getAnswerInputComponent = (): React.FC<AnswerInputProps> => {
-  const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-  return isTouchDevice ? HandwritingInput : KeyboardInput;
+// mode.ts
+type AnswerInputMode = 'auto' | 'keyboard' | 'handwriting' | 'keypad';
+type ResolvedAnswerInputMode = 'keyboard' | 'handwriting' | 'keypad';
+
+const resolveAnswerInputMode = (
+  mode: AnswerInputMode,
+  isCoarsePointer: boolean
+): ResolvedAnswerInputMode => {
+  if (mode === 'auto') return isCoarsePointer ? 'handwriting' : 'keyboard';
+  return mode;
 };
 ```
 
-The adapter is called once at import (`index.ts`) to avoid re-evaluating `matchMedia` on every render.
+`mode.ts` also exports `DEFAULT_ANSWER_INPUT_MODE` (`'auto'`), `ANSWER_INPUT_MODES` (the
+ordered list of the four modes, used to render the settings page), `ANSWER_INPUT_MODE_LABELS`
+and `ANSWER_INPUT_MODE_DESCRIPTIONS` (French copy shown to the player, keyed by mode), and
+the type guard `isAnswerInputMode` used when reading back an untrusted `localStorage` value.
+`resolveAnswerInputMode` is a pure function: it never touches `matchMedia` or storage itself.
+
+### Adapter (adapter.ts)
+
+```typescript
+// adapter.ts
+export const ANSWER_INPUT_COMPONENTS: Record<
+  ResolvedAnswerInputMode,
+  React.FC<AnswerInputProps>
+> = {
+  keyboard: KeyboardInput,
+  handwriting: HandwritingInput,
+  keypad: KeypadInput,
+};
+```
+
+The adapter is now a plain lookup map from a `ResolvedAnswerInputMode` to its component —
+there is no `getAnswerInputComponent` function anymore.
+
+### Resolution in index.ts
+
+`AnswerInput` (`index.ts`) reads the current mode from `useAnswerInputMode()`, computes
+`isCoarsePointer` from `window.matchMedia('(pointer: coarse)').matches`, resolves the pair
+through `resolveAnswerInputMode`, and looks up the component in `ANSWER_INPUT_COMPONENTS`.
+This resolution happens **on every render**, not once at import — it is reactive to the
+stored mode, so a change made on the settings page takes effect immediately without a reload.
 
 ### Usage in GameView
 
@@ -48,6 +94,41 @@ import { AnswerInput } from '../components/AnswerInput';
   disabled={hasAnswered}
 />
 ```
+
+---
+
+## Mode selection (useAnswerInputMode + SettingsPage)
+
+### useAnswerInputMode (src/hooks/useAnswerInputMode.ts)
+
+A `localStorage`-backed store built on `useSyncExternalStore`, under the key
+`calc-rush:answer-input-mode`. It defaults to `'auto'` when the key is absent or holds an
+invalid value (checked with `isAnswerInputMode`). State is shared across every component
+instance in the tab (a module-level listener set, not React state) and stays in sync across
+tabs/windows via the `storage` event. It returns a `[mode, setMode]` pair, mirroring
+`useState`.
+
+```typescript
+const [mode, setMode] = useAnswerInputMode();
+```
+
+### The four modes
+
+| Mode          | Behavior                                                                        |
+| ------------- | ------------------------------------------------------------------------------- |
+| `auto`        | Adaptive (default): handwriting on a coarse pointer (touch), keyboard otherwise |
+| `keyboard`    | Always `KeyboardInput`                                                          |
+| `handwriting` | Always `HandwritingInput`                                                       |
+| `keypad`      | Always `KeypadInput`                                                            |
+
+### SettingsPage (src/pages/SettingsPage.tsx)
+
+Auth-gated page routed at `/settings`, linked from the Header user menu ("Réglages"). Shows
+a loading state while auth resolves, and a "sign in" notice for anonymous visitors. Once
+authenticated, it renders one selectable card per entry of `ANSWER_INPUT_MODES`
+(Automatique / Clavier / Écriture manuscrite / Pavé numérique), using
+`ANSWER_INPUT_MODE_LABELS`/`ANSWER_INPUT_MODE_DESCRIPTIONS` for copy, and calls `setMode`
+on click. The choice is per-device (stored in `localStorage`, not synced to the backend).
 
 ---
 
@@ -95,6 +176,36 @@ error: string | null; // error message if recognition fails
 - **Valider** — parses `digits` with the sign and calls `onSubmit(value)` (disabled when empty)
 
 All three controls sit on a single row (no dedicated "clear all" button).
+
+---
+
+## KeypadInput (src/components/AnswerInput/KeypadInput.tsx)
+
+On-screen numeric keypad — no device keyboard or drawing involved, well suited to
+touch devices where the player prefers a fixed layout over handwriting recognition.
+
+### Layout
+
+Telephone-style grid: digits `1-9` on a 3-column grid (rows 1-2-3), then a bottom row with
+**±** (sign toggle), **0**, and **Valider**. The running answer and a backspace button
+("Effacer", `⌫`) sit above the grid, next to the display.
+
+### Local state
+
+```typescript
+digits: string; // accumulated answer digits (no sign)
+isNegative: boolean; // sign toggled via the ± button
+```
+
+### Controls
+
+- **1-9 / 0** — append the digit to `digits`
+- **±** — toggles the sign
+- **⌫ (Effacer)** — removes the last digit
+- **Valider** — parses `digits` with the sign and calls `onSubmit(value)` (disabled when `digits` is empty)
+
+Like `HandwritingInput`, it resets its local state (`digits`, `isNegative`) whenever
+`disabled` transitions back to `false`, so a fresh question starts from a blank answer.
 
 ---
 
@@ -148,8 +259,14 @@ served from the app itself.
 ## Adding a new input implementation
 
 1. Create `MyInput.tsx` implementing `AnswerInputProps` (port.ts)
-2. Modify `adapter.ts` to return `MyInput` based on the desired condition
-3. No other changes needed — `GameView` uses `AnswerInput` opaquely
+2. Add it to the `ANSWER_INPUT_COMPONENTS` map in `adapter.ts`
+3. If it should be a brand-new user-selectable mode (not just an alternate resolution of an
+   existing one): add it to the `AnswerInputMode`/`ResolvedAnswerInputMode` unions and
+   `ANSWER_INPUT_MODES` in `mode.ts`, give it an entry in `ANSWER_INPUT_MODE_LABELS` and
+   `ANSWER_INPUT_MODE_DESCRIPTIONS`, and decide how `resolveAnswerInputMode` should treat it
+   (e.g. whether `auto` can resolve to it)
+4. No other changes needed — `GameView` uses `AnswerInput` opaquely, and the settings page
+   picks up new entries of `ANSWER_INPUT_MODES` automatically
 
 ## Replacing digit recognition
 
