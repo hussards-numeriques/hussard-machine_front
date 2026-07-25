@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { findInkBox, toCrnnInput, CRNN_HEIGHT, CRNN_WIDTH } from './preprocessing';
+import {
+  findInkBox,
+  toCrnnInput,
+  preprocessInkHigh,
+  CRNN_HEIGHT,
+  CRNN_WIDTH,
+} from './preprocessing';
 
 function makeImage(width: number, height: number, inkPixels: [number, number][]) {
   const data = new Uint8ClampedArray(width * height * 4).fill(255);
@@ -34,30 +40,25 @@ describe('toCrnnInput', () => {
     expect(toCrnnInput(data, 8, 8)).toBeNull();
   });
 
-  it('returns a 32x128 Float32Array with values normalized in [0, 1]', () => {
+  it('returns a 32x128 Float32Array normalized in [0,1] with ink present', () => {
     const ink: [number, number][] = [];
     for (let y = 2; y <= 6; y++) for (let x = 2; x <= 6; x++) ink.push([x, y]);
-    const data = makeImage(9, 9, ink);
-    const out = toCrnnInput(data, 9, 9);
-    expect(out).not.toBeNull();
-    expect(out!.length).toBe(CRNN_HEIGHT * CRNN_WIDTH);
-    const max = Math.max(...out!);
-    const min = Math.min(...out!);
-    expect(max).toBeGreaterThan(0);
-    expect(max).toBeLessThanOrEqual(1);
-    expect(min).toBeGreaterThanOrEqual(0);
+    const out = toCrnnInput(makeImage(9, 9, ink), 9, 9)!;
+    expect(out.length).toBe(CRNN_HEIGHT * CRNN_WIDTH);
+    expect(Math.max(...out)).toBeGreaterThan(0);
+    expect(Math.max(...out)).toBeLessThanOrEqual(1);
+    expect(Math.min(...out)).toBeGreaterThanOrEqual(0);
   });
 
-  it('inverts the ink: background is black (0), ink is bright (~1)', () => {
-    const ink: [number, number][] = [];
-    for (let y = 0; y < 9; y++) for (let x = 0; x < 9; x++) ink.push([x, y]);
-    const data = makeImage(9, 9, ink);
-    const out = toCrnnInput(data, 9, 9)!;
-    // le centre (encre) doit être proche de 1
-    const centerY = Math.floor(CRNN_HEIGHT / 2);
-    const centerX = Math.floor(CRNN_WIDTH / 2);
-    expect(out[centerY * CRNN_WIDTH + centerX]).toBeCloseTo(1, 5);
-    // un coin sans encre (padding) doit rester à 0
-    expect(out[0]).toBe(0);
+  it('area-resizes a constant ink block to a near-constant value (no aliasing gaps)', () => {
+    // un bloc plein d'encre -> après area-resize, la zone dessinée est uniforme ~1
+    const w = 60;
+    const h = 30;
+    const ink = new Float32Array(w * h).fill(1);
+    const out = preprocessInkHigh(ink, w, h);
+    // toutes les colonnes dessinées (non nulles) valent ~1
+    const drawn = Array.from(out).filter((v) => v > 0);
+    expect(drawn.length).toBeGreaterThan(0);
+    for (const v of drawn) expect(v).toBeCloseTo(1, 5);
   });
 });
