@@ -1,5 +1,5 @@
-export const MNIST_SIZE = 28;
-const INNER_BOX = 20;
+export const CRNN_HEIGHT = 32;
+export const CRNN_WIDTH = 128;
 const INK_THRESHOLD = 200;
 
 export interface InkBox {
@@ -30,7 +30,15 @@ export function findInkBox(data: Uint8ClampedArray, width: number, height: numbe
   return maxX < 0 ? null : { minX, minY, maxX, maxY };
 }
 
-export function toMnistInput(
+/**
+ * Canvas ImageData -> tenseur d'entrée du modèle CRNN.
+ *
+ * Crop sur l'encre, redimensionne à la hauteur CRNN_HEIGHT en préservant le
+ * ratio (largeur clampée à CRNN_WIDTH), centre horizontalement sur un fond noir
+ * CRNN_HEIGHT x CRNN_WIDTH, inverse l'encre (blanc sur noir) et normalise en 0-1.
+ * Renvoie un Float32Array de longueur CRNN_HEIGHT * CRNN_WIDTH, ou null si vide.
+ */
+export function toCrnnInput(
   data: Uint8ClampedArray,
   width: number,
   height: number
@@ -40,13 +48,13 @@ export function toMnistInput(
 
   const boxW = box.maxX - box.minX + 1;
   const boxH = box.maxY - box.minY + 1;
-  const scale = INNER_BOX / Math.max(boxW, boxH);
-  const drawW = Math.max(1, Math.round(boxW * scale));
-  const drawH = Math.max(1, Math.round(boxH * scale));
-  const offsetX = Math.floor((MNIST_SIZE - drawW) / 2);
-  const offsetY = Math.floor((MNIST_SIZE - drawH) / 2);
+  const scale = CRNN_HEIGHT / boxH;
+  const drawH = CRNN_HEIGHT;
+  const drawW = Math.max(1, Math.min(CRNN_WIDTH, Math.round(boxW * scale)));
+  const offsetX = Math.floor((CRNN_WIDTH - drawW) / 2);
+  const offsetY = Math.floor((CRNN_HEIGHT - drawH) / 2);
 
-  const input = new Float32Array(MNIST_SIZE * MNIST_SIZE);
+  const input = new Float32Array(CRNN_HEIGHT * CRNN_WIDTH);
   for (let dy = 0; dy < drawH; dy++) {
     const srcY = box.minY + Math.floor((dy / drawH) * boxH);
     for (let dx = 0; dx < drawW; dx++) {
@@ -54,7 +62,7 @@ export function toMnistInput(
       const lum = luminance(data, (srcY * width + srcX) * 4);
       const outX = offsetX + dx;
       const outY = offsetY + dy;
-      input[outY * MNIST_SIZE + outX] = 255 - lum;
+      input[outY * CRNN_WIDTH + outX] = (255 - lum) / 255;
     }
   }
   return input;

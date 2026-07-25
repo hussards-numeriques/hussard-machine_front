@@ -1,5 +1,5 @@
-import { OnnxMnistAdapter } from './OnnxMnistAdapter';
+import { OnnxCrnnAdapter } from './OnnxCrnnAdapter';
 import type { DigitRecognitionPort } from './port';
 
-export const digitRecognitionPort: DigitRecognitionPort = new OnnxMnistAdapter();
+export const digitRecognitionPort: DigitRecognitionPort = new OnnxCrnnAdapter();
 export type { DigitRecognitionPort };

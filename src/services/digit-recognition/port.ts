@@ -1,3 +1,3 @@
 export interface DigitRecognitionPort {
-  recognizeDigit(canvas: HTMLCanvasElement): Promise<number | null>;
+  recognizeNumber(canvas: HTMLCanvasElement): Promise<number | null>;
 }

@@ -16,7 +16,7 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const drawing = React.useRef(false);
   const debounce = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [digits, setDigits] = React.useState('');
+  const [recognized, setRecognized] = React.useState<number | null>(null);
   const [isNegative, setIsNegative] = React.useState(false);
   const [isRecognizing, setIsRecognizing] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -59,13 +59,12 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     if (!canvas) return;
     setIsRecognizing(true);
     try {
-      const digit = await digitRecognitionPort.recognizeDigit(canvas);
-      if (digit === null) {
+      const value = await digitRecognitionPort.recognizeNumber(canvas);
+      if (value === null) {
         setError('Impossible de lire, réessaie');
         return;
       }
-      setDigits((prev) => prev + String(digit));
-      fillWhite(canvas);
+      setRecognized(value);
     } catch {
       setError('Erreur de reconnaissance, réessaie');
     } finally {
@@ -80,18 +79,19 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     debounce.current = setTimeout(() => void recognizeCurrent(), RECOGNIZE_DELAY_MS);
   };
 
-  const handleBackspace = () => {
+  const handleClear = () => {
+    if (debounce.current) clearTimeout(debounce.current);
     setError(null);
-    setDigits((prev) => prev.slice(0, -1));
+    setRecognized(null);
+    if (canvasRef.current) fillWhite(canvasRef.current);
   };
 
   const handleValidate = () => {
-    if (digits.length === 0) return;
-    const value = parseInt(digits, 10);
-    onSubmit(isNegative ? -value : value);
+    if (recognized === null) return;
+    onSubmit(isNegative ? -recognized : recognized);
   };
 
-  const display = `${isNegative ? '−' : ''}${digits}`;
+  const display = `${isNegative ? '−' : ''}${recognized ?? ''}`;
 
   return (
     <div className="space-y-4">
@@ -126,16 +126,16 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
           variant="secondary"
           size="lg"
           className="flex-1 min-w-0 px-0"
-          onClick={handleBackspace}
-          disabled={disabled || digits.length === 0}
+          onClick={handleClear}
+          disabled={disabled || (recognized === null && !error)}
         >
-          ⌫
+          Effacer
         </Button>
         <Button
           size="lg"
           className="flex-1 min-w-0 px-0"
           onClick={handleValidate}
-          disabled={disabled || isRecognizing || digits.length === 0}
+          disabled={disabled || isRecognizing || recognized === null}
         >
           {isRecognizing ? '...' : 'Valider'}
         </Button>
