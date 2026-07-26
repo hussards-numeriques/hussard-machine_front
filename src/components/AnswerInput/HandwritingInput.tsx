@@ -26,8 +26,17 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
   }, []);
 
   const point = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    // Le backing store (canvas.width/height) est fixe (400x200) alors que la
+    // taille affichee (rect) varie avec le layout (w-full). Sans ce facteur
+    // d'echelle, le trait est decale par rapport au doigt vers les bords.
+    const scaleX = rect.width ? canvas.width / rect.width : 1;
+    const scaleY = rect.height ? canvas.height / rect.height : 1;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
   };
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {

@@ -53,6 +53,18 @@ describe('HandwritingInput', () => {
     expect(document.querySelector('canvas')).toBeInTheDocument();
   });
 
+  it('maps pointer coords to the backing store when displayed size differs', () => {
+    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    const canvas = document.querySelector('canvas')!;
+    // Backing store 400x200 affiche sur 200x100 (facteur 2) : le doigt a 100,50
+    // en pixels affiches doit tomber a 200,100 dans le backing store.
+    canvas.getBoundingClientRect = vi.fn(
+      () => ({ left: 0, top: 0, width: 200, height: 100 }) as DOMRect
+    );
+    fireEvent.pointerDown(canvas, { clientX: 100, clientY: 50, pointerId: 1 });
+    expect(ctxStub.moveTo).toHaveBeenCalledWith(200, 100);
+  });
+
   it('displays the recognized number in a single pass', async () => {
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(123);
     render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
