@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { useMyTitles, useQuestCatalog, useSelectTitle } from '../hooks/useQuests';
+import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { QuestProgressCard } from '../components/quests/QuestProgressCard';
 
 const QuestsNotice: React.FC<{ message: string }> = ({ message }) => (
@@ -21,6 +22,7 @@ export const QuestsPage: React.FC = () => {
   const catalogQuery = useQuestCatalog();
   const myTitlesQuery = useMyTitles();
   const selectTitle = useSelectTitle();
+  const subscriptionStatus = useSubscriptionStatus();
 
   if (authLoading || (isAuthenticated && (catalogQuery.isLoading || myTitlesQuery.isLoading))) {
     return (
@@ -43,6 +45,18 @@ export const QuestsPage: React.FC = () => {
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
       <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
+
+      {subscriptionStatus.data?.active === false && (
+        <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4 text-sm text-amber-800 space-y-2">
+          <p>
+            Ta progression vers les prochains titres est en pause. Les titres déjà débloqués restent
+            à toi.
+          </p>
+          <Link to="/subscription" className="font-bold underline">
+            Voir l'abonnement
+          </Link>
+        </div>
+      )}
 
       {titles.length === 0 && (
         <p className="text-slate-500 text-sm bg-white rounded-2xl border-2 border-slate-100 p-4">
