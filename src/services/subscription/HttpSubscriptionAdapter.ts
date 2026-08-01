@@ -23,7 +23,7 @@ const subscriptionStatusSchema = z.object({
   expires_at: z.string().nullable(),
 }) satisfies z.ZodType<SubscriptionStatus>;
 
-const checkoutResponseSchema = z.object({ checkout_url: z.string() });
+const checkoutResponseSchema = z.object({ checkout_url: z.string().url() });
 
 export class HttpSubscriptionAdapter implements SubscriptionRepository {
   public async fetchPlans(): Promise<SubscriptionPlan[]> {

@@ -87,4 +87,16 @@ describe('HttpSubscriptionAdapter', () => {
       ApiError
     );
   });
+
+  it('rejects a checkout_url that is not a valid URL', async () => {
+    const authorizedFetch = vi.fn<AuthorizedFetch>(
+      async () =>
+        new Response(JSON.stringify({ checkout_url: 'not-a-url' }), {
+          status: 200,
+        })
+    );
+    const adapter = new HttpSubscriptionAdapter();
+
+    await expect(adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH')).rejects.toThrow();
+  });
 });

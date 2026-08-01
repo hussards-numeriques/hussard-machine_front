@@ -3,5 +3,5 @@ export function formatEuros(amountInCents: number, currency: string): string {
     style: 'currency',
     currency,
   }).format(amountInCents / 100);
-  return formatted.replace(new RegExp(String.fromCharCode(0xa0), 'g'), ' ');
+  return formatted.replace(/[\u00A0\u202F]/g, ' ');
 }

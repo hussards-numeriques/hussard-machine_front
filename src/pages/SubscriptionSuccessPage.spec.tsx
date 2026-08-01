@@ -10,6 +10,7 @@ import type { SubscriptionStatus } from '../services/subscription';
 
 const mocks = vi.hoisted(() => ({
   authLoading: false,
+  isAuthenticated: true,
   status: undefined as SubscriptionStatus | undefined,
   statusLoading: false,
   refetch: vi.fn(),
@@ -19,7 +20,7 @@ vi.mock('../contexts/useAuth', () => ({
   useAuth: () => ({
     client: {},
     user: null,
-    isAuthenticated: true,
+    isAuthenticated: mocks.isAuthenticated,
     isLoading: mocks.authLoading,
     login: vi.fn(),
     register: vi.fn(),
@@ -47,6 +48,7 @@ describe('SubscriptionSuccessPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.authLoading = false;
+    mocks.isAuthenticated = true;
     mocks.status = { active: false, expires_at: null };
     mocks.statusLoading = false;
     mocks.refetch = vi.fn(async () => ({}) as never);
@@ -54,6 +56,23 @@ describe('SubscriptionSuccessPage', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+  });
+
+  it('shows a login message and does not poll when the visitor is not authenticated', async () => {
+    vi.useFakeTimers();
+    mocks.isAuthenticated = false;
+    renderPage();
+
+    expect(
+      screen.getByText('Connecte-toi pour voir le statut de ton abonnement.')
+    ).toBeInTheDocument();
+    expect(screen.getByText("Retour à l'accueil")).toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(POLL_INTERVAL_MS * MAX_POLL_ATTEMPTS);
+    });
+
+    expect(mocks.refetch).not.toHaveBeenCalled();
   });
 
   it('shows a loading state while the status is loading', () => {
