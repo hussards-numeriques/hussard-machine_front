@@ -11,6 +11,9 @@ BrowserRouter
 │   ├── /terms      → TermsPage
 │   ├── /terms-of-sale → TermsOfSalePage
 │   ├── /progression → ProgressionPage
+│   ├── /subscription → SubscriptionPage
+│   ├── /subscription/success → SubscriptionSuccessPage
+│   ├── /subscription/cancel → SubscriptionCancelPage
 │   ├── /legal-notice → LegalNoticePage
 │   └── /privacy-policy → PrivacyPolicyPage
 └── GameLayout      (GameProvider)
@@ -72,6 +75,7 @@ triggers a fresh connect — without it, React sees no changed dependency and sk
 - `PodiumView` → back → `navigate('/')`
 - `Header` → `← Home` link on all pages except `/`
 - `Header` → user menu → "Quêtes & Titres" → `navigate('/quests')` (authenticated users only, see `doc/quests-titles.md`)
+- `Header` → user menu → "Abonnement" → `navigate('/subscription')` (authenticated users only, see `doc/subscription.md`)
 
 ## Adding a new page
 

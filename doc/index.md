@@ -69,6 +69,13 @@ bannière OG) via `npm run generate:icons`.
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.
 → Read when: adding a page, modifying navigation, understanding how `GamePage` switches between views.
 
+### [subscription.md](subscription.md)
+
+Achat d'abonnement Stripe Checkout (1/3/12 mois, achat unique), pages de retour
+succès/annulation, badge header et bandeau de pause sur `/quests` quand inactif.
+→ Read when: touching `/subscription*` routes, checkout, or the quests pause
+banner.
+
 ### [conventions.md](conventions.md)
 
 TypeScript rules, port/adapter pattern, Tailwind styles **(graphic charter: page card patterns, typography, color tokens)**, no comments policy, validation commands, tests.
