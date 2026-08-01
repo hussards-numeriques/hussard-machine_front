@@ -19,7 +19,7 @@ vi.mock('../contexts/useAuth', () => ({
 vi.mock('./streak/StreakBadge', () => ({ StreakBadge: () => null }));
 
 describe('Header - user menu', () => {
-  it('links to /quests between the profile link and the logout button', () => {
+  it('links to /quests and /subscription between the profile link and the logout button', () => {
     render(
       <MemoryRouter>
         <Header />
@@ -32,5 +32,10 @@ describe('Header - user menu', () => {
     const profileIndex = links.indexOf('Mon profil');
     expect(profileIndex).toBeGreaterThanOrEqual(0);
     expect(links[profileIndex + 1]).toBe('Quêtes & Titres');
+    expect(links[profileIndex + 2]).toBe('Abonnement');
+    expect(screen.getByRole('link', { name: 'Abonnement' })).toHaveAttribute(
+      'href',
+      '/subscription'
+    );
   });
 });
