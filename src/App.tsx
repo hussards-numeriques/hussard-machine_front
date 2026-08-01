@@ -13,6 +13,7 @@ import { TermsOfSalePage } from './pages/TermsOfSalePage';
 import { ProgressionPage } from './pages/ProgressionPage';
 import { SubscriptionPage } from './pages/SubscriptionPage';
 import { SubscriptionSuccessPage } from './pages/SubscriptionSuccessPage';
+import { SubscriptionCancelPage } from './pages/SubscriptionCancelPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
@@ -40,6 +41,7 @@ function App() {
             <Route path="progression" element={<ProgressionPage />} />
             <Route path="subscription" element={<SubscriptionPage />} />
             <Route path="subscription/success" element={<SubscriptionSuccessPage />} />
+            <Route path="subscription/cancel" element={<SubscriptionCancelPage />} />
             <Route path="legal-notice" element={<LegalNoticePage />} />
             <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="auth/callback" element={<OAuthCallbackPage />} />
