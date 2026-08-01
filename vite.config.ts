@@ -9,9 +9,12 @@ export default defineConfig({
     port: 3000,
     host: true,
     proxy: {
-      '/api': 'http://localhost:8000',
+      '/api': process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:8000',
       '/ws': {
-        target: 'ws://localhost:8000',
+        target: (process.env.VITE_DEV_PROXY_TARGET || 'http://localhost:8000').replace(
+          /^http/,
+          'ws'
+        ),
         ws: true,
       },
     },
