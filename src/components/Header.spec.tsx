@@ -17,6 +17,7 @@ vi.mock('../contexts/useAuth', () => ({
 }));
 
 vi.mock('./streak/StreakBadge', () => ({ StreakBadge: () => null }));
+vi.mock('./SubscriptionBadge', () => ({ SubscriptionBadge: () => null }));
 
 describe('Header - user menu', () => {
   it('links to /quests and /subscription between the profile link and the logout button', () => {

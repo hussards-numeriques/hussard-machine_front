@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { AuthModal } from './AuthModal';
 import { StreakBadge } from './streak/StreakBadge';
+import { SubscriptionBadge } from './SubscriptionBadge';
 
 export const Header: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -32,6 +33,7 @@ export const Header: React.FC = () => {
         <div className="pointer-events-auto relative">
           {isLoading ? null : isAuthenticated && user ? (
             <div className="flex items-center gap-2">
+              <SubscriptionBadge />
               <StreakBadge />
               <div className="relative">
                 <button
