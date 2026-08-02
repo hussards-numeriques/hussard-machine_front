@@ -19,8 +19,8 @@ interface SubscriptionCardProps {
   isPurchasePending: boolean;
 }
 
-const defaultPlan = (plans: SubscriptionPlan[]): SubscriptionPlan =>
-  plans.find((plan) => plan.key === 'THREE_MONTHS') ?? plans[0];
+const defaultPlanKey = (plans: SubscriptionPlan[]): SubscriptionPlanKey =>
+  plans.find((plan) => plan.key === 'THREE_MONTHS')?.key ?? plans[0].key;
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   plans,
@@ -28,7 +28,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onPurchase,
   isPurchasePending,
 }) => {
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(() => defaultPlan(plans));
+  const [selectedPlanKey, setSelectedPlanKey] = useState<SubscriptionPlanKey>(() =>
+    defaultPlanKey(plans)
+  );
+  const selectedPlan = plans.find((plan) => plan.key === selectedPlanKey) ?? plans[0];
   const baselineMonthlyAmount = plans.find((plan) => plan.key === 'ONE_MONTH')?.amount;
   const selectedMonthlyEquivalent = computeMonthlyEquivalentCents(
     selectedPlan.amount,
@@ -56,8 +59,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               key={plan.key}
               type="button"
               aria-pressed={isSelected}
-              aria-label={plan.label}
-              onClick={() => setSelectedPlan(plan)}
+              onClick={() => setSelectedPlanKey(plan.key)}
               className={cn(
                 'rounded-xl p-3 text-center transition-colors',
                 isSelected ? 'bg-primary text-white' : 'bg-slate-50 text-slate-600'
@@ -102,7 +104,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         type="button"
         onClick={() => onPurchase(selectedPlan.key)}
         disabled={isPurchasePending}
-        aria-label={status?.active ? 'Prolonger' : 'Soutenir'}
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
         {status?.active ? `Prolonger de ${selectedPlan.label}` : `Soutenir ${selectedPlan.label}`}

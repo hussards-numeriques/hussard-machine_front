@@ -75,6 +75,16 @@ describe('SubscriptionPage', () => {
     expect(screen.getByText('Chargement...')).toBeInTheDocument();
   });
 
+  it('shows a notice instead of crashing when the plan catalog is empty', () => {
+    mocks.isAuthenticated = true;
+    mocks.plans = [];
+    renderPage();
+
+    expect(
+      screen.getByText('Impossible de charger les formules pour le moment.')
+    ).toBeInTheDocument();
+  });
+
   it('renders the pricing card once plans and status are loaded', () => {
     mocks.isAuthenticated = true;
     mocks.plans = plans;

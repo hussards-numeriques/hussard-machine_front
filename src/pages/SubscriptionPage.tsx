@@ -39,7 +39,7 @@ export const SubscriptionPage: React.FC = () => {
     return <SubscriptionNotice message="Connecte-toi pour gérer ton abonnement." />;
   }
 
-  if (!plansQuery.data) {
+  if (!plansQuery.data || plansQuery.data.length === 0) {
     return <SubscriptionNotice message="Impossible de charger les formules pour le moment." />;
   }
 

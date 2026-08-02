@@ -27,7 +27,7 @@ describe('SubscriptionCard', () => {
   it('selects 3 months by default and shows its total price', () => {
     renderCard();
     expect(screen.getByText('8,42 €')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /3 mois/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: /^3 mois/ })).toHaveAttribute('aria-pressed', 'true');
   });
 
   it('shows the per-month price and savings badge for every plan at once', () => {
@@ -53,13 +53,13 @@ describe('SubscriptionCard', () => {
 
   it('switches the displayed price when another plan is selected', () => {
     renderCard();
-    fireEvent.click(screen.getByRole('button', { name: /1 an/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^1 an/ }));
     expect(screen.getByText('27,18 €')).toBeInTheDocument();
   });
 
   it('calls onPurchase with the selected plan key', () => {
     const { onPurchase } = renderCard();
-    fireEvent.click(screen.getByRole('button', { name: /1 an/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^1 an/ }));
     fireEvent.click(screen.getByText('Soutenir 1 an'));
     expect(onPurchase).toHaveBeenCalledWith('ONE_YEAR');
   });
