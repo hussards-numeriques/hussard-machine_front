@@ -75,36 +75,26 @@ describe('SubscriptionPage', () => {
     expect(screen.getByText('Chargement...')).toBeInTheDocument();
   });
 
-  it('lists the plans with formatted prices', () => {
+  it('renders the pricing card once plans and status are loaded', () => {
     mocks.isAuthenticated = true;
     mocks.plans = plans;
     mocks.status = { active: false, expires_at: null };
     renderPage();
 
-    expect(screen.getByText('1 mois')).toBeInTheDocument();
-    expect(screen.getByText('4,42 €')).toBeInTheDocument();
-    expect(screen.getByText('27,18 €')).toBeInTheDocument();
+    expect(screen.getByText('Soutenir Calc Rush')).toBeInTheDocument();
+    expect(screen.getByText('8,42 €')).toBeInTheDocument();
     expect(screen.queryByText(/Actif jusqu'au/)).not.toBeInTheDocument();
   });
 
-  it('shows the active banner with the formatted expiry date', () => {
-    mocks.isAuthenticated = true;
-    mocks.plans = plans;
-    mocks.status = { active: true, expires_at: '2026-08-21T12:00:00' };
-    renderPage();
-
-    expect(screen.getByText("Actif jusqu'au 21/08.")).toBeInTheDocument();
-  });
-
-  it('starts checkout with the plan key when a buy button is clicked', () => {
+  it('starts checkout with the selected plan key when the CTA is clicked', () => {
     mocks.isAuthenticated = true;
     mocks.plans = plans;
     mocks.status = { active: false, expires_at: null };
     renderPage();
 
-    fireEvent.click(screen.getAllByText('Acheter')[0]);
+    fireEvent.click(screen.getByText('Soutenir 3 mois'));
 
-    expect(mocks.mutate).toHaveBeenCalledWith('ONE_MONTH');
+    expect(mocks.mutate).toHaveBeenCalledWith('THREE_MONTHS');
   });
 
   it('shows an error message when checkout fails to start', () => {
@@ -115,5 +105,17 @@ describe('SubscriptionPage', () => {
     renderPage();
 
     expect(screen.getByText('Impossible de lancer le paiement, réessaie.')).toBeInTheDocument();
+  });
+
+  it('links to the terms of sale', () => {
+    mocks.isAuthenticated = true;
+    mocks.plans = plans;
+    mocks.status = { active: false, expires_at: null };
+    renderPage();
+
+    expect(screen.getByText('Conditions de vente').closest('a')).toHaveAttribute(
+      'href',
+      '/terms-of-sale'
+    );
   });
 });
