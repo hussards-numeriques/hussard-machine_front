@@ -8,6 +8,17 @@
 - Quests & titles: players unlock cosmetic titles (`BRONZE`/`SILVER`/`GOLD`/`DIAMOND` rarities) by progressing through quests, and can equip one from a new `/quests` page (linked from the header user menu). The equipped title is snapshotted per-player at `JOIN` (like `level`/`grade`/`daily_streak`) and shown in the lobby and the podium's full ranking (not the top-3 columns). No WS event fires on unlock; the podium detects new titles by diffing `GET /me/titles` against a lobby-time snapshot and shows an auto-dismissing toast (`useTitleUnlocks`, `TitleUnlockToast`).
 - Subscription: authenticated players can buy a one-time subscription (1/3/12 months) from a new `/subscription` page (linked from the header user menu), unlocking quest progression (playing itself always stays free). Checkout redirects to Stripe; `/subscription/success` polls the status for a few seconds while the backend's webhook confirms payment, and `/subscription/cancel` is a simple bounce-back. The header shows an "Actif jusqu'au JJ/MM" badge next to the streak, and the quests page shows a non-blocking pause banner when the subscription is inactive.
 
+### Changed
+
+- Subscription page: `/subscription` now leads with a single pricing card
+  instead of a bare list — per-month price and savings percent are shown for
+  all 3 plans at once (no plan is singled out as "popular" or "recommended",
+  only 3 months is preselected as a neutral default), the card explains what
+  supporting Calc Rush unlocks (cosmetic quest/title progress only, never a
+  gameplay advantage) and states plainly that it's a one-time payment with no
+  auto-renewal. New pure helpers in `lib/subscriptionPricing.ts` compute the
+  monthly-equivalent price and savings percent from the existing plan catalog.
+
 ### Fixed
 
 - Layout chrome: the home-page footer now rests at the bottom of the viewport instead of falling below the fold — `AppLayout` became a flex column with the `<Outlet />` wrapped in a `<main class="flex-1">` between the header and the (home-only) footer, and `HomePage` fills that space (`flex-1`) instead of forcing its own `min-h-screen`. During a game, `GameView` no longer reserves a 4rem empty strip at the top (`pt-16`, a leftover slot for a fixed header that `GameLayout` never renders): the "Question X / Y" bar becomes a full-width `sticky top-0` header and gains a thin progress bar showing how far into the game the player is.

@@ -38,8 +38,15 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 
 ## Pages
 
-- `/subscription` (`SubscriptionPage.tsx`) : liste des formules, badge actif si
-  abonné, achat.
+- `/subscription` (`SubscriptionPage.tsx`) : intro + mascotte Rushy, puis une
+  carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
+  sélecteur des 3 formules (par défaut sur 3 mois, simple accent visuel — jamais
+  d'étiquette "populaire"/"recommandé"), le prix/mois et le % d'économie de
+  chaque formule affichés simultanément (`lib/subscriptionPricing.ts`), la
+  liste de ce que ça débloque (progression cosmétique des quêtes/titres,
+  badge de soutien, aide à l'infra — jamais d'avantage de jeu), et un rappel
+  explicite qu'il s'agit d'un paiement unique sans renouvellement automatique.
+  Lien vers `/terms-of-sale` en bas de page.
 - `/subscription/success` (`SubscriptionSuccessPage.tsx`) : re-fetch le statut,
   poll toutes les 1.5s jusqu'à 6 tentatives (`POLL_INTERVAL_MS`,
   `MAX_POLL_ATTEMPTS`) si pas encore actif, puis message d'attente prolongée.
