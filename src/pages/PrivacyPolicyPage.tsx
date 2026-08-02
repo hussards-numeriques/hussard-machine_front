@@ -19,7 +19,8 @@ export const PrivacyPolicyPage: React.FC = () => {
           <p className="text-slate-600 text-sm leading-relaxed">
             Vous pouvez jouer sans créer de compte. Si vous créez un compte, nous collectons
             uniquement votre adresse email, votre pseudo, et vos scores de jeu (XP, niveau, grade,
-            historique de parties).
+            historique de parties). Si vous souscrivez un abonnement, nous conservons également son
+            statut (actif ou non) et sa date d'expiration.
           </p>
         </section>
 
@@ -49,10 +50,33 @@ export const PrivacyPolicyPage: React.FC = () => {
         </section>
 
         <section className="space-y-3">
+          <h2 className="text-xl font-black text-slate-700">Paiement (Stripe)</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">
+            Lors d'un achat d'abonnement, les données nécessaires au paiement (votre email, le
+            montant et la devise) sont transmises à Stripe, notre sous-traitant chargé du traitement
+            du paiement. Calc Rush ne stocke ni ne voit jamais vos données de carte bancaire. Stripe
+            peut traiter ces données en dehors de l'Union européenne (États-Unis), dans le cadre de
+            garanties contractuelles types reconnues par la Commission européenne.
+          </p>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-black text-slate-700">Mineurs</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">
+            La création d'un compte par un utilisateur de moins de 15 ans nécessite le consentement
+            d'un parent ou d'un tuteur légal. Un parent peut demander la suppression d'un compte
+            créé par son enfant sans ce consentement en nous contactant à l'adresse
+            timothee.demares@gmail.com.
+          </p>
+        </section>
+
+        <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Durée de conservation</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Vos données sont conservées tant que votre compte est actif. Vous pouvez demander leur
-            suppression à tout moment en nous contactant.
+            Vos données de compte sont conservées tant que votre compte est actif. Vous pouvez
+            demander leur suppression à tout moment en nous contactant. Les données de transaction
+            (statut d'abonnement, historique d'achat) sont conservées séparément, le temps
+            nécessaire au respect de nos obligations comptables légales.
           </p>
         </section>
 
