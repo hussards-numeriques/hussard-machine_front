@@ -18,6 +18,9 @@ export const Footer: React.FC = () => {
         <Link to="/terms-of-sale" className="hover:text-primary transition-colors">
           CGV
         </Link>
+        <Link to="/terms" className="hover:text-primary transition-colors">
+          CGU
+        </Link>
         <Link to="/legal-notice" className="hover:text-primary transition-colors">
           Mentions légales
         </Link>

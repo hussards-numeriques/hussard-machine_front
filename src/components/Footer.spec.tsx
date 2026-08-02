@@ -34,4 +34,9 @@ describe('Footer', () => {
     render(<Footer />, { wrapper: MemoryRouter });
     expect(screen.getByRole('link', { name: 'CGV' })).toHaveAttribute('href', '/terms-of-sale');
   });
+
+  it('links to the terms of use page', () => {
+    render(<Footer />, { wrapper: MemoryRouter });
+    expect(screen.getByRole('link', { name: 'CGU' })).toHaveAttribute('href', '/terms');
+  });
 });
