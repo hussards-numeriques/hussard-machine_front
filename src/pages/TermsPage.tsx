@@ -32,7 +32,14 @@ export const TermsPage: React.FC = () => {
           <p className="text-slate-600 text-sm leading-relaxed">
             Un compte est identifié par une adresse email et un pseudo. Vous êtes responsable de la
             confidentialité de vos identifiants. Vous pouvez demander la suppression de votre compte
-            à tout moment en nous contactant à l'adresse timothee.demares@gmail.com.
+            à tout moment en nous contactant à l'adresse{' '}
+            <a
+              href="mailto:timothee.demares@gmail.com"
+              className="font-bold text-primary hover:underline"
+            >
+              timothee.demares@gmail.com
+            </a>
+            .
           </p>
         </section>
 
@@ -84,8 +91,7 @@ export const TermsPage: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Droit applicable</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Les présentes conditions sont soumises au droit français. Tout litige relève des
-            tribunaux compétents du ressort de l'éditeur.
+            Les présentes conditions sont soumises au droit français.
           </p>
         </section>
       </div>

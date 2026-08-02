@@ -70,12 +70,15 @@ export const SubscriptionPage: React.FC = () => {
       )}
 
       <div className="text-center space-y-2 pb-8">
-        <p>
-          <Link
-            to="/terms-of-sale"
-            className="text-sm font-bold text-slate-400 hover:text-primary transition-colors"
-          >
+        <p className="flex justify-center items-center gap-3 text-sm font-bold text-slate-400">
+          <Link to="/terms-of-sale" className="hover:text-primary transition-colors">
             Conditions de vente
+          </Link>
+          <Link to="/legal-notice" className="hover:text-primary transition-colors">
+            Mentions légales
+          </Link>
+          <Link to="/privacy-policy" className="hover:text-primary transition-colors">
+            Confidentialité
           </Link>
         </p>
         <Link

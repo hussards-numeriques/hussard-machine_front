@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const TermsOfSalePage: React.FC = () => {
   return (
@@ -29,10 +30,10 @@ export const TermsOfSalePage: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Prix</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Les prix affichés sur la page{' '}
-            <a href="/subscription" className="font-bold text-primary hover:underline">
-              /subscription
-            </a>{' '}
+            Les prix affichés sur la{' '}
+            <Link to="/subscription" className="font-bold text-primary hover:underline">
+              page Abonnement
+            </Link>{' '}
             sont en euros, toutes taxes comprises, sans frais cachés.
           </p>
         </section>
@@ -58,9 +59,13 @@ export const TermsOfSalePage: React.FC = () => {
           <h2 className="text-xl font-black text-slate-700">Droit de rétractation</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
             Conformément à l'article L221-18 du Code de la consommation, vous disposez en principe
-            d'un délai de rétractation de 14 jours pour tout achat à distance. Ce service étant à
-            exécution immédiate (déblocage instantané de la progression), vous renoncez expressément
-            à ce délai en cochant la case de confirmation prévue à cet effet avant l'achat.
+            d'un délai de rétractation de 14 jours pour tout achat à distance. Conformément à
+            l'article L221-28 du même code, ce délai ne s'applique pas dès lors que le service a été
+            pleinement exécuté avant la fin du délai de rétractation, avec votre accord préalable et
+            exprès, et avec votre reconnaissance de la perte de ce droit une fois le service
+            exécuté. Ce service étant à exécution immédiate (déblocage instantané de la
+            progression), vous renoncez expressément à ce délai en cochant la case de confirmation
+            prévue à cet effet avant l'achat.
           </p>
         </section>
 
@@ -77,18 +82,15 @@ export const TermsOfSalePage: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Réclamation et médiation</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Pour toute réclamation, contactez-nous d'abord à l'adresse timothee.demares@gmail.com. À
-            défaut d'accord amiable, vous pouvez recourir à la plateforme européenne de règlement en
-            ligne des litiges, accessible à l'adresse{' '}
+            Pour toute réclamation, contactez-nous d'abord à l'adresse{' '}
             <a
-              href="https://ec.europa.eu/consumers/odr"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="mailto:timothee.demares@gmail.com"
               className="font-bold text-primary hover:underline"
             >
-              ec.europa.eu/consumers/odr
+              timothee.demares@gmail.com
             </a>
-            .
+            . Un médiateur de la consommation sera désigné prochainement pour le traitement des
+            litiges qui n'auraient pas trouvé de solution directement avec nous.
           </p>
         </section>
 

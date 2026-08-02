@@ -65,8 +65,14 @@ export const PrivacyPolicyPage: React.FC = () => {
           <p className="text-slate-600 text-sm leading-relaxed">
             La création d'un compte par un utilisateur de moins de 15 ans nécessite le consentement
             d'un parent ou d'un tuteur légal. Un parent peut demander la suppression d'un compte
-            créé par son enfant sans ce consentement en nous contactant à l'adresse
-            timothee.demares@gmail.com.
+            créé par son enfant sans ce consentement en nous contactant à l'adresse{' '}
+            <a
+              href="mailto:timothee.demares@gmail.com"
+              className="font-bold text-primary hover:underline"
+            >
+              timothee.demares@gmail.com
+            </a>
+            .
           </p>
         </section>
 
@@ -84,8 +90,14 @@ export const PrivacyPolicyPage: React.FC = () => {
           <h2 className="text-xl font-black text-slate-700">Vos droits</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
             Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement
-            et de portabilité de vos données. Pour exercer ces droits, contactez-nous à l'adresse :
-            timothee.demares@gmail.com.
+            et de portabilité de vos données. Pour exercer ces droits, contactez-nous à l'adresse :{' '}
+            <a
+              href="mailto:timothee.demares@gmail.com"
+              className="font-bold text-primary hover:underline"
+            >
+              timothee.demares@gmail.com
+            </a>
+            .
           </p>
         </section>
       </div>

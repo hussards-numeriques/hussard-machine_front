@@ -15,7 +15,15 @@ export const LegalNoticePage: React.FC = () => {
           <ul className="text-slate-600 text-sm leading-relaxed list-none space-y-1">
             <li>SIRET : 930 571 476 00017</li>
             <li>Adresse : 40 cours Henri Brunet, 33300 Bordeaux, France</li>
-            <li>Email : timothee.demares@gmail.com</li>
+            <li>
+              Email :{' '}
+              <a
+                href="mailto:timothee.demares@gmail.com"
+                className="font-bold text-primary hover:underline"
+              >
+                timothee.demares@gmail.com
+              </a>
+            </li>
           </ul>
         </section>
 
@@ -47,8 +55,14 @@ export const LegalNoticePage: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Contact</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Pour toute question relative au site, vous pouvez nous contacter à l'adresse :
-            timothee.demares@gmail.com.
+            Pour toute question relative au site, vous pouvez nous contacter à l'adresse :{' '}
+            <a
+              href="mailto:timothee.demares@gmail.com"
+              className="font-bold text-primary hover:underline"
+            >
+              timothee.demares@gmail.com
+            </a>
+            .
           </p>
         </section>
       </div>
