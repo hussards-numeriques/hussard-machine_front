@@ -28,6 +28,15 @@ export const LegalNoticePage: React.FC = () => {
         </section>
 
         <section className="space-y-3">
+          <h2 className="text-xl font-black text-slate-700">Paiement</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">
+            Les paiements sont traités par Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower,
+            Grand Canal Dock, Dublin, Irlande. Les données traitées par Stripe pour son propre
+            compte relèvent de sa propre politique de confidentialité.
+          </p>
+        </section>
+
+        <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Propriété intellectuelle</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
             L'ensemble des contenus présents sur Calc Rush (textes, graphismes, logo) est protégé
