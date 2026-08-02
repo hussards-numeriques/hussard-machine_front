@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { SubscriptionCard } from './SubscriptionCard';
 import type { SubscriptionPlan, SubscriptionStatus } from '../../services/subscription';
@@ -12,13 +13,15 @@ const plans: SubscriptionPlan[] = [
 const renderCard = (overrides: Partial<Parameters<typeof SubscriptionCard>[0]> = {}) => {
   const onPurchase = vi.fn();
   render(
-    <SubscriptionCard
-      plans={plans}
-      status={undefined}
-      onPurchase={onPurchase}
-      isPurchasePending={false}
-      {...overrides}
-    />
+    <MemoryRouter>
+      <SubscriptionCard
+        plans={plans}
+        status={undefined}
+        onPurchase={onPurchase}
+        isPurchasePending={false}
+        {...overrides}
+      />
+    </MemoryRouter>
   );
   return { onPurchase };
 };
@@ -60,12 +63,14 @@ describe('SubscriptionCard', () => {
   it('calls onPurchase with the selected plan key', () => {
     const { onPurchase } = renderCard();
     fireEvent.click(screen.getByRole('button', { name: /^1 an/ }));
+    fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByText('Soutenir 1 an'));
     expect(onPurchase).toHaveBeenCalledWith('ONE_YEAR');
   });
 
   it('disables the CTA while a purchase is pending', () => {
     renderCard({ isPurchasePending: true });
+    fireEvent.click(screen.getByRole('checkbox'));
     expect(screen.getByText('Soutenir 3 mois')).toBeDisabled();
   });
 
@@ -74,5 +79,20 @@ describe('SubscriptionCard', () => {
     renderCard({ status });
     expect(screen.getByText("Actif jusqu'au 21/08.")).toBeInTheDocument();
     expect(screen.getByText('Prolonger de 3 mois')).toBeInTheDocument();
+  });
+
+  it('disables the CTA until the consent checkbox is checked', () => {
+    renderCard();
+    expect(screen.getByText('Soutenir 3 mois')).toBeDisabled();
+    fireEvent.click(screen.getByRole('checkbox'));
+    expect(screen.getByText('Soutenir 3 mois')).not.toBeDisabled();
+  });
+
+  it('links the consent checkbox label to the terms of sale', () => {
+    renderCard();
+    expect(screen.getByRole('link', { name: 'conditions générales de vente' })).toHaveAttribute(
+      'href',
+      '/terms-of-sale'
+    );
   });
 });

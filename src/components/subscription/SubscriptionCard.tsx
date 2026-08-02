@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { formatEuros } from '../../lib/money';
 import { formatShortDate } from '../../lib/date';
@@ -31,6 +32,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   const [selectedPlanKey, setSelectedPlanKey] = useState<SubscriptionPlanKey>(() =>
     defaultPlanKey(plans)
   );
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const selectedPlan = plans.find((plan) => plan.key === selectedPlanKey) ?? plans[0];
   const baselineMonthlyAmount = plans.find((plan) => plan.key === 'ONE_MONTH')?.amount;
   const selectedMonthlyEquivalent = computeMonthlyEquivalentCents(
@@ -100,10 +102,27 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         choisie, puis s'arrête tout seul.
       </p>
 
+      <label className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
+        <input
+          type="checkbox"
+          checked={hasAcceptedTerms}
+          onChange={(event) => setHasAcceptedTerms(event.target.checked)}
+          className="mt-0.5"
+        />
+        <span>
+          J'accepte les{' '}
+          <Link to="/terms-of-sale" className="font-bold text-primary hover:underline">
+            conditions générales de vente
+          </Link>{' '}
+          et je demande l'exécution immédiate de l'abonnement, renonçant à mon droit de rétractation
+          de 14 jours.
+        </span>
+      </label>
+
       <button
         type="button"
         onClick={() => onPurchase(selectedPlan.key)}
-        disabled={isPurchasePending}
+        disabled={isPurchasePending || !hasAcceptedTerms}
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
         {status?.active ? `Prolonger de ${selectedPlan.label}` : `Soutenir ${selectedPlan.label}`}
