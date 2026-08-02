@@ -47,6 +47,9 @@ dédoublonne déjà sur la clé `['subscription-status']`.
   badge de soutien, aide à l'infra — jamais d'avantage de jeu), et un rappel
   explicite qu'il s'agit d'un paiement unique sans renouvellement automatique.
   Lien vers `/terms-of-sale` en bas de page.
+  La carte d'achat (`SubscriptionCard`) n'active le bouton d'achat qu'une
+  fois une case de consentement cochée (acceptation des CGV + renonciation
+  au délai de rétractation de 14 jours).
 - `/subscription/success` (`SubscriptionSuccessPage.tsx`) : re-fetch le statut,
   poll toutes les 1.5s jusqu'à 6 tentatives (`POLL_INTERVAL_MS`,
   `MAX_POLL_ATTEMPTS`) si pas encore actif, puis message d'attente prolongée.
