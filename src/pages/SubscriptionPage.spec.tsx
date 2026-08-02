@@ -102,6 +102,7 @@ describe('SubscriptionPage', () => {
     mocks.status = { active: false, expires_at: null };
     renderPage();
 
+    fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByText('Soutenir 3 mois'));
 
     expect(mocks.mutate).toHaveBeenCalledWith('THREE_MONTHS');
