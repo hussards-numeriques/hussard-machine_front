@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
-import { fetchPlayerProfile, promotePlayer } from '../services/profile';
+import { fetchPlayerProfile, promotePlayer, demotePlayer } from '../services/profile';
 
 export const PLAYER_PROFILE_QUERY_KEY = ['player-profile'];
 
@@ -20,6 +20,16 @@ export const usePromotePlayer = () => {
 
   return useMutation({
     mutationFn: () => promotePlayer((input, init) => client.authorizedFetch(input, init)),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: PLAYER_PROFILE_QUERY_KEY }),
+  });
+};
+
+export const useDemotePlayer = () => {
+  const { client } = useAuth();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => demotePlayer((input, init) => client.authorizedFetch(input, init)),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: PLAYER_PROFILE_QUERY_KEY }),
   });
 };

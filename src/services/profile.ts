@@ -53,3 +53,10 @@ export const promotePlayer = async (authorizedFetch: AuthorizedFetch): Promise<v
     throw new ApiError(response.status, `Promotion failed (${response.status})`);
   }
 };
+
+export const demotePlayer = async (authorizedFetch: AuthorizedFetch): Promise<void> => {
+  const response = await authorizedFetch(`${getApiUrl()}/me/demote`, { method: 'POST' });
+  if (!response.ok) {
+    throw new ApiError(response.status, `Demotion failed (${response.status})`);
+  }
+};
