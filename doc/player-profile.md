@@ -7,7 +7,7 @@ The `ProfilePage` (`src/pages/ProfilePage.tsx`) is accessible only to authentica
 - Username and avatar (initials)
 - School level (e.g. CM2, 6ème) and grade (Bronze → Diamond)
 - A segmented XP bar by grade
-- The level promotion button if `can_promote === true`
+- The level promotion button if `can_promote === true`, and a demotion button whenever the player isn't at the floor level (`CP`)
 - Game history
 
 The title equipped via `/quests` (see `doc/quests-titles.md`) is not shown on this page — it surfaces in the lobby/podium and on `/quests` itself.
@@ -59,13 +59,14 @@ interface GameHistoryEntry {
 
 ## API calls
 
-| Call         | Endpoint                           | Description                                                   |
-| ------------ | ---------------------------------- | ------------------------------------------------------------- |
-| Load config  | `GET /game/config`                 | Public. Grades, levels, XP per grade.                         |
-| Load profile | `GET /me/details` (authenticated)  | Full profile with history. 404 if first-time player.          |
-| Promotion    | `POST /me/promote` (authenticated) | Promotes one level if `can_promote`. Returns updated profile. |
+| Call         | Endpoint                           | Description                                                                                   |
+| ------------ | ---------------------------------- | --------------------------------------------------------------------------------------------- |
+| Load config  | `GET /game/config`                 | Public. Grades, levels, XP per grade.                                                         |
+| Load profile | `GET /me/details` (authenticated)  | Full profile with history. 404 if first-time player.                                          |
+| Promotion    | `POST /me/promote` (authenticated) | Promotes one level if `can_promote`. Returns updated profile.                                 |
+| Demotion     | `POST /me/demote` (authenticated)  | Voluntarily drops one level, no XP requirement. Unavailable at `CP`. Returns updated profile. |
 
-Every call is defined in a `services/` module (`gameConfig.ts`, `profile.ts`), validated with a zod schema, and consumed via a TanStack Query hook (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer` in `src/hooks/`). `/me/...` calls go through `client.authorizedFetch()` (automatic token refresh) passed as the fetcher to the service function.
+Every call is defined in a `services/` module (`gameConfig.ts`, `profile.ts`), validated with a zod schema, and consumed via a TanStack Query hook (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer`, `useDemotePlayer` in `src/hooks/`). `/me/...` calls go through `client.authorizedFetch()` (automatic token refresh) passed as the fetcher to the service function.
 
 ## Grade and level system
 
@@ -77,13 +78,16 @@ Each grade requires `experience_per_grade` XP. The XP bar is visually segmented 
 
 **Promotion** changes the school level (not the grade). It is available when `can_promote === true`, meaning the player has reached the DIAMOND grade at their current level.
 
+**Demotion** (`POST /me/demote`) lets a player voluntarily drop back one school level, e.g. because they find the current level's calculations too hard. Unlike promotion it has no XP requirement — it only depends on the current level, and is available whenever `level !== config.levels[0]` (`'CP'`, the floor level). The backend does not expose a `can_demote` field; the front computes it client-side from `GameConfig.levels`. After a successful demote, XP is set to the level's max (`promotion_threshold`), so `can_promote` becomes `true` immediately — but re-promoting from there resets XP to 0 on the level just demoted from, exactly like any other promotion.
+
 ## Internal components of ProfilePage
 
-| Component        | Role                                          |
-| ---------------- | --------------------------------------------- |
-| `GradeBadge`     | Colored badge displaying the grade label      |
-| `SegmentedXpBar` | Multi-segment XP bar, one section per grade   |
-| `HistoryRow`     | Expandable history row with participant table |
+| Component                 | Role                                                                                                            |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `GradeBadge`              | Colored badge displaying the grade label                                                                        |
+| `SegmentedXpBar`          | Multi-segment XP bar, one section per grade                                                                     |
+| `HistoryRow`              | Expandable history row with participant table                                                                   |
+| `LevelChangeConfirmModal` | Confirmation modal shown before firing a promote/demote mutation (`src/components/LevelChangeConfirmModal.tsx`) |
 
 ## Adding a profile feature
 
