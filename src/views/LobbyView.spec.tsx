@@ -50,7 +50,7 @@ describe('LobbyView - disconnected players', () => {
     );
 
     expect(screen.getByText('Déconnecté')).toBeInTheDocument();
-    expect(screen.queryAllByText('Humain')).toHaveLength(1);
+    expect(screen.queryByText('Humain')).not.toBeInTheDocument();
   });
 });
 

@@ -71,9 +71,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                   <PlayerStreak count={player.daily_streak} />
                 </div>
                 <PlayerTitle title={player.title} />
-                <div className="text-xs text-slate-500">
-                  {!player.is_connected ? 'Déconnecté' : player.is_bot ? 'Robot' : 'Humain'}
-                </div>
+                {(!player.is_connected || player.is_bot) && (
+                  <div className="text-xs text-slate-500">
+                    {!player.is_connected ? 'Déconnecté' : 'Robot'}
+                  </div>
+                )}
               </div>
               {player.is_connected && player.is_ready && (
                 <div className="text-emerald-500">
