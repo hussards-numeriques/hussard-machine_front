@@ -14,6 +14,7 @@
   provider. Starting a subscription purchase now requires explicitly
   checking a consent box (acceptance of the terms of sale + waiver of the
   14-day withdrawal right) before the CTA is enabled.
+- Player profile: players who find their current school level too hard can now voluntarily step back one level from `/profile` (mirrors the existing promotion button, `POST /me/demote`). A shared confirmation modal (`LevelChangeConfirmModal`, promote/demote variants) now gates both actions — warning that calculations get harder before a promotion, and that the current level's XP resets (to just enough to re-promote immediately) before a demotion.
 
 ### Changed
 
