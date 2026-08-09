@@ -85,13 +85,14 @@ Sorted by descending score. The progress bar is relative to 1000 pts (visual max
 
 **When:** `game.state === 'FINISHED'`
 
-Displays the podium (top 3 in columns) and full rankings.
+Displays the podium (top 3 in columns), the action buttons, then the full rankings — in that DOM order, so "Rejouer" stays reachable without scrolling on mobile.
 
 ### Key behaviors
 
 - **Confetti**: launched on mount via `canvas-confetti`
 - **Play again**: creates a new `quickGame` and navigates to it passing `{ playerName, token }` in navigation state
 - **Back home**: `navigate('/')`
+- **Answer result dots**: in the full ranking only (not the top-3 columns), each player's score is followed by a row of small dots — one per question, in play order — showing `correct` (green) / `incorrect` (red) / `unanswered` (grey). Derived purely from `game.answers` + `game.questions` via `getPlayerAnswerResults` (`src/lib/answerDots.ts`); no extra network call. Rendered by `AnswerDots` (`src/components/AnswerDots.tsx`), built on the generic `Dot` component (`src/components/Dot.tsx`, 3 color variants: `success`/`danger`/`neutral`). The dots row's width is capped at `<score text length>ch` so it never grows wider than the score above it, wrapping onto extra lines instead.
 
 ### Props
 

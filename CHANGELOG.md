@@ -17,6 +17,7 @@
 
 ### Changed
 
+- Podium: the action buttons ("Retour à l'accueil" / "Rejouer") now appear right below the top-3 podium, above the full ranking, so "Rejouer" is reachable without scrolling on mobile. Each player's score in the full ranking is now followed by small dots showing the correct/incorrect/unanswered result of each of their questions, in play order.
 - Subscription page: `/subscription` now leads with a single pricing card
   instead of a bare list — per-month price and savings percent are shown for
   all 3 plans at once (no plan is singled out as "popular" or "recommended",
