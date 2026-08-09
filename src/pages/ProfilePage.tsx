@@ -4,7 +4,8 @@ import { useAuth } from '../contexts/useAuth';
 import type { GameConfig, GameHistoryEntry } from '../types';
 import { ApiError } from '../services/http';
 import { useGameConfig } from '../hooks/useGameConfig';
-import { usePlayerProfile, usePromotePlayer } from '../hooks/usePlayerProfile';
+import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
+import { LevelChangeConfirmModal } from '../components/LevelChangeConfirmModal';
 import {
   resolveGradeBarColor,
   resolveGradeLabel,
@@ -214,7 +215,9 @@ export const ProfilePage: React.FC = () => {
   const { data: config } = useGameConfig();
   const profileQuery = usePlayerProfile();
   const promotion = usePromotePlayer();
+  const demotion = useDemotePlayer();
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
+  const [pendingLevelChange, setPendingLevelChange] = useState<'promote' | 'demote' | null>(null);
 
   const profile = profileQuery.data;
   const promoting = promotion.isPending;
@@ -223,9 +226,19 @@ export const ProfilePage: React.FC = () => {
       ? 'La promotion a échoué. Réessaie.'
       : 'Erreur réseau.'
     : null;
+  const demoting = demotion.isPending;
+  const demoteError = demotion.isError
+    ? demotion.error instanceof ApiError
+      ? 'La rétrogradation a échoué. Réessaie.'
+      : 'Erreur réseau.'
+    : null;
 
   const handlePromote = () => {
     promotion.mutate();
+  };
+
+  const handleDemote = () => {
+    demotion.mutate();
   };
 
   const toggleEntry = (id: string) => {
@@ -264,6 +277,13 @@ export const ProfilePage: React.FC = () => {
 
   const gradeBg = resolveGradeStyle(profile.grade).split(' ')[0];
   const nextLevelKey = config ? config.levels[config.levels.indexOf(profile.level) + 1] : undefined;
+  const previousLevelKey = config
+    ? config.levels[config.levels.indexOf(profile.level) - 1]
+    : undefined;
+  const nextLevelLabel = nextLevelKey != null ? resolveLevelLabel(nextLevelKey) : 'niveau suivant';
+  const previousLevelLabel =
+    previousLevelKey != null ? resolveLevelLabel(previousLevelKey) : 'niveau précédent';
+  const canDemote = config != null && profile.level !== config.levels[0];
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
@@ -297,15 +317,27 @@ export const ProfilePage: React.FC = () => {
           <div className="space-y-1">
             <button
               type="button"
-              onClick={handlePromote}
+              onClick={() => setPendingLevelChange('promote')}
               disabled={promoting}
               className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
             >
-              {promoting
-                ? 'Promotion en cours...'
-                : `Monter en ${nextLevelKey != null ? resolveLevelLabel(nextLevelKey) : 'niveau suivant'}`}
+              {promoting ? 'Promotion en cours...' : `Monter en ${nextLevelLabel}`}
             </button>
             {promoteError && <p className="text-xs text-red-500 text-center">{promoteError}</p>}
+          </div>
+        )}
+
+        {canDemote && (
+          <div className="space-y-1">
+            <button
+              type="button"
+              onClick={() => setPendingLevelChange('demote')}
+              disabled={demoting}
+              className="w-full py-3 rounded-2xl bg-slate-400 hover:bg-slate-500 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
+            >
+              {demoting ? 'Rétrogradation en cours...' : `Redescendre en ${previousLevelLabel}`}
+            </button>
+            {demoteError && <p className="text-xs text-red-500 text-center">{demoteError}</p>}
           </div>
         )}
       </div>
@@ -344,6 +376,22 @@ export const ProfilePage: React.FC = () => {
           Progression & récompenses →
         </Link>
       </div>
+
+      {pendingLevelChange != null && (
+        <LevelChangeConfirmModal
+          variant={pendingLevelChange}
+          targetLevel={pendingLevelChange === 'promote' ? nextLevelLabel : previousLevelLabel}
+          onConfirm={() => {
+            setPendingLevelChange(null);
+            if (pendingLevelChange === 'promote') {
+              handlePromote();
+            } else {
+              handleDemote();
+            }
+          }}
+          onCancel={() => setPendingLevelChange(null)}
+        />
+      )}
     </div>
   );
 };
