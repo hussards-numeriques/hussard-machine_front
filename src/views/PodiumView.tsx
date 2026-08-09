@@ -6,6 +6,8 @@ import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
 import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
+import { AnswerDots } from '../components/AnswerDots';
+import { getPlayerAnswerResults } from '../lib/answerDots';
 import { cn } from '../lib/utils';
 import { useAuth } from '../contexts/useAuth';
 import { TitleUnlockToast } from '../components/quests/TitleUnlockToast';
@@ -48,7 +50,6 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
 
       <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md pb-8">
-        {/* 2nd Place */}
         {sortedPlayers[1] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
             <div className="flex items-center justify-center gap-1 w-full">
@@ -61,7 +62,6 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
           </div>
         )}
 
-        {/* 1st Place */}
         {winner && (
           <div className="flex flex-col items-center gap-2 w-1/3">
             <div className="flex items-center justify-center gap-1 w-full">
@@ -74,7 +74,6 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
           </div>
         )}
 
-        {/* 3rd Place */}
         {sortedPlayers[2] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
             <div className="flex items-center justify-center gap-1 w-full">
@@ -86,6 +85,13 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
             <div className="font-mono text-slate-500">{sortedPlayers[2].score} pts</div>
           </div>
         )}
+      </div>
+
+      <div className="flex gap-4">
+        <Button variant="secondary" onClick={() => navigate('/')}>
+          Retour à l'accueil
+        </Button>
+        <Button onClick={handleReplay}>Rejouer</Button>
       </div>
 
       <div className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100">
@@ -109,16 +115,15 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
                 <PlayerTitle title={p.title} />
               </div>
             </div>
-            <span className="font-mono shrink-0">{p.score} pts</span>
+            <div className="flex flex-col items-end shrink-0 gap-1 font-mono">
+              <span>{p.score} pts</span>
+              <AnswerDots
+                results={getPlayerAnswerResults(game, p.id)}
+                maxWidthCh={`${p.score} pts`.length}
+              />
+            </div>
           </div>
         ))}
-      </div>
-
-      <div className="flex gap-4">
-        <Button variant="secondary" onClick={() => navigate('/')}>
-          Retour à l'accueil
-        </Button>
-        <Button onClick={handleReplay}>Rejouer</Button>
       </div>
     </div>
   );

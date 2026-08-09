@@ -135,6 +135,78 @@ describe('PodiumView - Display final scores when game is finished', () => {
     expect(screen.getAllByText('100 pts').length).toBeGreaterThan(0);
     expect(screen.getAllByText('50 pts').length).toBeGreaterThan(0);
   });
+
+  it('should render the action buttons before the full ranking list', () => {
+    render(
+      <MemoryRouter>
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
+      </MemoryRouter>
+    );
+
+    const rejouer = screen.getByText('Rejouer');
+    const classement = screen.getByText('Classement complet');
+    const position = rejouer.compareDocumentPosition(classement);
+    expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('should show answer result dots under each player score in the ranking', () => {
+    finishedGame.answers = [
+      {
+        player_id: 'player1',
+        question_id: 'q1',
+        value: 4,
+        timestamp: 1,
+        is_correct: true,
+        points_earned: 10,
+      },
+      {
+        player_id: 'player1',
+        question_id: 'q2',
+        value: 6,
+        timestamp: 2,
+        is_correct: true,
+        points_earned: 10,
+      },
+      {
+        player_id: 'player2',
+        question_id: 'q1',
+        value: 4,
+        timestamp: 1,
+        is_correct: true,
+        points_earned: 10,
+      },
+      {
+        player_id: 'player2',
+        question_id: 'q2',
+        value: 1,
+        timestamp: 2,
+        is_correct: false,
+        points_earned: 0,
+      },
+    ];
+
+    render(
+      <MemoryRouter>
+        <PodiumView game={finishedGame} currentPlayerId="player1" playerName="Player 1" />
+      </MemoryRouter>
+    );
+
+    const dotGroups = screen.getAllByTestId('answer-dots');
+    expect(dotGroups).toHaveLength(3);
+
+    const player1Dots = dotGroups[0].querySelectorAll('[data-testid="dot"]');
+    expect(player1Dots).toHaveLength(2);
+    expect(player1Dots[0]).toHaveClass('bg-emerald-500');
+    expect(player1Dots[1]).toHaveClass('bg-emerald-500');
+
+    const player2Dots = dotGroups[1].querySelectorAll('[data-testid="dot"]');
+    expect(player2Dots[0]).toHaveClass('bg-emerald-500');
+    expect(player2Dots[1]).toHaveClass('bg-red-400');
+
+    const player3Dots = dotGroups[2].querySelectorAll('[data-testid="dot"]');
+    expect(player3Dots[0]).toHaveClass('bg-slate-300');
+    expect(player3Dots[1]).toHaveClass('bg-slate-300');
+  });
 });
 
 describe('PodiumView - player title', () => {
