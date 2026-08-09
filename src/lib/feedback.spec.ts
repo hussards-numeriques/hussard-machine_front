@@ -44,7 +44,7 @@ describe('computeFeedback', () => {
     expect(feedback).toEqual({ status: 'correct', given: 4, expected: 4, pointsEarned: 135 });
   });
 
-  it('returns wrong status with the given value and the expected answer', () => {
+  it('returns incorrect status with the given value and the expected answer', () => {
     // Given
     const game = baseGame();
     game.answers = [
@@ -62,7 +62,7 @@ describe('computeFeedback', () => {
     const feedback = computeFeedback(game, 'p1', 0);
 
     // Then
-    expect(feedback).toEqual({ status: 'wrong', given: 5, expected: 4, pointsEarned: 0 });
+    expect(feedback).toEqual({ status: 'incorrect', given: 5, expected: 4, pointsEarned: 0 });
   });
 
   it('returns timeout status when the player did not answer', () => {

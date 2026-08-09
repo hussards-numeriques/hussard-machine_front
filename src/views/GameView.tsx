@@ -5,6 +5,7 @@ import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
 import { resolveCategoryLabel } from '../services/questionCategoryLabels';
 import { AnswerInput } from '../components/AnswerInput';
 import { computeFeedback } from '../lib/feedback';
+import { findPlayerAnswer } from '../lib/playerAnswer';
 import { CorrectionCard } from '../components/GameFeedback/CorrectionCard';
 import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop';
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
@@ -193,10 +194,9 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   }, [game.current_question_index, displayedQuestionIndex]);
 
   const currentQuestion = game.questions[displayedQuestionIndex];
-  const myCurrentAnswer =
-    game.answers.find(
-      (answer) => answer.question_id === currentQuestion?.id && answer.player_id === currentPlayerId
-    ) ?? null;
+  const myCurrentAnswer = currentQuestion
+    ? findPlayerAnswer(game, currentPlayerId, currentQuestion.id)
+    : null;
   const hasAnswered = myCurrentAnswer !== null;
 
   React.useEffect(() => {

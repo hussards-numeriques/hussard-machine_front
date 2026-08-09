@@ -54,7 +54,7 @@ describe('getPlayerAnswerResults', () => {
     expect(getPlayerAnswerResults(game, 'p1')).toEqual(['correct', 'incorrect', 'correct']);
   });
 
-  it('marks unanswered when the player has no answer for a question', () => {
+  it('marks timeout when the player has no answer for a question', () => {
     const game = buildGame({
       answers: [
         {
@@ -68,7 +68,7 @@ describe('getPlayerAnswerResults', () => {
       ],
     });
 
-    expect(getPlayerAnswerResults(game, 'p1')).toEqual(['correct', 'unanswered', 'unanswered']);
+    expect(getPlayerAnswerResults(game, 'p1')).toEqual(['correct', 'timeout', 'timeout']);
   });
 
   it('ignores other players answers', () => {
@@ -85,7 +85,7 @@ describe('getPlayerAnswerResults', () => {
       ],
     });
 
-    expect(getPlayerAnswerResults(game, 'p1')).toEqual(['unanswered', 'unanswered', 'unanswered']);
+    expect(getPlayerAnswerResults(game, 'p1')).toEqual(['timeout', 'timeout', 'timeout']);
   });
 
   it('returns an empty array when the game has no questions', () => {

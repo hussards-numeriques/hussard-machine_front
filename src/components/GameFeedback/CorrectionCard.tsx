@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Game } from '../../types';
 import { computeFeedback } from '../../lib/feedback';
+import type { AnswerResult } from '../../lib/playerAnswer';
 
 interface CorrectionCardProps {
   game: Game;
@@ -9,7 +10,7 @@ interface CorrectionCardProps {
   countdown: number | null;
 }
 
-const titleFor = (status: 'correct' | 'wrong' | 'timeout'): string => {
+const titleFor = (status: AnswerResult): string => {
   if (status === 'correct') return 'Bonne réponse';
   if (status === 'timeout') return 'Temps écoulé';
   return 'Mauvaise réponse';

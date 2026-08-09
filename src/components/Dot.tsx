@@ -11,11 +11,14 @@ const DOT_VARIANT_STYLES: Record<DotVariant, string> = {
 
 interface DotProps {
   variant: DotVariant;
+  label?: string;
 }
 
-export const Dot: React.FC<DotProps> = ({ variant }) => (
+export const Dot: React.FC<DotProps> = ({ variant, label }) => (
   <span
     data-testid="dot"
+    role={label ? 'img' : undefined}
+    aria-label={label}
     className={cn('w-1.5 h-1.5 rounded-full shrink-0', DOT_VARIANT_STYLES[variant])}
   />
 );

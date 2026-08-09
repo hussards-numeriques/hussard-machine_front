@@ -4,14 +4,14 @@ import { AnswerDots } from './AnswerDots';
 
 describe('AnswerDots', () => {
   it('renders one dot per result', () => {
-    render(<AnswerDots results={['correct', 'incorrect', 'unanswered']} maxWidthCh={8} />);
+    render(<AnswerDots results={['correct', 'incorrect', 'timeout']} maxWidthCh={8} />);
     expect(screen.getByTestId('answer-dots').querySelectorAll('[data-testid="dot"]')).toHaveLength(
       3
     );
   });
 
   it('maps each result to the matching dot color', () => {
-    render(<AnswerDots results={['correct', 'incorrect', 'unanswered']} maxWidthCh={8} />);
+    render(<AnswerDots results={['correct', 'incorrect', 'timeout']} maxWidthCh={8} />);
     const dots = screen.getByTestId('answer-dots').querySelectorAll('[data-testid="dot"]');
     expect(dots[0]).toHaveClass('bg-emerald-500');
     expect(dots[1]).toHaveClass('bg-red-400');
@@ -26,5 +26,12 @@ describe('AnswerDots', () => {
   it('renders nothing when there are no results', () => {
     const { container } = render(<AnswerDots results={[]} maxWidthCh={8} />);
     expect(container.firstChild).toBeNull();
+  });
+
+  it('exposes an accessible label for each result', () => {
+    render(<AnswerDots results={['correct', 'incorrect', 'timeout']} maxWidthCh={8} />);
+    expect(screen.getByRole('img', { name: 'Correcte' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Incorrecte' })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'Sans réponse' })).toBeInTheDocument();
   });
 });

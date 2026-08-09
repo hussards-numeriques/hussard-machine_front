@@ -11,4 +11,14 @@ describe('Dot', () => {
     const { getByTestId } = render(<Dot variant={variant} />);
     expect(getByTestId('dot')).toHaveClass(expectedClass);
   });
+
+  it('exposes no accessible label when none is given', () => {
+    const { getByTestId } = render(<Dot variant="success" />);
+    expect(getByTestId('dot')).not.toHaveAttribute('role');
+  });
+
+  it('exposes the given label as an accessible image', () => {
+    const { getByRole } = render(<Dot variant="success" label="Correcte" />);
+    expect(getByRole('img', { name: 'Correcte' })).toBeInTheDocument();
+  });
 });

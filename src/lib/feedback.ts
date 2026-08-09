@@ -1,18 +1,12 @@
-import type { Answer, Game } from '../types';
-
-export type FeedbackStatus = 'correct' | 'wrong' | 'timeout';
+import type { Game } from '../types';
+import { answerResultFor, findPlayerAnswer, type AnswerResult } from './playerAnswer';
 
 export interface QuestionFeedback {
-  status: FeedbackStatus;
+  status: AnswerResult;
   given: number | null;
   expected: number;
   pointsEarned: number;
 }
-
-const findPlayerAnswer = (game: Game, playerId: string, questionId: string): Answer | null =>
-  game.answers.find(
-    (answer) => answer.question_id === questionId && answer.player_id === playerId
-  ) ?? null;
 
 export const computeFeedback = (
   game: Game,
@@ -23,14 +17,11 @@ export const computeFeedback = (
   if (!question) return null;
 
   const answer = findPlayerAnswer(game, playerId, question.id);
-  if (!answer) {
-    return { status: 'timeout', given: null, expected: question.answer, pointsEarned: 0 };
-  }
 
   return {
-    status: answer.is_correct ? 'correct' : 'wrong',
-    given: answer.value,
+    status: answerResultFor(answer),
+    given: answer?.value ?? null,
     expected: question.answer,
-    pointsEarned: answer.points_earned,
+    pointsEarned: answer?.points_earned ?? 0,
   };
 };

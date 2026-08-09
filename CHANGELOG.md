@@ -31,6 +31,7 @@
 
 - Layout chrome: the home-page footer now rests at the bottom of the viewport instead of falling below the fold — `AppLayout` became a flex column with the `<Outlet />` wrapped in a `<main class="flex-1">` between the header and the (home-only) footer, and `HomePage` fills that space (`flex-1`) instead of forcing its own `min-h-screen`. During a game, `GameView` no longer reserves a 4rem empty strip at the top (`pt-16`, a leftover slot for a fixed header that `GameLayout` never renders): the "Question X / Y" bar becomes a full-width `sticky top-0` header and gains a thin progress bar showing how far into the game the player is.
 - Lobby: the player status line under each name no longer shows "Humain" for regular connected players — being human is the default and needs no label. It now only shows "Robot" or "Déconnecté" when one of those applies.
+- Podium answer dots: the correct/incorrect/timeout result is no longer conveyed by color alone — each dot now carries an accessible `aria-label` (`role="img"`) and the row is exposed as `role="list"`. Also unified the previously divergent `wrong`/`unanswered` vs `incorrect`/`timeout` vocabulary into a single shared `AnswerResult` type and deduplicated the `findPlayerAnswer` lookup, both now in `src/lib/playerAnswer.ts`.
 
 ## [0.12.1] - 2026-07-10
 
