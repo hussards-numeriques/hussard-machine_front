@@ -96,34 +96,37 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
 
       <div className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100">
         <h3 className="text-xl font-bold text-slate-700 mb-4">Classement complet</h3>
-        {sortedPlayers.map((p, i) => (
-          <div
-            key={p.id}
-            className={cn(
-              'flex items-center justify-between py-3 px-4 rounded-lg mb-2',
-              p.id === currentPlayerId ? 'bg-primary/10 text-primary font-bold' : 'bg-slate-50'
-            )}
-          >
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="font-mono w-6 shrink-0">{i + 1}.</span>
-              <PlayerAvatar name={p.name} grade={p.grade} isBot={p.is_bot} size="sm" />
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold truncate">{p.name}</span>
-                  <PlayerStreak count={p.daily_streak} size={16} />
+        {sortedPlayers.map((p, i) => {
+          const scoreLabel = `${p.score} pts`;
+          return (
+            <div
+              key={p.id}
+              className={cn(
+                'flex items-center justify-between py-3 px-4 rounded-lg mb-2',
+                p.id === currentPlayerId ? 'bg-primary/10 text-primary font-bold' : 'bg-slate-50'
+              )}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="font-mono w-6 shrink-0">{i + 1}.</span>
+                <PlayerAvatar name={p.name} grade={p.grade} isBot={p.is_bot} size="sm" />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold truncate">{p.name}</span>
+                    <PlayerStreak count={p.daily_streak} size={16} />
+                  </div>
+                  <PlayerTitle title={p.title} />
                 </div>
-                <PlayerTitle title={p.title} />
+              </div>
+              <div className="flex flex-col items-end shrink-0 gap-1 font-mono">
+                <span>{scoreLabel}</span>
+                <AnswerDots
+                  results={getPlayerAnswerResults(game, p.id)}
+                  maxWidthCh={scoreLabel.length}
+                />
               </div>
             </div>
-            <div className="flex flex-col items-end shrink-0 gap-1 font-mono">
-              <span>{p.score} pts</span>
-              <AnswerDots
-                results={getPlayerAnswerResults(game, p.id)}
-                maxWidthCh={`${p.score} pts`.length}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
