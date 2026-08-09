@@ -5,7 +5,10 @@ import type { GameConfig, GameHistoryEntry } from '../types';
 import { ApiError } from '../services/http';
 import { useGameConfig } from '../hooks/useGameConfig';
 import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
-import { LevelChangeConfirmModal } from '../components/LevelChangeConfirmModal';
+import {
+  LevelChangeConfirmModal,
+  type LevelChangeVariant,
+} from '../components/LevelChangeConfirmModal';
 import {
   resolveGradeBarColor,
   resolveGradeLabel,
@@ -217,7 +220,7 @@ export const ProfilePage: React.FC = () => {
   const promotion = usePromotePlayer();
   const demotion = useDemotePlayer();
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
-  const [pendingLevelChange, setPendingLevelChange] = useState<'promote' | 'demote' | null>(null);
+  const [pendingLevelChange, setPendingLevelChange] = useState<LevelChangeVariant | null>(null);
 
   const profile = profileQuery.data;
   const promoting = promotion.isPending;
@@ -283,7 +286,7 @@ export const ProfilePage: React.FC = () => {
   const nextLevelLabel = nextLevelKey != null ? resolveLevelLabel(nextLevelKey) : 'niveau suivant';
   const previousLevelLabel =
     previousLevelKey != null ? resolveLevelLabel(previousLevelKey) : 'niveau précédent';
-  const canDemote = config != null && profile.level !== config.levels[0];
+  const canDemote = previousLevelKey != null;
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
@@ -318,7 +321,7 @@ export const ProfilePage: React.FC = () => {
             <button
               type="button"
               onClick={() => setPendingLevelChange('promote')}
-              disabled={promoting}
+              disabled={promoting || demoting}
               className="w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
             >
               {promoting ? 'Promotion en cours...' : `Monter en ${nextLevelLabel}`}
@@ -332,7 +335,7 @@ export const ProfilePage: React.FC = () => {
             <button
               type="button"
               onClick={() => setPendingLevelChange('demote')}
-              disabled={demoting}
+              disabled={promoting || demoting}
               className="w-full py-3 rounded-2xl bg-slate-400 hover:bg-slate-500 disabled:opacity-60 text-white font-black text-base transition-colors shadow"
             >
               {demoting ? 'Rétrogradation en cours...' : `Redescendre en ${previousLevelLabel}`}

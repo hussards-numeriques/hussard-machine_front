@@ -102,7 +102,7 @@ calc-rush_front/
 │   │   ├── GameClient.ts             # Game WebSocket client (connect, submitAnswer, etc.)
 │   │   ├── gameSchemas.ts            # zod schemas for Game + WS server messages
 │   │   ├── gameConfig.ts             # GET /game/config (zod-validated)
-│   │   ├── profile.ts                # GET /me/details, POST /me/promote (zod-validated)
+│   │   ├── profile.ts                # GET /me/details, POST /me/promote, POST /me/demote (zod-validated)
 │   │   ├── questionCategoryLabels.ts # Resolves question category labels
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
