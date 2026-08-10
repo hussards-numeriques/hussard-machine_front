@@ -45,7 +45,7 @@ export const GradeGuide: React.FC = () => {
             <h2 className="text-xl font-black text-slate-700">Les niveaux</h2>
             <p className="text-slate-500 text-xs">
               Il y a {config.levels.length} niveaux. On commence au CP et on peut progresser
-              jusqu'en Terminale. Chaque promotion remet l'XP à zéro.
+              jusqu'en 3ème. Chaque promotion remet l'XP à zéro.
             </p>
             <div className="flex flex-wrap gap-2">
               {config.levels.map((level) => (

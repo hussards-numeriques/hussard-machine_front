@@ -11,9 +11,6 @@ export const LEVELS = [
   'CINQUIEME',
   'QUATRIEME',
   'TROISIEME',
-  'SECONDE',
-  'PREMIERE',
-  'TERMINALE',
 ] as const;
 export type Level = (typeof LEVELS)[number];
 
@@ -59,9 +56,6 @@ const LEVEL_LABELS: Record<Level, string> = {
   CINQUIEME: '5ème',
   QUATRIEME: '4ème',
   TROISIEME: '3ème',
-  SECONDE: 'Seconde',
-  PREMIERE: '1ère',
-  TERMINALE: 'Terminale',
 };
 
 export const DEFAULT_GRADE_STYLE = 'bg-slate-100 text-slate-600 border-slate-300';
