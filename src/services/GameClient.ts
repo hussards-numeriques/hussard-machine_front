@@ -25,7 +25,9 @@ type ClientMessage =
   | { type: 'JOIN'; payload: JoinPayload }
   | { type: 'READY'; payload: { is_ready: boolean } }
   | { type: 'START_GAME'; payload: Record<string, never> }
-  | { type: 'SUBMIT_ANSWER'; payload: { value: number } };
+  | { type: 'SUBMIT_ANSWER'; payload: { value: number } }
+  | { type: 'ADD_BOT'; payload: { difficulty: 'EASY' | 'MEDIUM' | 'HARD' } }
+  | { type: 'REMOVE_PLAYER'; payload: { player_id: string } };
 
 const GUEST_PLAYER_ID_KEY = 'hm_guest_player_id';
 
@@ -48,10 +50,19 @@ export class GameClient {
     this.onQuestionCountdown = callback;
   }
 
-  public async createLobby(): Promise<string> {
+  public async createLobby(params: {
+    level: string;
+    maxPlayers: number;
+    token: string;
+  }): Promise<string> {
     const url = this.apiUrl ? `${this.apiUrl}/lobbies` : '/api/lobbies';
     const response = await fetch(url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${params.token}`,
+      },
+      body: JSON.stringify({ level: params.level, max_players: params.maxPlayers }),
     });
     if (!response.ok) {
       throw new Error('Failed to create lobby');
@@ -143,6 +154,9 @@ export class GameClient {
       case 'ERROR':
         this.onError(message.payload);
         break;
+      case 'KICKED':
+        this.onError('Tu as été exclu du salon.');
+        break;
     }
   }
 
@@ -162,6 +176,14 @@ export class GameClient {
 
   public submitAnswer(value: number) {
     this.send({ type: 'SUBMIT_ANSWER', payload: { value } });
+  }
+
+  public addBot(difficulty: 'EASY' | 'MEDIUM' | 'HARD') {
+    this.send({ type: 'ADD_BOT', payload: { difficulty } });
+  }
+
+  public removePlayer(playerId: string) {
+    this.send({ type: 'REMOVE_PLAYER', payload: { player_id: playerId } });
   }
 
   public getPlayerId() {

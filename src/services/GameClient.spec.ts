@@ -52,6 +52,8 @@ describe('GameClient - /ws/play protocol', () => {
             current_question_index: -1,
             answers: [],
             start_time_current_question: null,
+            host_player_id: null,
+            max_players: 6,
           },
         },
       }),
@@ -123,5 +125,84 @@ describe('GameClient - /ws/play protocol', () => {
       player_id: 'guest-1',
     };
     expect(invalid).toBeDefined();
+  });
+
+  it('sends ADD_BOT with the chosen difficulty', () => {
+    const client = new GameClient(vi.fn(), vi.fn());
+    client.connectToLobby({ gameId: 'ABCD', playerName: 'Alice' });
+    openSocket(client);
+    sentMessages.length = 0;
+
+    client.addBot('HARD');
+
+    expect(JSON.parse(sentMessages[0])).toEqual({
+      type: 'ADD_BOT',
+      payload: { difficulty: 'HARD' },
+    });
+  });
+
+  it('sends REMOVE_PLAYER with the target id', () => {
+    const client = new GameClient(vi.fn(), vi.fn());
+    client.connectToLobby({ gameId: 'ABCD', playerName: 'Alice' });
+    openSocket(client);
+    sentMessages.length = 0;
+
+    client.removePlayer('player-123');
+
+    expect(JSON.parse(sentMessages[0])).toEqual({
+      type: 'REMOVE_PLAYER',
+      payload: { player_id: 'player-123' },
+    });
+  });
+
+  it('calls onError when a KICKED message is received', () => {
+    const onError = vi.fn();
+    const client = new GameClient(vi.fn(), onError);
+    client.connectToLobby({ gameId: 'ABCD', playerName: 'Alice' });
+    const ws = openSocket(client);
+
+    ws.onmessage?.({
+      data: JSON.stringify({ type: 'KICKED', payload: {} }),
+    } as MessageEvent);
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError.mock.calls[0][0]).toEqual(expect.any(String));
+    expect(onError.mock.calls[0][0]).not.toBe('');
+  });
+});
+
+describe('createLobby', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('POSTs level, max_players and the Bearer token', async () => {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(JSON.stringify({ game_id: 'WXYZ' }), { status: 200 })
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const client = new GameClient(vi.fn(), vi.fn());
+    const gameId = await client.createLobby({ level: 'CM1', maxPlayers: 8, token: 'tok' });
+
+    expect(gameId).toBe('WXYZ');
+    const [url, init] = fetchMock.mock.calls[0];
+    expect((url as string).endsWith('/lobbies')).toBe(true);
+    expect(init?.method).toBe('POST');
+    expect(init?.headers).toMatchObject({ Authorization: 'Bearer tok' });
+    expect(JSON.parse(init?.body as string)).toEqual({ level: 'CM1', max_players: 8 });
+  });
+
+  it('throws when the request fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(null, { status: 403 }))
+    );
+
+    const client = new GameClient(vi.fn(), vi.fn());
+
+    await expect(
+      client.createLobby({ level: 'CP', maxPlayers: 6, token: 'tok' })
+    ).rejects.toThrow();
   });
 });

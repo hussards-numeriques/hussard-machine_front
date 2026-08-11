@@ -76,6 +76,8 @@ describe('PodiumView - Display final scores when game is finished', () => {
       current_question_index: 2,
       answers: [],
       start_time_current_question: null,
+      host_player_id: null,
+      max_players: 6,
     };
   });
 
@@ -233,6 +235,8 @@ describe('PodiumView - player title', () => {
       current_question_index: 0,
       answers: [],
       start_time_current_question: null,
+      host_player_id: null,
+      max_players: 6,
     };
 
     render(

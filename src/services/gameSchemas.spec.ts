@@ -25,6 +25,8 @@ const backendGamePayload = {
   answers: [],
   start_time_current_question: null,
   is_quick_game: true,
+  host_player_id: null,
+  max_players: 6,
 };
 
 describe('serverMessageSchema', () => {
@@ -85,5 +87,21 @@ describe('serverMessageSchema', () => {
 
     if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
     expect(message.payload.players[0].title).toBeNull();
+  });
+
+  it('requires host_player_id and max_players on a GAME_UPDATE payload', () => {
+    const incompletePayload: Partial<typeof backendGamePayload> = { ...backendGamePayload };
+    delete incompletePayload.host_player_id;
+    delete incompletePayload.max_players;
+
+    expect(() =>
+      serverMessageSchema.parse({ type: 'GAME_UPDATE', payload: incompletePayload })
+    ).toThrow();
+  });
+
+  it('accepts a KICKED message', () => {
+    const message = serverMessageSchema.parse({ type: 'KICKED', payload: {} });
+
+    expect(message.type).toBe('KICKED');
   });
 });

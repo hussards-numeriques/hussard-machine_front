@@ -20,9 +20,9 @@ Class encapsulating the WebSocket connection and REST calls for game creation.
 
 ### REST calls
 
-| Method          | Endpoint            | Description                                                            |
-| --------------- | ------------------- | ---------------------------------------------------------------------- |
-| `createLobby()` | `POST /api/lobbies` | Creates a private multiplayer lobby, returns `game_id` (the join code) |
+| Method          | Endpoint            | Description                                                                                                                                                                                                                                                 |
+| --------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `createLobby()` | `POST /api/lobbies` | Creates a private multiplayer lobby, returns `game_id` (the join code). Requires a Bearer `token` (authenticated players only) and a body `{ level, max_players }` — the creator picks both up front instead of the level being guessed from whoever joins. |
 
 There is no REST call to start a quick game — it's created (or resumed) entirely through the
 `JOIN` WebSocket message below.
@@ -67,21 +67,24 @@ are typed by the `ClientMessage` union in `GameClient.ts`.
 
 ### Incoming WebSocket messages
 
-| Type                 | Payload               | Action                                          |
-| -------------------- | --------------------- | ----------------------------------------------- |
-| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`   |
-| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                      |
-| `COUNTDOWN`          | `{ seconds }`         | Console log (not used by UI)                    |
-| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined |
-| `ERROR`              | `string`              | Calls `onError(message)`                        |
+| Type                 | Payload               | Action                                                                                                                                                                                                                                          |
+| -------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`                                                                                                                                                                                                   |
+| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                                                                                                                                                                                                                      |
+| `COUNTDOWN`          | `{ seconds }`         | Console log (not used by UI)                                                                                                                                                                                                                    |
+| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined                                                                                                                                                                                                 |
+| `ERROR`              | `string`              | Calls `onError(message)`                                                                                                                                                                                                                        |
+| `KICKED`             | `{}`                  | Calls `onError('Tu as été exclu du salon.')` — routed through the same `onError` flow as `ERROR`, no dedicated UI surface. Sent to a player the host removes via `removePlayer()`; `GamePage` renders it in its generic error card (see below). |
 
 ### Outgoing WebSocket messages
 
-| Method                | Message sent              |
-| --------------------- | ------------------------- |
-| `setReady(isReady)`   | `READY { is_ready }`      |
-| `startGame()`         | `START_GAME {}`           |
-| `submitAnswer(value)` | `SUBMIT_ANSWER { value }` |
+| Method                   | Message sent                                                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `setReady(isReady)`      | `READY { is_ready }`                                                                                                                                         |
+| `startGame()`            | `START_GAME {}`                                                                                                                                              |
+| `submitAnswer(value)`    | `SUBMIT_ANSWER { value }`                                                                                                                                    |
+| `addBot(difficulty)`     | `ADD_BOT { difficulty }` — `difficulty` is `'EASY' \| 'MEDIUM' \| 'HARD'`. Sent by `LobbyView`'s host-only bot buttons; the backend enforces the host check. |
+| `removePlayer(playerId)` | `REMOVE_PLAYER { player_id }` — sent by `LobbyView`'s host-only kick button; the target receives `KICKED`, everyone else a regular `GAME_UPDATE`.            |
 
 ### Callbacks
 
@@ -130,8 +133,10 @@ interface Game {
   questions: Question[];
   current_question_index: number;
   answers: Answer[];
-  start_time_current_question?: number; // Unix timestamp (seconds)
+  start_time_current_question: number | null; // Unix timestamp (seconds)
   is_quick_game?: boolean;
+  host_player_id: string | null; // set for private lobbies (the creator); null for quick games
+  max_players: number; // capacity chosen by the creator (2–30) at `POST /lobbies`
 }
 ```
 
@@ -143,6 +148,52 @@ a socket drop during `COUNTDOWN`/`IN_PROGRESS`/`FINISHED` does **not** remove th
 `LobbyView` and `GameView`'s scoreboard both grey out disconnected players instead of assuming
 they vanished. The only case where a disconnected player is actually removed from the list is a
 lobby still in `WAITING` state — that's done backend-side, no front handling needed.
+
+## Friend lobby: creation and host controls
+
+### Creating a lobby (`HomePage`, `CREATE` mode)
+
+`HomePage` (`src/pages/HomePage.tsx`) has a third mode besides `MENU`/`JOIN`: `CREATE`, reached via
+the "Créer un salon" button. That button is gated by subscription — it's `disabled` (label
+"Abonnement requis") unless `isAuthenticated && subscriptionStatus?.active` (`useSubscriptionStatus`,
+see `doc/subscription.md`). Joining an existing salon by code (`JOIN` mode) stays free for everyone,
+authenticated or not.
+
+`CREATE` mode shows two inputs, then calls `client.createLobby()`:
+
+- **Niveau des questions**: a `<select>` over `LEVELS` (`src/lib/grades.ts`), labelled via
+  `resolveLevelLabel`. Defaults to `'CP'`.
+- **Places**: a number input for `max_players`, `min={2} max={30}`. Defaults to `DEFAULT_MAX_PLAYERS`
+  (`6`).
+
+On submit, `createLobby({ level, maxPlayers, token })` is called with the signed-in player's access
+token (required — `CREATE` is unreachable without an active subscription, but the code still
+guards against a missing token). Success navigates to `/game/:gameId` like any other lobby join.
+
+### Host-only controls (`LobbyView`)
+
+`LobbyView` derives `isHost = !game.is_quick_game && currentPlayerId === game.host_player_id`. Quick
+games have no host (`host_player_id` is `null`) and never show these controls. When `isHost` is true:
+
+- A **capacity counter** (`Places : {game.players.length}/{game.max_players}`) heads a host-only
+  panel above the player list.
+- Three **add-bot buttons**, one per `BOT_DIFFICULTIES` entry (`EASY`/`MEDIUM`/`HARD`, labelled
+  Facile/Moyen/Difficile), each calling `client.addBot(difficulty)`. Disabled together once
+  `game.players.length >= game.max_players` (`isFull`).
+- A **per-player kick button** (✕) on every player card except the host's own, calling
+  `client.removePlayer(player.id)`.
+
+The backend re-checks the host permission and capacity server-side; the front only hides/disables
+the affected controls for non-hosts and at capacity.
+
+### Being kicked
+
+There is no dedicated "you were kicked" screen. `KICKED` is routed through the existing `onError`
+flow (see the incoming-messages table above): `GameClient` turns it into a French error string via
+`onError`, which lands in `GameContextValue.error` the same way any other `ERROR` message would.
+`GamePage` renders its generic error card ("Oups !" + the message + a "Retour à l'accueil" button
+that calls `resetGame()` and navigates to `/`) — the same fallback used for any other game error,
+not a kick-specific UI.
 
 ## How to add a game flow feature
 
