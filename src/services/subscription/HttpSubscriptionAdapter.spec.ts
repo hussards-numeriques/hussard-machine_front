@@ -99,4 +99,34 @@ describe('HttpSubscriptionAdapter', () => {
 
     await expect(adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH')).rejects.toThrow();
   });
+
+  describe('redeem', () => {
+    it('posts the code and returns the resulting subscription status', async () => {
+      const authorizedFetch = vi.fn<AuthorizedFetch>(
+        async () =>
+          new Response(JSON.stringify({ active: true, expires_at: '2027-08-11T12:00:00' }), {
+            status: 200,
+          })
+      );
+      const adapter = new HttpSubscriptionAdapter();
+
+      const result = await adapter.redeem(authorizedFetch, 'my-secret-code');
+
+      expect(authorizedFetch).toHaveBeenCalledTimes(1);
+      const [url, init] = authorizedFetch.mock.calls[0];
+      expect((url as string).endsWith('/subscription/redeem')).toBe(true);
+      expect(init?.method).toBe('POST');
+      expect(JSON.parse(init?.body as string)).toEqual({ code: 'my-secret-code' });
+      expect(result).toEqual({ active: true, expires_at: '2027-08-11T12:00:00' });
+    });
+
+    it('throws an ApiError with status 400 when the code is invalid', async () => {
+      const authorizedFetch = vi.fn<AuthorizedFetch>(
+        async () => new Response('nope', { status: 400 })
+      );
+      const adapter = new HttpSubscriptionAdapter();
+
+      await expect(adapter.redeem(authorizedFetch, 'bad-code')).rejects.toThrow(ApiError);
+    });
+  });
 });

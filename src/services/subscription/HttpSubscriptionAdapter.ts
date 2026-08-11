@@ -62,4 +62,16 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
     }
     return checkoutResponseSchema.parse(await response.json()).checkout_url;
   }
+
+  public async redeem(authorizedFetch: AuthorizedFetch, code: string): Promise<SubscriptionStatus> {
+    const response = await authorizedFetch(`${getApiUrl()}/subscription/redeem`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    });
+    if (!response.ok) {
+      throw new ApiError(response.status, `Failed to redeem code (${response.status})`);
+    }
+    return subscriptionStatusSchema.parse(await response.json());
+  }
 }

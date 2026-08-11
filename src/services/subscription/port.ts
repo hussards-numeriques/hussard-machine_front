@@ -21,4 +21,5 @@ export interface SubscriptionRepository {
     authorizedFetch: AuthorizedFetch,
     plan: SubscriptionPlanKey
   ): Promise<string>;
+  redeem(authorizedFetch: AuthorizedFetch, code: string): Promise<SubscriptionStatus>;
 }
