@@ -65,3 +65,7 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 `src/lib/money.spec.ts`, `src/lib/date.spec.ts`,
 `src/services/subscription/HttpSubscriptionAdapter.spec.ts`,
 `src/hooks/useSubscription.spec.tsx`, une spec par page/composant ci-dessus.
+
+## Secret redeem code (`/vip`, hidden page)
+
+A fourth route, `POST /subscription/redeem` (Bearer, `{ code }` → same shape as `GET /subscription`), activates a free one-year subscription from a single-use code distributed manually by the operator (no admin UI, no Stripe involved — see the back-end docs for how codes are generated). `VipPage` (`src/pages/VipPage.tsx`) is the only consumer, reached at `/vip`. This route is deliberately **not** part of the "Backend contract" table above and **not** linked from any nav/menu — do not add a link to it, do not add `/vip` to `public/sitemap.xml` or `public/robots.txt`. `redeem` on `subscriptionRepository`/`useRedeem` follow the exact same port/adapter/hook shape as `createCheckoutSession`/`useStartCheckout`.
