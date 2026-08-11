@@ -163,3 +163,125 @@ describe('LobbyView - player title', () => {
     expect(screen.queryByText(/☆/)).not.toBeInTheDocument();
   });
 });
+
+describe('LobbyView - host controls', () => {
+  const privateGame: Game = {
+    id: 'ABCD',
+    state: 'WAITING',
+    is_quick_game: false,
+    host_player_id: 'p1',
+    max_players: 3,
+    players: [
+      {
+        id: 'p1',
+        name: 'Host',
+        is_bot: false,
+        is_ready: false,
+        is_connected: true,
+        score: 0,
+        level: 'CP',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: null,
+      },
+      {
+        id: 'p2',
+        name: 'Guest',
+        is_bot: false,
+        is_ready: false,
+        is_connected: true,
+        score: 0,
+        level: 'CP',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: null,
+      },
+    ],
+    questions: [],
+    current_question_index: -1,
+    answers: [],
+    start_time_current_question: null,
+  };
+
+  it('shows add-bot buttons and a capacity counter to the host', () => {
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={privateGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.getByText('Places : 2/3')).toBeInTheDocument();
+    expect(screen.getByText('Facile')).toBeInTheDocument();
+    expect(screen.getByText('Moyen')).toBeInTheDocument();
+    expect(screen.getByText('Difficile')).toBeInTheDocument();
+  });
+
+  it('disables add-bot buttons once the lobby is full', () => {
+    const fullGame: Game = { ...privateGame, max_players: 2 };
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={fullGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.getByText('Facile').closest('button')).toBeDisabled();
+  });
+
+  it('calls addBot with the chosen difficulty', () => {
+    const addBot = vi.fn();
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn(), addBot } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={privateGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    fireEvent.click(screen.getByText('Difficile'));
+
+    expect(addBot).toHaveBeenCalledWith('HARD');
+  });
+
+  it('shows a kick button on other players but not on the host itself', () => {
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={privateGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.getAllByLabelText('Exclure Guest')).toHaveLength(1);
+    expect(screen.queryByLabelText('Exclure Host')).not.toBeInTheDocument();
+  });
+
+  it('calls removePlayer with the target id when the kick button is clicked', () => {
+    const removePlayer = vi.fn();
+    const mockClient = {
+      setReady: vi.fn(),
+      startGame: vi.fn(),
+      removePlayer,
+    } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={privateGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    fireEvent.click(screen.getByLabelText('Exclure Guest'));
+
+    expect(removePlayer).toHaveBeenCalledWith('p2');
+  });
+
+  it('shows no host controls to a non-host player', () => {
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={privateGame} currentPlayerId="p2" onLeave={vi.fn()} />
+    );
+
+    expect(screen.queryByText('Facile')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Exclure Host')).not.toBeInTheDocument();
+  });
+
+  it('shows no host controls in a quick game even for the listed host id', () => {
+    const quickGame: Game = { ...privateGame, is_quick_game: true };
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={quickGame} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.queryByText('Facile')).not.toBeInTheDocument();
+  });
+});

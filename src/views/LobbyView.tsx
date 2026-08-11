@@ -14,9 +14,17 @@ interface LobbyViewProps {
   onLeave: () => void;
 }
 
+const BOT_DIFFICULTIES: { value: 'EASY' | 'MEDIUM' | 'HARD'; label: string }[] = [
+  { value: 'EASY', label: 'Facile' },
+  { value: 'MEDIUM', label: 'Moyen' },
+  { value: 'HARD', label: 'Difficile' },
+];
+
 export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlayerId, onLeave }) => {
   const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
   const isReady = currentPlayer?.is_ready;
+  const isHost = !game.is_quick_game && currentPlayerId === game.host_player_id;
+  const isFull = game.players.length >= game.max_players;
 
   const handleReady = () => {
     client.setReady(!isReady);
@@ -42,6 +50,27 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
           </>
         )}
       </div>
+
+      {isHost && (
+        <div className="w-full bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-4">
+          <h3 className="text-lg font-bold text-slate-700">
+            Places : {game.players.length}/{game.max_players}
+          </h3>
+          <div className="flex gap-2 flex-wrap">
+            {BOT_DIFFICULTIES.map(({ value, label }) => (
+              <Button
+                key={value}
+                variant="secondary"
+                size="sm"
+                disabled={isFull}
+                onClick={() => client.addBot(value)}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="w-full bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100">
         <h3 className="text-xl font-bold text-slate-700 mb-6 flex justify-between items-center">
@@ -88,6 +117,16 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                     />
                   </svg>
                 </div>
+              )}
+              {isHost && player.id !== currentPlayerId && (
+                <button
+                  type="button"
+                  aria-label={`Exclure ${player.name}`}
+                  onClick={() => client.removePlayer(player.id)}
+                  className="text-rose-400 hover:text-rose-600 text-xl font-bold px-2"
+                >
+                  ✕
+                </button>
               )}
             </div>
           ))}
