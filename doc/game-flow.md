@@ -67,14 +67,15 @@ are typed by the `ClientMessage` union in `GameClient.ts`.
 
 ### Incoming WebSocket messages
 
-| Type                 | Payload               | Action                                                                                                                                                                                                                                          |
-| -------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`                                                                                                                                                                                                   |
-| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                                                                                                                                                                                                                      |
-| `COUNTDOWN`          | `{ seconds }`         | Console log (not used by UI)                                                                                                                                                                                                                    |
-| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined                                                                                                                                                                                                 |
-| `ERROR`              | `string`              | Calls `onError(message)`                                                                                                                                                                                                                        |
-| `KICKED`             | `{}`                  | Calls `onError('Tu as été exclu du salon.')` — routed through the same `onError` flow as `ERROR`, no dedicated UI surface. Sent to a player the host removes via `removePlayer()`; `GamePage` renders it in its generic error card (see below). |
+| Type                 | Payload               | Action                                                                                                                                                                                                                                                  |
+| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`                                                                                                                                                                                                           |
+| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                                                                                                                                                                                                                              |
+| `COUNTDOWN`          | `{ seconds }`         | Console log (not used by UI)                                                                                                                                                                                                                            |
+| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined                                                                                                                                                                                                         |
+| `ERROR`              | `string`              | Calls `onError(message)`                                                                                                                                                                                                                                |
+| `KICKED`             | `{}`                  | Calls `onError('Tu as été exclu du salon.')` — routed through the same `onError` flow as `ERROR`, no dedicated UI surface. Sent to a player the host removes via `removePlayer()`; `GamePage` renders it in its generic error card (see below).         |
+| `LOBBY_CLOSED`       | `{}`                  | Calls `onError("L'hôte a quitté la partie, le salon a été fermé.")` — same `onError` flow, no dedicated UI surface. Sent to every other human still in a private lobby when its host disconnects before the game starts (the backend deletes the game). |
 
 ### Outgoing WebSocket messages
 
@@ -186,14 +187,14 @@ games have no host (`host_player_id` is `null`) and never show these controls. W
 The backend re-checks the host permission and capacity server-side; the front only hides/disables
 the affected controls for non-hosts and at capacity.
 
-### Being kicked
+### Being kicked, or the lobby closing
 
-There is no dedicated "you were kicked" screen. `KICKED` is routed through the existing `onError`
-flow (see the incoming-messages table above): `GameClient` turns it into a French error string via
-`onError`, which lands in `GameContextValue.error` the same way any other `ERROR` message would.
-`GamePage` renders its generic error card ("Oups !" + the message + a "Retour à l'accueil" button
-that calls `resetGame()` and navigates to `/`) — the same fallback used for any other game error,
-not a kick-specific UI.
+There is no dedicated "you were kicked" or "the lobby closed" screen. Both `KICKED` and
+`LOBBY_CLOSED` are routed through the existing `onError` flow (see the incoming-messages table
+above): `GameClient` turns each into its own French error string via `onError`, which lands in
+`GameContextValue.error` the same way any other `ERROR` message would. `GamePage` renders its
+generic error card ("Oups !" + the message + a "Retour à l'accueil" button that calls `resetGame()`
+and navigates to `/`) — the same fallback used for any other game error, not a dedicated UI.
 
 ## How to add a game flow feature
 

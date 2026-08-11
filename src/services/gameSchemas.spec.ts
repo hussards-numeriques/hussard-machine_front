@@ -104,4 +104,10 @@ describe('serverMessageSchema', () => {
 
     expect(message.type).toBe('KICKED');
   });
+
+  it('accepts a LOBBY_CLOSED message', () => {
+    const message = serverMessageSchema.parse({ type: 'LOBBY_CLOSED', payload: {} });
+
+    expect(message.type).toBe('LOBBY_CLOSED');
+  });
 });

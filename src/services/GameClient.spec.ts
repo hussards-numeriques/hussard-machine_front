@@ -169,6 +169,21 @@ describe('GameClient - /ws/play protocol', () => {
     expect(onError.mock.calls[0][0]).toEqual(expect.any(String));
     expect(onError.mock.calls[0][0]).not.toBe('');
   });
+
+  it('calls onError with a distinct message when a LOBBY_CLOSED message is received', () => {
+    const onError = vi.fn();
+    const client = new GameClient(vi.fn(), onError);
+    client.connectToLobby({ gameId: 'ABCD', playerName: 'Alice' });
+    const ws = openSocket(client);
+
+    ws.onmessage?.({
+      data: JSON.stringify({ type: 'LOBBY_CLOSED', payload: {} }),
+    } as MessageEvent);
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError.mock.calls[0][0]).toEqual(expect.any(String));
+    expect(onError.mock.calls[0][0]).not.toBe('');
+  });
 });
 
 describe('createLobby', () => {
