@@ -67,6 +67,7 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('QUESTION_COUNTDOWN'), payload: z.object({ seconds: z.number() }) }),
   z.object({ type: z.literal('ERROR'), payload: z.string() }),
   z.object({ type: z.literal('KICKED'), payload: z.object({}) }),
+  z.object({ type: z.literal('LOBBY_CLOSED'), payload: z.object({}) }),
 ]);
 
 export type ServerMessage = z.infer<typeof serverMessageSchema>;
