@@ -53,6 +53,8 @@ export const gameSchema = z.object({
   answers: z.array(answerSchema),
   start_time_current_question: z.number().nullable(),
   is_quick_game: z.boolean().optional(),
+  host_player_id: z.string().nullable(),
+  max_players: z.number(),
 }) satisfies z.ZodType<Game>;
 
 export const serverMessageSchema = z.discriminatedUnion('type', [
@@ -64,6 +66,7 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('COUNTDOWN'), payload: z.object({ seconds: z.number() }) }),
   z.object({ type: z.literal('QUESTION_COUNTDOWN'), payload: z.object({ seconds: z.number() }) }),
   z.object({ type: z.literal('ERROR'), payload: z.string() }),
+  z.object({ type: z.literal('KICKED'), payload: z.object({}) }),
 ]);
 
 export type ServerMessage = z.infer<typeof serverMessageSchema>;

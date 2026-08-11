@@ -68,6 +68,8 @@ describe('GameView - scoreboard connection status', () => {
     current_question_index: 0,
     answers: [],
     start_time_current_question: Date.now() / 1000,
+    host_player_id: null,
+    max_players: 6,
   };
 
   it('marks disconnected players in the scoreboard', () => {

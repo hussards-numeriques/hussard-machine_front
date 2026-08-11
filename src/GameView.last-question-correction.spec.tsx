@@ -71,6 +71,8 @@ describe('GameView - correction screen on the last question', () => {
       },
     ],
     start_time_current_question: Date.now() / 1000,
+    host_player_id: null,
+    max_players: 6,
   };
 
   it('shows the correction for the last question when the server sends the pre-podium countdown', () => {

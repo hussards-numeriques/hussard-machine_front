@@ -99,4 +99,6 @@ export interface Game {
   answers: Answer[];
   start_time_current_question: number | null;
   is_quick_game?: boolean;
+  host_player_id: string | null;
+  max_players: number;
 }
