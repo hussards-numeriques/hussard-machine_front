@@ -2,13 +2,20 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useStartCheckout, useSubscriptionPlans, useSubscriptionStatus } from './useSubscription';
+import {
+  useRedeem,
+  useStartCheckout,
+  useSubscriptionPlans,
+  useSubscriptionStatus,
+} from './useSubscription';
+import { ApiError } from '../services/http';
 
 const mocks = vi.hoisted(() => ({
   isAuthenticated: false,
   fetchPlans: vi.fn(),
   fetchStatus: vi.fn(),
   createCheckoutSession: vi.fn(),
+  redeem: vi.fn(),
 }));
 
 vi.mock('../contexts/useAuth', () => ({
@@ -29,6 +36,7 @@ vi.mock('../services/subscription', () => ({
     fetchPlans: mocks.fetchPlans,
     fetchStatus: mocks.fetchStatus,
     createCheckoutSession: mocks.createCheckoutSession,
+    redeem: mocks.redeem,
   },
 }));
 
@@ -104,5 +112,38 @@ describe('useStartCheckout', () => {
     expect(window.location.assign).toHaveBeenCalledWith(
       'https://checkout.stripe.com/c/pay/cs_test_1'
     );
+  });
+});
+
+describe('useRedeem', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.isAuthenticated = true;
+  });
+
+  it('calls the repository with the code and returns the updated status', async () => {
+    mocks.redeem.mockResolvedValue({ active: true, expires_at: '2027-08-11T12:00:00' });
+
+    const { result } = renderHook(() => useRedeem(), { wrapper });
+
+    act(() => {
+      result.current.mutate('my-secret-code');
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(mocks.redeem).toHaveBeenCalledWith(expect.any(Function), 'my-secret-code');
+    expect(result.current.data).toEqual({ active: true, expires_at: '2027-08-11T12:00:00' });
+  });
+
+  it('surfaces the error when the code is rejected', async () => {
+    mocks.redeem.mockRejectedValue(new ApiError(400, 'Failed to redeem code (400)'));
+
+    const { result } = renderHook(() => useRedeem(), { wrapper });
+
+    act(() => {
+      result.current.mutate('bad-code');
+    });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
   });
 });

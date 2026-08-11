@@ -38,3 +38,12 @@ export const useStartCheckout = () => {
     },
   });
 };
+
+export const useRedeem = () => {
+  const { client } = useAuth();
+
+  return useMutation({
+    mutationFn: (code: string) =>
+      subscriptionRepository.redeem((input, init) => client.authorizedFetch(input, init), code),
+  });
+};
