@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
 import { subscriptionRepository } from '../services/subscription';
 import type { SubscriptionPlanKey } from '../services/subscription';
@@ -41,9 +41,11 @@ export const useStartCheckout = () => {
 
 export const useRedeem = () => {
   const { client } = useAuth();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (code: string) =>
       subscriptionRepository.redeem((input, init) => client.authorizedFetch(input, init), code),
+    onSuccess: (status) => queryClient.setQueryData(SUBSCRIPTION_STATUS_QUERY_KEY, status),
   });
 };

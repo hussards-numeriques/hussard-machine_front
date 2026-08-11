@@ -59,10 +59,15 @@ export const VipPage: React.FC = () => {
           value={code}
           onChange={(event) => setCode(event.target.value)}
           placeholder="Ton code"
+          autoCapitalize="none"
+          autoCorrect="off"
+          spellCheck={false}
+          autoComplete="off"
+          maxLength={256}
         />
         <Button
           onClick={() => redeem.mutate(code)}
-          disabled={redeem.isPending || code.length === 0}
+          disabled={redeem.isPending || code.trim().length === 0}
         >
           Activer
         </Button>

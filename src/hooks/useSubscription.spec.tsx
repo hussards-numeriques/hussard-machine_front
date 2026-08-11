@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  SUBSCRIPTION_STATUS_QUERY_KEY,
   useRedeem,
   useStartCheckout,
   useSubscriptionPlans,
@@ -40,9 +41,11 @@ vi.mock('../services/subscription', () => ({
   },
 }));
 
+let latestQueryClient: QueryClient;
+
 const wrapper = ({ children }: { children: ReactNode }) => {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  latestQueryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return <QueryClientProvider client={latestQueryClient}>{children}</QueryClientProvider>;
 };
 
 describe('useSubscriptionPlans', () => {
@@ -145,5 +148,21 @@ describe('useRedeem', () => {
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
+  });
+
+  it('updates the subscription-status query cache on success', async () => {
+    mocks.redeem.mockResolvedValue({ active: true, expires_at: '2027-08-11T12:00:00' });
+
+    const { result } = renderHook(() => useRedeem(), { wrapper });
+
+    act(() => {
+      result.current.mutate('my-secret-code');
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(latestQueryClient.getQueryData(SUBSCRIPTION_STATUS_QUERY_KEY)).toEqual({
+      active: true,
+      expires_at: '2027-08-11T12:00:00',
+    });
   });
 });

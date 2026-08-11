@@ -15,7 +15,8 @@ BrowserRouter
 │   ├── /subscription/success → SubscriptionSuccessPage
 │   ├── /subscription/cancel → SubscriptionCancelPage
 │   ├── /legal-notice → LegalNoticePage
-│   └── /privacy-policy → PrivacyPolicyPage
+│   ├── /privacy-policy → PrivacyPolicyPage
+│   └── /vip           → VipPage (hidden, unlinked — never add a nav link, see doc/subscription.md)
 └── GameLayout      (GameProvider)
     └── /game/:gameId? → GamePage   (gameId optional — see below)
 ```
