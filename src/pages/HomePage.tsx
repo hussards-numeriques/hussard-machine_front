@@ -2,22 +2,30 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../contexts/useGame';
 import { useAuth } from '../contexts/useAuth';
+import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Mascot } from '../components/Mascot';
 import { useShinySession } from '../hooks/useShinySession';
+import { LEVELS, resolveLevelLabel } from '../lib/grades';
+
+const DEFAULT_MAX_PLAYERS = 6;
 
 export const HomePage: React.FC = () => {
   const isShiny = useShinySession();
   const { client } = useGame();
   const { user, isAuthenticated, client: authClient } = useAuth();
+  const { data: subscriptionStatus } = useSubscriptionStatus();
   const navigate = useNavigate();
   const [name, setName] = React.useState('');
   const [code, setCode] = React.useState('');
-  const [mode, setMode] = React.useState<'MENU' | 'JOIN'>('MENU');
+  const [mode, setMode] = React.useState<'MENU' | 'JOIN' | 'CREATE'>('MENU');
   const [error, setError] = React.useState('');
+  const [createLevel, setCreateLevel] = React.useState<(typeof LEVELS)[number]>('CP');
+  const [createMaxPlayers, setCreateMaxPlayers] = React.useState(DEFAULT_MAX_PLAYERS);
 
   const effectiveName = isAuthenticated && user ? user.username : name;
+  const canCreateLobby = isAuthenticated && (subscriptionStatus?.active ?? false);
 
   const goToGame = (gameId: string, playerName: string) => {
     const token = isAuthenticated ? authClient.getAccessToken() : null;
@@ -34,8 +42,17 @@ export const HomePage: React.FC = () => {
 
   const handleCreate = async () => {
     if (!requireName()) return;
+    const token = authClient.getAccessToken();
+    if (!token) {
+      setError('Erreur lors de la création');
+      return;
+    }
     try {
-      const gameId = await client.createLobby();
+      const gameId = await client.createLobby({
+        level: createLevel,
+        maxPlayers: createMaxPlayers,
+        token,
+      });
       goToGame(gameId, effectiveName);
     } catch {
       setError('Erreur lors de la création');
@@ -78,20 +95,28 @@ export const HomePage: React.FC = () => {
           </div>
         )}
 
-        {mode === 'MENU' ? (
+        {mode === 'MENU' && (
           <div className="flex flex-col gap-4 pt-4">
             <Button size="lg" onClick={handleQuickGame}>
               Partie Rapide
             </Button>
             <br />
-            <Button variant="secondary" size="lg" onClick={handleCreate}>
-              Créer un salon
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => setMode('CREATE')}
+              disabled={!canCreateLobby}
+              title={canCreateLobby ? undefined : 'Abonnement requis'}
+            >
+              {canCreateLobby ? 'Créer un salon' : 'Abonnement requis'}
             </Button>
             <Button variant="secondary" size="lg" onClick={() => setMode('JOIN')}>
               Rejoindre un salon
             </Button>
           </div>
-        ) : (
+        )}
+
+        {mode === 'JOIN' && (
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
               <label className="font-bold text-slate-600 ml-2">Code du salon</label>
@@ -104,6 +129,41 @@ export const HomePage: React.FC = () => {
             </div>
             <Button size="lg" className="w-full" onClick={handleJoin}>
               C'est parti !
+            </Button>
+            <Button variant="secondary" className="w-full" onClick={() => setMode('MENU')}>
+              Retour
+            </Button>
+          </div>
+        )}
+
+        {mode === 'CREATE' && (
+          <div className="space-y-4 pt-4">
+            <div className="space-y-2">
+              <label className="font-bold text-slate-600 ml-2">Niveau des questions</label>
+              <select
+                className="w-full text-center text-2xl p-4 rounded-xl border-2 border-slate-300 outline-none"
+                value={createLevel}
+                onChange={(e) => setCreateLevel(e.target.value as (typeof LEVELS)[number])}
+              >
+                {LEVELS.map((level) => (
+                  <option key={level} value={level}>
+                    {resolveLevelLabel(level)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="font-bold text-slate-600 ml-2">Places</label>
+              <Input
+                type="number"
+                min={2}
+                max={30}
+                value={createMaxPlayers}
+                onChange={(e) => setCreateMaxPlayers(Number(e.target.value))}
+              />
+            </div>
+            <Button size="lg" className="w-full" onClick={handleCreate}>
+              Créer
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => setMode('MENU')}>
               Retour
