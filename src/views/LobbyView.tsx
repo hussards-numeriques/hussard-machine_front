@@ -23,7 +23,11 @@ const BOT_DIFFICULTIES: { value: 'EASY' | 'MEDIUM' | 'HARD'; label: string }[] =
 export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlayerId, onLeave }) => {
   const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
   const isReady = currentPlayer?.is_ready;
-  const isHost = !game.is_quick_game && currentPlayerId === game.host_player_id;
+  const isHost =
+    !game.is_quick_game &&
+    game.state === 'WAITING' &&
+    game.host_player_id !== null &&
+    currentPlayerId === game.host_player_id;
   const isFull = game.players.length >= game.max_players;
 
   const handleReady = () => {

@@ -284,4 +284,30 @@ describe('LobbyView - host controls', () => {
 
     expect(screen.queryByText('Facile')).not.toBeInTheDocument();
   });
+
+  it('hides host controls once the lobby leaves WAITING for COUNTDOWN', () => {
+    const countingDownGame: Game = { ...privateGame, state: 'COUNTDOWN' };
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView
+        client={mockClient}
+        game={countingDownGame}
+        currentPlayerId="p1"
+        onLeave={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByText('Facile')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Exclure Guest')).not.toBeInTheDocument();
+  });
+
+  it('shows no host controls when host_player_id is null even if currentPlayerId is also null', () => {
+    const hostlessGame: Game = { ...privateGame, host_player_id: null };
+    const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+    render(
+      <LobbyView client={mockClient} game={hostlessGame} currentPlayerId={null} onLeave={vi.fn()} />
+    );
+
+    expect(screen.queryByText('Facile')).not.toBeInTheDocument();
+  });
 });

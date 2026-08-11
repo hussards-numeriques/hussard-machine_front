@@ -112,4 +112,80 @@ describe('HomePage - create lobby button', () => {
       expect(createLobby).toHaveBeenCalledWith({ level: 'CP', maxPlayers: 6, token: 'tok' });
     });
   });
+
+  it('rejects an out-of-range capacity without calling createLobby', async () => {
+    const createLobby = vi.fn().mockResolvedValue('GAME1');
+    vi.mocked(useAuth).mockReturnValue({
+      client: { getAccessToken: () => 'tok' },
+      user: { username: 'Alice' },
+      isAuthenticated: true,
+      isLoading: false,
+      login: vi.fn(),
+      register: vi.fn(),
+      logout: vi.fn(),
+      reloadUser: vi.fn(),
+    } as unknown as ReturnType<typeof useAuth>);
+    vi.mocked(useSubscriptionStatus).mockReturnValue({
+      data: { active: true, expires_at: '2026-12-01T00:00:00' },
+    } as unknown as ReturnType<typeof useSubscriptionStatus>);
+    vi.mocked(useGame).mockReturnValue({
+      client: { createLobby },
+      game: null,
+      error: null,
+      clearError: vi.fn(),
+      resetGame: vi.fn(),
+    } as unknown as ReturnType<typeof useGame>);
+
+    const { container } = render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByText('Créer un salon'));
+    const capacityInput = container.querySelector('input[type="number"]');
+    if (!capacityInput) throw new Error('capacity input not found');
+    fireEvent.change(capacityInput, { target: { value: '' } });
+    fireEvent.click(screen.getByText('Créer'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Le nombre de places doit être entre 2 et 30.')).toBeInTheDocument();
+    });
+    expect(createLobby).not.toHaveBeenCalled();
+  });
+});
+
+describe('HomePage - subscription status loading', () => {
+  it('disables the create button with its normal label while the subscription query is pending', () => {
+    vi.mocked(useAuth).mockReturnValue({
+      client: { getAccessToken: () => 'tok' },
+      user: { username: 'Alice' },
+      isAuthenticated: true,
+      isLoading: false,
+      login: vi.fn(),
+      register: vi.fn(),
+      logout: vi.fn(),
+      reloadUser: vi.fn(),
+    } as unknown as ReturnType<typeof useAuth>);
+    vi.mocked(useSubscriptionStatus).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+    } as unknown as ReturnType<typeof useSubscriptionStatus>);
+    vi.mocked(useGame).mockReturnValue({
+      client: { createLobby: vi.fn() },
+      game: null,
+      error: null,
+      clearError: vi.fn(),
+      resetGame: vi.fn(),
+    } as unknown as ReturnType<typeof useGame>);
+
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Abonnement requis')).not.toBeInTheDocument();
+    expect(screen.getByText('Créer un salon').closest('button')).toBeDisabled();
+  });
 });

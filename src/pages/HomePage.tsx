@@ -15,7 +15,8 @@ export const HomePage: React.FC = () => {
   const isShiny = useShinySession();
   const { client } = useGame();
   const { user, isAuthenticated, client: authClient } = useAuth();
-  const { data: subscriptionStatus } = useSubscriptionStatus();
+  const { data: subscriptionStatus, isLoading: isSubscriptionStatusLoading } =
+    useSubscriptionStatus();
   const navigate = useNavigate();
   const [name, setName] = React.useState('');
   const [code, setCode] = React.useState('');
@@ -26,6 +27,9 @@ export const HomePage: React.FC = () => {
 
   const effectiveName = isAuthenticated && user ? user.username : name;
   const canCreateLobby = isAuthenticated && (subscriptionStatus?.active ?? false);
+  const isCreateLobbyButtonDisabled = !canCreateLobby || isSubscriptionStatusLoading;
+  const createLobbyButtonLabel =
+    canCreateLobby || isSubscriptionStatusLoading ? 'Créer un salon' : 'Abonnement requis';
 
   const goToGame = (gameId: string, playerName: string) => {
     const token = isAuthenticated ? authClient.getAccessToken() : null;
@@ -42,6 +46,10 @@ export const HomePage: React.FC = () => {
 
   const handleCreate = async () => {
     if (!requireName()) return;
+    if (createMaxPlayers < 2 || createMaxPlayers > 30 || Number.isNaN(createMaxPlayers)) {
+      setError('Le nombre de places doit être entre 2 et 30.');
+      return;
+    }
     const token = authClient.getAccessToken();
     if (!token) {
       setError('Erreur lors de la création');
@@ -105,10 +113,12 @@ export const HomePage: React.FC = () => {
               variant="secondary"
               size="lg"
               onClick={() => setMode('CREATE')}
-              disabled={!canCreateLobby}
-              title={canCreateLobby ? undefined : 'Abonnement requis'}
+              disabled={isCreateLobbyButtonDisabled}
+              title={
+                !canCreateLobby && !isSubscriptionStatusLoading ? 'Abonnement requis' : undefined
+              }
             >
-              {canCreateLobby ? 'Créer un salon' : 'Abonnement requis'}
+              {createLobbyButtonLabel}
             </Button>
             <Button variant="secondary" size="lg" onClick={() => setMode('JOIN')}>
               Rejoindre un salon
