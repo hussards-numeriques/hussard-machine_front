@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { formatShortDate } from './date';
+import { formatLongDate, formatShortDate } from './date';
 
 describe('formatShortDate', () => {
   afterEach(() => {
@@ -26,5 +26,33 @@ describe('formatShortDate', () => {
   it('treats a naive (no-timezone) ISO string as UTC regardless of the runner local timezone', () => {
     vi.stubEnv('TZ', 'Asia/Tokyo');
     expect(formatShortDate('2026-08-21T23:30:00')).toBe('21/08');
+  });
+});
+
+describe('formatLongDate', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('formats an ISO date as "D month year" in French', () => {
+    expect(formatLongDate('2026-08-21T12:00:00')).toBe('21 août 2026');
+  });
+
+  it('does not pad the day (long format never shows a leading zero)', () => {
+    expect(formatLongDate('2026-01-05T00:00:00')).toBe('5 janvier 2026');
+  });
+
+  it('does not double-append Z when the ISO string already carries an offset', () => {
+    expect(formatLongDate('2026-08-21T23:30:00+02:00')).toBe('21 août 2026');
+  });
+
+  it('displays the UTC calendar day of an offset-aware string no matter the viewer local timezone', () => {
+    vi.stubEnv('TZ', 'Asia/Tokyo');
+    expect(formatLongDate('2026-08-21T23:30:00+02:00')).toBe('21 août 2026');
+  });
+
+  it('treats a naive (no-timezone) ISO string as UTC regardless of the runner local timezone', () => {
+    vi.stubEnv('TZ', 'Asia/Tokyo');
+    expect(formatLongDate('2026-08-21T23:30:00')).toBe('21 août 2026');
   });
 });
