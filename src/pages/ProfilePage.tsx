@@ -7,6 +7,8 @@ import { useGameConfig } from '../hooks/useGameConfig';
 import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { formatLongDate } from '../lib/date';
+import { AnswerDots } from '../components/AnswerDots';
+import { getAggregatedAnswerResults } from '../lib/answerDots';
 import {
   LevelChangeConfirmModal,
   type LevelChangeVariant,
@@ -173,8 +175,15 @@ const HistoryRow: React.FC<{
                       )}
                     </span>
                   </td>
-                  <td className="py-1.5 text-right text-slate-500">
-                    {p.correct_answers}/{p.total_answers}
+                  <td className="py-1.5 text-right">
+                    <AnswerDots
+                      results={getAggregatedAnswerResults(
+                        p.correct_answers,
+                        p.total_answers,
+                        entry.questions_count
+                      )}
+                      maxWidthCh={10}
+                    />
                   </td>
                   <td className="py-1.5 text-right font-bold text-slate-700">{p.score}</td>
                   <td
