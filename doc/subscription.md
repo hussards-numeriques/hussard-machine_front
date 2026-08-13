@@ -55,8 +55,14 @@ dédoublonne déjà sur la clé `['subscription-status']`.
   `MAX_POLL_ATTEMPTS`) si pas encore actif, puis message d'attente prolongée.
 - `/subscription/cancel` (`SubscriptionCancelPage.tsx`) : retour simple, aucun
   appel réseau.
-- `Header` : lien "Abonnement" dans le menu utilisateur + badge "Actif jusqu'au
-  JJ/MM" (`SubscriptionBadge.tsx`) à côté du `StreakBadge`.
+- `Header` : lien "Abonnement" dans le menu utilisateur + icône "plus"
+  (`SubscriptionBadge.tsx`) à côté du `StreakBadge` — pas de date visible sans
+  clic ; le clic ouvre un popover avec la date complète
+  (`lib/date.ts#formatLongDate`) et un lien "Prolonger →" vers
+  `/subscription`.
+- `/profile` (`ProfilePage.tsx`) : si l'abonnement est actif, une ligne de
+  texte dans la carte identité donne la date complète de fin
+  (`formatLongDate`) — pas de badge, pas d'incitation à l'achat si inactif.
 - `QuestsPage` : bandeau non bloquant quand `active === false`, lien vers
   `/subscription`.
 

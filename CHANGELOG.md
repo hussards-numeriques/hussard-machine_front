@@ -20,6 +20,7 @@
 
 ### Changed
 
+- Subscription indicator: the header badge is now a compact "plus" icon with no visible deadline (a click opens a popover with the full expiry date and a "Prolonger" link to `/subscription`, instead of a permanently-shown "Actif jusqu'au JJ/MM" text pill that ran too wide on mobile). The full expiry date (day, month, and year) now shows as plain text on `/profile` instead.
 - Podium: the action buttons ("Retour à l'accueil" / "Rejouer") now appear right below the top-3 podium, above the full ranking, so "Rejouer" is reachable without scrolling on mobile. Each player's score in the full ranking is now followed by small dots showing the correct/incorrect/unanswered result of each of their questions, in play order.
 - Subscription page: `/subscription` now leads with a single pricing card
   instead of a bare list — per-month price and savings percent are shown for
