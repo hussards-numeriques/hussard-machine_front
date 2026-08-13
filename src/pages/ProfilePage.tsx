@@ -175,15 +175,17 @@ const HistoryRow: React.FC<{
                       )}
                     </span>
                   </td>
-                  <td className="py-1.5 text-right">
-                    <AnswerDots
-                      results={getAggregatedAnswerResults(
-                        p.correct_answers,
-                        p.total_answers,
-                        entry.questions_count
-                      )}
-                      maxWidthCh={10}
-                    />
+                  <td className="py-1.5">
+                    <div className="flex justify-end">
+                      <AnswerDots
+                        results={getAggregatedAnswerResults(
+                          p.correct_answers,
+                          p.total_answers,
+                          entry.questions_count
+                        )}
+                        maxWidthCh={10}
+                      />
+                    </div>
                   </td>
                   <td className="py-1.5 text-right font-bold text-slate-700">{p.score}</td>
                   <td

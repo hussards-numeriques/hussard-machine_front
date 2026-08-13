@@ -145,4 +145,9 @@ describe('getAggregatedAnswerResults', () => {
   it('returns an empty array when questionsCount is 0', () => {
     expect(getAggregatedAnswerResults(0, 0, 0)).toEqual([]);
   });
+
+  it('returns an empty array instead of throwing when questionsCount is negative', () => {
+    expect(() => getAggregatedAnswerResults(3, 4, -1)).not.toThrow();
+    expect(getAggregatedAnswerResults(3, 4, -1)).toEqual([]);
+  });
 });

@@ -15,7 +15,7 @@ export function getAggregatedAnswerResults(
   questionsCount: number
 ): AnswerResult[] {
   const clampedCorrect = Math.max(0, Math.min(correct, total));
-  const correctCount = Math.min(clampedCorrect, questionsCount);
+  const correctCount = Math.max(0, Math.min(clampedCorrect, questionsCount));
   const incorrectCount = Math.max(
     0,
     Math.min(total - clampedCorrect, questionsCount - correctCount)
