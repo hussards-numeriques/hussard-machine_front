@@ -90,4 +90,10 @@ describe('ProfilePage subscription info', () => {
     renderPage();
     expect(screen.getByText("Abonnement actif jusqu'au 21 août 2026.")).toBeInTheDocument();
   });
+
+  it('shows nothing about the subscription when active but expires_at is null', () => {
+    mocks.status = { active: true, expires_at: null };
+    renderPage();
+    expect(screen.queryByText(/Abonnement actif/)).not.toBeInTheDocument();
+  });
 });

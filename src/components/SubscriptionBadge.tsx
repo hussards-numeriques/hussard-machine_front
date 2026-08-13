@@ -34,9 +34,9 @@ export const SubscriptionBadge: React.FC = () => {
         type="button"
         aria-label="Abonnement actif"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center justify-center w-8 h-8 rounded-full shadow border border-amber-300"
+        className="flex items-center justify-center w-8 h-8 rounded-full shadow border border-amber-300 transition hover:brightness-110"
       >
-        <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+        <svg width="100%" height="100%" viewBox="0 0 32 32" aria-hidden="true">
           <defs>
             <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#fbbf24" />
@@ -49,7 +49,7 @@ export const SubscriptionBadge: React.FC = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border-2 border-slate-100 p-3 text-left text-xs font-semibold text-slate-600 leading-relaxed space-y-2">
+        <div className="absolute left-0 mt-2 w-60 z-20 bg-white rounded-xl shadow-xl border-2 border-slate-100 p-3 text-left text-xs font-semibold text-slate-600 leading-relaxed space-y-2">
           <p>Abonnement actif jusqu'au {formatLongDate(data.expires_at)}.</p>
           <Link
             to="/subscription"

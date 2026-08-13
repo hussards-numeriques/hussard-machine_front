@@ -51,6 +51,13 @@ describe('SubscriptionBadge', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it('renders nothing when active but expires_at is null', () => {
+    mocks.isAuthenticated = true;
+    mocks.status = { active: true, expires_at: null };
+    const { container } = renderBadge();
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it('shows the plus icon without any visible date when active', () => {
     mocks.isAuthenticated = true;
     mocks.status = { active: true, expires_at: '2026-08-21T12:00:00' };
@@ -80,6 +87,18 @@ describe('SubscriptionBadge', () => {
     expect(screen.getByText(/Abonnement actif jusqu'au/)).toBeInTheDocument();
 
     fireEvent.click(button);
+    expect(screen.queryByText(/Abonnement actif jusqu'au/)).not.toBeInTheDocument();
+  });
+
+  it('closes the popover on an outside click', () => {
+    mocks.isAuthenticated = true;
+    mocks.status = { active: true, expires_at: '2026-08-21T12:00:00' };
+    renderBadge();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Abonnement actif' }));
+    expect(screen.getByText(/Abonnement actif jusqu'au/)).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
     expect(screen.queryByText(/Abonnement actif jusqu'au/)).not.toBeInTheDocument();
   });
 });
