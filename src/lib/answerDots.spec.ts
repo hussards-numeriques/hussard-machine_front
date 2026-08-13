@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getPlayerAnswerResults } from './answerDots';
+import { getAggregatedAnswerResults, getPlayerAnswerResults } from './answerDots';
 import type { Game } from '../types';
 import { GameState } from '../types';
 
@@ -94,5 +94,55 @@ describe('getPlayerAnswerResults', () => {
     const game = buildGame({ questions: [] });
 
     expect(getPlayerAnswerResults(game, 'p1')).toEqual([]);
+  });
+});
+
+describe('getAggregatedAnswerResults', () => {
+  it('splits into correct, then incorrect, then timeout, in that order', () => {
+    expect(getAggregatedAnswerResults(3, 4, 5)).toEqual([
+      'correct',
+      'correct',
+      'correct',
+      'incorrect',
+      'timeout',
+    ]);
+  });
+
+  it('returns only correct when every question was answered correctly', () => {
+    expect(getAggregatedAnswerResults(5, 5, 5)).toEqual([
+      'correct',
+      'correct',
+      'correct',
+      'correct',
+      'correct',
+    ]);
+  });
+
+  it('returns only timeout when nothing was answered', () => {
+    expect(getAggregatedAnswerResults(0, 0, 3)).toEqual(['timeout', 'timeout', 'timeout']);
+  });
+
+  it('clamps total above questionsCount instead of over-producing results', () => {
+    expect(getAggregatedAnswerResults(2, 6, 5)).toEqual([
+      'correct',
+      'correct',
+      'incorrect',
+      'incorrect',
+      'incorrect',
+    ]);
+  });
+
+  it('clamps correct above total instead of producing negative counts', () => {
+    expect(getAggregatedAnswerResults(4, 2, 5)).toEqual([
+      'correct',
+      'correct',
+      'timeout',
+      'timeout',
+      'timeout',
+    ]);
+  });
+
+  it('returns an empty array when questionsCount is 0', () => {
+    expect(getAggregatedAnswerResults(0, 0, 0)).toEqual([]);
   });
 });
