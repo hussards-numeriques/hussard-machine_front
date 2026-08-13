@@ -5,6 +5,8 @@ import type { GameConfig, GameHistoryEntry } from '../types';
 import { ApiError } from '../services/http';
 import { useGameConfig } from '../hooks/useGameConfig';
 import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
+import { useSubscriptionStatus } from '../hooks/useSubscription';
+import { formatLongDate } from '../lib/date';
 import {
   LevelChangeConfirmModal,
   type LevelChangeVariant,
@@ -217,6 +219,7 @@ export const ProfilePage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: config } = useGameConfig();
   const profileQuery = usePlayerProfile();
+  const subscriptionQuery = useSubscriptionStatus();
   const promotion = usePromotePlayer();
   const demotion = useDemotePlayer();
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
@@ -305,6 +308,12 @@ export const ProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {subscriptionQuery.data?.active && subscriptionQuery.data.expires_at && (
+          <p className="text-xs font-semibold text-slate-500">
+            Abonnement actif jusqu'au {formatLongDate(subscriptionQuery.data.expires_at)}.
+          </p>
+        )}
 
         {config ? (
           <SegmentedXpBar
