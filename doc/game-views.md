@@ -93,6 +93,13 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 - **Play again**: creates a new `quickGame` and navigates to it passing `{ playerName, token }` in navigation state
 - **Back home**: `navigate('/')`
 - **Answer result dots**: in the full ranking only (not the top-3 columns), each player's score is followed by a row of small dots — one per question, in play order — showing `correct` (green) / `incorrect` (red) / `timeout` (grey), the shared `AnswerResult` vocabulary from `src/lib/playerAnswer.ts` (also used by the in-game `CorrectionCard` feedback). Derived purely from `game.answers` + `game.questions` via `getPlayerAnswerResults` (`src/lib/answerDots.ts`), itself built on `findPlayerAnswer` (`src/lib/playerAnswer.ts`); no extra network call. Rendered by `AnswerDots` (`src/components/AnswerDots.tsx`), built on the generic `Dot` component (`src/components/Dot.tsx`, 3 color variants: `success`/`danger`/`neutral`). Each dot carries an `aria-label` (`Correcte`/`Incorrecte`/`Sans réponse`, `role="img"`) so the result isn't conveyed by color alone; the row itself is `role="list"`. The dots row's width is capped at `<score text length>ch` so it never grows wider than the score above it, wrapping onto extra lines instead.
+- **XP progress**: between the top-3 podium and the action buttons, `EndGameXpProgress`
+  (`src/components/grade/`) shows the segmented XP bar animating from the pre-game to
+  the post-game state (`useXpProgress`, mirrors the `useTitleUnlocks` snapshot/diff
+  pattern), a `+X XP`/negative badge, a gold glow + micro-confetti when a grade is
+  crossed, and — separately — a `PromotionAvailableToast` (auto-dismissing, links to
+  `/profile`) when `can_promote` newly turns `true` this game. Identical for salon and
+  quick games; a salon game always shows `+0 XP`.
 
 ### Props
 
@@ -102,6 +109,7 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
   currentPlayerId: string | null;
   client: GameClient; // to create the new game via createQuickGame()
   playerName: string; // to join the new game
+  xpProgress?: XpProgress | null;
 }
 ```
 
