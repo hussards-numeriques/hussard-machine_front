@@ -1,7 +1,9 @@
 import React from 'react';
 import type { GameConfig } from '../../types';
-import { resolveGradeBarColor, resolveGradeLabel } from '../../lib/grades';
+import { resolveGradeBarColor } from '../../lib/grades';
 import { computeGradeProgress } from '../../lib/gradeProgress';
+import { GradeLabelRow } from './GradeLabelRow';
+import { XpBarFooter } from './XpBarFooter';
 
 export const SegmentedXpBar: React.FC<{
   experience: number;
@@ -16,17 +18,7 @@ export const SegmentedXpBar: React.FC<{
 
   return (
     <div className="space-y-2">
-      <div className="flex gap-1">
-        {segments.map((segment) => (
-          <div key={segment.grade} className="flex-1 text-center">
-            <span
-              className={`text-xs font-bold ${segment.isCurrent ? 'text-slate-800' : 'text-slate-400'}`}
-            >
-              {resolveGradeLabel(segment.grade)}
-            </span>
-          </div>
-        ))}
-      </div>
+      <GradeLabelRow segments={segments} />
       <div className="flex gap-1">
         {segments.map((segment) => (
           <div
@@ -40,18 +32,12 @@ export const SegmentedXpBar: React.FC<{
           </div>
         ))}
       </div>
-      <div className="flex justify-between text-xs text-slate-500">
-        <span>{experience} XP</span>
-        {canPromote ? (
-          <span className="font-bold text-emerald-600 animate-pulse">
-            ✨ Grade max — promotion disponible !
-          </span>
-        ) : nextGrade != null ? (
-          <span>
-            {xpToNextGrade} XP pour {resolveGradeLabel(nextGrade)}
-          </span>
-        ) : null}
-      </div>
+      <XpBarFooter
+        experience={experience}
+        canPromote={canPromote}
+        nextGrade={nextGrade}
+        xpToNextGrade={xpToNextGrade}
+      />
     </div>
   );
 };

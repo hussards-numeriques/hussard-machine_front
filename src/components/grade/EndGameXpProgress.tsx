@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
+import { hasJustUnlockedPromotion } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
-import {
-  resolveGradeBarColor,
-  resolveGradeBarLightColor,
-  resolveGradeLabel,
-} from '../../lib/grades';
+import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
 import { cn } from '../../lib/utils';
+import { GradeLabelRow } from './GradeLabelRow';
+import { XpBarFooter } from './XpBarFooter';
 
 interface EndGameXpProgressProps {
   progress: XpProgress;
@@ -43,7 +42,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
     ? computeGradeProgress(after.experience, after.canPromote, config).gradeIndex
     : beforeGradeIndex;
 
-  const justUnlockedPromotion = after != null && !before.canPromote && after.canPromote;
+  const justUnlockedPromotion = hasJustUnlockedPromotion(progress);
   const justCrossedGrade =
     after != null && afterGradeIndex > beforeGradeIndex && !justUnlockedPromotion;
 
@@ -74,8 +73,50 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
     return () => window.clearTimeout(timeout);
   }, [animated, justCrossedGrade]);
 
+  const currentGradeIndex = computeGradeProgress(
+    (after ?? before).experience,
+    (after ?? before).canPromote,
+    config
+  ).gradeIndex;
+
   if (!after) {
-    return null;
+    const { nextGrade, xpToNextGrade, segments } = computeGradeProgress(
+      before.experience,
+      before.canPromote,
+      config
+    );
+
+    return (
+      <div
+        ref={barRef}
+        className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2"
+      >
+        <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+
+        <GradeLabelRow segments={segments} />
+
+        <div className="flex gap-1">
+          {segments.map((segment) => (
+            <div
+              key={segment.grade}
+              className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"
+            >
+              <div
+                className={cn('h-full rounded-full', resolveGradeBarColor(segment.grade))}
+                style={{ width: `${segment.fillPercent}%` }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <XpBarFooter
+          experience={before.experience}
+          canPromote={before.canPromote}
+          nextGrade={nextGrade}
+          xpToNextGrade={xpToNextGrade}
+        />
+      </div>
+    );
   }
 
   const diffSegments = computeGradeDiffSegments(before, after, config);
@@ -104,15 +145,12 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
         </span>
       </div>
 
-      <div className="flex gap-1">
-        {diffSegments.map((segment) => (
-          <div key={segment.grade} className="flex-1 text-center">
-            <span className="text-xs font-bold text-slate-400">
-              {resolveGradeLabel(segment.grade)}
-            </span>
-          </div>
-        ))}
-      </div>
+      <GradeLabelRow
+        segments={diffSegments.map((segment, i) => ({
+          grade: segment.grade,
+          isCurrent: i === currentGradeIndex,
+        }))}
+      />
 
       <div className="flex gap-1">
         {diffSegments.map((segment) => {
@@ -123,43 +161,43 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
             justCrossedGrade && segment.afterFillPercent === 100 && segment.beforeFillPercent < 100;
 
           return (
-            <div
-              key={segment.grade}
-              className={cn(
-                'relative flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200',
-                glowing &&
-                  isCrossedSegment &&
-                  'animate-glow-pulse shadow-[0_0_12px_4px_rgba(251,191,36,0.7)]'
-              )}
-            >
-              <div
-                className={cn(
-                  'absolute inset-y-0 left-0 rounded-full',
-                  resolveGradeBarColor(segment.grade)
-                )}
-                style={{ width: `${floorPercent}%` }}
-              />
-              {gainPercent > 0 && (
+            <div key={segment.grade} className="relative flex-1">
+              <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                 <div
                   className={cn(
-                    'absolute inset-y-0 rounded-full transition-all ease-out',
-                    resolveGradeBarLightColor(segment.grade)
+                    'absolute inset-y-0 left-0 rounded-full',
+                    resolveGradeBarColor(segment.grade)
                   )}
-                  style={{
-                    left: `${floorPercent}%`,
-                    width: animated ? `${gainPercent}%` : '0%',
-                    transitionDuration: `${TRANSITION_DURATION_MS}ms`,
-                  }}
+                  style={{ width: `${floorPercent}%` }}
                 />
-              )}
-              {lossPercent > 0 && (
+                {gainPercent > 0 && (
+                  <div
+                    className={cn(
+                      'absolute inset-y-0 rounded-full transition-all ease-out',
+                      resolveGradeBarLightColor(segment.grade)
+                    )}
+                    style={{
+                      left: `${floorPercent}%`,
+                      width: animated ? `${gainPercent}%` : '0%',
+                      transitionDuration: `${TRANSITION_DURATION_MS}ms`,
+                    }}
+                  />
+                )}
+                {lossPercent > 0 && (
+                  <div
+                    className="absolute inset-y-0 rounded-full bg-red-300 transition-all ease-out"
+                    style={{
+                      left: `${floorPercent}%`,
+                      width: animated ? '0%' : `${lossPercent}%`,
+                      transitionDuration: `${TRANSITION_DURATION_MS}ms`,
+                    }}
+                  />
+                )}
+              </div>
+              {glowing && isCrossedSegment && (
                 <div
-                  className="absolute inset-y-0 rounded-full bg-red-300 transition-all ease-out"
-                  style={{
-                    left: `${floorPercent}%`,
-                    width: animated ? '0%' : `${lossPercent}%`,
-                    transitionDuration: `${TRANSITION_DURATION_MS}ms`,
-                  }}
+                  aria-hidden="true"
+                  className="absolute inset-0 pointer-events-none rounded-full animate-glow-pulse shadow-[0_0_12px_4px_rgba(251,191,36,0.7)]"
                 />
               )}
             </div>
@@ -167,18 +205,12 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
         })}
       </div>
 
-      <div className="flex justify-between text-xs text-slate-500">
-        <span>{after.experience} XP</span>
-        {after.canPromote ? (
-          <span className="font-bold text-emerald-600 animate-pulse">
-            ✨ Grade max — promotion disponible !
-          </span>
-        ) : nextGrade != null ? (
-          <span>
-            {xpToNextGrade} XP pour {resolveGradeLabel(nextGrade)}
-          </span>
-        ) : null}
-      </div>
+      <XpBarFooter
+        experience={after.experience}
+        canPromote={after.canPromote}
+        nextGrade={nextGrade}
+        xpToNextGrade={xpToNextGrade}
+      />
     </div>
   );
 };

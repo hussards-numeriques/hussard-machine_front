@@ -84,11 +84,21 @@ describe('PodiumView - XP progress', () => {
     expect(screen.queryByText(/XP/)).not.toBeInTheDocument();
   });
 
+  it('reserves the XP progress card space as soon as the before-snapshot is known, before the after-state settles', () => {
+    renderPodium({
+      before: { experience: 40, canPromote: false },
+      after: null,
+    });
+
+    expect(screen.getByText('Progression')).toBeInTheDocument();
+    expect(screen.getByText('40 XP')).toBeInTheDocument();
+    expect(screen.queryByText(/^[+-]\d+ XP$/)).not.toBeInTheDocument();
+  });
+
   it('shows the XP progress bar between the podium and the buttons', () => {
     renderPodium({
       before: { experience: 40, canPromote: false },
       after: { experience: 70, canPromote: false },
-      grade: 'BRONZE',
     });
 
     const gained = screen.getByText('+30 XP');
@@ -100,7 +110,6 @@ describe('PodiumView - XP progress', () => {
     renderPodium({
       before: { experience: 40, canPromote: false },
       after: { experience: 40, canPromote: false },
-      grade: 'BRONZE',
     });
     expect(screen.getByText('+0 XP')).toBeInTheDocument();
   });

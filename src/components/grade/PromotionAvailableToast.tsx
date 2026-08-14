@@ -25,7 +25,7 @@ export const PromotionAvailableToast: React.FC<PromotionAvailableToastProps> = (
   }
 
   return (
-    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed top-36 left-1/2 -translate-x-1/2 z-50">
       <div className="flex items-center gap-2 px-4 py-3 rounded-2xl border-2 shadow-lg font-bold animate-pop-in bg-emerald-50 text-emerald-700 border-emerald-300">
         <span>✨</span>
         <span>Tu peux monter de niveau !</span>

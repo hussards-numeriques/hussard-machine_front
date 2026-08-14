@@ -12,8 +12,10 @@ export interface XpSnapshot {
 export interface XpProgress {
   before: XpSnapshot;
   after: XpSnapshot | null;
-  grade: string;
 }
+
+export const hasJustUnlockedPromotion = (progress: XpProgress): boolean =>
+  progress.after != null && !progress.before.canPromote && progress.after.canPromote;
 
 export function useXpProgress(
   gameState: GameState | null,
@@ -63,5 +65,5 @@ export function useXpProgress(
     return null;
   }
 
-  return { before: snapshot, after, grade: data?.grade ?? '' };
+  return { before: snapshot, after };
 }

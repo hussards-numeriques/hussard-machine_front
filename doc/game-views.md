@@ -98,8 +98,14 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
   the post-game state (`useXpProgress`, mirrors the `useTitleUnlocks` snapshot/diff
   pattern), a `+X XP`/negative badge, a gold glow + micro-confetti when a grade is
   crossed, and — separately — a `PromotionAvailableToast` (auto-dismissing, links to
-  `/profile`) when `can_promote` newly turns `true` this game. Identical for salon and
-  quick games; a salon game always shows `+0 XP`.
+  `/profile`, offset below `TitleUnlockToast` so the two never overlap) when
+  `can_promote` newly turns `true` this game (`hasJustUnlockedPromotion`, exported
+  from `useXpProgress.ts` and shared by both the toast condition and the bar's
+  glow-suppression logic). Identical for salon and quick games; a salon game always
+  shows `+0 XP`. The card renders as soon as the pre-game (`before`) snapshot is
+  known — showing a frozen, non-animated bar with no badge — instead of waiting for
+  the post-game (`after`) snapshot to settle ~1.5s later, so it reserves its space
+  immediately and the action buttons below it don't shift down once it animates in.
 
 ### Props
 
