@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import type { GameConfig, GameHistoryEntry } from '../types';
+import type { GameHistoryEntry } from '../types';
 import { ApiError } from '../services/http';
 import { useGameConfig } from '../hooks/useGameConfig';
 import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
@@ -13,13 +13,8 @@ import {
   LevelChangeConfirmModal,
   type LevelChangeVariant,
 } from '../components/LevelChangeConfirmModal';
-import {
-  resolveGradeBarColor,
-  resolveGradeLabel,
-  resolveGradeStyle,
-  resolveLevelLabel,
-} from '../lib/grades';
-import { computeGradeProgress } from '../lib/gradeProgress';
+import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../lib/grades';
+import { SegmentedXpBar } from '../components/grade/SegmentedXpBar';
 
 const RANK_MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -44,59 +39,6 @@ const GradeBadge: React.FC<{ grade: string }> = ({ grade }) => (
     {resolveGradeLabel(grade)}
   </span>
 );
-
-const SegmentedXpBar: React.FC<{
-  experience: number;
-  canPromote: boolean;
-  config: GameConfig;
-}> = ({ experience, canPromote, config }) => {
-  const { nextGrade, xpToNextGrade, segments } = computeGradeProgress(
-    experience,
-    canPromote,
-    config
-  );
-
-  return (
-    <div className="space-y-2">
-      <div className="flex gap-1">
-        {segments.map((segment) => (
-          <div key={segment.grade} className="flex-1 text-center">
-            <span
-              className={`text-xs font-bold ${segment.isCurrent ? 'text-slate-800' : 'text-slate-400'}`}
-            >
-              {resolveGradeLabel(segment.grade)}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className="flex gap-1">
-        {segments.map((segment) => (
-          <div
-            key={segment.grade}
-            className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"
-          >
-            <div
-              className={`h-full rounded-full transition-all ${resolveGradeBarColor(segment.grade)}`}
-              style={{ width: `${segment.fillPercent}%` }}
-            />
-          </div>
-        ))}
-      </div>
-      <div className="flex justify-between text-xs text-slate-500">
-        <span>{experience} XP</span>
-        {canPromote ? (
-          <span className="font-bold text-emerald-600 animate-pulse">
-            ✨ Grade max — promotion disponible !
-          </span>
-        ) : nextGrade != null ? (
-          <span>
-            {xpToNextGrade} XP pour {resolveGradeLabel(nextGrade)}
-          </span>
-        ) : null}
-      </div>
-    </div>
-  );
-};
 
 const HistoryRow: React.FC<{
   entry: GameHistoryEntry;
