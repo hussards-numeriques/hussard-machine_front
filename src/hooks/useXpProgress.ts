@@ -14,9 +14,6 @@ export interface XpProgress {
   after: XpSnapshot | null;
 }
 
-export const hasJustUnlockedPromotion = (progress: XpProgress): boolean =>
-  progress.after != null && !progress.before.canPromote && progress.after.canPromote;
-
 export function useXpProgress(
   gameState: GameState | null,
   gameId: string | undefined

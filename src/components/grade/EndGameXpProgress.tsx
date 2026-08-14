@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
-import { hasJustUnlockedPromotion } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
 import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
 import { cn } from '../../lib/utils';
@@ -14,7 +13,6 @@ interface EndGameXpProgressProps {
   config: GameConfig;
 }
 
-const ANIMATE_DELAY_MS = 300;
 const TRANSITION_DURATION_MS = 700;
 const GLOW_DURATION_MS = 2000;
 
@@ -29,8 +27,14 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
     if (!after) {
       return;
     }
-    const timeout = window.setTimeout(() => setAnimated(true), ANIMATE_DELAY_MS);
-    return () => window.clearTimeout(timeout);
+    let secondFrame = 0;
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => setAnimated(true));
+    });
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+    };
   }, [after]);
 
   const beforeGradeIndex = computeGradeProgress(
@@ -42,9 +46,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
     ? computeGradeProgress(after.experience, after.canPromote, config).gradeIndex
     : beforeGradeIndex;
 
-  const justUnlockedPromotion = hasJustUnlockedPromotion(progress);
-  const justCrossedGrade =
-    after != null && afterGradeIndex > beforeGradeIndex && !justUnlockedPromotion;
+  const justCrossedGrade = after != null && afterGradeIndex > beforeGradeIndex;
 
   useEffect(() => {
     if (!animated || !justCrossedGrade || firedEffectRef.current) {

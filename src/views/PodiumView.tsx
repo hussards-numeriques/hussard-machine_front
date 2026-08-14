@@ -14,8 +14,7 @@ import { TitleUnlockToast } from '../components/quests/TitleUnlockToast';
 import type { MyTitle } from '../services/quests';
 import { useGameConfig } from '../hooks/useGameConfig';
 import { EndGameXpProgress } from '../components/grade/EndGameXpProgress';
-import { PromotionAvailableToast } from '../components/grade/PromotionAvailableToast';
-import { hasJustUnlockedPromotion, type XpProgress } from '../hooks/useXpProgress';
+import type { XpProgress } from '../hooks/useXpProgress';
 
 interface PodiumViewProps {
   game: Game;
@@ -54,12 +53,9 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">
       <TitleUnlockToast titles={newTitles} />
-      <PromotionAvailableToast
-        visible={xpProgress != null && hasJustUnlockedPromotion(xpProgress)}
-      />
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
 
-      <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md pb-8">
+      <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md">
         {sortedPlayers[1] && (
           <div className="flex flex-col items-center gap-2 w-1/3">
             <div className="flex items-center justify-center gap-1 w-full">

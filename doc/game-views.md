@@ -96,16 +96,16 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 - **XP progress**: between the top-3 podium and the action buttons, `EndGameXpProgress`
   (`src/components/grade/`) shows the segmented XP bar animating from the pre-game to
   the post-game state (`useXpProgress`, mirrors the `useTitleUnlocks` snapshot/diff
-  pattern), a `+X XP`/negative badge, a gold glow + micro-confetti when a grade is
-  crossed, and — separately — a `PromotionAvailableToast` (auto-dismissing, links to
-  `/profile`, offset below `TitleUnlockToast` so the two never overlap) when
-  `can_promote` newly turns `true` this game (`hasJustUnlockedPromotion`, exported
-  from `useXpProgress.ts` and shared by both the toast condition and the bar's
-  glow-suppression logic). Identical for salon and quick games; a salon game always
-  shows `+0 XP`. The card renders as soon as the pre-game (`before`) snapshot is
-  known — showing a frozen, non-animated bar with no badge — instead of waiting for
-  the post-game (`after`) snapshot to settle ~1.5s later, so it reserves its space
-  immediately and the action buttons below it don't shift down once it animates in.
+  pattern), a `+X XP`/negative badge, and a gold glow + micro-confetti whenever a
+  grade is crossed — including the crossing into the last grade (`DIAMOND`), which
+  simultaneously turns `can_promote` on; there is no separate promotion notification.
+  Identical for salon and quick games; a salon game always shows `+0 XP`. The card
+  renders as soon as the pre-game (`before`) snapshot is known — showing a frozen,
+  non-animated bar with no badge — instead of waiting for the post-game (`after`)
+  snapshot to settle ~1.5s later, so it reserves its space immediately and the action
+  buttons below it don't shift down once it animates in. The fill animation itself is
+  triggered via a double-`requestAnimationFrame` (not a fixed delay), so the browser
+  reliably paints the pre-animation frame before the CSS transition starts.
 
 ### Props
 

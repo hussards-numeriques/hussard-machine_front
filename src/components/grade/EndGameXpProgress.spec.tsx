@@ -89,11 +89,11 @@ describe('EndGameXpProgress', () => {
     expect(confetti).toHaveBeenCalledTimes(1);
   });
 
-  it('does not fire the grade-crossed confetti when the bar simply reaches its max (promotion)', async () => {
+  it('also fires the grade-crossed confetti when the crossing reaches the bar max (promotion)', async () => {
     vi.useFakeTimers();
     const confetti = (await import('canvas-confetti')).default;
     const progress: XpProgress = {
-      before: { experience: 460, canPromote: false },
+      before: { experience: 380, canPromote: false },
       after: { experience: 500, canPromote: true },
     };
     render(<EndGameXpProgress progress={progress} config={config} />);
@@ -102,6 +102,6 @@ describe('EndGameXpProgress', () => {
       await vi.advanceTimersByTimeAsync(1100);
     });
 
-    expect(confetti).not.toHaveBeenCalled();
+    expect(confetti).toHaveBeenCalledTimes(1);
   });
 });

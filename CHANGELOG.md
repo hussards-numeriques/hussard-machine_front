@@ -17,7 +17,7 @@
   checking a consent box (acceptance of the terms of sale + waiver of the
   14-day withdrawal right) before the CTA is enabled.
 - Player profile: players who find their current school level too hard can now voluntarily step back one level from `/profile` (mirrors the existing promotion button, `POST /me/demote`). A shared confirmation modal (`LevelChangeConfirmModal`, promote/demote variants) now gates both actions — warning that calculations get harder before a promotion, and that the current level's XP resets (to just enough to re-promote immediately) before a demotion.
-- Podium: an XP progress bar now appears between the podium and the action buttons at the end of every game (salon or quick game), animating from the pre-game XP to the post-game XP with a `+X XP` (or negative) badge. Crossing a grade (e.g. Bronze → Argent) triggers a gold glow + micro-confetti on the bar; newly unlocking a level promotion (`can_promote` turning `true`) instead shows an auto-dismissing toast linking to `/profile`, mirroring the existing title-unlock toast (`useXpProgress`, `EndGameXpProgress`, `PromotionAvailableToast`).
+- Podium: an XP progress bar now appears between the podium and the action buttons at the end of every game (salon or quick game), animating from the pre-game XP to the post-game XP with a `+X XP` (or negative) badge. Crossing a grade (e.g. Bronze → Argent) triggers a gold glow + micro-confetti on the bar, including the crossing into the last grade (`DIAMOND`), which simultaneously unlocks the level promotion — there's no separate promotion notification (`useXpProgress`, `EndGameXpProgress`).
 
 ### Changed
 
