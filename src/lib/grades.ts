@@ -38,6 +38,14 @@ const GRADE_BAR_COLORS: Record<Grade, string> = {
   DIAMOND: 'bg-cyan-400',
 };
 
+const GRADE_BAR_LIGHT_COLORS: Record<Grade, string> = {
+  BRONZE: 'bg-amber-200',
+  SILVER: 'bg-slate-200',
+  GOLD: 'bg-yellow-200',
+  PLATINE: 'bg-violet-200',
+  DIAMOND: 'bg-cyan-200',
+};
+
 const GRADE_RING_COLORS: Record<Grade, string> = {
   BRONZE: 'ring-amber-400',
   SILVER: 'ring-slate-400',
@@ -74,6 +82,9 @@ export const resolveGradeStyle = (grade: string): string =>
 
 export const resolveGradeBarColor = (grade: string): string =>
   isGrade(grade) ? GRADE_BAR_COLORS[grade] : 'bg-primary';
+
+export const resolveGradeBarLightColor = (grade: string): string =>
+  isGrade(grade) ? GRADE_BAR_LIGHT_COLORS[grade] : 'bg-primary-light';
 
 export const resolveGradeRingColor = (grade: string): string =>
   isGrade(grade) ? GRADE_RING_COLORS[grade] : DEFAULT_GRADE_RING;
