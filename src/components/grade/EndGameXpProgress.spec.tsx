@@ -1,0 +1,105 @@
+import { act, render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { EndGameXpProgress } from './EndGameXpProgress';
+import type { GameConfig } from '../../types';
+import type { XpProgress } from '../../hooks/useXpProgress';
+
+vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
+
+const config: GameConfig = {
+  experience_per_grade: 100,
+  promotion_threshold: 500,
+  grades: ['BRONZE', 'SILVER', 'GOLD', 'PLATINE', 'DIAMOND'],
+  levels: ['CP', 'CE1'],
+};
+
+describe('EndGameXpProgress', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('renders nothing while the after-state is not settled', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: null,
+      grade: 'BRONZE',
+    };
+    const { container } = render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('shows the gained XP for a positive diff', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: { experience: 140, canPromote: false },
+      grade: 'BRONZE',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(screen.getByText('+40 XP')).toBeInTheDocument();
+  });
+
+  it('shows +0 XP for a room game with no gain', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: { experience: 100, canPromote: false },
+      grade: 'BRONZE',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(screen.getByText('+0 XP')).toBeInTheDocument();
+  });
+
+  it('shows a negative diff in red', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: { experience: 80, canPromote: false },
+      grade: 'BRONZE',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    const badge = screen.getByText('-20 XP');
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveClass('text-red-500');
+  });
+
+  it('shows the final XP total and promotion message when the bar is full', () => {
+    const progress: XpProgress = {
+      before: { experience: 460, canPromote: false },
+      after: { experience: 500, canPromote: true },
+      grade: 'DIAMOND',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(screen.getByText('500 XP')).toBeInTheDocument();
+    expect(screen.getByText(/promotion disponible/)).toBeInTheDocument();
+  });
+
+  it('fires a confetti burst once when a grade boundary is crossed', async () => {
+    const confetti = (await import('canvas-confetti')).default;
+    const progress: XpProgress = {
+      before: { experience: 80, canPromote: false },
+      after: { experience: 120, canPromote: false },
+      grade: 'SILVER',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+    });
+
+    expect(confetti).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not fire the grade-crossed confetti when the bar simply reaches its max (promotion)', async () => {
+    const confetti = (await import('canvas-confetti')).default;
+    const progress: XpProgress = {
+      before: { experience: 460, canPromote: false },
+      after: { experience: 500, canPromote: true },
+      grade: 'DIAMOND',
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1100));
+    });
+
+    expect(confetti).not.toHaveBeenCalled();
+  });
+});
