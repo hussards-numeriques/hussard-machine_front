@@ -12,12 +12,17 @@ import { cn } from '../lib/utils';
 import { useAuth } from '../contexts/useAuth';
 import { TitleUnlockToast } from '../components/quests/TitleUnlockToast';
 import type { MyTitle } from '../services/quests';
+import { useGameConfig } from '../hooks/useGameConfig';
+import { EndGameXpProgress } from '../components/grade/EndGameXpProgress';
+import { PromotionAvailableToast } from '../components/grade/PromotionAvailableToast';
+import type { XpProgress } from '../hooks/useXpProgress';
 
 interface PodiumViewProps {
   game: Game;
   currentPlayerId: string | null;
   playerName: string;
   newTitles?: MyTitle[];
+  xpProgress?: XpProgress | null;
 }
 
 export const PodiumView: React.FC<PodiumViewProps> = ({
@@ -25,8 +30,10 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
   currentPlayerId,
   playerName,
   newTitles = [],
+  xpProgress = null,
 }) => {
   const navigate = useNavigate();
+  const { data: config } = useGameConfig();
   const { isAuthenticated, client: authClient } = useAuth();
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
   const winner = sortedPlayers[0];
@@ -47,6 +54,11 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">
       <TitleUnlockToast titles={newTitles} />
+      <PromotionAvailableToast
+        visible={
+          xpProgress?.after != null && !xpProgress.before.canPromote && xpProgress.after.canPromote
+        }
+      />
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
 
       <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md pb-8">
@@ -86,6 +98,8 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
           </div>
         )}
       </div>
+
+      {xpProgress?.after && config && <EndGameXpProgress progress={xpProgress} config={config} />}
 
       <div className="flex gap-4">
         <Button variant="secondary" onClick={() => navigate('/')}>

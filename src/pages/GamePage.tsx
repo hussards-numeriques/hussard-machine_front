@@ -6,6 +6,7 @@ import { LobbyView } from '../views/LobbyView';
 import { GameView } from '../views/GameView';
 import { PodiumView } from '../views/PodiumView';
 import { useTitleUnlocks } from '../hooks/useTitleUnlocks';
+import { useXpProgress } from '../hooks/useXpProgress';
 
 export const GamePage: React.FC = () => {
   const { gameId } = useParams<{ gameId?: string }>();
@@ -13,6 +14,7 @@ export const GamePage: React.FC = () => {
   const navigate = useNavigate();
   const { client, game, error, resetGame } = useGame();
   const newTitles = useTitleUnlocks(game?.state ?? null, game?.id);
+  const xpProgress = useXpProgress(game?.state ?? null, game?.id);
 
   const locationState = (location.state ?? null) as {
     playerName?: string;
@@ -87,6 +89,7 @@ export const GamePage: React.FC = () => {
           currentPlayerId={client.getPlayerId()}
           playerName={playerName}
           newTitles={newTitles}
+          xpProgress={xpProgress}
         />
       );
     default:

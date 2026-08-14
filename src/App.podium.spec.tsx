@@ -17,6 +17,10 @@ vi.mock('./contexts/useAuth', () => ({
   }),
 }));
 
+vi.mock('./hooks/useGameConfig', () => ({
+  useGameConfig: () => ({ data: undefined }),
+}));
+
 describe('PodiumView - Display final scores when game is finished', () => {
   let finishedGame: Game;
 
