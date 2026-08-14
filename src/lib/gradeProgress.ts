@@ -43,3 +43,28 @@ export const computeGradeProgress = (
     segments,
   };
 };
+
+export interface GradeDiffSegment {
+  grade: string;
+  beforeFillPercent: number;
+  afterFillPercent: number;
+}
+
+export const computeGradeDiffSegments = (
+  before: { experience: number; canPromote: boolean },
+  after: { experience: number; canPromote: boolean },
+  config: GameConfig
+): GradeDiffSegment[] => {
+  const beforeSegments = computeGradeProgress(
+    before.experience,
+    before.canPromote,
+    config
+  ).segments;
+  const afterSegments = computeGradeProgress(after.experience, after.canPromote, config).segments;
+
+  return config.grades.map((grade, i) => ({
+    grade,
+    beforeFillPercent: beforeSegments[i].fillPercent,
+    afterFillPercent: afterSegments[i].fillPercent,
+  }));
+};
