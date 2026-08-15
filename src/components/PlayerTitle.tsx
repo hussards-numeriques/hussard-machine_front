@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import { resolveRarityTextColor } from '../lib/titles';
+import { resolveRarityTextColor } from '../lib/rarity';
 import type { PlayerTitle as PlayerTitleData } from '../types';
 
 interface PlayerTitleProps {

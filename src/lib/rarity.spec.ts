@@ -5,7 +5,7 @@ import {
   resolveRarityBadgeStyle,
   resolveRarityLabel,
   resolveRarityTextColor,
-} from './titles';
+} from './rarity';
 
 describe('resolveRarityLabel', () => {
   it.each([

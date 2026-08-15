@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { cn } from '../../lib/utils';
-import { resolveRarityBadgeStyle, resolveRarityLabel } from '../../lib/titles';
+import { resolveRarityBadgeStyle, resolveRarityLabel } from '../../lib/rarity';
 import type { MyTitle } from '../../services/quests';
 
 interface TitleUnlockToastProps {
