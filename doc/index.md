@@ -57,6 +57,13 @@ Quêtes progressives et titres cosmétiques : route `/quests`, service hexagonal
 diff (`useTitleUnlocks`).
 → Read when: modifying quest/title display, thresholds, or the unlock-toast detection.
 
+### [player-icons.md](player-icons.md)
+
+Player profile icons: `GET /icons` (catalog), `GET /me/icons`, `PUT /me/selected-icon`,
+and the new `selected_icon_url` field on `GET /me/details`.
+→ Read when: displaying a player's profile icon, building an icon picker, or touching
+`/me/details`'s response shape.
+
 ### [mascot.md](mascot.md)
 
 Rushy, la mascotte (calculatrice speedy) : composant `<Mascot>` et ses 5 poses,
