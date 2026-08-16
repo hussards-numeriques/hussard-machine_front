@@ -60,7 +60,8 @@ diff (`useTitleUnlocks`).
 ### [player-icons.md](player-icons.md)
 
 Player profile icons: `GET /icons` (catalog), `GET /me/icons`, `PUT /me/selected-icon`,
-and the new `selected_icon_url` field on `GET /me/details`.
+the `selected_icon_url` field on `GET /me/details`, and the front-end `/icons` page
+(picker, mirrors `/quests`) plus its display on the profile avatar.
 → Read when: displaying a player's profile icon, building an icon picker, or touching
 `/me/details`'s response shape.
 

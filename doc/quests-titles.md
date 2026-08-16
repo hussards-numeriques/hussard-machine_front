@@ -31,7 +31,7 @@ singleton).
 streak (always visible in the `Header`), titles are only consumed by the `/quests` page
 and by the unlock-detection hook below.
 
-## Rarity styling (`src/lib/titles.ts`)
+## Rarity styling (`src/lib/rarity.ts`)
 
 `resolveRarityLabel`/`resolveRarityTextColor`/`resolveRarityBadgeStyle`, mirrors
 `lib/grades.ts`. Falls back to a default style for any rarity not in `RARITIES` — the

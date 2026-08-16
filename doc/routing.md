@@ -8,6 +8,7 @@ BrowserRouter
 │   ├── /           → HomePage
 │   ├── /profile    → ProfilePage
 │   ├── /quests     → QuestsPage
+│   ├── /icons      → IconsPage
 │   ├── /terms      → TermsPage
 │   ├── /terms-of-sale → TermsOfSalePage
 │   ├── /progression → ProgressionPage

@@ -4,7 +4,7 @@
 
 The `ProfilePage` (`src/pages/ProfilePage.tsx`) is accessible only to authenticated users at `/profile`. It displays:
 
-- Username and avatar (initials)
+- Username and avatar (initials or equipped icon)
 - School level (e.g. CM2, 6ème) and grade (Bronze → Diamond)
 - A segmented XP bar by grade
 - The level promotion button if `can_promote === true`, and a demotion button whenever the player isn't at the floor level (`CP`)
