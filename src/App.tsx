@@ -7,6 +7,7 @@ import { HomePage } from './pages/HomePage';
 import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
 import { QuestsPage } from './pages/QuestsPage';
+import { IconsPage } from './pages/IconsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { TermsPage } from './pages/TermsPage';
 import { TermsOfSalePage } from './pages/TermsOfSalePage';
@@ -37,6 +38,7 @@ function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="quests" element={<QuestsPage />} />
+            <Route path="icons" element={<IconsPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="terms-of-sale" element={<TermsOfSalePage />} />
             <Route path="progression" element={<ProgressionPage />} />

@@ -60,6 +60,13 @@ export const Header: React.FC = () => {
                       Quêtes &amp; Titres
                     </Link>
                     <Link
+                      to="/icons"
+                      onClick={() => setShowUserMenu(false)}
+                      className="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 border-t border-slate-100"
+                    >
+                      Icônes
+                    </Link>
+                    <Link
                       to="/subscription"
                       onClick={() => setShowUserMenu(false)}
                       className="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 border-t border-slate-100"
