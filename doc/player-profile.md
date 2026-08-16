@@ -24,6 +24,7 @@ interface PlayerProfile {
   grade: string; // key among grades (e.g. 'BRONZE', 'GOLD')
   can_promote: boolean;
   history: GameHistoryEntry[];
+  selected_icon_url: string | null; // equipped profile icon, see doc/player-icons.md
 }
 ```
 
