@@ -93,6 +93,7 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 - **Play again**: creates a new `quickGame` and navigates to it passing `{ playerName, token }` in navigation state
 - **Back home**: `navigate('/')`
 - **Answer result dots**: in the full ranking only (not the top-3 columns), each player's score is followed by a row of small dots — one per question, in play order — showing `correct` (green) / `incorrect` (red) / `timeout` (grey), the shared `AnswerResult` vocabulary from `src/lib/playerAnswer.ts` (also used by the in-game `CorrectionCard` feedback). Derived purely from `game.answers` + `game.questions` via `getPlayerAnswerResults` (`src/lib/answerDots.ts`), itself built on `findPlayerAnswer` (`src/lib/playerAnswer.ts`); no extra network call. Rendered by `AnswerDots` (`src/components/AnswerDots.tsx`), built on the generic `Dot` component (`src/components/Dot.tsx`, 3 color variants: `success`/`danger`/`neutral`). Each dot carries an `aria-label` (`Correcte`/`Incorrecte`/`Sans réponse`, `role="img"`) so the result isn't conveyed by color alone; the row itself is `role="list"`. The dots row's width is capped at `<score text length>ch` so it never grows wider than the score above it, wrapping onto extra lines instead.
+- **Current player's level**: `PlayerLevel` (see "Player vitrine" below) is shown once, right under the "Résultats Finaux" title, for the current player only — independent of `xpProgress`/`config` being loaded, so it stays visible even for an unauthenticated quick-game guest.
 - **XP progress**: between the top-3 podium and the action buttons, `EndGameXpProgress`
   (`src/components/grade/`) shows the segmented XP bar animating from the pre-game to
   the post-game state (`useXpProgress`, mirrors the `useTitleUnlocks` snapshot/diff
@@ -121,15 +122,16 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 
 ---
 
-## Player vitrine (grade + streak)
+## Player vitrine (grade + level + streak)
 
-Each `Player` snapshot carries `level`, `grade`, `daily_streak` and `title` (set at game entry, immutable during the game — see the backend contract). Three shared components surface them:
+Each `Player` snapshot carries `level`, `grade`, `daily_streak` and `title` (set at game entry, immutable during the game — see the backend contract). Four shared components surface them:
 
 - `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar with a **grade-colored ring** (`resolveGradeRingColor` in `src/lib/grades.ts`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring. The ring can be turned off with `showGradeRing={false}`.
+- `PlayerLevel` (`src/components/PlayerLevel.tsx`): a slate pill with the school level label (`resolveLevelLabel` in `src/lib/grades.ts`), e.g. `CM2` or `6ème`.
 - `PlayerStreak` (`src/components/PlayerStreak.tsx`): the streak flame + count, or `null` when `daily_streak <= 0` (see `doc/streak.md`).
 - `PlayerTitle` (`src/components/PlayerTitle.tsx`): the equipped title label colored by rarity, or `null` when `title === null` (see `doc/quests-titles.md`).
 
-Wired into `LobbyView` (player cards) and `PodiumView`. The podium's top-3 columns show only the player's name — no avatar, grade ring, streak, or title — to keep those columns uncluttered. `PlayerAvatar`/`PlayerStreak`/`PlayerTitle` are used only in the full-ranking list below. **Not** shown in the in-game `GameView` scoreboard by design. `level` is intentionally not displayed anywhere yet.
+Wired into `LobbyView` (player cards, next to the name) and `PodiumView` (full ranking, next to the name; plus a standalone use for just the current player under the podium title — see above). The podium's top-3 columns show only the player's name — no avatar, grade ring, level, streak, or title — to keep those columns uncluttered. **Not** shown in the in-game `GameView` scoreboard by design.
 
 ## Adding a UI element to a game view
 

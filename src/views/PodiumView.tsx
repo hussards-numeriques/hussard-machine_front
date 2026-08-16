@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
+import { PlayerLevel } from '../components/PlayerLevel';
 import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
 import { AnswerDots } from '../components/AnswerDots';
@@ -36,6 +37,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
   const { isAuthenticated, client: authClient } = useAuth();
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
   const winner = sortedPlayers[0];
+  const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
 
   const handleReplay = () => {
     const token = isAuthenticated ? authClient.getAccessToken() : null;
@@ -54,6 +56,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">
       <TitleUnlockToast titles={newTitles} />
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
+      {currentPlayer && <PlayerLevel level={currentPlayer.level} />}
 
       <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md">
         {sortedPlayers[1] && (
@@ -120,6 +123,7 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-bold truncate">{p.name}</span>
+                    <PlayerLevel level={p.level} />
                     <PlayerStreak count={p.daily_streak} size={16} />
                   </div>
                   <PlayerTitle title={p.title} />

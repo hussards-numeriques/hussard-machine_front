@@ -164,6 +164,58 @@ describe('LobbyView - player title', () => {
   });
 });
 
+describe('LobbyView - player level', () => {
+  const gameWithLevels: Game = {
+    id: 'ABCD',
+    state: 'WAITING',
+    players: [
+      {
+        id: 'p1',
+        name: 'Alice',
+        is_bot: false,
+        is_ready: false,
+        is_connected: true,
+        score: 0,
+        level: 'CM2',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: null,
+      },
+      {
+        id: 'p2',
+        name: 'Bob',
+        is_bot: false,
+        is_ready: false,
+        is_connected: true,
+        score: 0,
+        level: 'SIXIEME',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: null,
+      },
+    ],
+    questions: [],
+    current_question_index: -1,
+    answers: [],
+    start_time_current_question: null,
+    host_player_id: null,
+    max_players: 6,
+  };
+
+  const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
+
+  it("shows each player's school level next to their name", () => {
+    render(
+      <LobbyView client={mockClient} game={gameWithLevels} currentPlayerId="p1" onLeave={vi.fn()} />
+    );
+
+    expect(screen.getByText('CM2')).toBeInTheDocument();
+    expect(screen.getByText('6ème')).toBeInTheDocument();
+  });
+});
+
 describe('LobbyView - host controls', () => {
   const privateGame: Game = {
     id: 'ABCD',

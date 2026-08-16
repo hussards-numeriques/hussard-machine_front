@@ -69,6 +69,57 @@ const renderPodium = (xpProgress: XpProgress | null) => {
   );
 };
 
+describe('PodiumView - player levels', () => {
+  const twoPlayerGame: Game = {
+    ...game,
+    players: [
+      { ...game.players[0], level: 'CM2' },
+      {
+        id: 'player2',
+        name: 'Player 2',
+        is_bot: false,
+        is_ready: true,
+        is_connected: true,
+        score: 100,
+        level: 'SIXIEME',
+        grade: 'BRONZE',
+        daily_streak: 0,
+        bot_config: null,
+        title: null,
+      },
+    ],
+  };
+
+  const renderTwoPlayerPodium = () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    return render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PodiumView
+            game={twoPlayerGame}
+            currentPlayerId="player1"
+            playerName="Player 1"
+            xpProgress={null}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  };
+
+  it("shows the current player's level under the title", () => {
+    renderTwoPlayerPodium();
+    const title = screen.getByText('Résultats Finaux');
+    const [level] = screen.getAllByText('CM2');
+    expect(title.compareDocumentPosition(level) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('shows every level in the full ranking', () => {
+    renderTwoPlayerPodium();
+    expect(screen.getAllByText('CM2')).toHaveLength(2);
+    expect(screen.getByText('6ème')).toBeInTheDocument();
+  });
+});
+
 describe('PodiumView - XP progress', () => {
   beforeEach(() => {
     mocks.config = {
