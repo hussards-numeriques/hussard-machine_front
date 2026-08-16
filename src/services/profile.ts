@@ -35,6 +35,7 @@ const playerProfileSchema = z.object({
   grade: z.string(),
   can_promote: z.boolean(),
   history: z.array(gameHistoryEntrySchema),
+  selected_icon_url: z.string().nullable(),
 }) satisfies z.ZodType<PlayerProfile>;
 
 export const fetchPlayerProfile = async (

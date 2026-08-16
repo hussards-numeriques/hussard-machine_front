@@ -12,6 +12,7 @@ const profile: PlayerProfile = {
   grade: 'BRONZE',
   can_promote: false,
   history: [],
+  selected_icon_url: null,
 };
 
 const config: GameConfig = {

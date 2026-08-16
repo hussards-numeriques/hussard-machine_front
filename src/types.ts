@@ -81,6 +81,7 @@ export interface PlayerProfile {
   grade: string;
   can_promote: boolean;
   history: GameHistoryEntry[];
+  selected_icon_url: string | null;
 }
 
 export interface GameConfig {

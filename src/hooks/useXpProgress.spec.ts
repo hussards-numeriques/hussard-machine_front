@@ -19,6 +19,7 @@ const profile = (experience: number, canPromote: boolean): PlayerProfile => ({
   grade: 'BRONZE',
   can_promote: canPromote,
   history: [],
+  selected_icon_url: null,
 });
 
 describe('useXpProgress', () => {
