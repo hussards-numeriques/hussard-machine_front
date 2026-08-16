@@ -248,9 +248,17 @@ export const ProfilePage: React.FC = () => {
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
       <div className={`${gradeBg} rounded-3xl p-8 space-y-5 border-2 border-white shadow-lg`}>
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-black shadow-md">
-            {profile.username.substring(0, 2).toUpperCase()}
-          </div>
+          {profile.selected_icon_url ? (
+            <img
+              src={profile.selected_icon_url}
+              alt="Icône de profil"
+              className="w-16 h-16 rounded-full object-cover shadow-md"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-black shadow-md">
+              {profile.username.substring(0, 2).toUpperCase()}
+            </div>
+          )}
           <div>
             <h1 className="text-2xl font-black text-slate-800">{profile.username}</h1>
             <div className="flex items-center gap-2 mt-1">
@@ -333,12 +341,18 @@ export const ProfilePage: React.FC = () => {
         )}
       </div>
 
-      <div className="text-center pb-8">
+      <div className="text-center pb-8 space-y-1">
         <Link
           to="/progression"
           className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
         >
           Progression & récompenses →
+        </Link>
+        <Link
+          to="/icons"
+          className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
+        >
+          Icônes →
         </Link>
       </div>
 

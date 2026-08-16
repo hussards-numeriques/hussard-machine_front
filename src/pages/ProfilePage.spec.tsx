@@ -158,3 +158,27 @@ describe('ProfilePage history answer dots', () => {
     expect(dots[4]).toHaveClass('bg-slate-300');
   });
 });
+
+describe('ProfilePage avatar', () => {
+  beforeEach(() => {
+    mocks.isAuthenticated = true;
+    mocks.authLoading = false;
+    mocks.profileLoading = false;
+    mocks.profileError = false;
+    mocks.status = undefined;
+  });
+
+  it('shows the initials when no icon is selected', () => {
+    mocks.profile = profile;
+    renderPage();
+    expect(screen.getByText('TI')).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  });
+
+  it('shows the selected icon instead of initials when one is equipped', () => {
+    mocks.profile = { ...profile, selected_icon_url: 'http://localhost/icon.svg' };
+    renderPage();
+    expect(screen.getByRole('img')).toHaveAttribute('src', 'http://localhost/icon.svg');
+    expect(screen.queryByText('TI')).not.toBeInTheDocument();
+  });
+});
