@@ -96,6 +96,6 @@ Or use the validation script: `./scripts/validate.sh`
 
 - update public/manifest.json
 - update public/sitemap.xml
-- add an version commit with (npm version patch|minor|major)
-- add an entry in CHANGELOG.md
+- add an entry in CHANGELOG.md under `## [Unreleased]` (create that heading if missing)
+- add a version commit with (npm version patch|minor|major), then immediately rename the CHANGELOG's `## [Unreleased]` heading to `## [x.y.z] - YYYY-MM-DD` (today's date, version matching the new `package.json` version) — never leave `[Unreleased]` behind a version bump
 - check if doc need to be update using doc/index.md
