@@ -3,7 +3,6 @@ import { GameClient } from '../services/GameClient';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
-import { PlayerLevel } from '../components/PlayerLevel';
 import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
 import { cn } from '../lib/utils';
@@ -102,7 +101,6 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-800 truncate">{player.name}</span>
-                  <PlayerLevel level={player.level} />
                   <PlayerStreak count={player.daily_streak} />
                 </div>
                 <PlayerTitle title={player.title} />

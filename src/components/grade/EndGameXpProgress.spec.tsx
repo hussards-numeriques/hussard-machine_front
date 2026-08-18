@@ -104,4 +104,22 @@ describe('EndGameXpProgress', () => {
 
     expect(confetti).toHaveBeenCalledTimes(1);
   });
+
+  it('shows the player level next to the title when given', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: null,
+    };
+    render(<EndGameXpProgress progress={progress} config={config} level="CM2" />);
+    expect(screen.getByText('CM2')).toBeInTheDocument();
+  });
+
+  it('omits the level badge when no level is given', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: null,
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(screen.queryByText('CM2')).not.toBeInTheDocument();
+  });
 });

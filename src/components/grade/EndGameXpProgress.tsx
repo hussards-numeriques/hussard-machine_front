@@ -5,18 +5,24 @@ import type { XpProgress } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
 import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
 import { cn } from '../../lib/utils';
+import { PlayerLevel } from '../PlayerLevel';
 import { GradeLabelRow } from './GradeLabelRow';
 import { XpBarFooter } from './XpBarFooter';
 
 interface EndGameXpProgressProps {
   progress: XpProgress;
   config: GameConfig;
+  level?: string;
 }
 
 const TRANSITION_DURATION_MS = 700;
 const GLOW_DURATION_MS = 2000;
 
-export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, config }) => {
+export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
+  progress,
+  config,
+  level,
+}) => {
   const { before, after } = progress;
   const [animated, setAnimated] = useState(false);
   const [glowing, setGlowing] = useState(false);
@@ -93,7 +99,10 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
         ref={barRef}
         className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2"
       >
-        <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+          {level && <PlayerLevel level={level} />}
+        </div>
 
         <GradeLabelRow segments={segments} />
 
@@ -135,7 +144,10 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({ progress, 
       className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2"
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+          {level && <PlayerLevel level={level} />}
+        </div>
         <span
           className={cn(
             'text-lg font-black animate-pop-in',

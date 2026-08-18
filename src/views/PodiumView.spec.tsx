@@ -90,7 +90,7 @@ describe('PodiumView - player levels', () => {
     ],
   };
 
-  const renderTwoPlayerPodium = () => {
+  const renderTwoPlayerPodium = (xpProgress: XpProgress | null = null) => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     return render(
       <QueryClientProvider client={queryClient}>
@@ -99,23 +99,41 @@ describe('PodiumView - player levels', () => {
             game={twoPlayerGame}
             currentPlayerId="player1"
             playerName="Player 1"
-            xpProgress={null}
+            xpProgress={xpProgress}
           />
         </MemoryRouter>
       </QueryClientProvider>
     );
   };
 
-  it("shows the current player's level under the title", () => {
+  it('does not show a standalone level badge under the title', () => {
     renderTwoPlayerPodium();
     const title = screen.getByText('Résultats Finaux');
+    expect(title.nextElementSibling).not.toHaveTextContent('CM2');
+  });
+
+  it("shows the current player's level inside the XP progress card", () => {
+    mocks.config = {
+      experience_per_grade: 100,
+      promotion_threshold: 500,
+      grades: ['BRONZE', 'SILVER', 'GOLD', 'PLATINE', 'DIAMOND'],
+      levels: ['CP', 'CE1', 'CM2', 'SIXIEME'],
+    };
+    renderTwoPlayerPodium({
+      before: { experience: 40, canPromote: false },
+      after: null,
+    });
+
+    const progressTitle = screen.getByText('Progression');
     const [level] = screen.getAllByText('CM2');
-    expect(title.compareDocumentPosition(level) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(
+      progressTitle.compareDocumentPosition(level) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
   });
 
   it('shows every level in the full ranking', () => {
     renderTwoPlayerPodium();
-    expect(screen.getAllByText('CM2')).toHaveLength(2);
+    expect(screen.getAllByText('CM2')).toHaveLength(1);
     expect(screen.getByText('6ème')).toBeInTheDocument();
   });
 });

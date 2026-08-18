@@ -56,7 +56,6 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">
       <TitleUnlockToast titles={newTitles} />
       <h1 className="text-4xl font-black text-center text-primary">Résultats Finaux</h1>
-      {currentPlayer && <PlayerLevel level={currentPlayer.level} />}
 
       <div className="flex items-end justify-center gap-4 h-64 w-full max-w-md">
         {sortedPlayers[1] && (
@@ -96,7 +95,9 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
         )}
       </div>
 
-      {xpProgress && config && <EndGameXpProgress progress={xpProgress} config={config} />}
+      {xpProgress && config && (
+        <EndGameXpProgress progress={xpProgress} config={config} level={currentPlayer?.level} />
+      )}
 
       <div className="flex gap-4">
         <Button variant="secondary" onClick={() => navigate('/')}>

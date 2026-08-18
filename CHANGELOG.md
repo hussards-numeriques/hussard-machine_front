@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Player level display (revert + rework): the school level next to each player's name in the lobby, added in 0.17.3, crowded the row and pushed the player title out of prominence — reverted, the lobby stays level-free. The level is kept in the podium's full ranking (next to the name), and the standalone badge under the "Résultats Finaux" title is replaced by an optional `level` on `EndGameXpProgress`, shown next to the "Progression" heading — the same position/style as the level pill on `/profile`.
+
+## [0.17.3] - 2026-08-16
+
 ### Added
 
 - Player level display: the school level (`CP`… `3ème`) was previously shown only on `/profile`. A new shared `PlayerLevel` pill component now surfaces it next to each player's name in the lobby, in the podium's full ranking, and as a standalone badge for the current player under the podium's "Résultats Finaux" title — most useful in friend salons where levels can differ from player to player.
