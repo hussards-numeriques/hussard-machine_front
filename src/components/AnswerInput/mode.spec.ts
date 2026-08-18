@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { resolveAnswerInputMode, isAnswerInputMode } from './mode';
 
 describe('resolveAnswerInputMode', () => {
-  it('resolves auto to handwriting on a coarse pointer', () => {
-    expect(resolveAnswerInputMode('auto', true)).toBe('handwriting');
+  it('resolves auto to keypad on a coarse pointer', () => {
+    expect(resolveAnswerInputMode('auto', true)).toBe('keypad');
   });
 
   it('resolves auto to keyboard on a fine pointer', () => {

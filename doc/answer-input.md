@@ -2,7 +2,7 @@
 
 The `AnswerInput` component allows the player to submit their numeric answer. It supports
 four **modes** — `keyboard`, `handwriting`, `keypad`, and an `auto` mode that adapts to the
-device type (handwriting on touch, keyboard otherwise). The player can override the mode
+device type (keypad on touch, keyboard otherwise). The player can override the mode
 per-device from the `/settings` page; the choice is persisted in `localStorage`.
 
 ## Port / adapter pattern
@@ -45,7 +45,7 @@ const resolveAnswerInputMode = (
   mode: AnswerInputMode,
   isCoarsePointer: boolean
 ): ResolvedAnswerInputMode => {
-  if (mode === 'auto') return isCoarsePointer ? 'handwriting' : 'keyboard';
+  if (mode === 'auto') return isCoarsePointer ? 'keypad' : 'keyboard';
   return mode;
 };
 ```
@@ -114,12 +114,12 @@ const [mode, setMode] = useAnswerInputMode();
 
 ### The four modes
 
-| Mode          | Behavior                                                                        |
-| ------------- | ------------------------------------------------------------------------------- |
-| `auto`        | Adaptive (default): handwriting on a coarse pointer (touch), keyboard otherwise |
-| `keyboard`    | Always `KeyboardInput`                                                          |
-| `handwriting` | Always `HandwritingInput`                                                       |
-| `keypad`      | Always `KeypadInput`                                                            |
+| Mode          | Behavior                                                                   |
+| ------------- | -------------------------------------------------------------------------- |
+| `auto`        | Adaptive (default): keypad on a coarse pointer (touch), keyboard otherwise |
+| `keyboard`    | Always `KeyboardInput`                                                     |
+| `handwriting` | Always `HandwritingInput`                                                  |
+| `keypad`      | Always `KeypadInput`                                                       |
 
 ### SettingsPage (src/pages/SettingsPage.tsx)
 

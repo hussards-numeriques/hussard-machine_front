@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Answer input: on a coarse pointer (touch), the `auto` mode now resolves to the **keypad** instead of **handwriting** — the on-device ONNX digit-recognition model was a friction point for new mobile players. `resolveAnswerInputMode` and its description copy updated accordingly; handwriting stays available as a manual choice in `/settings`.
+
 ## [0.17.4] - 2026-08-18
 
 ### Changed

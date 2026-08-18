@@ -40,7 +40,7 @@ describe('SettingsPage', () => {
 
   it('persists the selected mode', () => {
     renderPage();
-    fireEvent.click(screen.getByRole('button', { name: /Pavé numérique/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^Pavé numérique/i }));
     expect(localStorage.getItem(ANSWER_INPUT_MODE_STORAGE_KEY)).toBe('keypad');
   });
 });

@@ -18,7 +18,7 @@ export const ANSWER_INPUT_MODE_LABELS: Record<AnswerInputMode, string> = {
 };
 
 export const ANSWER_INPUT_MODE_DESCRIPTIONS: Record<AnswerInputMode, string> = {
-  auto: 'Choisit automatiquement selon ton appareil : manuscrit sur tactile, clavier sinon.',
+  auto: 'Choisit automatiquement selon ton appareil : pavé numérique sur tactile, clavier sinon.',
   keyboard: 'Champ de saisie classique, ouvre le clavier de ton appareil.',
   handwriting: 'Dessine le chiffre, il est reconnu automatiquement.',
   keypad: "Un pavé de chiffres à l'écran, sans clavier.",
@@ -31,6 +31,6 @@ export const resolveAnswerInputMode = (
   mode: AnswerInputMode,
   isCoarsePointer: boolean
 ): ResolvedAnswerInputMode => {
-  if (mode === 'auto') return isCoarsePointer ? 'handwriting' : 'keyboard';
+  if (mode === 'auto') return isCoarsePointer ? 'keypad' : 'keyboard';
   return mode;
 };
