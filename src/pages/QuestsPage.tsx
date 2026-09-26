@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { useMyTitles, useQuestCatalog, useSelectTitle } from '../hooks/useQuests';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { QuestProgressCard } from '../components/quests/QuestProgressCard';
+import { TitlesLevelBanner } from '../components/quests/TitlesLevelBanner';
+import { LevelSelector } from '../components/quests/LevelSelector';
+import { resolveTitlesLevelView } from '../lib/titlesLevelView';
+import { cn } from '../lib/utils';
+import type { Level } from '../lib/grades';
 
 const QuestsNotice: React.FC<{ message: string }> = ({ message }) => (
   <div className="min-h-screen flex items-center justify-center p-4">
@@ -20,7 +25,8 @@ const QuestsNotice: React.FC<{ message: string }> = ({ message }) => (
 export const QuestsPage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const catalogQuery = useQuestCatalog();
-  const myTitlesQuery = useMyTitles(null);
+  const [viewedLevel, setViewedLevel] = useState<Level | null>(null);
+  const myTitlesQuery = useMyTitles(viewedLevel);
   const selectTitle = useSelectTitle();
   const subscriptionStatus = useSubscriptionStatus();
 
@@ -40,13 +46,19 @@ export const QuestsPage: React.FC = () => {
     return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
   }
 
-  const { titles, quests, selected_title_id, level } = myTitlesQuery.data;
+  const { titles, quests, selected_title_id, level, current_level } = myTitlesQuery.data;
+  const view = resolveTitlesLevelView(myTitlesQuery.data);
+  const isActive = view.kind === 'active';
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
       <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
 
-      {subscriptionStatus.data?.active === false && (
+      <LevelSelector level={level} currentLevel={current_level} onChange={setViewedLevel} />
+
+      <TitlesLevelBanner view={view} />
+
+      {isActive && subscriptionStatus.data?.active === false && (
         <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4 text-sm text-amber-800 space-y-2">
           <p>
             Ta progression vers les prochains titres est en pause. Les titres déjà débloqués restent
@@ -60,11 +72,13 @@ export const QuestsPage: React.FC = () => {
 
       {titles.length === 0 && (
         <p className="text-slate-500 text-sm bg-white rounded-2xl border-2 border-slate-100 p-4">
-          Aucun titre débloqué pour l'instant. Progresse dans les quêtes ci-dessous pour en gagner !
+          {isActive
+            ? "Aucun titre débloqué pour l'instant. Progresse dans les quêtes ci-dessous pour en gagner !"
+            : 'Aucun titre débloqué à ce niveau.'}
         </p>
       )}
 
-      <div className="space-y-4">
+      <div className={cn('space-y-4', myTitlesQuery.isPlaceholderData && 'opacity-50')}>
         {catalogQuery.data.map((quest) => {
           const questProgress = quests.find((q) => q.id === quest.id);
           if (!questProgress) return null;
@@ -75,11 +89,15 @@ export const QuestsPage: React.FC = () => {
               quest={quest}
               progress={questProgress}
               selectedTitleId={selected_title_id}
-              mode={{
-                kind: 'editable',
-                onEquip: (titleId) => selectTitle.mutate({ titleId, level }),
-                isPending: selectTitle.isPending,
-              }}
+              mode={
+                isActive
+                  ? {
+                      kind: 'editable',
+                      onEquip: (titleId) => selectTitle.mutate({ titleId, level }),
+                      isPending: selectTitle.isPending,
+                    }
+                  : { kind: 'readonly' }
+              }
             />
           );
         })}

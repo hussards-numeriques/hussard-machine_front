@@ -22,6 +22,7 @@ const mocks = vi.hoisted(() => ({
   myTitles: undefined as MyTitlesResponse | undefined,
   subscriptionStatus: undefined as SubscriptionStatus | undefined,
   mutate: vi.fn(),
+  requestedLevels: [] as (string | null)[],
 }));
 
 vi.mock('../contexts/useAuth', () => ({
@@ -39,7 +40,10 @@ vi.mock('../contexts/useAuth', () => ({
 
 vi.mock('../hooks/useQuests', () => ({
   useQuestCatalog: () => ({ data: mocks.catalog, isLoading: false }),
-  useMyTitles: () => ({ data: mocks.myTitles, isLoading: false }),
+  useMyTitles: (level: string | null) => {
+    mocks.requestedLevels.push(level);
+    return { data: mocks.myTitles, isLoading: false, isPlaceholderData: false };
+  },
   useSelectTitle: () => ({ mutate: mocks.mutate, isPending: false }),
 }));
 
@@ -53,6 +57,7 @@ describe('QuestsPage', () => {
     mocks.isAuthenticated = false;
     mocks.catalog = [quest];
     mocks.subscriptionStatus = { active: true, expires_at: '2026-08-21T12:00:00' };
+    mocks.requestedLevels = [];
     mocks.myTitles = {
       level: 'CP',
       current_level: 'CP',
@@ -89,7 +94,54 @@ describe('QuestsPage', () => {
     expect(screen.getByText('Petit Conquérant (5)')).toBeInTheDocument();
   });
 
-  it('equips a title when Équiper is clicked', () => {
+  it('shows the active banner and requests the current level by default', () => {
+    mocks.isAuthenticated = true;
+    mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CP',
+      selected_title_id: null,
+      titles: [],
+      quests: [
+        {
+          id: 'win-streak',
+          label: quest.label,
+          progress: 5,
+          tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
+        },
+      ],
+    };
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Titres actifs — niveau CP.')).toBeInTheDocument();
+    expect(mocks.requestedLevels[0]).toBeNull();
+    expect(screen.getByText('Équiper')).toBeInTheDocument();
+  });
+
+  it('lets the player pick another level and reset to the current one', () => {
+    mocks.isAuthenticated = true;
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    const select = screen.getByLabelText('Niveau affiché') as HTMLSelectElement;
+    expect(select.value).toBe('CP');
+    expect(screen.getByText('CP (actuel)')).toBeInTheDocument();
+
+    fireEvent.change(select, { target: { value: 'CE2' } });
+    expect(mocks.requestedLevels.at(-1)).toBe('CE2');
+
+    fireEvent.change(select, { target: { value: 'CP' } });
+    expect(mocks.requestedLevels.at(-1)).toBeNull();
+  });
+
+  it('equips a title when Équiper is clicked, sending the viewed level', () => {
     mocks.isAuthenticated = true;
     mocks.myTitles = {
       level: 'CP',
@@ -114,6 +166,82 @@ describe('QuestsPage', () => {
 
     fireEvent.click(screen.getByText('Équiper'));
     expect(mocks.mutate).toHaveBeenCalledWith({ titleId: 'win-streak-bronze', level: 'CP' });
+  });
+
+  it('shows the inactive banner without an equip button when viewing another level', () => {
+    mocks.isAuthenticated = true;
+    mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CM1',
+      selected_title_id: 'win-streak-bronze',
+      titles: [
+        {
+          id: 'win-streak-bronze',
+          label: 'Petit Conquérant',
+          rarity: 'BRONZE',
+          unlocked_at: '2026-01-01T00:00:00',
+        },
+      ],
+      quests: [
+        {
+          id: 'win-streak',
+          label: quest.label,
+          progress: 5,
+          tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
+        },
+      ],
+    };
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Niveau CP — titres inactifs.')).toBeInTheDocument();
+    expect(screen.queryByText('Équiper')).not.toBeInTheDocument();
+    expect(screen.getByText('✓ Était équipé')).toBeInTheDocument();
+  });
+
+  it('shows the empty-titles message for an inactive level with nothing unlocked', () => {
+    mocks.isAuthenticated = true;
+    mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CM1',
+      selected_title_id: null,
+      titles: [],
+      quests: [
+        {
+          id: 'win-streak',
+          label: quest.label,
+          progress: 0,
+          tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: false }],
+        },
+      ],
+    };
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Aucun titre débloqué à ce niveau.')).toBeInTheDocument();
+  });
+
+  it('keeps the active empty-titles message on the active view', () => {
+    mocks.isAuthenticated = true;
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.getByText(
+        "Aucun titre débloqué pour l'instant. Progresse dans les quêtes ci-dessous pour en gagner !"
+      )
+    ).toBeInTheDocument();
   });
 
   it('shows a pause banner and a link to the subscription page when inactive', () => {
@@ -147,6 +275,42 @@ describe('QuestsPage', () => {
 
     expect(
       screen.queryByText(/Ta progression vers les prochains titres est en pause/)
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not show the pause banner on an inactive level view', () => {
+    mocks.isAuthenticated = true;
+    mocks.subscriptionStatus = { active: false, expires_at: null };
+    mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CM1',
+      selected_title_id: 'win-streak-bronze',
+      titles: [
+        {
+          id: 'win-streak-bronze',
+          label: 'Petit Conquérant',
+          rarity: 'BRONZE',
+          unlocked_at: '2026-01-01T00:00:00',
+        },
+      ],
+      quests: [
+        {
+          id: 'win-streak',
+          label: quest.label,
+          progress: 5,
+          tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
+        },
+      ],
+    };
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.queryByText(/progression vers les prochains titres est en pause/)
     ).not.toBeInTheDocument();
   });
 });
