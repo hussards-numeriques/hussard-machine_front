@@ -26,6 +26,8 @@ const titleB: MyTitle = {
 };
 
 const response = (titles: MyTitle[]): MyTitlesResponse => ({
+  level: 'CP',
+  current_level: 'CP',
   selected_title_id: null,
   titles,
   quests: [],

@@ -9,7 +9,7 @@ export function useTitleUnlocks(
   gameState: GameState | null,
   gameId: string | undefined
 ): MyTitle[] {
-  const { data, refetch } = useMyTitles();
+  const { data, refetch } = useMyTitles(null);
   const snapshotRef = useRef<Set<string> | null>(null);
   const [prevGameId, setPrevGameId] = useState(gameId);
   const [newTitles, setNewTitles] = useState<MyTitle[]>([]);

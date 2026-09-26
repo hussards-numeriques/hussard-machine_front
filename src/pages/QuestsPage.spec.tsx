@@ -54,6 +54,8 @@ describe('QuestsPage', () => {
     mocks.catalog = [quest];
     mocks.subscriptionStatus = { active: true, expires_at: '2026-08-21T12:00:00' };
     mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CP',
       selected_title_id: null,
       titles: [],
       quests: [
@@ -90,6 +92,8 @@ describe('QuestsPage', () => {
   it('equips a title when Équiper is clicked', () => {
     mocks.isAuthenticated = true;
     mocks.myTitles = {
+      level: 'CP',
+      current_level: 'CP',
       selected_title_id: null,
       titles: [],
       quests: [
@@ -109,7 +113,7 @@ describe('QuestsPage', () => {
     );
 
     fireEvent.click(screen.getByText('Équiper'));
-    expect(mocks.mutate).toHaveBeenCalledWith('win-streak-bronze');
+    expect(mocks.mutate).toHaveBeenCalledWith({ titleId: 'win-streak-bronze', level: 'CP' });
   });
 
   it('shows a pause banner and a link to the subscription page when inactive', () => {

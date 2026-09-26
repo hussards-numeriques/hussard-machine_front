@@ -16,6 +16,8 @@ const catalogSample: QuestCatalog = [
 ];
 
 const myTitlesSample: MyTitlesResponse = {
+  level: 'CP',
+  current_level: 'TROISIEME',
   selected_title_id: 'win-streak-bronze',
   titles: [
     {
@@ -60,60 +62,81 @@ describe('HttpQuestsAdapter', () => {
     fetchSpy.mockRestore();
   });
 
-  it('fetches /me/titles via the provided authorizedFetch', async () => {
+  it('fetches /me/titles without level param for the current level', async () => {
     const authorizedFetch = vi.fn<AuthorizedFetch>(
       async () => new Response(JSON.stringify(myTitlesSample), { status: 200 })
     );
-    const adapter = new HttpQuestsAdapter();
 
-    const result = await adapter.fetchMyTitles(authorizedFetch);
+    const result = await new HttpQuestsAdapter().fetchMyTitles(authorizedFetch, null);
 
-    expect(authorizedFetch).toHaveBeenCalledTimes(1);
     expect((authorizedFetch.mock.calls[0][0] as string).endsWith('/me/titles')).toBe(true);
     expect(result).toEqual(myTitlesSample);
+  });
+
+  it('fetches /me/titles for an explicit level', async () => {
+    const authorizedFetch = vi.fn<AuthorizedFetch>(
+      async () => new Response(JSON.stringify(myTitlesSample), { status: 200 })
+    );
+
+    await new HttpQuestsAdapter().fetchMyTitles(authorizedFetch, 'CP');
+
+    expect((authorizedFetch.mock.calls[0][0] as string).endsWith('/me/titles?level=CP')).toBe(true);
+  });
+
+  it('rejects a /me/titles response with an unknown level', async () => {
+    const authorizedFetch = vi.fn<AuthorizedFetch>(
+      async () =>
+        new Response(JSON.stringify({ ...myTitlesSample, level: 'LYCEE' }), { status: 200 })
+    );
+
+    await expect(new HttpQuestsAdapter().fetchMyTitles(authorizedFetch, null)).rejects.toThrow();
   });
 
   it('throws when /me/titles responds with an error status', async () => {
     const authorizedFetch = vi.fn(async () => new Response('nope', { status: 401 }));
     const adapter = new HttpQuestsAdapter();
 
-    await expect(adapter.fetchMyTitles(authorizedFetch)).rejects.toThrow();
+    await expect(adapter.fetchMyTitles(authorizedFetch, null)).rejects.toThrow();
   });
 
-  it('PUTs the title id and returns the selected title id', async () => {
+  it('PUTs the title id and level, and returns the selected title id and level', async () => {
     const authorizedFetch = vi.fn<AuthorizedFetch>(
       async () =>
-        new Response(JSON.stringify({ selected_title_id: 'win-streak-bronze' }), { status: 200 })
+        new Response(
+          JSON.stringify({ selected_title_id: 'win-streak-bronze', level: 'TROISIEME' }),
+          { status: 200 }
+        )
     );
     const adapter = new HttpQuestsAdapter();
 
-    const result = await adapter.selectTitle(authorizedFetch, 'win-streak-bronze');
+    const result = await adapter.selectTitle(authorizedFetch, 'win-streak-bronze', 'TROISIEME');
 
     expect(authorizedFetch).toHaveBeenCalledTimes(1);
     const [url, init] = authorizedFetch.mock.calls[0];
     expect((url as string).endsWith('/me/selected-title')).toBe(true);
     expect(init?.method).toBe('PUT');
-    expect(init?.body).toBe(JSON.stringify({ title_id: 'win-streak-bronze' }));
-    expect(result).toBe('win-streak-bronze');
+    expect(init?.body).toBe(JSON.stringify({ title_id: 'win-streak-bronze', level: 'TROISIEME' }));
+    expect(result).toEqual({ selected_title_id: 'win-streak-bronze', level: 'TROISIEME' });
   });
 
   it('unequips by sending a null title id', async () => {
     const authorizedFetch = vi.fn<AuthorizedFetch>(
-      async () => new Response(JSON.stringify({ selected_title_id: null }), { status: 200 })
+      async () =>
+        new Response(JSON.stringify({ selected_title_id: null, level: 'CP' }), { status: 200 })
     );
     const adapter = new HttpQuestsAdapter();
 
-    const result = await adapter.selectTitle(authorizedFetch, null);
+    const result = await adapter.selectTitle(authorizedFetch, null, 'CP');
 
     const [, init] = authorizedFetch.mock.calls[0];
-    expect(init?.body).toBe(JSON.stringify({ title_id: null }));
-    expect(result).toBeNull();
+    expect(init?.body).toBe(JSON.stringify({ title_id: null, level: 'CP' }));
+    expect(result).toEqual({ selected_title_id: null, level: 'CP' });
   });
 
   it('throws when the selection request responds with an error status', async () => {
     const authorizedFetch = vi.fn(async () => new Response('nope', { status: 400 }));
     const adapter = new HttpQuestsAdapter();
 
-    await expect(adapter.selectTitle(authorizedFetch, 'win-streak-bronze')).rejects.toThrow();
+    await expect(adapter.selectTitle(authorizedFetch, 'win-streak-bronze', 'CP')).rejects.toThrow();
   });
 });

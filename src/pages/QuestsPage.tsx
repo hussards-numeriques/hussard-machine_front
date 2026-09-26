@@ -20,7 +20,7 @@ const QuestsNotice: React.FC<{ message: string }> = ({ message }) => (
 export const QuestsPage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const catalogQuery = useQuestCatalog();
-  const myTitlesQuery = useMyTitles();
+  const myTitlesQuery = useMyTitles(null);
   const selectTitle = useSelectTitle();
   const subscriptionStatus = useSubscriptionStatus();
 
@@ -40,7 +40,7 @@ export const QuestsPage: React.FC = () => {
     return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
   }
 
-  const { titles, quests, selected_title_id } = myTitlesQuery.data;
+  const { titles, quests, selected_title_id, level } = myTitlesQuery.data;
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
@@ -75,7 +75,7 @@ export const QuestsPage: React.FC = () => {
               quest={quest}
               progress={questProgress}
               selectedTitleId={selected_title_id}
-              onEquip={(titleId) => selectTitle.mutate(titleId)}
+              onEquip={(titleId) => selectTitle.mutate({ titleId, level })}
               isPending={selectTitle.isPending}
             />
           );
