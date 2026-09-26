@@ -9,6 +9,7 @@ describe('LevelChangeConfirmModal', () => {
       <LevelChangeConfirmModal
         variant="promote"
         targetLevel="4ème"
+        currentLevel="5ème"
         onConfirm={onConfirm}
         onCancel={vi.fn()}
       />
@@ -19,11 +20,30 @@ describe('LevelChangeConfirmModal', () => {
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
+  it('shows promote titles copy', () => {
+    render(
+      <LevelChangeConfirmModal
+        variant="promote"
+        targetLevel="4ème"
+        currentLevel="5ème"
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByText(
+        'Côté titres, tu passes à la progression de 4ème : nouvelles quêtes, nouveaux titres à décrocher. Ceux de 5ème restent consultables dans Quêtes & Titres, mais ne seront plus actifs.'
+      )
+    ).toBeInTheDocument();
+  });
+
   it('shows demote copy', () => {
     render(
       <LevelChangeConfirmModal
         variant="demote"
         targetLevel="3ème"
+        currentLevel="4ème"
         onConfirm={vi.fn()}
         onCancel={vi.fn()}
       />
@@ -33,12 +53,31 @@ describe('LevelChangeConfirmModal', () => {
     expect(screen.getByText(/perdre l'XP de ton niveau actuel/)).toBeInTheDocument();
   });
 
+  it('shows demote titles copy', () => {
+    render(
+      <LevelChangeConfirmModal
+        variant="demote"
+        targetLevel="3ème"
+        currentLevel="4ème"
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />
+    );
+
+    expect(
+      screen.getByText(
+        'Côté titres, tu retrouves la progression de 3ème. Ceux de 4ème restent consultables dans Quêtes & Titres, mais ne seront plus actifs.'
+      )
+    ).toBeInTheDocument();
+  });
+
   it('cancels on the Annuler button', () => {
     const onCancel = vi.fn();
     render(
       <LevelChangeConfirmModal
         variant="promote"
         targetLevel="4ème"
+        currentLevel="5ème"
         onConfirm={vi.fn()}
         onCancel={onCancel}
       />
@@ -54,6 +93,7 @@ describe('LevelChangeConfirmModal', () => {
       <LevelChangeConfirmModal
         variant="promote"
         targetLevel="4ème"
+        currentLevel="5ème"
         onConfirm={vi.fn()}
         onCancel={onCancel}
       />

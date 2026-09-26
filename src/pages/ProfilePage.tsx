@@ -360,6 +360,7 @@ export const ProfilePage: React.FC = () => {
         <LevelChangeConfirmModal
           variant={pendingLevelChange}
           targetLevel={pendingLevelChange === 'promote' ? nextLevelLabel : previousLevelLabel}
+          currentLevel={resolveLevelLabel(profile.level)}
           onConfirm={() => {
             setPendingLevelChange(null);
             if (pendingLevelChange === 'promote') {
