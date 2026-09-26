@@ -90,6 +90,7 @@ describe('GameView - Auto-advance when all players answered', () => {
       start_time_current_question: Date.now() / 1000,
       host_player_id: null,
       max_players: 6,
+      level: 'CP',
     };
 
     client.connectToLobby({ gameId: 'TEST1', playerName: 'Player 1' });

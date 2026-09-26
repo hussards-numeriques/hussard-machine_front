@@ -43,6 +43,7 @@ describe('GamePage - reconnecting on same-path navigation (replay)', () => {
       start_time_current_question: null,
       host_player_id: null,
       max_players: 6,
+      level: 'CP',
     };
     const client = {
       connectToQuickGame,

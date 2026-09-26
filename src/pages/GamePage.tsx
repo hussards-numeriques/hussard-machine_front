@@ -13,7 +13,7 @@ export const GamePage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { client, game, error, resetGame } = useGame();
-  const newTitles = useTitleUnlocks(game?.state ?? null, game?.id);
+  const newTitles = useTitleUnlocks(game?.state ?? null, game?.id, game?.level);
   const xpProgress = useXpProgress(game?.state ?? null, game?.id);
 
   const locationState = (location.state ?? null) as {

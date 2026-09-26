@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { GameState } from '../types';
 import type { Answer, BotConfig, Game, Player, PlayerTitle, Question } from '../types';
+import { LEVELS } from '../lib/grades';
 
 const botConfigSchema = z.object({
   correctness_probability: z.number(),
@@ -55,6 +56,7 @@ export const gameSchema = z.object({
   is_quick_game: z.boolean().optional(),
   host_player_id: z.string().nullable(),
   max_players: z.number(),
+  level: z.enum(LEVELS),
 }) satisfies z.ZodType<Game>;
 
 export const serverMessageSchema = z.discriminatedUnion('type', [

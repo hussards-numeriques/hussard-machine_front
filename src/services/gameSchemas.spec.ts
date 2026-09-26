@@ -27,6 +27,7 @@ const backendGamePayload = {
   is_quick_game: true,
   host_player_id: null,
   max_players: 6,
+  level: 'CP',
 };
 
 describe('serverMessageSchema', () => {
@@ -96,6 +97,34 @@ describe('serverMessageSchema', () => {
 
     expect(() =>
       serverMessageSchema.parse({ type: 'GAME_UPDATE', payload: incompletePayload })
+    ).toThrow();
+  });
+
+  it('accepts a GAME_UPDATE with the game level and keeps it', () => {
+    const message = serverMessageSchema.parse({
+      type: 'GAME_UPDATE',
+      payload: { ...backendGamePayload, level: 'CM1' },
+    });
+
+    if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
+    expect(message.payload.level).toBe('CM1');
+  });
+
+  it('rejects a GAME_UPDATE payload missing the level', () => {
+    const incompletePayload: Partial<typeof backendGamePayload> = { ...backendGamePayload };
+    delete incompletePayload.level;
+
+    expect(() =>
+      serverMessageSchema.parse({ type: 'GAME_UPDATE', payload: incompletePayload })
+    ).toThrow();
+  });
+
+  it('rejects a GAME_UPDATE payload with an invalid level', () => {
+    expect(() =>
+      serverMessageSchema.parse({
+        type: 'GAME_UPDATE',
+        payload: { ...backendGamePayload, level: 'LYCEE' },
+      })
     ).toThrow();
   });
 

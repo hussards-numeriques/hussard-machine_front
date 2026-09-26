@@ -42,6 +42,7 @@ describe('LobbyView - disconnected players', () => {
     start_time_current_question: null,
     host_player_id: null,
     max_players: 6,
+    level: 'CP',
   };
 
   const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
@@ -81,6 +82,7 @@ describe('LobbyView - leave button', () => {
     start_time_current_question: null,
     host_player_id: null,
     max_players: 6,
+    level: 'CP',
   };
 
   const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
@@ -134,6 +136,7 @@ describe('LobbyView - player title', () => {
     start_time_current_question: null,
     host_player_id: null,
     max_players: 6,
+    level: 'CP',
   };
 
   const mockClient = { setReady: vi.fn(), startGame: vi.fn() } as unknown as GameClient;
@@ -179,6 +182,7 @@ describe('LobbyView - host controls', () => {
     is_quick_game: false,
     host_player_id: 'p1',
     max_players: 3,
+    level: 'CP',
     players: [
       {
         id: 'p1',
