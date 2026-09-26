@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { resolveGradeBarLightColor, resolveGradeRingColor, DEFAULT_GRADE_RING } from './grades';
+import {
+  resolveGradeBarLightColor,
+  resolveGradeRingColor,
+  DEFAULT_GRADE_RING,
+  isLevel,
+} from './grades';
 
 describe('resolveGradeRingColor', () => {
   it.each([
@@ -30,5 +35,18 @@ describe('resolveGradeBarLightColor', () => {
 
   it('falls back to the default light color for an unknown grade', () => {
     expect(resolveGradeBarLightColor('MASTER')).toBe('bg-primary-light');
+  });
+});
+
+describe('isLevel', () => {
+  it.each(['CP', 'CE1', 'CE2', 'CM1', 'CM2', 'SIXIEME', 'CINQUIEME', 'QUATRIEME', 'TROISIEME'])(
+    'accepts %s',
+    (level) => {
+      expect(isLevel(level)).toBe(true);
+    }
+  );
+
+  it('rejects an unknown value', () => {
+    expect(isLevel('TERMINALE')).toBe(false);
   });
 });

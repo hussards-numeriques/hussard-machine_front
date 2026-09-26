@@ -51,6 +51,7 @@ const game: Game = {
   start_time_current_question: null,
   host_player_id: null,
   max_players: 6,
+  level: 'CP',
 };
 
 const renderPodium = (xpProgress: XpProgress | null) => {

@@ -13,4 +13,5 @@ export type {
   QuestsRepository,
   QuestTier,
   QuestTitle,
+  SelectedTitle,
 } from './port';

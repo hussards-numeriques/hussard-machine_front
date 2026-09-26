@@ -72,7 +72,8 @@ export const DEFAULT_GRADE_RING = 'ring-slate-300';
 
 const isGrade = (value: string): value is Grade => (GRADES as readonly string[]).includes(value);
 
-const isLevel = (value: string): value is Level => (LEVELS as readonly string[]).includes(value);
+export const isLevel = (value: string): value is Level =>
+  (LEVELS as readonly string[]).includes(value);
 
 export const resolveGradeLabel = (grade: string): string =>
   isGrade(grade) ? GRADE_LABELS[grade] : grade;

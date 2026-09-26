@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { GameState } from '../types';
+import type { Level } from '../lib/grades';
 import type { MyTitle } from '../services/quests';
 import { useMyTitles } from './useQuests';
 
@@ -7,9 +8,10 @@ export const RETRY_DELAY_MS = 1500;
 
 export function useTitleUnlocks(
   gameState: GameState | null,
-  gameId: string | undefined
+  gameId: string | undefined,
+  gameLevel: Level | undefined
 ): MyTitle[] {
-  const { data, refetch } = useMyTitles();
+  const { data, refetch } = useMyTitles(gameLevel ?? null);
   const snapshotRef = useRef<Set<string> | null>(null);
   const [prevGameId, setPrevGameId] = useState(gameId);
   const [newTitles, setNewTitles] = useState<MyTitle[]>([]);
@@ -21,13 +23,18 @@ export function useTitleUnlocks(
 
   useEffect(() => {
     snapshotRef.current = null;
-  }, [gameId]);
+  }, [gameId, gameLevel]);
 
   useEffect(() => {
-    if ((gameState === 'WAITING' || gameState === 'COUNTDOWN') && data) {
+    if (
+      (gameState === 'WAITING' || gameState === 'COUNTDOWN') &&
+      data &&
+      gameLevel !== undefined &&
+      data.level === gameLevel
+    ) {
       snapshotRef.current = new Set(data.titles.map((t) => t.id));
     }
-  }, [gameState, data]);
+  }, [gameState, data, gameLevel]);
 
   useEffect(() => {
     if (gameState !== 'FINISHED' || snapshotRef.current === null) {

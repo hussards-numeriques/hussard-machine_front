@@ -32,8 +32,7 @@ describe('QuestProgressCard', () => {
         quest={quest}
         progress={progress}
         selectedTitleId={null}
-        onEquip={vi.fn()}
-        isPending={false}
+        mode={{ kind: 'editable', onEquip: vi.fn(), isPending: false }}
       />
     );
 
@@ -49,8 +48,7 @@ describe('QuestProgressCard', () => {
         quest={quest}
         progress={progress}
         selectedTitleId="win-streak-bronze"
-        onEquip={onEquip}
-        isPending={false}
+        mode={{ kind: 'editable', onEquip, isPending: false }}
       />
     );
 
@@ -65,12 +63,39 @@ describe('QuestProgressCard', () => {
         quest={quest}
         progress={progress}
         selectedTitleId={null}
-        onEquip={onEquip}
-        isPending={false}
+        mode={{ kind: 'editable', onEquip, isPending: false }}
       />
     );
 
     fireEvent.click(screen.getByText('Équiper'));
     expect(onEquip).toHaveBeenCalledWith('win-streak-bronze');
+  });
+
+  it('shows a read-only badge with no button when the tier is equipped', () => {
+    render(
+      <QuestProgressCard
+        quest={quest}
+        progress={progress}
+        selectedTitleId="win-streak-bronze"
+        mode={{ kind: 'readonly' }}
+      />
+    );
+
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    expect(screen.getByText('✓ Était équipé')).toBeInTheDocument();
+  });
+
+  it('shows no badge and no button when no tier is equipped', () => {
+    render(
+      <QuestProgressCard
+        quest={quest}
+        progress={progress}
+        selectedTitleId={null}
+        mode={{ kind: 'readonly' }}
+      />
+    );
+
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    expect(screen.queryByText('✓ Était équipé')).not.toBeInTheDocument();
   });
 });

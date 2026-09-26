@@ -1,3 +1,5 @@
+import type { Level } from '../../lib/grades';
+
 export interface QuestTitle {
   id: string;
   label: string;
@@ -38,15 +40,26 @@ export interface MyQuest {
 }
 
 export interface MyTitlesResponse {
+  level: Level;
+  current_level: Level;
   selected_title_id: string | null;
   titles: MyTitle[];
   quests: MyQuest[];
+}
+
+export interface SelectedTitle {
+  selected_title_id: string | null;
+  level: Level;
 }
 
 export type AuthorizedFetch = (input: string, init?: RequestInit) => Promise<Response>;
 
 export interface QuestsRepository {
   fetchCatalog(): Promise<QuestCatalog>;
-  fetchMyTitles(authorizedFetch: AuthorizedFetch): Promise<MyTitlesResponse>;
-  selectTitle(authorizedFetch: AuthorizedFetch, titleId: string | null): Promise<string | null>;
+  fetchMyTitles(authorizedFetch: AuthorizedFetch, level: Level | null): Promise<MyTitlesResponse>;
+  selectTitle(
+    authorizedFetch: AuthorizedFetch,
+    titleId: string | null,
+    level: Level
+  ): Promise<SelectedTitle>;
 }

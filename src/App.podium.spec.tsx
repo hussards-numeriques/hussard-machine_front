@@ -82,6 +82,7 @@ describe('PodiumView - Display final scores when game is finished', () => {
       start_time_current_question: null,
       host_player_id: null,
       max_players: 6,
+      level: 'CP',
     };
   });
 
@@ -241,6 +242,7 @@ describe('PodiumView - player title', () => {
       start_time_current_question: null,
       host_player_id: null,
       max_players: 6,
+      level: 'CP',
     };
 
     render(

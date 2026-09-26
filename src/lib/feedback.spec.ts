@@ -22,6 +22,7 @@ const baseGame = (): Game => ({
   start_time_current_question: null,
   host_player_id: null,
   max_players: 6,
+  level: 'CP',
 });
 
 describe('computeFeedback', () => {

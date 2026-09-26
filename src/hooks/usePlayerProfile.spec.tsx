@@ -48,6 +48,25 @@ describe('usePromotePlayer', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(mocks.promotePlayer).toHaveBeenCalledTimes(1);
   });
+
+  it('invalidates the player profile and my-titles queries on success', async () => {
+    mocks.promotePlayer.mockResolvedValue(undefined);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const promoteWrapper = ({ children }: { children: ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
+    const { result } = renderHook(() => usePromotePlayer(), { wrapper: promoteWrapper });
+
+    act(() => {
+      result.current.mutate();
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['player-profile'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['my-titles'] });
+  });
 });
 
 describe('useDemotePlayer', () => {
@@ -64,5 +83,24 @@ describe('useDemotePlayer', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(mocks.demotePlayer).toHaveBeenCalledTimes(1);
+  });
+
+  it('invalidates the player profile and my-titles queries on success', async () => {
+    mocks.demotePlayer.mockResolvedValue(undefined);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const demoteWrapper = ({ children }: { children: ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
+    const { result } = renderHook(() => useDemotePlayer(), { wrapper: demoteWrapper });
+
+    act(() => {
+      result.current.mutate();
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['player-profile'] });
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['my-titles'] });
   });
 });

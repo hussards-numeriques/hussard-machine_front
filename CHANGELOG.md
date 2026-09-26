@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.18.0] - 2026-09-26
+
+### Changed
+
+- Titles per school level (anti-farm: 10 wins in a row in CP no longer give a title shown in 3ème). Quest progress, unlocked titles and the equipped title are now tracked per level by the backend (`TITLES_PER_LEVEL_CONTRACT.md`). `/quests` opens on the player's current level with a green banner ("Titres actifs — niveau …") and a new "Niveau affiché" selector lets them browse the other levels read-only: grey "titres inactifs" banner with a light nostalgic tone, no Équiper button, a "✓ Était équipé" badge on the title that was equipped there. The service sends `GET /me/titles?level=` and `PUT /me/selected-title { title_id, level }`; the TanStack key is `['my-titles', level | 'current']`, invalidated by prefix after equipping, promoting or demoting. The promote/demote confirmation modal now explains that title progression follows the level (the old level's titles stay viewable but inactive). The podium unlock toast diffs titles of the game's level (`Game.level`, now validated leniently from the WS payload) instead of the account level.
+
 ## [0.17.5] - 2026-08-18
 
 ### Changed

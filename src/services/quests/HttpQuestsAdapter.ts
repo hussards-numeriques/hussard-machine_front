@@ -1,6 +1,15 @@
 import { z } from 'zod';
-import type { AuthorizedFetch, MyTitlesResponse, QuestCatalog, QuestsRepository } from './port';
+import type {
+  AuthorizedFetch,
+  MyTitlesResponse,
+  QuestCatalog,
+  QuestsRepository,
+  SelectedTitle,
+} from './port';
 import { getApiUrl } from '../apiConfig';
+import { LEVELS, type Level } from '../../lib/grades';
+
+const levelSchema = z.enum(LEVELS);
 
 const questTitleSchema = z.object({
   id: z.string(),
@@ -22,6 +31,8 @@ const questCatalogSchema = z.array(
 ) satisfies z.ZodType<QuestCatalog>;
 
 const myTitlesResponseSchema = z.object({
+  level: levelSchema,
+  current_level: levelSchema,
   selected_title_id: z.string().nullable(),
   titles: z.array(
     z.object({
@@ -47,7 +58,10 @@ const myTitlesResponseSchema = z.object({
   ),
 }) satisfies z.ZodType<MyTitlesResponse>;
 
-const selectedTitleResponseSchema = z.object({ selected_title_id: z.string().nullable() });
+const selectedTitleResponseSchema = z.object({
+  selected_title_id: z.string().nullable(),
+  level: levelSchema,
+}) satisfies z.ZodType<SelectedTitle>;
 
 export class HttpQuestsAdapter implements QuestsRepository {
   public async fetchCatalog(): Promise<QuestCatalog> {
@@ -58,8 +72,13 @@ export class HttpQuestsAdapter implements QuestsRepository {
     return questCatalogSchema.parse(await response.json());
   }
 
-  public async fetchMyTitles(authorizedFetch: AuthorizedFetch): Promise<MyTitlesResponse> {
-    const response = await authorizedFetch(`${getApiUrl()}/me/titles`);
+  public async fetchMyTitles(
+    authorizedFetch: AuthorizedFetch,
+    level: Level | null
+  ): Promise<MyTitlesResponse> {
+    const url =
+      level === null ? `${getApiUrl()}/me/titles` : `${getApiUrl()}/me/titles?level=${level}`;
+    const response = await authorizedFetch(url);
     if (!response.ok) {
       throw new Error(`Failed to fetch my titles (${response.status})`);
     }
@@ -68,16 +87,17 @@ export class HttpQuestsAdapter implements QuestsRepository {
 
   public async selectTitle(
     authorizedFetch: AuthorizedFetch,
-    titleId: string | null
-  ): Promise<string | null> {
+    titleId: string | null,
+    level: Level
+  ): Promise<SelectedTitle> {
     const response = await authorizedFetch(`${getApiUrl()}/me/selected-title`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title_id: titleId }),
+      body: JSON.stringify({ title_id: titleId, level }),
     });
     if (!response.ok) {
       throw new Error(`Failed to select title (${response.status})`);
     }
-    return selectedTitleResponseSchema.parse(await response.json()).selected_title_id;
+    return selectedTitleResponseSchema.parse(await response.json());
   }
 }

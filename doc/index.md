@@ -51,11 +51,13 @@ Daily streak: route `/me/streak`, hex port `services/streak` (`deriveStreakStatu
 
 ### [quests-titles.md](quests-titles.md)
 
-Quêtes progressives et titres cosmétiques : route `/quests`, service hexagonal
-`services/quests` (`GET /quests`, `GET /me/titles`, `PUT /me/selected-title`), composants
-`PlayerTitle` / `QuestProgressCard` / `TitleUnlockToast`, et la détection de déblocage par
-diff (`useTitleUnlocks`).
-→ Read when: modifying quest/title display, thresholds, or the unlock-toast detection.
+Quêtes progressives et titres cosmétiques **par niveau scolaire** : route `/quests`
+(sélecteur de niveau, niveau actuel actif / autres niveaux en lecture seule), service
+hexagonal `services/quests` (`GET /quests`, `GET /me/titles?level=`, `PUT /me/selected-title`),
+composants `PlayerTitle` / `QuestProgressCard` / `TitlesLevelBanner` / `TitleUnlockToast`,
+texte titres de la modale de changement de niveau, et la détection de déblocage par diff au
+niveau de la partie (`useTitleUnlocks`).
+→ Read when: modifying quest/title display, thresholds, per-level titles, or the unlock-toast detection.
 
 ### [player-icons.md](player-icons.md)
 

@@ -1,3 +1,5 @@
+import type { Level } from './lib/grades';
+
 export interface BotConfig {
   correctness_probability: number;
   average_response_time: number;
@@ -102,4 +104,5 @@ export interface Game {
   is_quick_game?: boolean;
   host_player_id: string | null;
   max_players: number;
+  level?: Level;
 }
