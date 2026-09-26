@@ -75,8 +75,11 @@ export const QuestsPage: React.FC = () => {
               quest={quest}
               progress={questProgress}
               selectedTitleId={selected_title_id}
-              onEquip={(titleId) => selectTitle.mutate({ titleId, level })}
-              isPending={selectTitle.isPending}
+              mode={{
+                kind: 'editable',
+                onEquip: (titleId) => selectTitle.mutate({ titleId, level }),
+                isPending: selectTitle.isPending,
+              }}
             />
           );
         })}
