@@ -138,6 +138,7 @@ interface Game {
   is_quick_game?: boolean;
   host_player_id: string | null; // set for private lobbies (the creator); null for quick games
   max_players: number; // capacity chosen by the creator (2–30) at `POST /lobbies`
+  level: Level; // question level of the game (lobby level); titles progress and display at this level
 }
 ```
 
