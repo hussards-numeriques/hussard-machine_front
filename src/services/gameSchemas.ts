@@ -56,7 +56,7 @@ export const gameSchema = z.object({
   is_quick_game: z.boolean().optional(),
   host_player_id: z.string().nullable(),
   max_players: z.number(),
-  level: z.enum(LEVELS),
+  level: z.enum(LEVELS).optional().catch(undefined),
 }) satisfies z.ZodType<Game>;
 
 export const serverMessageSchema = z.discriminatedUnion('type', [

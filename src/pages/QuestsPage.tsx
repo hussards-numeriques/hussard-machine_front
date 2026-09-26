@@ -10,14 +10,32 @@ import { resolveTitlesLevelView } from '../lib/titlesLevelView';
 import { cn } from '../lib/utils';
 import type { Level } from '../lib/grades';
 
-const QuestsNotice: React.FC<{ message: string }> = ({ message }) => (
+interface QuestsNoticeAction {
+  label: string;
+  onClick: () => void;
+}
+
+const QuestsNoticeHomeLink: React.FC = () => (
+  <Link to="/" className="inline-block text-primary font-bold hover:underline">
+    Retour à l'accueil
+  </Link>
+);
+
+const QuestsNoticeActionButton: React.FC<{ action: QuestsNoticeAction }> = ({ action }) => (
+  <button onClick={action.onClick} className="inline-block text-primary font-bold hover:underline">
+    {action.label}
+  </button>
+);
+
+const QuestsNotice: React.FC<{ message: string; action?: QuestsNoticeAction }> = ({
+  message,
+  action,
+}) => (
   <div className="min-h-screen flex items-center justify-center p-4">
     <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
       <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
       <p className="text-slate-600">{message}</p>
-      <Link to="/" className="inline-block text-primary font-bold hover:underline">
-        Retour à l'accueil
-      </Link>
+      {action ? <QuestsNoticeActionButton action={action} /> : <QuestsNoticeHomeLink />}
     </div>
   </div>
 );
@@ -42,7 +60,19 @@ export const QuestsPage: React.FC = () => {
     return <QuestsNotice message="Connecte-toi pour voir tes quêtes et tes titres." />;
   }
 
-  if (!catalogQuery.data || !myTitlesQuery.data) {
+  if (!catalogQuery.data) {
+    return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
+  }
+
+  if (!myTitlesQuery.data) {
+    if (viewedLevel !== null) {
+      return (
+        <QuestsNotice
+          message="Impossible de charger les titres de ce niveau pour le moment."
+          action={{ label: 'Revenir à mon niveau', onClick: () => setViewedLevel(null) }}
+        />
+      );
+    }
     return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
   }
 
@@ -54,7 +84,11 @@ export const QuestsPage: React.FC = () => {
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
       <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
 
-      <LevelSelector level={level} currentLevel={current_level} onChange={setViewedLevel} />
+      <LevelSelector
+        level={viewedLevel ?? current_level}
+        currentLevel={current_level}
+        onChange={setViewedLevel}
+      />
 
       <TitlesLevelBanner view={view} />
 

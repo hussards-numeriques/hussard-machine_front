@@ -23,6 +23,8 @@ const mocks = vi.hoisted(() => ({
   subscriptionStatus: undefined as SubscriptionStatus | undefined,
   mutate: vi.fn(),
   requestedLevels: [] as (string | null)[],
+  isPlaceholderData: false,
+  failLevel: null as string | null,
 }));
 
 vi.mock('../contexts/useAuth', () => ({
@@ -42,7 +44,8 @@ vi.mock('../hooks/useQuests', () => ({
   useQuestCatalog: () => ({ data: mocks.catalog, isLoading: false }),
   useMyTitles: (level: string | null) => {
     mocks.requestedLevels.push(level);
-    return { data: mocks.myTitles, isLoading: false, isPlaceholderData: false };
+    const data = mocks.failLevel !== null && level === mocks.failLevel ? undefined : mocks.myTitles;
+    return { data, isLoading: false, isPlaceholderData: mocks.isPlaceholderData };
   },
   useSelectTitle: () => ({ mutate: mocks.mutate, isPending: false }),
 }));
@@ -58,6 +61,8 @@ describe('QuestsPage', () => {
     mocks.catalog = [quest];
     mocks.subscriptionStatus = { active: true, expires_at: '2026-08-21T12:00:00' };
     mocks.requestedLevels = [];
+    mocks.isPlaceholderData = false;
+    mocks.failLevel = null;
     mocks.myTitles = {
       level: 'CP',
       current_level: 'CP',
@@ -312,5 +317,44 @@ describe('QuestsPage', () => {
     expect(
       screen.queryByText(/progression vers les prochains titres est en pause/)
     ).not.toBeInTheDocument();
+  });
+
+  it('keeps the selector on the newly picked level while its data is still placeholder data', () => {
+    mocks.isAuthenticated = true;
+    mocks.isPlaceholderData = true;
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    const select = screen.getByLabelText('Niveau affiché') as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: 'CE2' } });
+
+    expect(select.value).toBe('CE2');
+  });
+
+  it('lets the player return to their level when another level fails to load', () => {
+    mocks.isAuthenticated = true;
+    mocks.failLevel = 'CE2';
+
+    render(
+      <MemoryRouter>
+        <QuestsPage />
+      </MemoryRouter>
+    );
+
+    const select = screen.getByLabelText('Niveau affiché') as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: 'CE2' } });
+
+    expect(
+      screen.getByText('Impossible de charger les titres de ce niveau pour le moment.')
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Revenir à mon niveau'));
+
+    expect(mocks.requestedLevels.at(-1)).toBeNull();
+    expect(screen.getByText('Titres actifs — niveau CP.')).toBeInTheDocument();
   });
 });

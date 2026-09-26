@@ -110,22 +110,24 @@ describe('serverMessageSchema', () => {
     expect(message.payload.level).toBe('CM1');
   });
 
-  it('rejects a GAME_UPDATE payload missing the level', () => {
+  it('parses a GAME_UPDATE payload missing the level with level undefined', () => {
     const incompletePayload: Partial<typeof backendGamePayload> = { ...backendGamePayload };
     delete incompletePayload.level;
 
-    expect(() =>
-      serverMessageSchema.parse({ type: 'GAME_UPDATE', payload: incompletePayload })
-    ).toThrow();
+    const message = serverMessageSchema.parse({ type: 'GAME_UPDATE', payload: incompletePayload });
+
+    if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
+    expect(message.payload.level).toBeUndefined();
   });
 
-  it('rejects a GAME_UPDATE payload with an invalid level', () => {
-    expect(() =>
-      serverMessageSchema.parse({
-        type: 'GAME_UPDATE',
-        payload: { ...backendGamePayload, level: 'LYCEE' },
-      })
-    ).toThrow();
+  it('parses a GAME_UPDATE payload with an unknown level with level undefined', () => {
+    const message = serverMessageSchema.parse({
+      type: 'GAME_UPDATE',
+      payload: { ...backendGamePayload, level: 'LYCEE' },
+    });
+
+    if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
+    expect(message.payload.level).toBeUndefined();
   });
 
   it('accepts a KICKED message', () => {
