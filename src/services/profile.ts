@@ -61,3 +61,10 @@ export const demotePlayer = async (authorizedFetch: AuthorizedFetch): Promise<vo
     throw new ApiError(response.status, `Demotion failed (${response.status})`);
   }
 };
+
+export const deleteAccount = async (authorizedFetch: AuthorizedFetch): Promise<void> => {
+  const response = await authorizedFetch(`${getApiUrl()}/me`, { method: 'DELETE' });
+  if (!response.ok) {
+    throw new ApiError(response.status, `Account deletion failed (${response.status})`);
+  }
+};

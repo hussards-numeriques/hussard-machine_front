@@ -69,6 +69,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   };
 
+  const clearSession = () => {
+    client.clearTokens();
+    setUser(null);
+  };
+
   const reloadUser = async () => {
     const me = await client.fetchMe();
     setUser(me);
@@ -82,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     register,
     logout,
+    clearSession,
     reloadUser,
   };
 

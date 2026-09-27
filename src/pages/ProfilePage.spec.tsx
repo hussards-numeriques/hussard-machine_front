@@ -29,6 +29,7 @@ const mocks = vi.hoisted(() => ({
   profileLoading: false,
   profileError: false,
   status: undefined as SubscriptionStatus | undefined,
+  deleteAccount: vi.fn(),
 }));
 
 vi.mock('../contexts/useAuth', () => ({
@@ -57,6 +58,13 @@ vi.mock('../hooks/usePlayerProfile', () => ({
   }),
   usePromotePlayer: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
   useDemotePlayer: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
+  useDeleteAccount: () => ({
+    mutate: mocks.deleteAccount,
+    reset: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 
 vi.mock('../hooks/useSubscription', () => ({
@@ -180,5 +188,45 @@ describe('ProfilePage avatar', () => {
     renderPage();
     expect(screen.getByRole('img')).toHaveAttribute('src', 'http://localhost/icon.svg');
     expect(screen.queryByText('TI')).not.toBeInTheDocument();
+  });
+});
+
+describe('ProfilePage danger zone', () => {
+  beforeEach(() => {
+    mocks.isAuthenticated = true;
+    mocks.authLoading = false;
+    mocks.profile = profile;
+    mocks.profileLoading = false;
+    mocks.profileError = false;
+    mocks.status = undefined;
+    mocks.deleteAccount.mockClear();
+  });
+
+  it('opens the deletion modal from the danger zone', () => {
+    renderPage();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer mon compte' }));
+
+    expect(screen.getByRole('dialog', { name: 'Supprimer ton compte ?' })).toBeInTheDocument();
+  });
+
+  it('deletes the account once the username is typed and confirmed', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer mon compte' }));
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: profile.username } });
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer définitivement' }));
+
+    expect(mocks.deleteAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes the modal on cancel without deleting', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: 'Supprimer mon compte' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mocks.deleteAccount).not.toHaveBeenCalled();
   });
 });

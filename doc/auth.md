@@ -65,6 +65,7 @@ A lock (`refreshInFlight`) prevents parallel refresh calls.
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
+  clearSession: () => void; // drops local tokens + user without calling fastauth (used after account deletion)
   reloadUser: () => Promise<void>;
 }
 ```

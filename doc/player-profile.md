@@ -66,8 +66,9 @@ interface GameHistoryEntry {
 | Load profile | `GET /me/details` (authenticated)  | Full profile with history. 404 if first-time player.                                          |
 | Promotion    | `POST /me/promote` (authenticated) | Promotes one level if `can_promote`. Returns updated profile.                                 |
 | Demotion     | `POST /me/demote` (authenticated)  | Voluntarily drops one level, no XP requirement. Unavailable at `CP`. Returns updated profile. |
+| Deletion     | `DELETE /me` (authenticated)       | GDPR erasure of every game datum + the fastauth account. 204, 502 if fastauth failed.         |
 
-Every call is defined in a `services/` module (`gameConfig.ts`, `profile.ts`), validated with a zod schema, and consumed via a TanStack Query hook (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer`, `useDemotePlayer` in `src/hooks/`). `/me/...` calls go through `client.authorizedFetch()` (automatic token refresh) passed as the fetcher to the service function.
+Every call is defined in a `services/` module (`gameConfig.ts`, `profile.ts`), validated with a zod schema, and consumed via a TanStack Query hook (`useGameConfig`, `usePlayerProfile`, `usePromotePlayer`, `useDemotePlayer`, `useDeleteAccount` in `src/hooks/`). `/me/...` calls go through `client.authorizedFetch()` (automatic token refresh) passed as the fetcher to the service function.
 
 ## Grade and level system
 
@@ -80,6 +81,10 @@ Each grade requires `experience_per_grade` XP. The XP bar is visually segmented 
 **Promotion** changes the school level (not the grade). It is available when `can_promote === true`, meaning the player has reached the DIAMOND grade at their current level.
 
 **Demotion** (`POST /me/demote`) lets a player voluntarily drop back one school level, e.g. because they find the current level's calculations too hard. Unlike promotion it has no XP requirement — it only depends on the current level, and is available whenever `level !== config.levels[0]` (`'CP'`, the floor level). The backend does not expose a `can_demote` field; the front computes it client-side from `GameConfig.levels`. After a successful demote, XP is set to the level's max (`promotion_threshold`), so `can_promote` becomes `true` immediately — but re-promoting from there resets XP to 0 on the level just demoted from, exactly like any other promotion.
+
+## Account deletion (danger zone)
+
+Last block of `ProfilePage`: `DangerZone` (red card) → opens `DeleteAccountModal` (`src/components/DeleteAccountModal.tsx`). The modal lists what gets erased, states that recovery is impossible, and enables the red "Supprimer définitivement" button only when the typed text equals `profile.username` exactly (case-sensitive, no trim). While pending, the modal cannot be closed. On success `useDeleteAccount` calls `clearSession()` (no fastauth logout: the user no longer exists) and `queryClient.clear()`, then the page navigates to `/` (`replace`). On error the modal stays open with a message; closing it resets the mutation.
 
 ## Internal components of ProfilePage
 
@@ -94,4 +99,5 @@ Each grade requires `experience_per_grade` XP. The XP bar is visually segmented 
 
 - New stat → add to `PlayerProfile` (types.ts), its zod schema (`services/gameSchemas.ts` or `services/profile.ts`) and in `ProfilePage` rendering
 - New badge / rank → add to the label/style `Record<Grade, string>` maps in `src/lib/grades.ts`
+- Destructive action → confirmation modal with an explicit typed confirmation, like `DeleteAccountModal`
 - New profile action → add a service function in `services/profile.ts` and a `useMutation` hook in `src/hooks/usePlayerProfile.ts`

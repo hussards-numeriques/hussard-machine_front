@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import type { GameHistoryEntry } from '../types';
 import { ApiError } from '../services/http';
 import { useGameConfig } from '../hooks/useGameConfig';
-import { usePlayerProfile, usePromotePlayer, useDemotePlayer } from '../hooks/usePlayerProfile';
+import {
+  usePlayerProfile,
+  usePromotePlayer,
+  useDemotePlayer,
+  useDeleteAccount,
+} from '../hooks/usePlayerProfile';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { formatLongDate } from '../lib/date';
 import { AnswerDots } from '../components/AnswerDots';
@@ -15,6 +20,7 @@ import {
 } from '../components/LevelChangeConfirmModal';
 import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../lib/grades';
 import { SegmentedXpBar } from '../components/grade/SegmentedXpBar';
+import { DeleteAccountModal } from '../components/DeleteAccountModal';
 
 const RANK_MEDALS = ['🥇', '🥈', '🥉'];
 
@@ -158,6 +164,28 @@ const ProfileNotice: React.FC<{ message: string }> = ({ message }) => (
   </div>
 );
 
+const DangerZone: React.FC<{ onDeleteRequest: () => void }> = ({ onDeleteRequest }) => (
+  <section className="rounded-3xl border-2 border-rose-200 bg-rose-50 p-6 space-y-3">
+    <h2 className="text-xl font-black text-rose-600">Zone de danger</h2>
+    <p className="text-sm text-slate-600">
+      La suppression de ton compte efface définitivement toutes tes données. Aucune récupération ne
+      sera possible.
+    </p>
+    <button
+      type="button"
+      onClick={onDeleteRequest}
+      className="w-full py-3 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-black text-base transition-colors shadow"
+    >
+      Supprimer mon compte
+    </button>
+  </section>
+);
+
+const deletionErrorMessage = (error: unknown): string =>
+  error instanceof ApiError
+    ? 'La suppression a échoué. Réessaie dans quelques instants.'
+    : 'Erreur réseau.';
+
 const profileErrorMessage = (error: unknown): string => {
   if (error instanceof ApiError && error.status === 404) {
     return 'Compte introuvable. Rejoins une partie pour créer ton profil !';
@@ -177,6 +205,9 @@ export const ProfilePage: React.FC = () => {
   const demotion = useDemotePlayer();
   const [expandedEntries, setExpandedEntries] = useState<Set<string>>(new Set());
   const [pendingLevelChange, setPendingLevelChange] = useState<LevelChangeVariant | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const accountDeletion = useDeleteAccount();
+  const navigate = useNavigate();
 
   const profile = profileQuery.data;
   const promoting = promotion.isPending;
@@ -198,6 +229,17 @@ export const ProfilePage: React.FC = () => {
 
   const handleDemote = () => {
     demotion.mutate();
+  };
+
+  const handleDeleteAccount = () => {
+    accountDeletion.mutate(undefined, {
+      onSuccess: () => navigate('/', { replace: true }),
+    });
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    accountDeletion.reset();
   };
 
   const toggleEntry = (id: string) => {
@@ -341,7 +383,7 @@ export const ProfilePage: React.FC = () => {
         )}
       </div>
 
-      <div className="text-center pb-8 space-y-1">
+      <div className="text-center space-y-1">
         <Link
           to="/progression"
           className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
@@ -355,6 +397,22 @@ export const ProfilePage: React.FC = () => {
           Icônes →
         </Link>
       </div>
+
+      <div className="pb-8">
+        <DangerZone onDeleteRequest={() => setIsDeleteModalOpen(true)} />
+      </div>
+
+      {isDeleteModalOpen && (
+        <DeleteAccountModal
+          username={profile.username}
+          isDeleting={accountDeletion.isPending}
+          errorMessage={
+            accountDeletion.isError ? deletionErrorMessage(accountDeletion.error) : null
+          }
+          onConfirm={handleDeleteAccount}
+          onCancel={closeDeleteModal}
+        />
+      )}
 
       {pendingLevelChange != null && (
         <LevelChangeConfirmModal

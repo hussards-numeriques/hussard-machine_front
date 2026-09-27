@@ -9,6 +9,7 @@ export interface AuthContextValue {
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => Promise<void>;
+  clearSession: () => void;
   reloadUser: () => Promise<void>;
 }
 
