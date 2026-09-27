@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import posthog from 'posthog-js';
 import {
   AuthClient,
   AuthError,
@@ -55,27 +56,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (payload: LoginPayload) => {
     await client.login(payload);
     const me = await client.fetchMe();
+    posthog.identify(me.id);
     setUser(me);
   };
 
   const register = async (payload: RegisterPayload) => {
     await client.register(payload);
     const me = await client.fetchMe();
+    posthog.identify(me.id);
+    posthog.capture('signup');
     setUser(me);
   };
 
   const logout = async () => {
     await client.logout();
+    posthog.reset();
     setUser(null);
   };
 
   const clearSession = () => {
     client.clearTokens();
+    posthog.reset();
     setUser(null);
   };
 
   const reloadUser = async () => {
     const me = await client.fetchMe();
+    posthog.identify(me.id);
     setUser(me);
   };
 

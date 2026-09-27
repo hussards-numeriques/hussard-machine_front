@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import posthog from 'posthog-js';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 
@@ -14,6 +15,12 @@ export const SubscriptionSuccessPage: React.FC = () => {
   const status = statusQuery.data;
   const confirmed = status?.active === true;
   const { refetch, isLoading: statusLoading } = statusQuery;
+
+  useEffect(() => {
+    if (confirmed) {
+      posthog.capture('subscription_completed');
+    }
+  }, [confirmed]);
 
   useEffect(() => {
     if (

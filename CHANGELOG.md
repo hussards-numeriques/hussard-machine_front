@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Observability: Sentry (`@sentry/react`, errors only, no tracing/replay) initialised in `src/main.tsx` when `VITE_SENTRY_DSN` is set.
+- Product analytics: PostHog (`posthog-js`, EU host by default, `person_profiles: 'identified_only'`) initialised in `src/main.tsx` when `VITE_POSTHOG_KEY` is set (`VITE_POSTHOG_HOST` optional). Events: `signup`, `game_started` / `game_finished` (`GameProvider`, with mode/level/players, score/rank), `subscription_started` (checkout click), `subscription_completed` (success page, once active), `streak_maintained` (`played_today` false → true; the streak is now refreshed at game end). `identify` on login/register/OAuth, `reset` on logout.
+
 ## [0.20.0] - 2026-09-27
 
 ### Added

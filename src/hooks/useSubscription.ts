@@ -1,3 +1,4 @@
+import posthog from 'posthog-js';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
 import { subscriptionRepository } from '../services/subscription';
@@ -33,6 +34,9 @@ export const useStartCheckout = () => {
         (input, init) => client.authorizedFetch(input, init),
         plan
       ),
+    onMutate: (plan) => {
+      posthog.capture('subscription_started', { plan });
+    },
     onSuccess: (checkoutUrl) => {
       window.location.assign(checkoutUrl);
     },
