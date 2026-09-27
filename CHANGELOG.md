@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Parental gate before payment: clicking the purchase button on `/subscription` now opens a "Demande à un adulte" modal (`components/subscription/ParentalGate.tsx`) asking a simple general-knowledge question with a numeric answer, drawn from 10 questions in `lib/parentalGate.ts`. A wrong answer swaps to another question; only a correct one calls `startCheckout.mutate(plan)`. No math questions on purpose — the players train at mental math.
+
 ## [0.19.0] - 2026-09-27
 
 ### Added
