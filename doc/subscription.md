@@ -50,6 +50,15 @@ dédoublonne déjà sur la clé `['subscription-status']`.
   La carte d'achat (`SubscriptionCard`) n'active le bouton d'achat qu'une
   fois une case de consentement cochée (acceptation des CGV + renonciation
   au délai de rétractation de 14 jours).
+  Le clic sur le bouton d'achat ne lance pas le paiement directement : il
+  ouvre un **parental gate** (`components/subscription/ParentalGate.tsx`),
+  une modale « Demande à un adulte » avec une question de culture générale
+  à réponse numérique tirée de `lib/parentalGate.ts` (10 questions, saisie
+  tolérante aux espaces). Mauvaise réponse → une autre question ; bonne
+  réponse → `startCheckout.mutate(plan)`. Jamais de question de calcul : les
+  joueurs s'entraînent justement au calcul mental. Les questions sont
+  volontairement faciles (le but est de freiner l'achat impulsif d'un enfant,
+  pas de bloquer les parents).
 - `/subscription/success` (`SubscriptionSuccessPage.tsx`) : re-fetch le statut,
   poll toutes les 1.5s jusqu'à 6 tentatives (`POLL_INTERVAL_MS`,
   `MAX_POLL_ATTEMPTS`) si pas encore actif, puis message d'attente prolongée.
@@ -68,7 +77,7 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 
 ## Tests
 
-`src/lib/money.spec.ts`, `src/lib/date.spec.ts`,
+`src/lib/money.spec.ts`, `src/lib/date.spec.ts`, `src/lib/parentalGate.spec.ts`,
 `src/services/subscription/HttpSubscriptionAdapter.spec.ts`,
 `src/hooks/useSubscription.spec.tsx`, une spec par page/composant ci-dessus.
 

@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SubscriptionPage } from './SubscriptionPage';
 import type { SubscriptionPlan, SubscriptionStatus } from '../services/subscription';
+import { PARENTAL_GATE_QUESTIONS, type ParentalGateQuestion } from '../lib/parentalGate';
 
 const plans: SubscriptionPlan[] = [
   { key: 'ONE_MONTH', label: '1 mois', amount: 442, currency: 'eur' },
@@ -51,6 +52,14 @@ const renderPage = () =>
     </MemoryRouter>
   );
 
+const displayedGateQuestion = (): ParentalGateQuestion => {
+  const question = PARENTAL_GATE_QUESTIONS.find((q) => screen.queryByText(q.prompt));
+  if (!question) {
+    throw new Error('No parental gate question displayed');
+  }
+  return question;
+};
+
 describe('SubscriptionPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -96,7 +105,7 @@ describe('SubscriptionPage', () => {
     expect(screen.queryByText(/Actif jusqu'au/)).not.toBeInTheDocument();
   });
 
-  it('starts checkout with the selected plan key when the CTA is clicked', () => {
+  it('asks an adult to pass the parental gate before starting checkout', () => {
     mocks.isAuthenticated = true;
     mocks.plans = plans;
     mocks.status = { active: false, expires_at: null };
@@ -105,7 +114,28 @@ describe('SubscriptionPage', () => {
     fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(screen.getByText('Soutenir 3 mois'));
 
+    expect(mocks.mutate).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByRole('textbox'), {
+      target: { value: String(displayedGateQuestion().answer) },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Valider' }));
+
     expect(mocks.mutate).toHaveBeenCalledWith('THREE_MONTHS');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('closes the parental gate without paying when cancelled', () => {
+    mocks.isAuthenticated = true;
+    mocks.plans = plans;
+    mocks.status = { active: false, expires_at: null };
+    renderPage();
+
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByText('Soutenir 3 mois'));
+    fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(mocks.mutate).not.toHaveBeenCalled();
   });
 
   it('shows an error message when checkout fails to start', () => {

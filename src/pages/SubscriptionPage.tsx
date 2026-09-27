@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import {
@@ -7,6 +7,8 @@ import {
   useSubscriptionStatus,
 } from '../hooks/useSubscription';
 import { SubscriptionCard } from '../components/subscription/SubscriptionCard';
+import { ParentalGate } from '../components/subscription/ParentalGate';
+import type { SubscriptionPlanKey } from '../services/subscription';
 import { Mascot } from '../components/Mascot';
 
 const SubscriptionNotice: React.FC<{ message: string }> = ({ message }) => (
@@ -26,6 +28,7 @@ export const SubscriptionPage: React.FC = () => {
   const plansQuery = useSubscriptionPlans();
   const statusQuery = useSubscriptionStatus();
   const startCheckout = useStartCheckout();
+  const [planAwaitingAdult, setPlanAwaitingAdult] = useState<SubscriptionPlanKey | null>(null);
 
   if (authLoading || (isAuthenticated && statusQuery.isLoading) || plansQuery.isLoading) {
     return (
@@ -59,9 +62,19 @@ export const SubscriptionPage: React.FC = () => {
       <SubscriptionCard
         plans={plansQuery.data}
         status={statusQuery.data}
-        onPurchase={startCheckout.mutate}
+        onPurchase={setPlanAwaitingAdult}
         isPurchasePending={startCheckout.isPending}
       />
+
+      {planAwaitingAdult && (
+        <ParentalGate
+          onPass={() => {
+            startCheckout.mutate(planAwaitingAdult);
+            setPlanAwaitingAdult(null);
+          }}
+          onCancel={() => setPlanAwaitingAdult(null)}
+        />
+      )}
 
       {startCheckout.isError && (
         <p className="text-sm font-bold text-rose-600">
