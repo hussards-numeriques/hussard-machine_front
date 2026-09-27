@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Account deletion (GDPR): a "Zone de danger" at the bottom of the profile page opens a confirmation modal that lists the erased data, warns that recovery is impossible, and only enables the red "Supprimer définitivement" button once the exact username is typed. Calls `DELETE /me` (`services/profile.ts:deleteAccount`, `useDeleteAccount`), then clears the local session (`AuthContext.clearSession`) and the query cache, and redirects to `/`. Requires back ≥ 0.18.0 and fastauth ≥ 0.7.0.
+
 ## [0.18.0] - 2026-09-26
 
 ### Changed
