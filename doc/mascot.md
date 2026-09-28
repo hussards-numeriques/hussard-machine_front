@@ -16,13 +16,14 @@ Props : `pose?` (défaut `joyeux`), `size?` (px, défaut 256), `className?`, `ti
 
 ## Poses
 
-| `pose`      | Usage                                                   |
-| ----------- | ------------------------------------------------------- |
-| `joyeux`    | Icône de l'app, accueil, célébrations                   |
-| `determine` | Compétition, départ de partie                           |
-| `clindoeil` | Astuces, onboarding                                     |
-| `champion`  | Podium, victoire                                        |
-| `tete`      | Favicon, avatar, logo compact (le plus lisible en mini) |
+| `pose`      | Usage                                                     |
+| ----------- | --------------------------------------------------------- |
+| `joyeux`    | Icône de l'app, accueil, célébrations                     |
+| `determine` | Compétition, départ de partie                             |
+| `clindoeil` | Astuces, onboarding                                       |
+| `champion`  | Podium, victoire                                          |
+| `tete`      | Favicon, avatar, logo compact (le plus lisible en mini)   |
+| `sixseven`  | Easter egg en partie : bonne réponse = 67 (mains animées) |
 
 ## Charte (tokens = `tailwind.config.js`)
 

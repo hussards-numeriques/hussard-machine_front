@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type MascotPose = 'joyeux' | 'determine' | 'clindoeil' | 'champion' | 'tete';
+export type MascotPose = 'joyeux' | 'determine' | 'clindoeil' | 'champion' | 'tete' | 'sixseven';
 
 export const SpeedLines: React.FC = () => (
   <g stroke="#fbbf24" strokeWidth="7" strokeLinecap="round" opacity="0.9">
@@ -225,6 +225,53 @@ const Tete: React.FC = () => (
   </>
 );
 
+const WeighingArm: React.FC<{ path: string; handX: number; className: string }> = ({
+  path,
+  handX,
+  className,
+}) => (
+  <g className={className}>
+    <path d={path} stroke="#312e81" strokeWidth="12" strokeLinecap="round" fill="none" />
+    <ellipse cx={handX} cy="96" rx="13" ry="6" fill="#fff" />
+  </g>
+);
+
+const SixSeven: React.FC = () => (
+  <>
+    <IconBackground />
+    <g stroke="#312e81" strokeWidth="14" strokeLinecap="round">
+      <path d="M114 158 L110 190" />
+      <path d="M150 158 L154 190" />
+    </g>
+    <ellipse cx="106" cy="196" rx="17" ry="10" fill="#fbbf24" />
+    <ellipse cx="158" cy="196" rx="17" ry="10" fill="#fbbf24" />
+    <WeighingArm path="M92 122 L62 126 L56 104" handX={54} className="motion-safe:animate-weigh" />
+    <WeighingArm
+      path="M172 122 L202 126 L208 104"
+      handX={210}
+      className="motion-safe:animate-weigh [animation-delay:-0.35s]"
+    />
+    <rect x="86" y="54" width="92" height="112" rx="24" fill="#fff" />
+    <RunnerScreen />
+    <g fill="#fff" fontSize="24" fontWeight="900" fontFamily="sans-serif" textAnchor="middle">
+      <text x="118" y="96">
+        6
+      </text>
+      <text x="148" y="96">
+        7
+      </text>
+    </g>
+    <path
+      d="M123 102 Q133 108 143 102"
+      stroke="#fbbf24"
+      strokeWidth="3.5"
+      fill="none"
+      strokeLinecap="round"
+    />
+    <RunnerButtons />
+  </>
+);
+
 const Sparkle: React.FC = () => (
   <path d="M196 56 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 z" fill="#fbbf24" />
 );
@@ -255,6 +302,7 @@ export const POSE_CONTENT: Record<MascotPose, React.ReactNode> = {
   ),
   champion: <Champion />,
   tete: <Tete />,
+  sixseven: <SixSeven />,
 };
 
 const ShinyIconBackground: React.FC = () => (
@@ -348,4 +396,5 @@ export const SHINY_POSE_CONTENT: Record<MascotPose, React.ReactNode> = {
   clindoeil: POSE_CONTENT.clindoeil,
   champion: POSE_CONTENT.champion,
   tete: POSE_CONTENT.tete,
+  sixseven: POSE_CONTENT.sixseven,
 };

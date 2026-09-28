@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { answerResultFor, findPlayerAnswer } from './playerAnswer';
+import { answerResultFor, findPlayerAnswer, isSixSeven } from './playerAnswer';
 import type { Game } from '../types';
 import { GameState } from '../types';
 
@@ -92,5 +92,28 @@ describe('answerResultFor', () => {
         points_earned: 0,
       })
     ).toBe('incorrect');
+  });
+});
+
+describe('isSixSeven', () => {
+  const answer = {
+    player_id: 'p1',
+    question_id: 'q1',
+    value: 67,
+    timestamp: 1,
+    is_correct: true,
+    points_earned: 10,
+  };
+
+  it('is true for a correct 67', () => {
+    expect(isSixSeven(answer)).toBe(true);
+  });
+
+  it('is false for a wrong 67', () => {
+    expect(isSixSeven({ ...answer, is_correct: false })).toBe(false);
+  });
+
+  it('is false for another correct value', () => {
+    expect(isSixSeven({ ...answer, value: 76 })).toBe(false);
   });
 });

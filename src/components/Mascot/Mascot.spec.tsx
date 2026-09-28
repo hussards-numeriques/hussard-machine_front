@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { Mascot } from './index';
 import type { MascotPose } from './index';
 
-const POSES: MascotPose[] = ['joyeux', 'determine', 'clindoeil', 'champion', 'tete'];
+const POSES: MascotPose[] = ['joyeux', 'determine', 'clindoeil', 'champion', 'tete', 'sixseven'];
 
 describe('Mascot', () => {
   it.each(POSES)('renders the %s pose as an svg with a data-pose marker', (pose) => {

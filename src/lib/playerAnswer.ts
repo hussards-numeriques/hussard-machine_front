@@ -15,3 +15,5 @@ export const answerResultFor = (answer: Answer | null): AnswerResult => {
   if (!answer) return 'timeout';
   return answer.is_correct ? 'correct' : 'incorrect';
 };
+
+export const isSixSeven = (answer: Answer): boolean => answer.is_correct && answer.value === 67;

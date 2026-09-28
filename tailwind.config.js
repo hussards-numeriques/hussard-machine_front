@@ -27,9 +27,14 @@ export default {
         'particle-rise': 'particle-rise 1.8s linear infinite',
         'gold-shimmer': 'gold-shimmer 2.5s ease-in-out infinite',
         'quest-pulse': 'quest-pulse 1s ease-in-out infinite',
+        weigh: 'weigh 0.7s ease-in-out infinite',
         'countdown-pop': 'countdown-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       keyframes: {
+        weigh: {
+          '0%, 100%': { transform: 'translateY(8px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
         'pop-in': {
           '0%': { transform: 'scale(0.6)', opacity: '0' },
           '60%': { transform: 'scale(1.1)', opacity: '1' },

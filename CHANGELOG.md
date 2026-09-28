@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- "Six seven" easter egg: a correct answer of 67 shows Rushy in a new `sixseven` pose (screen reads "6 7", palms-up hands alternately weighing, `motion-safe` only).
+
 ## [0.23.0] - 2026-09-28
 
 ### Changed

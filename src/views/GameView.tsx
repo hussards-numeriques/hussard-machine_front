@@ -5,7 +5,8 @@ import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
 import { resolveCategoryLabel } from '../services/questionCategoryLabels';
 import { AnswerInput } from '../components/AnswerInput';
 import { computeFeedback } from '../lib/feedback';
-import { findPlayerAnswer } from '../lib/playerAnswer';
+import { findPlayerAnswer, isSixSeven } from '../lib/playerAnswer';
+import { Mascot } from '../components/Mascot';
 import { CorrectionCard } from '../components/GameFeedback/CorrectionCard';
 import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop';
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
@@ -158,6 +159,9 @@ const QuestionCard: React.FC<{
 
       {myAnswer ? (
         <div className="space-y-2">
+          {isSixSeven(myAnswer) && (
+            <Mascot pose="sixseven" size={96} title="Six seven !" className="mx-auto" />
+          )}
           <AnswerFeedbackPop
             key={question.id}
             isCorrect={myAnswer.is_correct}
