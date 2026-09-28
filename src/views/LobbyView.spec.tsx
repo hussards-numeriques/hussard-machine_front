@@ -1,8 +1,22 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { LobbyView } from './LobbyView';
 import type { Game } from '../types';
 import type { GameClient } from '../services/GameClient';
+import { digitRecognitionPort } from '../services/digit-recognition';
+
+vi.mock('../services/digit-recognition', () => ({
+  digitRecognitionPort: { recognizeNumber: vi.fn(), preload: vi.fn().mockResolvedValue(undefined) },
+}));
+
+const stubCoarsePointer = (matches: boolean) =>
+  vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches }));
+
+beforeEach(() => {
+  localStorage.clear();
+  vi.mocked(digitRecognitionPort.preload).mockClear();
+  stubCoarsePointer(false);
+});
 
 describe('LobbyView - disconnected players', () => {
   const baseGame: Game = {
@@ -452,5 +466,32 @@ describe('LobbyView - launch countdown', () => {
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.getByText('Je ne suis plus prêt')).toBeEnabled();
+  });
+});
+
+describe('LobbyView - handwriting model preload', () => {
+  const game: Game = {
+    id: 'ABCD',
+    state: 'WAITING',
+    players: [],
+    questions: [],
+    current_question_index: -1,
+    answers: [],
+    start_time_current_question: null,
+    host_player_id: null,
+    max_players: 6,
+    level: 'CP',
+  };
+  const client = { setLaunchCountdownCallback: vi.fn() } as unknown as GameClient;
+
+  it('preloads the recognition model when auto resolves to handwriting on touch', () => {
+    stubCoarsePointer(true);
+    render(<LobbyView client={client} game={game} currentPlayerId={null} onLeave={vi.fn()} />);
+    expect(digitRecognitionPort.preload).toHaveBeenCalled();
+  });
+
+  it('does not preload the model on desktop', () => {
+    render(<LobbyView client={client} game={game} currentPlayerId={null} onLeave={vi.fn()} />);
+    expect(digitRecognitionPort.preload).not.toHaveBeenCalled();
   });
 });

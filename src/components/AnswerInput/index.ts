@@ -1,13 +1,10 @@
 import React from 'react';
-import { useAnswerInputMode } from '../../hooks/useAnswerInputMode';
+import { useResolvedAnswerInputMode } from '../../hooks/useAnswerInputMode';
 import { ANSWER_INPUT_COMPONENTS } from './adapter';
-import { resolveAnswerInputMode } from './mode';
 import type { AnswerInputProps } from './port';
 
 export const AnswerInput: React.FC<AnswerInputProps> = (props) => {
-  const [mode] = useAnswerInputMode();
-  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-  const Component = ANSWER_INPUT_COMPONENTS[resolveAnswerInputMode(mode, isCoarsePointer)];
+  const Component = ANSWER_INPUT_COMPONENTS[useResolvedAnswerInputMode()];
   return React.createElement(Component, props);
 };
 

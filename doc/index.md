@@ -31,7 +31,7 @@ The three views rendered during a game: `LobbyView` (waiting lobby), `GameView` 
 
 ### [answer-input.md](answer-input.md)
 
-The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (desktop) vs `HandwritingInput` (touch). Full details of the handwritten digit recognition pipeline (digit-by-digit input, client-side ONNX MNIST via onnxruntime-web).
+The `AnswerInput` component and its port/adapter pattern: `KeyboardInput` (desktop) vs `HandwritingInput` (touch, default) vs `KeypadInput`. Full details of the handwritten digit recognition pipeline (whole-number input, client-side ONNX CRNN via onnxruntime-web, model preloaded in the lobby).
 → Read when: modifying answer input, adding an input mode, touching handwriting recognition.
 
 ### [auth.md](auth.md)

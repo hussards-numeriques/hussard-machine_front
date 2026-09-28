@@ -106,9 +106,9 @@ calc-rush_front/
 │   │   ├── questionCategoryLabels.ts # Resolves question category labels
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
-│   │       ├── index.ts              # Exports the singleton instance (OnnxMnistAdapter)
-│   │       ├── OnnxMnistAdapter.ts   # onnxruntime-web MNIST implementation
-│   │       ├── preprocessing.ts      # Pure canvas-pixels → 28×28 tensor helpers
+│   │       ├── index.ts              # Exports the singleton instance (OnnxCrnnAdapter)
+│   │       ├── OnnxCrnnAdapter.ts    # onnxruntime-web CRNN implementation + CTC decoding
+│   │       ├── preprocessing.ts      # Pure canvas-pixels → 32×128 tensor helpers
 │   │       └── preprocessing.spec.ts
 │   │
 │   ├── hooks/

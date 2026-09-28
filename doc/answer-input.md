@@ -2,7 +2,7 @@
 
 The `AnswerInput` component allows the player to submit their numeric answer. It supports
 four **modes** — `keyboard`, `handwriting`, `keypad`, and an `auto` mode that adapts to the
-device type (keypad on touch, keyboard otherwise). The player can override the mode
+device type (handwriting on touch, keyboard otherwise). The player can override the mode
 per-device from the `/settings` page; the choice is persisted in `localStorage`.
 
 ## Port / adapter pattern
@@ -45,7 +45,7 @@ const resolveAnswerInputMode = (
   mode: AnswerInputMode,
   isCoarsePointer: boolean
 ): ResolvedAnswerInputMode => {
-  if (mode === 'auto') return isCoarsePointer ? 'keypad' : 'keyboard';
+  if (mode === 'auto') return isCoarsePointer ? 'handwriting' : 'keyboard';
   return mode;
 };
 ```
@@ -114,12 +114,12 @@ const [mode, setMode] = useAnswerInputMode();
 
 ### The four modes
 
-| Mode          | Behavior                                                                   |
-| ------------- | -------------------------------------------------------------------------- |
-| `auto`        | Adaptive (default): keypad on a coarse pointer (touch), keyboard otherwise |
-| `keyboard`    | Always `KeyboardInput`                                                     |
-| `handwriting` | Always `HandwritingInput`                                                  |
-| `keypad`      | Always `KeypadInput`                                                       |
+| Mode          | Behavior                                                                        |
+| ------------- | ------------------------------------------------------------------------------- |
+| `auto`        | Adaptive (default): handwriting on a coarse pointer (touch), keyboard otherwise |
+| `keyboard`    | Always `KeyboardInput`                                                          |
+| `handwriting` | Always `HandwritingInput`                                                       |
+| `keypad`      | Always `KeypadInput`                                                            |
 
 ### SettingsPage (src/pages/SettingsPage.tsx)
 
@@ -140,24 +140,24 @@ Numeric text field with a "Submit" button. Submission via Enter or click.
 
 ## HandwritingInput (src/components/AnswerInput/HandwritingInput.tsx)
 
-Draw canvas with handwritten digit recognition, **one digit at a time**. The player
-writes a single digit; it is recognized and appended to the running answer, then the
-canvas clears for the next digit. This avoids the unsolved problem of segmenting
-touching/overlapping multi-digit handwriting.
+Draw canvas with handwritten number recognition. The player writes the **whole number**
+(one or several digits) on the canvas; a CRNN model reads the full sequence at once.
 
 ### Pointer interactions
 
-Uses `PointerEvent` events (compatible with stylus, finger, mouse):
+Uses `PointerEvent` events (compatible with stylus, finger, mouse). The canvas backing
+store is fixed (400×200) while its displayed size follows the layout, so `point()` scales
+client coordinates to the backing store.
 
 - `onPointerDown` → stroke start, captures the pointer, cancels any pending recognition
 - `onPointerMove` → real-time drawing
 - `onPointerUp` / `onPointerCancel` → (re)arms a debounce timer (`RECOGNIZE_DELAY_MS`,
-  700 ms) so multi-stroke digits (4, 5, 7) are completed before recognition fires
+  700 ms) so multi-stroke digits and multi-digit numbers are completed before recognition fires
 
 ### Local state
 
 ```typescript
-digits: string; // accumulated answer digits
+recognized: number | null; // last number read from the canvas
 isNegative: boolean; // sign toggled via the ± button
 isRecognizing: boolean; // true during an ONNX inference
 error: string | null; // error message if recognition fails
@@ -165,17 +165,16 @@ error: string | null; // error message if recognition fails
 
 ### Flow
 
-1. On debounce expiry → `digitRecognitionPort.recognizeDigit(canvas)`
+1. On debounce expiry → `digitRecognitionPort.recognizeNumber(canvas)` on the whole canvas
 2. If `null` → displays "Impossible de lire, réessaie", keeps the drawing
-3. If a digit → appends to `digits` and clears the canvas
+3. If a number → stored in `recognized` and shown above the canvas; the drawing stays, so
+   the player can keep writing (recognition re-runs on the whole canvas)
 
 ### Controls
 
 - **±** — toggles the sign
-- **⌫** — removes the last digit (use repeatedly to clear the whole answer)
-- **Valider** — parses `digits` with the sign and calls `onSubmit(value)` (disabled when empty)
-
-All three controls sit on a single row (no dedicated "clear all" button).
+- **Effacer** — clears the canvas, the recognized number and the error
+- **Valider** — calls `onSubmit(±recognized)` (disabled while recognizing or when nothing is recognized)
 
 ---
 
@@ -216,9 +215,9 @@ Like `HandwritingInput`, it resets its local state (`digits`, `isNegative`) when
 ```
 digit-recognition/
 ├── port.ts               ← DigitRecognitionPort interface
-├── index.ts              ← exports the OnnxMnistAdapter singleton instance
-├── OnnxMnistAdapter.ts   ← onnxruntime-web implementation
-└── preprocessing.ts      ← pure canvas-pixels → 28×28 tensor helpers
+├── index.ts              ← exports the OnnxCrnnAdapter singleton instance
+├── OnnxCrnnAdapter.ts    ← onnxruntime-web implementation + CTC decoding
+└── preprocessing.ts      ← pure canvas-pixels → 32×128 tensor helpers
 ```
 
 ### Interface
@@ -226,30 +225,40 @@ digit-recognition/
 ```typescript
 // port.ts
 interface DigitRecognitionPort {
-  recognizeDigit(canvas: HTMLCanvasElement): Promise<number | null>; // 0-9 or null
+  preload(): Promise<void>; // loads the model ahead of time (idempotent)
+  recognizeNumber(canvas: HTMLCanvasElement): Promise<number | null>; // whole number or null
 }
 ```
 
-### OnnxMnistAdapter
+### OnnxCrnnAdapter
 
-Runs **client-side** with `onnxruntime-web`. The MNIST model is bundled in the app
-(`public/models/mnist-12.onnx`, ONNX Model Zoo, ~26 KB) and loaded via a relative URL —
-no external dependency, works offline. The session is lazily created on the first call
-and cached (`loadPromise`). Input tensor `Input3` `[1,1,28,28]`, output `Plus214_Output_0` `[1,10]`.
+Runs **client-side** with `onnxruntime-web`. The CRNN model is bundled in the app
+(`public/models/crnn-digits.onnx`, ~7 MB) and loaded via a relative URL — no external
+dependency, works offline. Input tensor `input` `[1,1,32,128]`, output `logits` `[T,1,11]`
+(10 digits + CTC blank).
 
-Recognition pipeline (single digit):
+The session is created by `preload()` and cached (`loadPromise`; reset on failure so a
+later call retries). `recognizeNumber` awaits `preload()`, so without preloading the first
+recognition pays for the whole download (~2 s on mobile). To avoid that, `LobbyView` calls
+`preload()` when `useResolvedAnswerInputMode()` is `handwriting` — the model is ready
+before the first question.
+
+Recognition pipeline:
 
 1. Read canvas pixels (`getImageData`)
-2. `toMnistInput()` → find the ink bounding box, scale it into a 20×20 box centered in
-   28×28 (MNIST convention), produce a `Float32Array` (bright ink on dark background)
-3. Run the ONNX session → logits → `argMax` → digit 0-9 (empty canvas → `null`)
+2. `toCrnnInput()` → ink map (0-1, ink high), crop to the ink bounding box, resize to a
+   height of 32 keeping the aspect ratio, center horizontally in 32×128 (empty canvas → `null`)
+3. Run the ONNX session → `decodeCtc()` (greedy CTC: argmax per timestep, merge repeats,
+   drop blanks) → parsed number, or `null` if no digit
 
 ### Preprocessing (preprocessing.ts)
 
-Pure, framework-free functions (unit-tested without a real canvas):
+Pure, framework-free functions (unit-tested without a real canvas). `preprocessInkHigh`
+is an exact mirror of the Python `preprocess_ink` used at training time — keep them in sync.
 
 - `findInkBox(data, width, height)` → tight bounding box of non-white pixels, or `null`
-- `toMnistInput(data, width, height)` → centered 28×28 `Float32Array`, or `null`
+- `preprocessInkHigh(ink, width, height)` → 32×128 `Float32Array`
+- `toCrnnInput(data, width, height)` → 32×128 `Float32Array`, or `null` when there is no ink
 
 The onnxruntime-web `.wasm` is emitted as a hashed Vite asset (`optimizeDeps.exclude`),
 served from the app itself.

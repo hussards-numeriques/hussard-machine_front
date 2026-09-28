@@ -39,7 +39,7 @@ export class OnnxCrnnAdapter implements DigitRecognitionPort {
   private session: Session | null = null;
   private loadPromise: Promise<void> | null = null;
 
-  private async ensureLoaded(): Promise<void> {
+  async preload(): Promise<void> {
     if (this.session) return;
     this.loadPromise ??= (async () => {
       this.ort = await import('onnxruntime-web');
@@ -58,7 +58,7 @@ export class OnnxCrnnAdapter implements DigitRecognitionPort {
     const input = toCrnnInput(data, canvas.width, canvas.height);
     if (!input) return null;
 
-    await this.ensureLoaded();
+    await this.preload();
     const ort = this.ort!;
     const tensor = new ort.Tensor('float32', input, [1, 1, CRNN_HEIGHT, CRNN_WIDTH]);
     const results = await this.session!.run({ [INPUT_NAME]: tensor });

@@ -7,6 +7,8 @@ import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
 import { LaunchCountdownOverlay } from '../components/LaunchCountdownOverlay';
 import { cn } from '../lib/utils';
+import { useResolvedAnswerInputMode } from '../hooks/useAnswerInputMode';
+import { digitRecognitionPort } from '../services/digit-recognition';
 
 interface LobbyViewProps {
   client: GameClient;
@@ -32,6 +34,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
   const isFull = game.players.length >= game.max_players;
   const isLaunching = game.state === 'COUNTDOWN';
   const [launchSeconds, setLaunchSeconds] = useState<number | null>(null);
+  const inputMode = useResolvedAnswerInputMode();
+
+  useEffect(() => {
+    if (inputMode === 'handwriting') digitRecognitionPort.preload().catch(() => {});
+  }, [inputMode]);
 
   useEffect(() => {
     client.setLaunchCountdownCallback(setLaunchSeconds);

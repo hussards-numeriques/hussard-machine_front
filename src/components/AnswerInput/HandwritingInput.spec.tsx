@@ -3,7 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { HandwritingInput } from './HandwritingInput';
 
 vi.mock('../../services/digit-recognition', () => ({
-  digitRecognitionPort: { recognizeNumber: vi.fn() },
+  digitRecognitionPort: { recognizeNumber: vi.fn(), preload: vi.fn() },
 }));
 
 import { digitRecognitionPort } from '../../services/digit-recognition';

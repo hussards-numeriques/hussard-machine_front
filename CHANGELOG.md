@@ -1,5 +1,16 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- The `auto` answer input mode now resolves to handwriting (instead of the keypad) on touch devices; desktop keeps the keyboard.
+
+### Fixed
+
+- Handwriting: the recognition model is preloaded in the lobby, removing the ~2 s wait before the first answer could be recognized.
+- Docs: `answer-input.md` / `architecture.md` described the old digit-by-digit MNIST recognizer; they now document the whole-number CRNN adapter (`OnnxCrnnAdapter`, `recognizeNumber`, `preload`).
+
 ## [0.22.0] - 2026-09-28
 
 ### Added

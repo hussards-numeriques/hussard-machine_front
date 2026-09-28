@@ -2,7 +2,9 @@ import { useSyncExternalStore } from 'react';
 import {
   DEFAULT_ANSWER_INPUT_MODE,
   isAnswerInputMode,
+  resolveAnswerInputMode,
   type AnswerInputMode,
+  type ResolvedAnswerInputMode,
 } from '../components/AnswerInput/mode';
 
 export const ANSWER_INPUT_MODE_STORAGE_KEY = 'calc-rush:answer-input-mode';
@@ -34,4 +36,9 @@ export const useAnswerInputMode = (): readonly [
 ] => {
   const mode = useSyncExternalStore(subscribe, readMode, () => DEFAULT_ANSWER_INPUT_MODE);
   return [mode, setMode] as const;
+};
+
+export const useResolvedAnswerInputMode = (): ResolvedAnswerInputMode => {
+  const [mode] = useAnswerInputMode();
+  return resolveAnswerInputMode(mode, window.matchMedia('(pointer: coarse)').matches);
 };
