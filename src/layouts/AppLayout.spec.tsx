@@ -11,6 +11,7 @@ const renderAt = (path: string) =>
         <Route element={<AppLayout />}>
           <Route path="/" element={<div>home content</div>} />
           <Route path="/profile" element={<div>profile content</div>} />
+          <Route path="/legal-notice" element={<div>legal content</div>} />
         </Route>
       </Routes>
     </MemoryRouter>
@@ -19,6 +20,11 @@ const renderAt = (path: string) =>
 describe('AppLayout', () => {
   it('shows the footer on the home page', () => {
     renderAt('/');
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+  });
+
+  it('shows the footer on legal pages', () => {
+    renderAt('/legal-notice');
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
   });
 

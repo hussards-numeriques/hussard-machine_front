@@ -16,7 +16,8 @@ Displays the player list and action buttons.
 - **Start**: visible only if `canStart && !game.is_quick_game`
   - `canStart` = `game.players.length >= 1 && game.players.every(p => p.is_ready)`
   - Quick games start automatically server-side
-- **Countdown**: when `game.state === 'COUNTDOWN'`, the "Starting..." text animates
+- **Launch countdown**: when `game.state === 'COUNTDOWN'`, `LaunchCountdownOverlay` (`src/components/LaunchCountdownOverlay.tsx`) covers the lobby: Rushy (`determine`, then `champion` on GO), the number from the backend `COUNTDOWN` WS message (`Prêts ?` before the first tick, `5…1`, then `GO !`) popping in (`animate-countdown-pop`, restarted via `key`) inside a pinging ring, and the players' avatars. Animations are `motion-safe:` only. The seconds come from `client.setLaunchCountdownCallback` (registered in an effect with cleanup) — no local timer.
+- **Locked ready button**: during `COUNTDOWN` the ready toggle is replaced by a disabled `🔒 C'est parti !` button (bar kept above the overlay with `z-50`), so no `READY` can be sent; `Quitter` and `Lancer la partie !` are hidden.
 - **Quitter**: shown only while `!isReady`; calls `onLeave` (wired to `GamePage.handleBackHome`) to return to the home screen. A ready player must first click "Je ne suis plus prêt" to reveal it.
 
 ### Props

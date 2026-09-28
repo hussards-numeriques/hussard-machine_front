@@ -4,7 +4,7 @@ import { createdGameSchema, serverMessageSchema, type ServerMessage } from './ga
 
 type GameUpdateCallback = (game: Game) => void;
 type ErrorCallback = (error: string) => void;
-type QuestionCountdownCallback = (seconds: number) => void;
+type CountdownCallback = (seconds: number) => void;
 
 export interface ConnectToLobbyParams {
   gameId: string;
@@ -37,7 +37,8 @@ export class GameClient {
   private persistGuestId = false;
   private onGameUpdate: GameUpdateCallback;
   private onError: ErrorCallback;
-  private onQuestionCountdown: QuestionCountdownCallback | null = null;
+  private onQuestionCountdown: CountdownCallback | null = null;
+  private onLaunchCountdown: CountdownCallback | null = null;
   private apiUrl: string;
 
   constructor(onGameUpdate: GameUpdateCallback, onError: ErrorCallback) {
@@ -46,8 +47,12 @@ export class GameClient {
     this.apiUrl = getApiUrl();
   }
 
-  public setQuestionCountdownCallback(callback: QuestionCountdownCallback | null) {
+  public setQuestionCountdownCallback(callback: CountdownCallback | null) {
     this.onQuestionCountdown = callback;
+  }
+
+  public setLaunchCountdownCallback(callback: CountdownCallback | null) {
+    this.onLaunchCountdown = callback;
   }
 
   public async createLobby(params: {
@@ -144,7 +149,7 @@ export class GameClient {
         this.onGameUpdate(message.payload);
         break;
       case 'COUNTDOWN':
-        console.log('Countdown:', message.payload.seconds);
+        this.onLaunchCountdown?.(message.payload.seconds);
         break;
       case 'QUESTION_COUNTDOWN':
         if (this.onQuestionCountdown) {

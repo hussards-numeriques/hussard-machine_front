@@ -50,6 +50,7 @@ describe('GamePage - reconnecting on same-path navigation (replay)', () => {
       connectToLobby: vi.fn(),
       disconnect: vi.fn(),
       getPlayerId: vi.fn().mockReturnValue(null),
+      setLaunchCountdownCallback: vi.fn(),
     } as unknown as GameClient;
 
     const contextValue: GameContextValue = {

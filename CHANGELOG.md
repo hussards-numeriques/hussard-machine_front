@@ -1,5 +1,20 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Lobby launch animation: when the game enters `COUNTDOWN`, a full-screen `LaunchCountdownOverlay` shows Rushy, a popping server-driven countdown ("Prêts ?", 5…1, "GO !") and the players' avatars (`motion-safe` only). `GameClient.setLaunchCountdownCallback` now forwards the `COUNTDOWN` WS message instead of logging it.
+
+### Changed
+
+- During the launch countdown the ready toggle is replaced by a disabled "🔒 C'est parti !" button (no more accidental un-ready); "Quitter" and "Lancer la partie !" are hidden.
+- The legal pages (CGU, CGV, mentions légales, confidentialité) now show the home page footer.
+
+### Fixed
+
+- After the last question, the correction screen announces "Podium dans X…" instead of "Question suivante dans X…".
+
 ## [0.21.0] - 2026-09-27
 
 ### Added

@@ -27,6 +27,7 @@ export default {
         'particle-rise': 'particle-rise 1.8s linear infinite',
         'gold-shimmer': 'gold-shimmer 2.5s ease-in-out infinite',
         'quest-pulse': 'quest-pulse 1s ease-in-out infinite',
+        'countdown-pop': 'countdown-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
       keyframes: {
         'pop-in': {
@@ -64,6 +65,11 @@ export default {
         'quest-pulse': {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.18)', opacity: '0.65' },
+        },
+        'countdown-pop': {
+          '0%': { transform: 'scale(2.5) rotate(-8deg)', opacity: '0' },
+          '60%': { transform: 'scale(0.9) rotate(2deg)', opacity: '1' },
+          '100%': { transform: 'scale(1) rotate(0)', opacity: '1' },
         },
       },
     },

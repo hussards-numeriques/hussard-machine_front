@@ -82,4 +82,40 @@ describe('CorrectionCard', () => {
     expect(screen.getByText('⏱ Pas de réponse')).toBeInTheDocument();
     expect(screen.getByText('56')).toBeInTheDocument();
   });
+
+  it('announces the next question when more questions remain', () => {
+    // Given
+    const g = game([]);
+    const twoQuestions: Game = {
+      ...g,
+      questions: [
+        ...g.questions,
+        {
+          id: 'q2',
+          statement: '6 x 7',
+          answer: 42,
+          category: 'multiplication',
+          time_limit_seconds: 10,
+        },
+      ],
+    };
+
+    // When
+    render(<CorrectionCard game={twoQuestions} playerId="p1" questionIndex={0} countdown={3} />);
+
+    // Then
+    expect(screen.getByText('Question suivante dans 3…')).toBeInTheDocument();
+  });
+
+  it('announces the podium after the last question', () => {
+    // Given
+    const g = game([]);
+
+    // When
+    render(<CorrectionCard game={g} playerId="p1" questionIndex={0} countdown={3} />);
+
+    // Then
+    expect(screen.getByText('Podium dans 3…')).toBeInTheDocument();
+    expect(screen.queryByText(/Question suivante/)).not.toBeInTheDocument();
+  });
 });

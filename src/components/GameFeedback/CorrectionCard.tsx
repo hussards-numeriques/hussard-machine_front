@@ -27,6 +27,8 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
   if (!feedback || !question) return null;
 
   const isCorrect = feedback.status === 'correct';
+  const isLastQuestion = questionIndex === game.questions.length - 1;
+  const nextStepLabel = isLastQuestion ? 'Podium' : 'Question suivante';
 
   return (
     <div className="space-y-6 animate-pop-in">
@@ -55,7 +57,9 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
       )}
 
       {countdown !== null && (
-        <div className="text-sm font-bold text-slate-400">Question suivante dans {countdown}…</div>
+        <div className="text-sm font-bold text-slate-400">
+          {nextStepLabel} dans {countdown}…
+        </div>
       )}
     </div>
   );
