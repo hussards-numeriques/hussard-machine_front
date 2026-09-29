@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Player avatars: the flat grade ring is replaced by a LoL-style metallic frame per grade (matte copper Bronze, polished Silver, glowing Gold, rotating-sheen Platine, iridescent pulsing Diamond; animations off under `prefers-reduced-motion`).
+
 ## [0.24.0] - 2026-09-28
 
 ### Added

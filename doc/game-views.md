@@ -131,7 +131,7 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 
 Each `Player` snapshot carries `level`, `grade`, `daily_streak` and `title` (set at game entry, immutable during the game — see the backend contract). Three shared components surface `grade`/`daily_streak`/`title`:
 
-- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar with a **grade-colored ring** (`resolveGradeRingColor` in `src/lib/grades.ts`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring. The ring can be turned off with `showGradeRing={false}`.
+- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar inside a **LoL-style metallic grade frame** (`resolveGradeFrame` in `src/lib/grades.ts` → `.grade-frame-*` classes in `src/index.css`: conic-gradient metal, glow from Gold up, rotating sheen on Platine/Diamond, disabled under `prefers-reduced-motion`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring. The ring can be turned off with `showGradeRing={false}`.
 - `PlayerStreak` (`src/components/PlayerStreak.tsx`): the streak flame + count, or `null` when `daily_streak <= 0` (see `doc/streak.md`).
 - `PlayerTitle` (`src/components/PlayerTitle.tsx`): the equipped title label colored by rarity, or `null` when `title === null` (see `doc/quests-titles.md`).
 

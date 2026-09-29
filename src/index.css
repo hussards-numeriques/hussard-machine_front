@@ -7,3 +7,133 @@
     @apply bg-slate-50 text-slate-900 font-sans;
   }
 }
+
+@layer components {
+  .grade-frame {
+    @apply relative shrink-0 rounded-full;
+  }
+
+  .grade-frame::before {
+    content: '';
+    @apply absolute inset-0 rounded-full;
+    background: var(--frame-metal);
+  }
+
+  .grade-frame > * {
+    @apply relative;
+  }
+
+  .grade-frame-default {
+    --frame-metal: #cbd5e1;
+  }
+
+  .grade-frame-bronze {
+    --frame-metal: conic-gradient(
+      from 200deg,
+      #5c3317,
+      #b87333,
+      #e8a86b,
+      #8b4a22,
+      #5c3317,
+      #c98552,
+      #5c3317
+    );
+    box-shadow: 0 1px 2px rgb(92 51 23 / 0.45);
+  }
+
+  .grade-frame-silver {
+    --frame-metal: conic-gradient(
+      from 200deg,
+      #64748b,
+      #f8fafc,
+      #94a3b8,
+      #e2e8f0,
+      #64748b,
+      #ffffff,
+      #64748b
+    );
+    box-shadow: 0 1px 3px rgb(71 85 105 / 0.5);
+  }
+
+  .grade-frame-gold {
+    --frame-metal: conic-gradient(
+      from 200deg,
+      #8a5a00,
+      #ffd84d,
+      #fff4b8,
+      #c8940a,
+      #8a5a00,
+      #ffe27a,
+      #8a5a00
+    );
+    box-shadow:
+      0 0 0 1px rgb(138 90 0 / 0.35),
+      0 0 10px rgb(250 204 21 / 0.55);
+  }
+
+  .grade-frame-platine {
+    --frame-metal: conic-gradient(
+      #4c1d95,
+      #a78bfa,
+      #f5f3ff,
+      #c084fc,
+      #4c1d95,
+      #e879f9,
+      #ede9fe,
+      #4c1d95
+    );
+    box-shadow:
+      0 0 0 1px rgb(76 29 149 / 0.35),
+      0 0 12px rgb(167 139 250 / 0.7);
+  }
+
+  .grade-frame-platine::before {
+    animation: grade-spin 6s linear infinite;
+  }
+
+  .grade-frame-diamond {
+    --frame-metal: conic-gradient(
+      #0e7490,
+      #67e8f9,
+      #ffffff,
+      #38bdf8,
+      #a5f3fc,
+      #1d4ed8,
+      #e0f2fe,
+      #22d3ee,
+      #0e7490
+    );
+    animation: grade-glow 2.4s ease-in-out infinite;
+  }
+
+  .grade-frame-diamond::before {
+    animation: grade-spin 3s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grade-frame,
+    .grade-frame::before {
+      animation: none !important;
+    }
+  }
+}
+
+@keyframes grade-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes grade-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgb(14 116 144 / 0.4),
+      0 0 10px rgb(34 211 238 / 0.6);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgb(14 116 144 / 0.4),
+      0 0 18px rgb(103 232 249 / 0.95);
+  }
+}

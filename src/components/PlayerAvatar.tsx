@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import { resolveGradeRingColor } from '../lib/grades';
+import { resolveGradeFrame } from '../lib/grades';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
 
@@ -12,10 +12,10 @@ interface PlayerAvatarProps {
   showGradeRing?: boolean;
 }
 
-const SIZE_CLASSES: Record<AvatarSize, { circle: string; text: string; ring: string }> = {
-  sm: { circle: 'w-9 h-9', text: 'text-sm', ring: 'ring-2 ring-offset-1' },
-  md: { circle: 'w-12 h-12', text: 'text-xl', ring: 'ring-4 ring-offset-2' },
-  lg: { circle: 'w-16 h-16', text: 'text-2xl', ring: 'ring-4 ring-offset-2' },
+const SIZE_CLASSES: Record<AvatarSize, { circle: string; text: string; frame: string }> = {
+  sm: { circle: 'w-9 h-9 border-2', text: 'text-sm', frame: 'p-[3px]' },
+  md: { circle: 'w-12 h-12 border-[3px]', text: 'text-xl', frame: 'p-1' },
+  lg: { circle: 'w-16 h-16 border-4', text: 'text-2xl', frame: 'p-[5px]' },
 };
 
 export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
@@ -26,19 +26,27 @@ export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
   showGradeRing = true,
 }) => {
   const initials = name.substring(0, 2).toUpperCase();
-  const { circle, text, ring } = SIZE_CLASSES[size];
+  const { circle, text, frame } = SIZE_CLASSES[size];
 
   return (
     <div
+      data-testid="player-avatar"
       className={cn(
-        'shrink-0 rounded-full flex items-center justify-center font-bold text-white',
-        circle,
-        text,
-        showGradeRing && ['ring-offset-white', ring, resolveGradeRingColor(grade)],
-        isBot ? 'bg-slate-400' : 'bg-primary'
+        'shrink-0 rounded-full',
+        showGradeRing && ['grade-frame', frame, resolveGradeFrame(grade)]
       )}
     >
-      {initials}
+      <div
+        className={cn(
+          'rounded-full flex items-center justify-center font-bold text-white border-white',
+          circle,
+          text,
+          !showGradeRing && 'border-0',
+          isBot ? 'bg-slate-400' : 'bg-primary'
+        )}
+      >
+        {initials}
+      </div>
     </div>
   );
 };
