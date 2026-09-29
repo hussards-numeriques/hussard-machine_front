@@ -43,7 +43,7 @@ const NextTierHint: React.FC<{ count: number }> = ({ count }) => {
   }
   return (
     <p className="text-xs font-bold text-slate-500">
-      Prochaine flamme dans {dayLabel(next.min - count)}{' '}
+      Ta flamme évolue dans {dayLabel(next.min - count)}{' '}
       <span className="inline-block align-middle">
         <next.Flame size={16} animated={false} />
       </span>

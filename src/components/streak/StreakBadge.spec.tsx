@@ -75,7 +75,7 @@ describe('StreakBadge', () => {
   it('shows how many days remain until the next flame tier', () => {
     renderBadge(true, { current_count: 12, played_today: true, freeze_available_on: null });
     fireEvent.click(screen.getByRole('button', { name: /quête/i }));
-    expect(screen.getByText(/prochaine flamme dans 2 jours/i)).toBeInTheDocument();
+    expect(screen.getByText(/ta flamme évolue dans 2 jours/i)).toBeInTheDocument();
   });
 
   it('closes the popover on an outside click', () => {

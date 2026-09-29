@@ -70,7 +70,7 @@ Rendered in the `Header` HUD capsule, **authenticated users only** (returns `nul
 2. The current count (`status.count`), colored per tier, hidden if the streak is dead (`!isAlive`)
 3. The chip background carries the urgency: amber tint for `'soft-risk'`, rose tint + rose ring for `'last-chance'`
 
-Clicking opens a popover (all states, closed on outside click via `hooks/useClickOutside`), anchored to the HUD capsule rather than the chip so it never overflows on mobile: big flame + day count, the next tier hint (`getNextStreakTier`: "Prochaine flamme dans N jours" + the next flame icon, or "Flamme ultime atteinte" at the top tier), a state message tinted per `questState`, and a link to `/progression`. For `'secured'`, the message shows a live `HH:MM:SS` countdown to the next daily quest reset, assumed to be 00:00 UTC since the backend doesn't expose a precise reset time (`useUtcMidnightCountdown` hook, ticking only while the popover is open).
+Clicking opens a popover (all states, closed on outside click via `hooks/useClickOutside`), anchored to the HUD capsule rather than the chip so it never overflows on mobile: big flame + day count, the next tier hint (`getNextStreakTier`: "Ta flamme évolue dans N jours" + the next flame icon, or "Flamme ultime atteinte" at the top tier), a state message tinted per `questState`, and a link to `/progression`. For `'secured'`, the message shows a live `HH:MM:SS` countdown to the next daily quest reset, assumed to be 00:00 UTC since the backend doesn't expose a precise reset time (`useUtcMidnightCountdown` hook, ticking only while the popover is open).
 
 `questState` derivation: `played_today` → `'secured'`; else `lastChance` → `'last-chance'`; else `atRisk` → `'soft-risk'`; else `'neutral'`.
 

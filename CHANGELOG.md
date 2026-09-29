@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Streak popover: « Prochaine flamme dans N jours » becomes « Ta flamme évolue dans N jours ».
+
 ## [0.28.2] - 2026-09-29
 
 ### Fixed
