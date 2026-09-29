@@ -37,7 +37,8 @@ describe('QuestProgressCard', () => {
     );
 
     expect(screen.getByText('Équiper')).toBeInTheDocument();
-    expect(screen.getByText('Top Player (10)')).toBeInTheDocument();
+    expect(screen.getByText('Top Player')).toBeInTheDocument();
+    expect(screen.getByText('🎯 10')).toBeInTheDocument();
     expect(screen.getAllByRole('button')).toHaveLength(1);
   });
 
@@ -97,5 +98,35 @@ describe('QuestProgressCard', () => {
 
     expect(screen.queryAllByRole('button')).toHaveLength(0);
     expect(screen.queryByText('✓ Était équipé')).not.toBeInTheDocument();
+  });
+
+  it('shows the progress toward the next locked tier', () => {
+    render(
+      <QuestProgressCard
+        quest={quest}
+        progress={progress}
+        selectedTitleId={null}
+        mode={{ kind: 'readonly' }}
+      />
+    );
+
+    expect(screen.getByText('7 / 10 pour le prochain titre')).toBeInTheDocument();
+  });
+
+  it('shows the quest as completed when every tier is unlocked', () => {
+    render(
+      <QuestProgressCard
+        quest={quest}
+        progress={{
+          ...progress,
+          progress: 12,
+          tiers: progress.tiers.map((t) => ({ ...t, unlocked: true })),
+        }}
+        selectedTitleId={null}
+        mode={{ kind: 'readonly' }}
+      />
+    );
+
+    expect(screen.getByText('✓ Quête terminée')).toBeInTheDocument();
   });
 });

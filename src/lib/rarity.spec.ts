@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_RARITY_BADGE_STYLE,
-  DEFAULT_RARITY_TEXT_COLOR,
+  DEFAULT_RARITY_ICON,
+  DEFAULT_RARITY_PLATE,
   resolveRarityBadgeStyle,
+  resolveRarityIcon,
   resolveRarityLabel,
-  resolveRarityTextColor,
+  resolveRarityPlate,
 } from './rarity';
 
 describe('resolveRarityLabel', () => {
@@ -22,13 +24,33 @@ describe('resolveRarityLabel', () => {
   });
 });
 
-describe('resolveRarityTextColor', () => {
-  it('maps a known rarity to a text color', () => {
-    expect(resolveRarityTextColor('GOLD')).toBe('text-yellow-600');
+describe('resolveRarityPlate', () => {
+  it.each([
+    ['BRONZE', 'title-plate-bronze'],
+    ['SILVER', 'title-plate-silver'],
+    ['GOLD', 'title-plate-gold'],
+    ['DIAMOND', 'title-plate-diamond'],
+  ])('maps %s to %s', (rarity, expected) => {
+    expect(resolveRarityPlate(rarity)).toBe(expected);
   });
 
-  it('falls back to the default text color for an unknown rarity', () => {
-    expect(resolveRarityTextColor('MYTHIC')).toBe(DEFAULT_RARITY_TEXT_COLOR);
+  it('falls back to the default plate for an unknown rarity', () => {
+    expect(resolveRarityPlate('MYTHIC')).toBe(DEFAULT_RARITY_PLATE);
+  });
+});
+
+describe('resolveRarityIcon', () => {
+  it.each([
+    ['BRONZE', '★'],
+    ['SILVER', '★★'],
+    ['GOLD', '★★★'],
+    ['DIAMOND', '💎'],
+  ])('maps %s to %s', (rarity, expected) => {
+    expect(resolveRarityIcon(rarity)).toBe(expected);
+  });
+
+  it('falls back to the default icon for an unknown rarity', () => {
+    expect(resolveRarityIcon('MYTHIC')).toBe(DEFAULT_RARITY_ICON);
   });
 });
 

@@ -96,7 +96,7 @@ describe('QuestsPage', () => {
       </MemoryRouter>
     );
     expect(screen.getByText(quest.label)).toBeInTheDocument();
-    expect(screen.getByText('Petit Conquérant (5)')).toBeInTheDocument();
+    expect(screen.getByText('Petit Conquérant')).toBeInTheDocument();
   });
 
   it('shows the active banner and requests the current level by default', () => {

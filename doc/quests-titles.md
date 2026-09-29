@@ -43,14 +43,18 @@ and by the unlock-detection hook below.
 
 ## Rarity styling (`src/lib/rarity.ts`)
 
-`resolveRarityLabel`/`resolveRarityTextColor`/`resolveRarityBadgeStyle`, mirrors
-`lib/grades.ts`. Falls back to a default style for any rarity not in `RARITIES` — the
+`resolveRarityLabel`/`resolveRarityPlate`/`resolveRarityIcon`/`resolveRarityBadgeStyle`, mirrors
+`lib/grades.ts`. A title is always rendered as a **`TitlePlate`** (`src/components/PlayerTitle.tsx`):
+a metallic plate (`.title-plate-*` in `src/index.css`) whose value escalates with rarity —
+copper Bronze `★`, polished Silver `★★`, glowing Gold `★★★` with a shine sweep, iridescent
+animated Diamond `💎` with glow (animations off under `prefers-reduced-motion`). `locked`
+greys it out and swaps the icon for `🔒`. Falls back to a default style for any rarity not in `RARITIES` — the
 backend contract treats the rarity list as open.
 
 ## Display in game (lobby + podium)
 
 `PlayerTitle` (`src/components/PlayerTitle.tsx`) renders `null` when `player.title` is
-`null`, otherwise a small colored line under the player's name. Wired into `LobbyView`
+`null`, otherwise a `TitlePlate` under the player's name. Wired into `LobbyView`
 (player card) and `PodiumView`'s full ranking — **not** shown in the podium's top-3
 columns, same rule as the grade ring (see `doc/game-views.md`).
 
@@ -74,7 +78,9 @@ union rendered by `TitlesLevelBanner`:
 | `inactive-memories` | other level with ≥1 title or progress > 0 | **Niveau L — titres inactifs.** Ce n'est plus ton niveau : ces titres ne s'affichent plus en jeu et ne peuvent pas être équipés. Ils sont là pour la nostalgie du passé ! Tes titres actifs sont ceux du niveau C. |
 | `inactive-empty`    | other level with nothing                  | **Niveau L — titres inactifs.** Aucun souvenir ici pour l'instant. Seuls les titres de ton niveau actuel (C) sont actifs.                                                                                          |
 
-For each quest in the catalog, `QuestProgressCard` shows every tier. Its `mode` prop is a
+For each quest in the catalog, `QuestProgressCard` shows a progress bar toward the next
+locked tier (« 7 / 10 pour le prochain titre », or « ✓ Quête terminée ») and every tier as a
+`TitlePlate` (locked tiers show `🎯 threshold` on the right). Its `mode` prop is a
 union: `editable` (active level) shows an inline **Équiper**/**✓ Équipé** button on
 unlocked tiers (clicking the equipped tier unequips it, the PUT always sends the viewed
 level); `readonly` (inactive level) shows no button, only a **✓ Était équipé** badge on the

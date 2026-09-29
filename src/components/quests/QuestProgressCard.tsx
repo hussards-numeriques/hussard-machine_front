@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
+import { TitlePlate } from '../PlayerTitle';
 import type { MyQuest, Quest } from '../../services/quests';
 
 export type QuestProgressCardMode =
@@ -45,6 +46,32 @@ const TierAction: React.FC<TierActionProps> = ({ mode, equipped, titleId }) => {
   );
 };
 
+const QuestProgressBar: React.FC<{ progress: MyQuest }> = ({ progress }) => {
+  const nextThreshold = progress.tiers.find((tier) => !tier.unlocked)?.threshold;
+
+  if (nextThreshold === undefined) {
+    return (
+      <div className="space-y-1">
+        <div className="text-xs font-bold text-emerald-600">✓ Quête terminée</div>
+        <div className="h-2 rounded-full bg-emerald-400" />
+      </div>
+    );
+  }
+
+  const percent = Math.min(100, (progress.progress / nextThreshold) * 100);
+
+  return (
+    <div className="space-y-1">
+      <div className="text-xs font-bold text-slate-500">
+        {progress.progress} / {nextThreshold} pour le prochain titre
+      </div>
+      <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+        <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
+  );
+};
+
 export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
   quest,
   progress,
@@ -53,10 +80,8 @@ export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
 }) => {
   return (
     <div className="rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold text-slate-700">{quest.label}</h3>
-        <span className="text-xs font-bold text-slate-400">{progress.progress}</span>
-      </div>
+      <h3 className="font-bold text-slate-700">{quest.label}</h3>
+      <QuestProgressBar progress={progress} />
       <div className="space-y-2">
         {quest.tiers.map((tier) => {
           const tierProgress = progress.tiers.find((t) => t.threshold === tier.threshold);
@@ -71,20 +96,14 @@ export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
                 unlocked ? 'bg-white border border-slate-200' : 'bg-slate-100'
               )}
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <span className={unlocked ? 'text-primary' : 'text-slate-300'}>
-                  {unlocked ? '●' : '○'}
+              <TitlePlate title={tier.title} locked={!unlocked} className="text-sm" />
+              {unlocked ? (
+                <TierAction mode={mode} equipped={equipped} titleId={tier.title.id} />
+              ) : (
+                <span className="shrink-0 text-xs font-bold text-slate-400">
+                  🎯 {tier.threshold}
                 </span>
-                <span
-                  className={cn(
-                    'text-sm font-bold truncate',
-                    unlocked ? 'text-slate-700' : 'text-slate-400'
-                  )}
-                >
-                  {tier.title.label} ({tier.threshold})
-                </span>
-              </div>
-              {unlocked && <TierAction mode={mode} equipped={equipped} titleId={tier.title.id} />}
+              )}
             </div>
           );
         })}

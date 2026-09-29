@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { PlayerTitle } from './PlayerTitle';
+import { PlayerTitle, TitlePlate } from './PlayerTitle';
 
 describe('PlayerTitle', () => {
   it('renders nothing when title is null', () => {
@@ -8,13 +8,21 @@ describe('PlayerTitle', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the label colored by rarity', () => {
+  it('renders the label on a plate styled by rarity', () => {
     render(
       <PlayerTitle title={{ id: 'win-streak-gold', label: "Légende de l'Arène", rarity: 'GOLD' }} />
     );
 
-    const el = screen.getByText(/Légende de l'Arène/);
-    expect(el).toBeInTheDocument();
-    expect(el.className).toContain('text-yellow-600');
+    const plate = screen.getByTitle('Titre Or');
+    expect(plate).toHaveTextContent("★★★Légende de l'Arène");
+    expect(plate.className).toContain('title-plate-gold');
+  });
+
+  it('shows a padlock instead of the rarity icon when locked', () => {
+    render(<TitlePlate title={{ label: 'Top Player', rarity: 'DIAMOND' }} locked />);
+
+    const plate = screen.getByTitle('Titre Diamant');
+    expect(plate).toHaveTextContent('🔒Top Player');
+    expect(plate.className).toContain('title-plate-locked');
   });
 });

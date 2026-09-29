@@ -8,11 +8,18 @@ const RARITY_LABELS: Record<Rarity, string> = {
   DIAMOND: 'Diamant',
 };
 
-const RARITY_TEXT_COLORS: Record<Rarity, string> = {
-  BRONZE: 'text-amber-600',
-  SILVER: 'text-slate-500',
-  GOLD: 'text-yellow-600',
-  DIAMOND: 'text-cyan-600',
+const RARITY_PLATES: Record<Rarity, string> = {
+  BRONZE: 'title-plate-bronze',
+  SILVER: 'title-plate-silver',
+  GOLD: 'title-plate-gold',
+  DIAMOND: 'title-plate-diamond',
+};
+
+const RARITY_ICONS: Record<Rarity, string> = {
+  BRONZE: '★',
+  SILVER: '★★',
+  GOLD: '★★★',
+  DIAMOND: '💎',
 };
 
 const RARITY_BADGE_STYLES: Record<Rarity, string> = {
@@ -22,7 +29,8 @@ const RARITY_BADGE_STYLES: Record<Rarity, string> = {
   DIAMOND: 'bg-cyan-100 text-cyan-700 border-cyan-300',
 };
 
-export const DEFAULT_RARITY_TEXT_COLOR = 'text-slate-500';
+export const DEFAULT_RARITY_PLATE = 'title-plate-default';
+export const DEFAULT_RARITY_ICON = '☆';
 export const DEFAULT_RARITY_BADGE_STYLE = 'bg-slate-100 text-slate-600 border-slate-300';
 
 const isRarity = (value: string): value is Rarity =>
@@ -31,8 +39,11 @@ const isRarity = (value: string): value is Rarity =>
 export const resolveRarityLabel = (rarity: string): string =>
   isRarity(rarity) ? RARITY_LABELS[rarity] : rarity;
 
-export const resolveRarityTextColor = (rarity: string): string =>
-  isRarity(rarity) ? RARITY_TEXT_COLORS[rarity] : DEFAULT_RARITY_TEXT_COLOR;
+export const resolveRarityPlate = (rarity: string): string =>
+  isRarity(rarity) ? RARITY_PLATES[rarity] : DEFAULT_RARITY_PLATE;
+
+export const resolveRarityIcon = (rarity: string): string =>
+  isRarity(rarity) ? RARITY_ICONS[rarity] : DEFAULT_RARITY_ICON;
 
 export const resolveRarityBadgeStyle = (rarity: string): string =>
   isRarity(rarity) ? RARITY_BADGE_STYLES[rarity] : DEFAULT_RARITY_BADGE_STYLE;

@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Titles: rendered as a metallic `TitlePlate` whose look escalates with rarity (copper Bronze ★, Silver ★★, glowing Gold ★★★ with shine, iridescent animated Diamond 💎), in the lobby, podium ranking, quests page and unlock toast.
+- Quests page: each quest shows a progress bar toward the next tier (or « Quête terminée »); locked tiers show a greyed plate with a padlock and their target.
+
 ## [0.25.0] - 2026-09-29
 
 ### Changed

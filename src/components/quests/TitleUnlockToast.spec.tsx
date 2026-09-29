@@ -18,19 +18,20 @@ describe('TitleUnlockToast', () => {
 
   it('shows a toast for a newly unlocked title', () => {
     render(<TitleUnlockToast titles={[title]} />);
-    expect(screen.getByText(/Titre débloqué : Légende de l'Arène \(Or\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Titre Or débloqué/)).toBeInTheDocument();
+    expect(screen.getByText("Légende de l'Arène")).toBeInTheDocument();
   });
 
   it('auto-dismisses the toast after the timeout', () => {
     vi.useFakeTimers();
     render(<TitleUnlockToast titles={[title]} />);
-    expect(screen.getByText(/Titre débloqué/)).toBeInTheDocument();
+    expect(screen.getByText(/débloqué/)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(6000);
     });
 
-    expect(screen.queryByText(/Titre débloqué/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/débloqué/)).not.toBeInTheDocument();
     vi.useRealTimers();
   });
 });
