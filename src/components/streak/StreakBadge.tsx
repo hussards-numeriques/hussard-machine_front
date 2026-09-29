@@ -1,45 +1,66 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
 import { useStreak } from '../../contexts/useStreak';
-import { deriveStreakStatus } from '../../services/streak/status';
+import { useClickOutside } from '../../hooks/useClickOutside';
+import { deriveStreakStatus, type StreakStatus } from '../../services/streak/status';
+import type { StreakResponse } from '../../services/streak';
 import { cn } from '../../lib/utils';
-import { StreakFlame, getStreakTier } from './StreakFlame';
+import { StreakFlame, getNextStreakTier, getStreakTier } from './StreakFlame';
 import { DailyQuestIcon, type QuestState } from './DailyQuestIcon';
 import { useUtcMidnightCountdown } from './useUtcMidnightCountdown';
 
 const dayLabel = (days: number): string => (days <= 1 ? `${days} jour` : `${days} jours`);
+
+const CHIP_STYLES: Record<QuestState, string> = {
+  secured: 'hover:bg-slate-100',
+  'soft-risk': 'bg-amber-50 hover:bg-amber-100',
+  'last-chance': 'bg-rose-50 ring-2 ring-rose-300 hover:bg-rose-100',
+  neutral: 'hover:bg-slate-100',
+};
+
+const POPOVER_ACCENTS: Record<QuestState, string> = {
+  secured: 'bg-emerald-50 text-emerald-700',
+  'soft-risk': 'bg-amber-50 text-amber-800',
+  'last-chance': 'bg-rose-50 text-rose-700',
+  neutral: 'bg-slate-50 text-slate-600',
+};
+
+const toQuestState = (streak: StreakResponse, status: StreakStatus): QuestState => {
+  if (streak.played_today) {
+    return 'secured';
+  }
+  if (status.lastChance) {
+    return 'last-chance';
+  }
+  return status.atRisk ? 'soft-risk' : 'neutral';
+};
+
+const NextTierHint: React.FC<{ count: number }> = ({ count }) => {
+  const next = getNextStreakTier(count);
+  if (!next) {
+    return <p className="text-xs font-bold text-amber-600">Flamme ultime atteinte. Légendaire !</p>;
+  }
+  return (
+    <p className="text-xs font-bold text-slate-500">
+      Prochaine flamme dans {dayLabel(next.min - count)}{' '}
+      <span className="inline-block align-middle">
+        <next.Flame size={16} animated={false} />
+      </span>
+    </p>
+  );
+};
 
 export const StreakBadge: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { streak } = useStreak();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const onClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
-  }, [open]);
+  const close = useCallback(() => setOpen(false), []);
+  useClickOutside(containerRef, open, close);
 
   const status = streak ? deriveStreakStatus(streak) : null;
-
-  const questState: QuestState = streak
-    ? streak.played_today
-      ? 'secured'
-      : status?.lastChance
-        ? 'last-chance'
-        : status?.atRisk
-          ? 'soft-risk'
-          : 'neutral'
-    : 'neutral';
-
+  const questState: QuestState = streak && status ? toQuestState(streak, status) : 'neutral';
   const countdown = useUtcMidnightCountdown(open && questState === 'secured');
 
   if (!isAuthenticated || !streak || !status) {
@@ -48,41 +69,74 @@ export const StreakBadge: React.FC = () => {
 
   const tier = getStreakTier(status.count);
 
-  const clickable = questState !== 'neutral';
-
-  const popoverMessage =
-    questState === 'last-chance'
-      ? `Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans ${dayLabel(status.daysUntilFreeze ?? 0)}.`
-      : questState === 'secured'
-        ? `Série sécurisée pour aujourd'hui ! Prochaine quête dans ${countdown}.`
-        : 'Joue aujourd’hui pour sécuriser ta série !';
+  const popoverMessage: Record<QuestState, string> = {
+    'last-chance': `Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans ${dayLabel(status.daysUntilFreeze ?? 0)}.`,
+    secured: `Série sécurisée pour aujourd'hui ! Prochaine quête dans ${countdown}.`,
+    'soft-risk': 'Joue aujourd’hui pour sécuriser ta série !',
+    neutral: 'Joue une partie aujourd’hui pour allumer ta flamme !',
+  };
 
   return (
-    <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full shadow border border-slate-200">
+    <div ref={containerRef}>
+      <button
+        type="button"
+        aria-label="Quête quotidienne"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          'flex items-center gap-1 h-9 px-2 rounded-full transition-colors',
+          CHIP_STYLES[questState]
+        )}
+      >
+        <span className="relative flex">
+          <StreakFlame count={status.count} muted={!status.isAlive} size={24} />
+          <span className="absolute -right-1 -bottom-0.5 flex rounded-full bg-white">
+            <DailyQuestIcon state={questState} size={12} />
+          </span>
+        </span>
         {status.isAlive && (
-          <span className={cn('text-sm font-black tabular-nums', tier.valueColorClass)}>
+          <span
+            className={cn('text-base font-black tabular-nums leading-none', tier.valueColorClass)}
+          >
             {status.count}
           </span>
         )}
-        <StreakFlame count={status.count} muted={!status.isAlive} />
-        {clickable ? (
-          <button
-            type="button"
-            aria-label="Quête quotidienne"
-            onClick={() => setOpen((v) => !v)}
-            className="flex items-center"
-          >
-            <DailyQuestIcon state={questState} />
-          </button>
-        ) : (
-          <DailyQuestIcon state={questState} />
-        )}
-      </div>
+      </button>
 
-      {open && clickable && (
-        <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl shadow-xl border-2 border-slate-100 p-3 text-left text-xs font-semibold text-slate-600 leading-relaxed">
-          {popoverMessage}
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-64 z-20 bg-white rounded-2xl shadow-xl border-2 border-slate-100 p-3 text-left space-y-3 animate-pop-in origin-top-right">
+          <div className="flex items-center gap-3">
+            <StreakFlame count={status.count} muted={!status.isAlive} size={40} />
+            <div>
+              <p
+                className={cn(
+                  'text-2xl font-black leading-none',
+                  status.isAlive ? tier.valueColorClass : 'text-slate-400'
+                )}
+              >
+                {status.isAlive ? dayLabel(status.count) : 'Aucune série'}
+              </p>
+              <NextTierHint count={status.count} />
+            </div>
+          </div>
+          <p
+            className={cn(
+              'flex gap-2 items-start rounded-xl p-2 text-xs font-semibold leading-relaxed',
+              POPOVER_ACCENTS[questState]
+            )}
+          >
+            <span className="shrink-0 mt-px">
+              <DailyQuestIcon state={questState} size={14} animated={false} />
+            </span>
+            {popoverMessage[questState]}
+          </p>
+          <Link
+            to="/progression"
+            onClick={close}
+            className="block text-xs font-bold text-primary hover:underline"
+          >
+            Comment marchent les séries ? →
+          </Link>
         </div>
       )}
     </div>

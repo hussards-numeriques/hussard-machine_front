@@ -19,3 +19,9 @@ export function formatLongDate(iso: string): string {
     timeZone: 'UTC',
   });
 }
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+export function daysUntil(iso: string, now: Date = new Date()): number {
+  return Math.max(0, Math.ceil((parseIsoAsUtc(iso).getTime() - now.getTime()) / MS_PER_DAY));
+}

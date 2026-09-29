@@ -33,3 +33,7 @@ export const STREAK_TIERS: StreakTier[] = [
 export function getStreakTier(count: number): StreakTier {
   return STREAK_TIERS.find((tier) => count >= tier.min) ?? STREAK_TIERS[STREAK_TIERS.length - 1];
 }
+
+export function getNextStreakTier(count: number): StreakTier | null {
+  return STREAK_TIERS.filter((tier) => tier.min > count).at(-1) ?? null;
+}

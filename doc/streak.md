@@ -64,11 +64,13 @@ interface StreakStatus {
 
 ### StreakBadge
 
-Rendered in `Header`, **authenticated users only** (returns `null` if `!isAuthenticated || !streak`). Shows, in a pill:
+Rendered in the `Header` HUD capsule, **authenticated users only** (returns `null` if `!isAuthenticated || !streak`). The whole chip is one button:
 
-1. The current count (`status.count`), colored per tier, hidden if the streak is dead (`!isAlive`)
-2. `StreakFlame` (muted/grayscale if `!isAlive`)
-3. `DailyQuestIcon`, wrapped in a button when `questState` is not `'neutral'` (opens a popover on click, closed on outside click). For `'secured'`, the popover shows a live `HH:MM:SS` countdown to the next daily quest reset, assumed to be 00:00 UTC since the backend doesn't expose a precise reset time (`useUtcMidnightCountdown` hook, ticking only while the popover is open).
+1. `StreakFlame` (size 24, muted/grayscale if `!isAlive`) with a small `DailyQuestIcon` overlaid on its bottom-right corner, notification-badge style
+2. The current count (`status.count`), colored per tier, hidden if the streak is dead (`!isAlive`)
+3. The chip background carries the urgency: amber tint for `'soft-risk'`, rose tint + rose ring for `'last-chance'`
+
+Clicking opens a popover (all states, closed on outside click via `hooks/useClickOutside`), anchored to the HUD capsule rather than the chip so it never overflows on mobile: big flame + day count, the next tier hint (`getNextStreakTier`: "Prochaine flamme dans N jours" + the next flame icon, or "Flamme ultime atteinte" at the top tier), a state message tinted per `questState`, and a link to `/progression`. For `'secured'`, the message shows a live `HH:MM:SS` countdown to the next daily quest reset, assumed to be 00:00 UTC since the backend doesn't expose a precise reset time (`useUtcMidnightCountdown` hook, ticking only while the popover is open).
 
 `questState` derivation: `played_today` → `'secured'`; else `lastChance` → `'last-chance'`; else `atRisk` → `'soft-risk'`; else `'neutral'`.
 

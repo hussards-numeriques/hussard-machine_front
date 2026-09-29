@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { formatLongDate, formatShortDate } from './date';
+import { daysUntil, formatLongDate, formatShortDate } from './date';
 
 describe('formatShortDate', () => {
   afterEach(() => {
@@ -54,5 +54,21 @@ describe('formatLongDate', () => {
   it('treats a naive (no-timezone) ISO string as UTC regardless of the runner local timezone', () => {
     vi.stubEnv('TZ', 'Asia/Tokyo');
     expect(formatLongDate('2026-08-21T23:30:00')).toBe('21 août 2026');
+  });
+});
+
+describe('daysUntil', () => {
+  const now = new Date('2026-09-29T12:00:00Z');
+
+  it('rounds a partial day up so an expiry tomorrow morning reads as 1 day', () => {
+    expect(daysUntil('2026-09-30T00:00:00Z', now)).toBe(1);
+  });
+
+  it('never goes negative once the date has passed', () => {
+    expect(daysUntil('2026-09-01T00:00:00Z', now)).toBe(0);
+  });
+
+  it('treats a naive ISO string as UTC', () => {
+    expect(daysUntil('2026-10-02T12:00:00', now)).toBe(3);
   });
 });

@@ -33,7 +33,7 @@ générique, pour permettre un futur affichage différencié par code statut),
 (activé seulement si authentifié), `useStartCheckout()` (redirige
 `window.location.assign` vers `checkout_url` en `onSuccess`). Pas de
 Context/Provider dédié — le statut est lu par 4 endroits (`SubscriptionPage`,
-`SubscriptionSuccessPage`, `SubscriptionBadge`, `QuestsPage`), `useQuery`
+`SubscriptionSuccessPage`, `Header` via `SubscriptionStatus`, `QuestsPage`), `useQuery`
 dédoublonne déjà sur la clé `['subscription-status']`.
 
 ## Pages
@@ -84,3 +84,14 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 ## Secret redeem code (`/vip`, hidden page)
 
 A fourth route, `POST /subscription/redeem` (Bearer, `{ code }` → same shape as `GET /subscription`), activates a free one-year subscription from a single-use code distributed manually by the operator (no admin UI, no Stripe involved — see the back-end docs for how codes are generated). `VipPage` (`src/pages/VipPage.tsx`) is the only consumer, reached at `/vip`. This route is deliberately **not** part of the "Backend contract" table above and **not** linked from any nav/menu — do not add a link to it, do not add `/vip` to `public/sitemap.xml` or `public/robots.txt`. `redeem` on `subscriptionRepository`/`useRedeem` follow the exact same port/adapter/hook shape as `createCheckoutSession`/`useStartCheckout`.
+
+## Affichage dans le header (`components/SubscriptionStatus.tsx`)
+
+L'abonné est présenté comme **Supporter** (cohérent avec « Soutenir Calc Rush ») :
+
+- `SupporterCrown` : couronne dorée posée en biais sur l'avatar du header quand
+  `active === true` — c'est le « badge de soutien » promis sur `/subscription`.
+- `SubscriptionMenuCard` : carte en tête du menu joueur, lien vers `/subscription`.
+  Non abonné → carte indigo « Deviens Supporter » ; abonné → carte dorée
+  « Supporter · Jusqu'au <date> » ; à ≤ 7 jours de l'expiration
+  (`daysUntil` de `lib/date.ts`) → carte rose « Expire dans N jours · Prolonger ».

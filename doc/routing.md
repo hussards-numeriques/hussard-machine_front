@@ -75,9 +75,9 @@ triggers a fresh connect — without it, React sees no changed dependency and sk
 - `HomePage` → "Partie Rapide" → `navigate('/game', { state })` (no REST call, no id — the backend picks the game on `JOIN`)
 - `PodiumView` → "Rejouer" → `navigate('/game', { state })` (same as quick game — always resumes/creates via `JOIN`, never reuses the finished game's id)
 - `PodiumView` → back → `navigate('/')`
-- `Header` → `← Home` link on all pages except `/`
+- `Header` → Rushy + « Calc Rush » home pill on all pages except `/`
 - `Header` → user menu → "Quêtes & Titres" → `navigate('/quests')` (authenticated users only, see `doc/quests-titles.md`)
-- `Header` → user menu → "Abonnement" → `navigate('/subscription')` (authenticated users only, see `doc/subscription.md`)
+- `Header` → user menu → Supporter card → `navigate('/subscription')` (authenticated users only, see `doc/subscription.md`)
 
 ## Adding a new page
 

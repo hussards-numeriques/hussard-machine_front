@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { StreakFlame, getStreakTier } from './index';
+import { StreakFlame, getNextStreakTier, getStreakTier } from './index';
 
 describe('getStreakTier', () => {
   it.each([
@@ -26,5 +26,20 @@ describe('StreakFlame', () => {
   it('renders the svg of the tier matching the count', () => {
     const { container } = render(<StreakFlame count={14} animated={false} />);
     expect(container.querySelector('[data-tier="blue"]')).not.toBeNull();
+  });
+});
+
+describe('getNextStreakTier', () => {
+  it.each([
+    [0, 'ember'],
+    [2, 'orange'],
+    [12, 'blue'],
+    [59, 'gold'],
+  ])('count %i → next tier %s', (count, expected) => {
+    expect(getNextStreakTier(count)?.id).toBe(expected);
+  });
+
+  it('returns null once the top tier is reached', () => {
+    expect(getNextStreakTier(60)).toBeNull();
   });
 });

@@ -72,7 +72,7 @@ calc-rush_front/
 │   ├── components/
 │   │   ├── Button.tsx                # Reusable button (variant, size)
 │   │   ├── Input.tsx                 # Reusable text field
-│   │   ├── Header.tsx                # Fixed header (nav + auth)
+│   │   ├── Header.tsx                # Fixed header: home pill + player HUD (streak chip, avatar menu)
 │   │   ├── Footer.tsx                # Discreet footer (home page only): copyright + legal links
 │   │   ├── AuthModal.tsx             # Login / register modal
 │   │   ├── grade/

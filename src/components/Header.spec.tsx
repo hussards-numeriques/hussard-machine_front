@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Header } from './Header';
+
+const mocks = vi.hoisted(() => ({ active: false }));
 
 vi.mock('../contexts/useAuth', () => ({
   useAuth: () => ({
@@ -16,28 +18,64 @@ vi.mock('../contexts/useAuth', () => ({
   }),
 }));
 
+vi.mock('../hooks/usePlayerProfile', () => ({
+  usePlayerProfile: () => ({
+    data: { level: 'CM1', grade: 'GOLD', selected_icon_url: null },
+  }),
+}));
+
+vi.mock('../hooks/useSubscription', () => ({
+  useSubscriptionStatus: () => ({
+    data: { active: mocks.active, expires_at: mocks.active ? '2099-01-01T00:00:00' : null },
+  }),
+}));
+
 vi.mock('./streak/StreakBadge', () => ({ StreakBadge: () => null }));
-vi.mock('./SubscriptionBadge', () => ({ SubscriptionBadge: () => null }));
+
+const renderHeader = () =>
+  render(
+    <MemoryRouter>
+      <Header />
+    </MemoryRouter>
+  );
 
 describe('Header - user menu', () => {
-  it('links to /quests and /subscription between the profile link and the logout button', () => {
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+  beforeEach(() => {
+    mocks.active = false;
+  });
 
-    fireEvent.click(screen.getByText('Tim'));
+  it('shows the player level and grade, then the menu links before the logout button', () => {
+    renderHeader();
 
+    fireEvent.click(screen.getByRole('button', { name: 'Menu du joueur' }));
+
+    expect(screen.getByText('CM1 · Or')).toBeInTheDocument();
     const links = screen.getAllByRole('link').map((el) => el.textContent);
     const profileIndex = links.indexOf('Mon profil');
     expect(profileIndex).toBeGreaterThanOrEqual(0);
-    expect(links[profileIndex + 1]).toBe('Quêtes & Titres');
-    expect(links[profileIndex + 2]).toBe('Icônes');
-    expect(links[profileIndex + 3]).toBe('Abonnement');
-    expect(screen.getByRole('link', { name: 'Abonnement' })).toHaveAttribute(
-      'href',
-      '/subscription'
-    );
+    expect(links.slice(profileIndex)).toEqual([
+      'Mon profil',
+      'Quêtes & Titres',
+      'Icônes',
+      'Réglages',
+    ]);
+  });
+
+  it('crowns the avatar of a supporter only', () => {
+    const { unmount } = renderHeader();
+    expect(screen.queryByTestId('supporter-crown')).not.toBeInTheDocument();
+    unmount();
+
+    mocks.active = true;
+    renderHeader();
+    expect(screen.getByTestId('supporter-crown')).toBeInTheDocument();
+  });
+
+  it('closes the menu on an outside click', () => {
+    renderHeader();
+    fireEvent.click(screen.getByRole('button', { name: 'Menu du joueur' }));
+    expect(screen.getByText('Mon profil')).toBeInTheDocument();
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByText('Mon profil')).not.toBeInTheDocument();
   });
 });

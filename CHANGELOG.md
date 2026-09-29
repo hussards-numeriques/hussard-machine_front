@@ -1,5 +1,14 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Header redesigned as a single player HUD: streak chip + avatar in one capsule, and a Rushy « Calc Rush » pill to go home.
+- Streak: bigger flame with the daily-quest state as a small corner badge; the chip turns amber when at risk and red when it's the last chance. The popover now always opens and shows the next flame tier (« Prochaine flamme dans 2 jours »).
+- Subscription: the cryptic « + » coin is replaced by a golden **Supporter** crown on the player's avatar. The user menu opens on a Supporter card (expiry date, red « Expire dans N jours · Prolonger » in the last week, or « Deviens Supporter » for non-subscribers).
+- User menu: shows the grade-framed avatar, school level and grade; closes on outside click.
+
 ## [0.27.0] - 2026-09-29
 
 ### Changed

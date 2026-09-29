@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { AuthContext, type AuthContextValue } from '../../contexts/AuthContext';
 import { StreakContext, type StreakContextValue } from '../../contexts/StreakContext';
@@ -22,7 +23,9 @@ const renderBadge = (isAuthenticated: boolean, streak: StreakResponse | null) =>
   return render(
     <AuthContext.Provider value={authValue(isAuthenticated)}>
       <StreakContext.Provider value={streakValue}>
-        <StreakBadge />
+        <MemoryRouter>
+          <StreakBadge />
+        </MemoryRouter>
       </StreakContext.Provider>
     </AuthContext.Provider>
   );
@@ -61,6 +64,26 @@ describe('StreakBadge', () => {
     });
     expect(screen.queryByText('0')).not.toBeInTheDocument();
     expect(container.querySelector('[data-quest="neutral"]')).not.toBeNull();
+  });
+
+  it('opens a popover inviting to light the flame when there is no streak', () => {
+    renderBadge(true, { current_count: 0, played_today: false, freeze_available_on: null });
+    fireEvent.click(screen.getByRole('button', { name: /quête/i }));
+    expect(screen.getByText(/allumer ta flamme/i)).toBeInTheDocument();
+  });
+
+  it('shows how many days remain until the next flame tier', () => {
+    renderBadge(true, { current_count: 12, played_today: true, freeze_available_on: null });
+    fireEvent.click(screen.getByRole('button', { name: /quête/i }));
+    expect(screen.getByText(/prochaine flamme dans 2 jours/i)).toBeInTheDocument();
+  });
+
+  it('closes the popover on an outside click', () => {
+    renderBadge(true, { current_count: 8, played_today: false, freeze_available_on: null });
+    fireEvent.click(screen.getByRole('button', { name: /quête/i }));
+    expect(screen.getByText(/sécuriser ta série/i)).toBeInTheDocument();
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByText(/sécuriser ta série/i)).not.toBeInTheDocument();
   });
 
   it('opens a soft-risk popover on click without a day counter', () => {

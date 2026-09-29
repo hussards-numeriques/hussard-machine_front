@@ -11,5 +11,5 @@ export const StreakFlame: React.FC<StreakFlameProps> = ({ count, ...rest }) => {
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
-export { getStreakTier, STREAK_TIERS } from './tiers';
+export { getNextStreakTier, getStreakTier, STREAK_TIERS } from './tiers';
 export type { FlameProps, StreakTier, TierId } from './tiers';
