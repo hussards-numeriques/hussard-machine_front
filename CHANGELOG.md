@@ -1,6 +1,6 @@
 # Calc Rush Front
 
-## [Unreleased]
+## [0.27.0] - 2026-09-29
 
 ### Changed
 
