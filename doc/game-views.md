@@ -16,8 +16,8 @@ Displays the player list and action buttons.
 - **Start**: visible only if `canStart && !game.is_quick_game`
   - `canStart` = `game.players.length >= 1 && game.players.every(p => p.is_ready)`
   - Quick games start automatically server-side
-- **Launch countdown**: when `game.state === 'COUNTDOWN'`, `LaunchCountdownOverlay` (`src/components/LaunchCountdownOverlay.tsx`) covers the lobby: Rushy (`determine`, then `champion` on GO), the number from the backend `COUNTDOWN` WS message (`Prêts ?` before the first tick, `5…1`, then `GO !`) popping in (`animate-countdown-pop`, restarted via `key`) inside a pinging ring, and the players' avatars. Animations are `motion-safe:` only. The seconds come from `client.setLaunchCountdownCallback` (registered in an effect with cleanup) — no local timer.
-- **Locked ready button**: during `COUNTDOWN` the ready toggle is replaced by a disabled `🔒 C'est parti !` button (bar kept above the overlay with `z-50`), so no `READY` can be sent; `Quitter` and `Lancer la partie !` are hidden.
+- **Launch countdown**: when `game.state === 'COUNTDOWN'`, `LaunchCountdownOverlay` (`src/components/LaunchCountdownOverlay.tsx`) covers the lobby with a calm, light screen (`bg-slate-50`): a static Rushy (`determine`, then `champion` on GO), a small « La partie commence » label, the number from the backend `COUNTDOWN` WS message (`Prêts ?` before the first tick, `5…1`, then `GO !`) in `text-primary` with a single short fade/scale-in (`animate-countdown-pop`, restarted via `key`, `motion-safe:` only), and the players' avatars with their names. The seconds come from `client.setLaunchCountdownCallback` (registered in an effect with cleanup) — no local timer.
+- **No buttons during launch**: during `COUNTDOWN` the whole bottom action bar (ready toggle, `Quitter`, `Lancer la partie !`) is not rendered, so no `READY` can be sent.
 - **Quitter**: shown only while `!isReady`; calls `onLeave` (wired to `GamePage.handleBackHome`) to return to the home screen. A ready player must first click "Je ne suis plus prêt" to reveal it.
 
 ### Props

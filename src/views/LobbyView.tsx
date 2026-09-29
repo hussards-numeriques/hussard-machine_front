@@ -53,8 +53,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
     client.startGame();
   };
 
-  const canStart =
-    !isLaunching && game.players.length >= 1 && game.players.every((p) => p.is_ready);
+  const canStart = game.players.length >= 1 && game.players.every((p) => p.is_ready);
 
   return (
     <div className="flex flex-col items-center min-h-screen p-4 space-y-8 max-w-2xl mx-auto w-full">
@@ -148,25 +147,16 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
         </div>
       </div>
 
-      {isLaunching && <LaunchCountdownOverlay seconds={launchSeconds} players={game.players} />}
+      {isLaunching ? (
+        <LaunchCountdownOverlay seconds={launchSeconds} players={game.players} />
+      ) : (
+        <div className="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center gap-4">
+          {!isReady && (
+            <Button size="lg" variant="secondary" onClick={onLeave} className="shadow-xl">
+              Quitter
+            </Button>
+          )}
 
-      <div className="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center gap-4">
-        {!isReady && !isLaunching && (
-          <Button size="lg" variant="secondary" onClick={onLeave} className="shadow-xl">
-            Quitter
-          </Button>
-        )}
-
-        {isLaunching ? (
-          <Button
-            size="lg"
-            variant="success"
-            disabled
-            className="w-full max-w-xs shadow-xl disabled:opacity-100"
-          >
-            🔒 C'est parti !
-          </Button>
-        ) : (
           <Button
             size="lg"
             variant={isReady ? 'secondary' : 'primary'}
@@ -175,19 +165,19 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
           >
             {isReady ? 'Je ne suis plus prêt' : 'Je suis prêt !'}
           </Button>
-        )}
 
-        {canStart && !game.is_quick_game && (
-          <Button
-            size="lg"
-            variant="success"
-            onClick={handleStart}
-            className="w-full max-w-xs shadow-xl animate-bounce-short"
-          >
-            Lancer la partie !
-          </Button>
-        )}
-      </div>
+          {canStart && !game.is_quick_game && (
+            <Button
+              size="lg"
+              variant="success"
+              onClick={handleStart}
+              className="w-full max-w-xs shadow-xl animate-bounce-short"
+            >
+              Lancer la partie !
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Launch countdown: calmer, lighter screen (light background, static Rushy, a single short animation on the number, player names under avatars); the locked « C'est parti ! » button is gone — no buttons are shown during the countdown.
+
 ## [0.26.0] - 2026-09-29
 
 ### Changed

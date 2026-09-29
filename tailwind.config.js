@@ -28,7 +28,7 @@ export default {
         'gold-shimmer': 'gold-shimmer 2.5s ease-in-out infinite',
         'quest-pulse': 'quest-pulse 1s ease-in-out infinite',
         weigh: 'weigh 0.7s ease-in-out infinite',
-        'countdown-pop': 'countdown-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'countdown-pop': 'countdown-pop 0.35s ease-out',
       },
       keyframes: {
         weigh: {
@@ -72,9 +72,8 @@ export default {
           '50%': { transform: 'scale(1.18)', opacity: '0.65' },
         },
         'countdown-pop': {
-          '0%': { transform: 'scale(2.5) rotate(-8deg)', opacity: '0' },
-          '60%': { transform: 'scale(0.9) rotate(2deg)', opacity: '1' },
-          '100%': { transform: 'scale(1) rotate(0)', opacity: '1' },
+          '0%': { transform: 'scale(1.3)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },

@@ -428,15 +428,10 @@ describe('LobbyView - launch countdown', () => {
     return { setReady, pushSeconds };
   };
 
-  it('locks the ready button and never sends READY during the launch', () => {
-    const { setReady } = renderLaunching();
+  it('shows no button at all during the launch', () => {
+    renderLaunching();
 
-    const lockedButton = screen.getByRole('button', { name: /C'est parti/ });
-    expect(lockedButton).toBeDisabled();
-    fireEvent.click(lockedButton);
-
-    expect(setReady).not.toHaveBeenCalled();
-    expect(screen.queryByText('Je ne suis plus prêt')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('shows the overlay driven by the server countdown, then GO', () => {
