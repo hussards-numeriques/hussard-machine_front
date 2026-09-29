@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- Subscription status is no longer re-fetched (`GET /subscription`) on every page navigation: cached for 5 minutes.
+
 ## [0.28.0] - 2026-09-29
 
 ### Changed

@@ -30,7 +30,7 @@ générique, pour permettre un futur affichage différencié par code statut),
 ## Hooks (`src/hooks/useSubscription.ts`)
 
 `useSubscriptionPlans()` (public, `staleTime: Infinity`), `useSubscriptionStatus()`
-(activé seulement si authentifié), `useStartCheckout()` (redirige
+(activé seulement si authentifié, `staleTime` 5 min pour ne pas refetch à chaque navigation), `useStartCheckout()` (redirige
 `window.location.assign` vers `checkout_url` en `onSuccess`). Pas de
 Context/Provider dédié — le statut est lu par 4 endroits (`SubscriptionPage`,
 `SubscriptionSuccessPage`, `Header` via `SubscriptionStatus`, `QuestsPage`), `useQuery`

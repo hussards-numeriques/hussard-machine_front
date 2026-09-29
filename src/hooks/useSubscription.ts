@@ -22,6 +22,7 @@ export const useSubscriptionStatus = () => {
     queryFn: () =>
       subscriptionRepository.fetchStatus((input, init) => client.authorizedFetch(input, init)),
     enabled: isAuthenticated && !isLoading,
+    staleTime: 5 * 60 * 1000,
   });
 };
 
