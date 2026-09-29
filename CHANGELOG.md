@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- Header: Rushy home link no longer sits off-center in a bubble — the bubble is removed and the mascot shown on its own.
+
 ## [0.28.1] - 2026-09-29
 
 ### Fixed

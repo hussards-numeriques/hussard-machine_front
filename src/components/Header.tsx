@@ -22,9 +22,9 @@ const HomeLink: React.FC = () => (
   <Link
     to="/"
     aria-label="Accueil"
-    className="pointer-events-auto flex items-center gap-1.5 h-11 pl-1 pr-3 rounded-full bg-white/90 backdrop-blur shadow border border-slate-200 hover:border-primary-light transition-colors"
+    className="pointer-events-auto flex items-center gap-1.5 hover:scale-105 transition-transform"
   >
-    <Mascot size={34} pose="joyeux" title="Rushy" />
+    <Mascot size={44} pose="joyeux" title="Rushy" className="drop-shadow" />
     <span className="text-sm font-black text-primary-dark hidden sm:inline">Calc Rush</span>
   </Link>
 );
