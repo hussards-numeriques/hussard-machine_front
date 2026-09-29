@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import { resolveGradeFrame } from '../lib/grades';
+import { resolveGradeLabel, resolveGradeMetal, resolveLevelLabel } from '../lib/grades';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
 
@@ -8,45 +8,63 @@ interface PlayerAvatarProps {
   name: string;
   grade: string;
   isBot: boolean;
+  level?: string;
+  iconUrl?: string | null;
   size?: AvatarSize;
-  showGradeRing?: boolean;
 }
 
-const SIZE_CLASSES: Record<AvatarSize, { circle: string; text: string; frame: string }> = {
-  sm: { circle: 'w-9 h-9 border-2', text: 'text-sm', frame: 'p-[3px]' },
-  md: { circle: 'w-12 h-12 border-[3px]', text: 'text-xl', frame: 'p-1' },
-  lg: { circle: 'w-16 h-16 border-4', text: 'text-2xl', frame: 'p-[5px]' },
-};
+const SIZE_CLASSES: Record<AvatarSize, { face: string; text: string; ring: string; tab: string }> =
+  {
+    sm: { face: 'w-9 h-9', text: 'text-sm', ring: 'p-[3px]', tab: 'text-[9px] px-1' },
+    md: { face: 'w-12 h-12', text: 'text-xl', ring: 'p-1', tab: 'text-[10px] px-1.5' },
+    lg: { face: 'w-16 h-16', text: 'text-2xl', ring: 'p-[5px]', tab: 'text-xs px-2' },
+  };
+
+const rankDescription = (grade: string, level: string | undefined): string =>
+  level ? `${resolveLevelLabel(level)} · ${resolveGradeLabel(grade)}` : resolveGradeLabel(grade);
 
 export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
   name,
   grade,
   isBot,
+  level,
+  iconUrl,
   size = 'md',
-  showGradeRing = true,
 }) => {
-  const initials = name.substring(0, 2).toUpperCase();
-  const { circle, text, frame } = SIZE_CLASSES[size];
+  const { face, text, ring, tab } = SIZE_CLASSES[size];
+  const metal = resolveGradeMetal(grade);
 
   return (
     <div
       data-testid="player-avatar"
-      className={cn(
-        'shrink-0 rounded-full',
-        showGradeRing && ['grade-frame', frame, resolveGradeFrame(grade)]
-      )}
+      title={rankDescription(grade, level)}
+      className={cn('relative shrink-0 rounded-full grade-ring', ring, metal, level && 'mb-2')}
     >
-      <div
-        className={cn(
-          'rounded-full flex items-center justify-center font-bold text-white border-white',
-          circle,
-          text,
-          !showGradeRing && 'border-0',
-          isBot ? 'bg-slate-400' : 'bg-primary'
-        )}
-      >
-        {initials}
-      </div>
+      {iconUrl ? (
+        <img src={iconUrl} alt={name} className={cn('rounded-full object-cover bg-white', face)} />
+      ) : (
+        <div
+          className={cn(
+            'rounded-full flex items-center justify-center font-black text-white',
+            face,
+            text,
+            isBot ? 'bg-slate-400' : 'bg-primary'
+          )}
+        >
+          {name.substring(0, 2).toUpperCase()}
+        </div>
+      )}
+      {level && (
+        <span
+          className={cn(
+            'grade-tab absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 rounded-full border py-px font-black leading-none whitespace-nowrap',
+            metal,
+            tab
+          )}
+        >
+          {resolveLevelLabel(level)}
+        </span>
+      )}
     </div>
   );
 };

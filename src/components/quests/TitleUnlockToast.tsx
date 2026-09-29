@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { resolveRarityLabel } from '../../lib/rarity';
-import { TitlePlate } from '../PlayerTitle';
+import { TitleLabel } from '../PlayerTitle';
 import type { MyTitle } from '../../services/quests';
 
 interface TitleUnlockToastProps {
@@ -23,7 +23,7 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
       <span className="text-sm font-bold text-slate-600">
         🏆 Titre {resolveRarityLabel(title.rarity)} débloqué !
       </span>
-      <TitlePlate title={title} className="text-base px-3 py-1" />
+      <TitleLabel title={title} className="text-lg" />
     </div>
   );
 };

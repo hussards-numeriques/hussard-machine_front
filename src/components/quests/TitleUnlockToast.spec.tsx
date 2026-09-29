@@ -18,7 +18,7 @@ describe('TitleUnlockToast', () => {
 
   it('shows a toast for a newly unlocked title', () => {
     render(<TitleUnlockToast titles={[title]} />);
-    expect(screen.getByText(/Titre Or débloqué/)).toBeInTheDocument();
+    expect(screen.getByText(/Titre Épique débloqué/)).toBeInTheDocument();
     expect(screen.getByText("Légende de l'Arène")).toBeInTheDocument();
   });
 

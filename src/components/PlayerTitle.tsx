@@ -1,30 +1,27 @@
 import React from 'react';
 import { cn } from '../lib/utils';
-import { resolveRarityIcon, resolveRarityLabel, resolveRarityPlate } from '../lib/rarity';
+import { resolveRarityLabel, resolveRarityTextStyle } from '../lib/rarity';
 import type { PlayerTitle as PlayerTitleData } from '../types';
 
 type TitleData = Pick<PlayerTitleData, 'label' | 'rarity'>;
 
-interface TitlePlateProps {
+interface TitleLabelProps {
   title: TitleData;
   locked?: boolean;
   className?: string;
 }
 
-export const TitlePlate: React.FC<TitlePlateProps> = ({ title, locked = false, className }) => (
+export const TitleLabel: React.FC<TitleLabelProps> = ({ title, locked = false, className }) => (
   <span
     title={`Titre ${resolveRarityLabel(title.rarity)}`}
     className={cn(
-      'title-plate',
-      resolveRarityPlate(title.rarity),
-      locked && 'title-plate-locked',
+      'inline-block max-w-full truncate align-top text-xs font-extrabold italic',
+      locked ? 'text-slate-400' : resolveRarityTextStyle(title.rarity),
       className
     )}
   >
-    <span aria-hidden className="shrink-0">
-      {locked ? '🔒' : resolveRarityIcon(title.rarity)}
-    </span>
-    <span className="truncate">{title.label}</span>
+    {locked && <span aria-hidden>🔒 </span>}
+    {title.label}
   </span>
 );
 
@@ -34,8 +31,4 @@ interface PlayerTitleProps {
 }
 
 export const PlayerTitle: React.FC<PlayerTitleProps> = ({ title, className }) =>
-  title ? (
-    <div className="flex min-w-0 mt-0.5">
-      <TitlePlate title={title} className={className} />
-    </div>
-  ) : null;
+  title ? <TitleLabel title={title} className={className} /> : null;

@@ -1,6 +1,6 @@
 # Quêtes & Titres
 
-A player unlocks cosmetic **titles** (rarities `BRONZE`/`SILVER`/`GOLD`/`DIAMOND`) by
+A player unlocks cosmetic **titles** (rarities `BRONZE`/`SILVER`/`GOLD`/`DIAMOND`, displayed Commun/Rare/Épique/Légendaire) by
 progressing through **quests** (e.g. "win N games in a row"). An unlocked title can be
 equipped and is then visible to other players in the lobby and podium, alongside
 `level`/`grade`/`daily_streak`.
@@ -43,18 +43,19 @@ and by the unlock-detection hook below.
 
 ## Rarity styling (`src/lib/rarity.ts`)
 
-`resolveRarityLabel`/`resolveRarityPlate`/`resolveRarityIcon`/`resolveRarityBadgeStyle`, mirrors
-`lib/grades.ts`. A title is always rendered as a **`TitlePlate`** (`src/components/PlayerTitle.tsx`):
-a metallic plate (`.title-plate-*` in `src/index.css`) whose value escalates with rarity —
-copper Bronze `★`, polished Silver `★★`, glowing Gold `★★★` with a shine sweep, iridescent
-animated Diamond `💎` with glow (animations off under `prefers-reduced-motion`). `locked`
-greys it out and swaps the icon for `🔒`. Falls back to a default style for any rarity not in `RARITIES` — the
+`resolveRarityLabel`/`resolveRarityTextStyle`/`resolveRarityBadgeStyle`, mirrors `lib/grades.ts`.
+The backend keys stay `BRONZE`/`SILVER`/`GOLD`/`DIAMOND`, but the front **never shows them as
+metals**: metal is reserved for the player's grade (avatar ring), so rarity uses the game
+vocabulary kids already know — Commun (slate), Rare (sky), Épique (fuchsia), Légendaire
+(amber→orange gradient text). A title is always rendered as a **`TitleLabel`**
+(`src/components/PlayerTitle.tsx`): italic extra-bold text colored by rarity, an epithet under
+the name rather than a badge. `locked` greys it out with a `🔒`. Falls back to a default style for any rarity not in `RARITIES` — the
 backend contract treats the rarity list as open.
 
 ## Display in game (lobby + podium)
 
 `PlayerTitle` (`src/components/PlayerTitle.tsx`) renders `null` when `player.title` is
-`null`, otherwise a `TitlePlate` under the player's name. Wired into `LobbyView`
+`null`, otherwise a `TitleLabel` under the player's name. Wired into `LobbyView`
 (player card) and `PodiumView`'s full ranking — **not** shown in the podium's top-3
 columns, same rule as the grade ring (see `doc/game-views.md`).
 
@@ -80,7 +81,7 @@ union rendered by `TitlesLevelBanner`:
 
 For each quest in the catalog, `QuestProgressCard` shows a progress bar toward the next
 locked tier (« 7 / 10 pour le prochain titre », or « ✓ Quête terminée ») and every tier as a
-`TitlePlate` (locked tiers show `🎯 threshold` on the right). Its `mode` prop is a
+`TitleLabel` (locked tiers show `🎯 threshold` on the right). Its `mode` prop is a
 union: `editable` (active level) shows an inline **Équiper**/**✓ Équipé** button on
 unlocked tiers (clicking the equipped tier unequips it, the PUT always sends the viewed
 level); `readonly` (inactive level) shows no button, only a **✓ Était équipé** badge on the

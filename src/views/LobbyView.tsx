@@ -107,7 +107,12 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                     : 'border-slate-100 bg-slate-50'
               )}
             >
-              <PlayerAvatar name={player.name} grade={player.grade} isBot={player.is_bot} />
+              <PlayerAvatar
+                name={player.name}
+                grade={player.grade}
+                level={player.level}
+                isBot={player.is_bot}
+              />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-800 truncate">{player.name}</span>

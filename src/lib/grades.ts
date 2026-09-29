@@ -46,12 +46,12 @@ const GRADE_BAR_LIGHT_COLORS: Record<Grade, string> = {
   DIAMOND: 'bg-cyan-200',
 };
 
-const GRADE_FRAMES: Record<Grade, string> = {
-  BRONZE: 'grade-frame-bronze',
-  SILVER: 'grade-frame-silver',
-  GOLD: 'grade-frame-gold',
-  PLATINE: 'grade-frame-platine',
-  DIAMOND: 'grade-frame-diamond',
+const GRADE_METALS: Record<Grade, string> = {
+  BRONZE: 'grade-metal-bronze',
+  SILVER: 'grade-metal-silver',
+  GOLD: 'grade-metal-gold',
+  PLATINE: 'grade-metal-platine',
+  DIAMOND: 'grade-metal-diamond',
 };
 
 const LEVEL_LABELS: Record<Level, string> = {
@@ -68,7 +68,7 @@ const LEVEL_LABELS: Record<Level, string> = {
 
 export const DEFAULT_GRADE_STYLE = 'bg-slate-100 text-slate-600 border-slate-300';
 
-export const DEFAULT_GRADE_FRAME = 'grade-frame-default';
+export const DEFAULT_GRADE_METAL = 'grade-metal-default';
 
 const isGrade = (value: string): value is Grade => (GRADES as readonly string[]).includes(value);
 
@@ -87,8 +87,8 @@ export const resolveGradeBarColor = (grade: string): string =>
 export const resolveGradeBarLightColor = (grade: string): string =>
   isGrade(grade) ? GRADE_BAR_LIGHT_COLORS[grade] : 'bg-primary-light';
 
-export const resolveGradeFrame = (grade: string): string =>
-  isGrade(grade) ? GRADE_FRAMES[grade] : DEFAULT_GRADE_FRAME;
+export const resolveGradeMetal = (grade: string): string =>
+  isGrade(grade) ? GRADE_METALS[grade] : DEFAULT_GRADE_METAL;
 
 export const resolveLevelLabel = (level: string): string =>
   isLevel(level) ? LEVEL_LABELS[level] : level;

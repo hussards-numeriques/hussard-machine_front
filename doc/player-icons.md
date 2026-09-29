@@ -83,7 +83,8 @@ is reflected in `/me/details.selected_icon_url`, consumed by `ProfilePage`'s ava
 ### Rarity styling (`src/lib/rarity.ts`)
 
 Shared with titles — same module, renamed from `lib/titles.ts` since both features use
-the same `BRONZE`/`SILVER`/`GOLD`/`DIAMOND` system.
+the same `BRONZE`/`SILVER`/`GOLD`/`DIAMOND` system, displayed as Commun/Rare/Épique/Légendaire
+(never as metals — metal means grade, see `doc/quests-titles.md`).
 
 ### `/icons` page (`src/pages/IconsPage.tsx`)
 

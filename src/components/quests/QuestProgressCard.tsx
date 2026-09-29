@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
-import { TitlePlate } from '../PlayerTitle';
+import { TitleLabel } from '../PlayerTitle';
 import type { MyQuest, Quest } from '../../services/quests';
 
 export type QuestProgressCardMode =
@@ -96,7 +96,7 @@ export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
                 unlocked ? 'bg-white border border-slate-200' : 'bg-slate-100'
               )}
             >
-              <TitlePlate title={tier.title} locked={!unlocked} className="text-sm" />
+              <TitleLabel title={tier.title} locked={!unlocked} className="text-sm" />
               {unlocked ? (
                 <TierAction mode={mode} equipped={equipped} titleId={tier.title.id} />
               ) : (

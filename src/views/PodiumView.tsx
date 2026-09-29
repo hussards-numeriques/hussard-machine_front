@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
 import { PlayerAvatar } from '../components/PlayerAvatar';
-import { PlayerLevel } from '../components/PlayerLevel';
 import { PlayerStreak } from '../components/PlayerStreak';
 import { PlayerTitle } from '../components/PlayerTitle';
 import { AnswerDots } from '../components/AnswerDots';
@@ -120,11 +119,16 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span className="font-mono w-6 shrink-0">{i + 1}.</span>
-                <PlayerAvatar name={p.name} grade={p.grade} isBot={p.is_bot} size="sm" />
+                <PlayerAvatar
+                  name={p.name}
+                  grade={p.grade}
+                  level={p.level}
+                  isBot={p.is_bot}
+                  size="sm"
+                />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-bold truncate">{p.name}</span>
-                    <PlayerLevel level={p.level} />
                     <PlayerStreak count={p.daily_streak} size={16} />
                   </div>
                   <PlayerTitle title={p.title} />

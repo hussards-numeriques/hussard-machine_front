@@ -192,12 +192,12 @@ describe('LobbyView - player title', () => {
     expect(screen.queryByText(/☆/)).not.toBeInTheDocument();
   });
 
-  it('does not show the school level next to the player name', () => {
+  it('shows the school level on the avatar tab, not next to the player name', () => {
     render(
       <LobbyView client={mockClient} game={gameWithTitle} currentPlayerId="p1" onLeave={vi.fn()} />
     );
 
-    expect(screen.queryByText('CP')).not.toBeInTheDocument();
+    expect(screen.getByTestId('player-avatar')).toHaveTextContent('CP');
   });
 });
 

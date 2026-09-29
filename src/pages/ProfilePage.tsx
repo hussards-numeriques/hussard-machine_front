@@ -18,6 +18,7 @@ import {
   LevelChangeConfirmModal,
   type LevelChangeVariant,
 } from '../components/LevelChangeConfirmModal';
+import { PlayerAvatar } from '../components/PlayerAvatar';
 import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../lib/grades';
 import { SegmentedXpBar } from '../components/grade/SegmentedXpBar';
 import { DeleteAccountModal } from '../components/DeleteAccountModal';
@@ -290,17 +291,14 @@ export const ProfilePage: React.FC = () => {
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
       <div className={`${gradeBg} rounded-3xl p-8 space-y-5 border-2 border-white shadow-lg`}>
         <div className="flex items-center gap-4">
-          {profile.selected_icon_url ? (
-            <img
-              src={profile.selected_icon_url}
-              alt="Icône de profil"
-              className="w-16 h-16 rounded-full object-cover shadow-md"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-black shadow-md">
-              {profile.username.substring(0, 2).toUpperCase()}
-            </div>
-          )}
+          <PlayerAvatar
+            name={profile.username}
+            grade={profile.grade}
+            level={profile.level}
+            iconUrl={profile.selected_icon_url}
+            isBot={false}
+            size="lg"
+          />
           <div>
             <h1 className="text-2xl font-black text-slate-800">{profile.username}</h1>
             <div className="flex items-center gap-2 mt-1">

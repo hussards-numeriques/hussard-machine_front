@@ -131,19 +131,13 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
 
 Each `Player` snapshot carries `level`, `grade`, `daily_streak` and `title` (set at game entry, immutable during the game — see the backend contract). Three shared components surface `grade`/`daily_streak`/`title`:
 
-- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the round initials avatar inside a **LoL-style metallic grade frame** (`resolveGradeFrame` in `src/lib/grades.ts` → `.grade-frame-*` classes in `src/index.css`: conic-gradient metal, glow from Gold up, rotating sheen on Platine/Diamond, disabled under `prefers-reduced-motion`), sizes `sm | md | lg`. Bots get a slate fill but still show their grade ring. The ring can be turned off with `showGradeRing={false}`.
+- `PlayerAvatar` (`src/components/PlayerAvatar.tsx`): the player's **rank badge**. The round face (initials, or `iconUrl` when given — only `ProfilePage` has it, the WS `Player` carries no icon) sits in a static metal ring colored by grade, and an optional `level` prop adds a small tab at the bottom of the ring showing the school level, painted in the same metal. The `title` attribute spells the whole rank (`CM2 · Or`). Metals are defined once per grade (`resolveGradeMetal` in `src/lib/grades.ts` → `.grade-metal-*` CSS variables in `src/index.css`, consumed by `.grade-ring` and `.grade-tab`); Platine/Diamond get a soft static glow. No animation on purpose: a rotating ring reads as a loading spinner. Sizes `sm | md | lg`. Bots get a slate face.
 - `PlayerStreak` (`src/components/PlayerStreak.tsx`): the streak flame + count, or `null` when `daily_streak <= 0` (see `doc/streak.md`).
 - `PlayerTitle` (`src/components/PlayerTitle.tsx`): the equipped title label colored by rarity, or `null` when `title === null` (see `doc/quests-titles.md`).
 
 Wired into `LobbyView` (player cards) and `PodiumView` (full ranking). The podium's top-3 columns show only the player's name — no avatar, grade ring, streak, or title — to keep those columns uncluttered. **Not** shown in the in-game `GameView` scoreboard by design.
 
-`level` (the school level, e.g. `CM2`, `6ème`) is surfaced separately by `PlayerLevel`
-(`src/components/PlayerLevel.tsx`, a slate pill using `resolveLevelLabel` in
-`src/lib/grades.ts`) — but **only** in `PodiumView`'s full ranking (next to the name,
-alongside `PlayerStreak`/`PlayerTitle`) and inside `EndGameXpProgress` (see above).
-**Deliberately not shown in `LobbyView`**: an earlier attempt put it next to the name
-there too, which crowded the row and pushed `PlayerTitle` out of prominence — titles
-are the app's flagship feature, so the lobby stays level-free.
+Layout rule for a player row: **left = rank** (avatar: grade ring + level tab), **right = identity** (name + streak on the first line, title on the second). `level` lives on the avatar tab (lobby, podium ranking, launch countdown, profile), which keeps the text column for the name and the title — titles are the app's flagship feature. `PlayerLevel` (slate pill) is only used in `EndGameXpProgress` (see above).
 
 ## Adding a UI element to a game view
 

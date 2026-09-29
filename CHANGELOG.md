@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Player cards redesigned around one rule: **metal = grade, color = title rarity**. The avatar is now a rank badge — a static metal ring for the grade plus a small tab showing the school level in the same metal (hover: « CM2 · Or ») — used in the lobby, podium ranking, launch countdown and profile. No more spinning rings or shine sweeps.
+- Titles: shown as a colored italic epithet under the name instead of a metallic plate. Rarities are now named Commun / Rare / Épique / Légendaire (slate, blue, purple, orange) so they no longer clash with the Bronze → Diamant grades. Same wording on icons.
+- Podium ranking: the level pill next to the name moved to the avatar tab.
+
 ## [0.26.1] - 2026-09-29
 
 ### Changed

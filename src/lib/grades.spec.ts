@@ -1,24 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import {
   resolveGradeBarLightColor,
-  resolveGradeFrame,
-  DEFAULT_GRADE_FRAME,
+  resolveGradeMetal,
+  DEFAULT_GRADE_METAL,
   isLevel,
 } from './grades';
 
-describe('resolveGradeFrame', () => {
+describe('resolveGradeMetal', () => {
   it.each([
-    ['BRONZE', 'grade-frame-bronze'],
-    ['SILVER', 'grade-frame-silver'],
-    ['GOLD', 'grade-frame-gold'],
-    ['PLATINE', 'grade-frame-platine'],
-    ['DIAMOND', 'grade-frame-diamond'],
+    ['BRONZE', 'grade-metal-bronze'],
+    ['SILVER', 'grade-metal-silver'],
+    ['GOLD', 'grade-metal-gold'],
+    ['PLATINE', 'grade-metal-platine'],
+    ['DIAMOND', 'grade-metal-diamond'],
   ])('maps %s to %s', (grade, expected) => {
-    expect(resolveGradeFrame(grade)).toBe(expected);
+    expect(resolveGradeMetal(grade)).toBe(expected);
   });
 
   it('falls back to the default frame for an unknown grade', () => {
-    expect(resolveGradeFrame('MASTER')).toBe(DEFAULT_GRADE_FRAME);
+    expect(resolveGradeMetal('MASTER')).toBe(DEFAULT_GRADE_METAL);
   });
 });
 

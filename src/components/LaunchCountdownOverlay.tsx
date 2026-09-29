@@ -46,7 +46,13 @@ export const LaunchCountdownOverlay: React.FC<LaunchCountdownOverlayProps> = ({
       <ul className="flex flex-wrap justify-center gap-4 max-w-md">
         {players.map((player) => (
           <li key={player.id} className="flex flex-col items-center gap-1 w-16">
-            <PlayerAvatar name={player.name} grade={player.grade} isBot={player.is_bot} size="sm" />
+            <PlayerAvatar
+              name={player.name}
+              grade={player.grade}
+              level={player.level}
+              isBot={player.is_bot}
+              size="sm"
+            />
             <span className="text-xs font-bold text-slate-600 truncate w-full text-center">
               {player.name}
             </span>
