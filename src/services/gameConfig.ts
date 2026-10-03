@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { GameConfig } from '../types';
 import { getApiUrl } from './apiConfig';
-import { ApiError } from './http';
+import { apiErrorFrom } from './http';
 
 const gameConfigSchema = z.object({
   experience_per_grade: z.number(),
@@ -13,7 +13,7 @@ const gameConfigSchema = z.object({
 export const fetchGameConfig = async (): Promise<GameConfig> => {
   const response = await fetch(`${getApiUrl()}/game/config`);
   if (!response.ok) {
-    throw new ApiError(response.status, `Failed to fetch game config (${response.status})`);
+    throw await apiErrorFrom(response, 'Failed to fetch game config');
   }
   return gameConfigSchema.parse(await response.json());
 };

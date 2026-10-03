@@ -7,11 +7,10 @@ import type { SubscriptionStatus } from '../services/subscription';
 
 const quest: QuestCatalog[number] = {
   id: 'win-streak',
-  label: "Terminer 1er en parties d'affilée",
   tiers: [
     {
       threshold: 5,
-      title: { id: 'win-streak-bronze', label: 'Petit Conquérant', rarity: 'BRONZE' },
+      title: { id: 'win-streak-bronze', rarity: 'BRONZE' },
     },
   ],
 };
@@ -71,7 +70,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 2,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: false }],
         },
@@ -95,7 +93,7 @@ describe('QuestsPage', () => {
         <QuestsPage />
       </MemoryRouter>
     );
-    expect(screen.getByText(quest.label)).toBeInTheDocument();
+    expect(screen.getByText("Terminer 1er en parties d'affilée")).toBeInTheDocument();
     expect(screen.getByText('Petit Conquérant')).toBeInTheDocument();
   });
 
@@ -109,7 +107,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 5,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
         },
@@ -156,7 +153,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 5,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
         },
@@ -182,7 +178,6 @@ describe('QuestsPage', () => {
       titles: [
         {
           id: 'win-streak-bronze',
-          label: 'Petit Conquérant',
           rarity: 'BRONZE',
           unlocked_at: '2026-01-01T00:00:00',
         },
@@ -190,7 +185,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 5,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
         },
@@ -218,7 +212,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 0,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: false }],
         },
@@ -293,7 +286,6 @@ describe('QuestsPage', () => {
       titles: [
         {
           id: 'win-streak-bronze',
-          label: 'Petit Conquérant',
           rarity: 'BRONZE',
           unlocked_at: '2026-01-01T00:00:00',
         },
@@ -301,7 +293,6 @@ describe('QuestsPage', () => {
       quests: [
         {
           id: 'win-streak',
-          label: quest.label,
           progress: 5,
           tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
         },

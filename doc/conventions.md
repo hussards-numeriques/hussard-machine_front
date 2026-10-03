@@ -109,3 +109,11 @@ npm run dev          # development server (Vite)
 npm run build        # production build
 npm run test         # tests in run mode (non-interactive)
 ```
+
+## Backend ids and texts
+
+The back sends no user-facing text, only ids, enum keys and error codes. Every French label
+lives in `src/lib/labels.ts` as a `Record<Id, string>` (no i18n library). REST errors are
+built with `apiErrorFrom(response, context)` (`src/services/http.ts`), which exposes the
+`{"detail": CODE}` code as `ApiError.code`; `resolveApiErrorMessage` turns it into French.
+Numbers are formatted with `Intl.NumberFormat('fr-FR')` (`src/lib/mathFormat.ts`, `src/lib/money.ts`).

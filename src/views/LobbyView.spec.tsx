@@ -149,7 +149,7 @@ describe('LobbyView - player title', () => {
         grade: 'BRONZE',
         daily_streak: 0,
         bot_config: null,
-        title: { id: 'win-streak-gold', label: "Légende de l'Arène", rarity: 'GOLD' },
+        title: { id: 'win-streak-gold', rarity: 'GOLD' },
       },
     ],
     questions: [],

@@ -10,7 +10,7 @@ const game = (answers: Game['answers']): Game => ({
   questions: [
     {
       id: 'q1',
-      statement: '7 x 8',
+      prompt: { type: 'multiplication', left: 7, right: 8 },
       answer: 56,
       category: 'multiplication',
       time_limit_seconds: 10,
@@ -25,7 +25,7 @@ const game = (answers: Game['answers']): Game => ({
 });
 
 describe('CorrectionCard', () => {
-  it('shows the statement and earned points without the answer value in success state', () => {
+  it('shows the prompt and earned points without the answer value in success state', () => {
     // Given
     const g = game([
       {
@@ -43,7 +43,7 @@ describe('CorrectionCard', () => {
 
     // Then
     expect(screen.getByText('Bonne réponse')).toBeInTheDocument();
-    expect(screen.getByText('7 x 8')).toBeInTheDocument();
+    expect(screen.getByText('7 × 8')).toBeInTheDocument();
     expect(screen.getByText('+135')).toBeInTheDocument();
     expect(screen.queryByText('56')).not.toBeInTheDocument();
   });
@@ -92,7 +92,7 @@ describe('CorrectionCard', () => {
         ...g.questions,
         {
           id: 'q2',
-          statement: '6 x 7',
+          prompt: { type: 'multiplication', left: 6, right: 7 },
           answer: 42,
           category: 'multiplication',
           time_limit_seconds: 10,

@@ -5,6 +5,7 @@ import { useRedeem } from '../hooks/useSubscription';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { ApiError } from '../services/http';
+import { API_ERROR_MESSAGES } from '../lib/labels';
 
 const VipNotice: React.FC<{ message: string }> = ({ message }) => (
   <div className="min-h-screen flex items-center justify-center p-4">
@@ -49,7 +50,9 @@ export const VipPage: React.FC = () => {
   }
 
   const isInvalidCode =
-    redeem.isError && redeem.error instanceof ApiError && redeem.error.status === 400;
+    redeem.isError &&
+    redeem.error instanceof ApiError &&
+    redeem.error.code === 'INVALID_REDEEM_CODE';
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -71,7 +74,11 @@ export const VipPage: React.FC = () => {
         >
           Activer
         </Button>
-        {isInvalidCode && <p className="text-sm font-bold text-rose-600">Code invalide.</p>}
+        {isInvalidCode && (
+          <p className="text-sm font-bold text-rose-600">
+            {API_ERROR_MESSAGES.INVALID_REDEEM_CODE}
+          </p>
+        )}
         {redeem.isError && !isInvalidCode && (
           <p className="text-sm font-bold text-rose-600">Une erreur est survenue, réessaie.</p>
         )}

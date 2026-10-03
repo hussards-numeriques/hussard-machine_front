@@ -5,19 +5,17 @@ import type { MyQuest, Quest } from '../../services/quests';
 
 const quest: Quest = {
   id: 'win-streak',
-  label: "Terminer 1er en parties d'affilée",
   tiers: [
     {
       threshold: 5,
-      title: { id: 'win-streak-bronze', label: 'Petit Conquérant', rarity: 'BRONZE' },
+      title: { id: 'win-streak-bronze', rarity: 'BRONZE' },
     },
-    { threshold: 10, title: { id: 'win-streak-silver', label: 'Top Player', rarity: 'SILVER' } },
+    { threshold: 10, title: { id: 'win-streak-silver', rarity: 'SILVER' } },
   ],
 };
 
 const progress: MyQuest = {
   id: 'win-streak',
-  label: quest.label,
   progress: 7,
   tiers: [
     { threshold: 5, title_id: 'win-streak-bronze', unlocked: true },

@@ -18,13 +18,11 @@ vi.mock('./useQuests', () => ({
 
 const titleA: MyTitle = {
   id: 'a',
-  label: 'A',
   rarity: 'BRONZE',
   unlocked_at: '2026-07-01T00:00:00',
 };
 const titleB: MyTitle = {
   id: 'b',
-  label: 'B',
   rarity: 'SILVER',
   unlocked_at: '2026-07-12T00:00:00',
 };

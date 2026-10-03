@@ -6,9 +6,9 @@ import type { SubscriptionPlan, SubscriptionStatus } from '../services/subscript
 import { PARENTAL_GATE_QUESTIONS, type ParentalGateQuestion } from '../lib/parentalGate';
 
 const plans: SubscriptionPlan[] = [
-  { key: 'ONE_MONTH', label: '1 mois', amount: 442, currency: 'eur' },
-  { key: 'THREE_MONTHS', label: '3 mois', amount: 842, currency: 'eur' },
-  { key: 'ONE_YEAR', label: '1 an', amount: 2718, currency: 'eur' },
+  { key: 'ONE_MONTH', amount: 442, currency: 'eur' },
+  { key: 'THREE_MONTHS', amount: 842, currency: 'eur' },
+  { key: 'ONE_YEAR', amount: 2718, currency: 'eur' },
 ];
 
 const mocks = vi.hoisted(() => ({

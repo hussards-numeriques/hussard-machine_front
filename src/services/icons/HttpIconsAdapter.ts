@@ -4,7 +4,6 @@ import { getApiUrl } from '../apiConfig';
 
 const playerIconSchema = z.object({
   id: z.string(),
-  name: z.string(),
   rarity: z.string(),
   url: z.string(),
 });

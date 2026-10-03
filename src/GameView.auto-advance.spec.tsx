@@ -82,8 +82,20 @@ describe('GameView - Auto-advance when all players answered', () => {
         },
       ],
       questions: [
-        { id: 'q1', statement: '2 + 2', answer: 4, category: 'addition', time_limit_seconds: 10 },
-        { id: 'q2', statement: '3 + 3', answer: 6, category: 'addition', time_limit_seconds: 10 },
+        {
+          id: 'q1',
+          prompt: { type: 'addition', left: 2, right: 2 },
+          answer: 4,
+          category: 'addition',
+          time_limit_seconds: 10,
+        },
+        {
+          id: 'q2',
+          prompt: { type: 'addition', left: 3, right: 3 },
+          answer: 6,
+          category: 'addition',
+          time_limit_seconds: 10,
+        },
       ],
       current_question_index: 0,
       answers: [],

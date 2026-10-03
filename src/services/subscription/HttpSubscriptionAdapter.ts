@@ -7,11 +7,10 @@ import type {
   SubscriptionStatus,
 } from './port';
 import { getApiUrl } from '../apiConfig';
-import { ApiError } from '../http';
+import { apiErrorFrom } from '../http';
 
 const subscriptionPlanSchema = z.object({
   key: z.enum(['ONE_MONTH', 'THREE_MONTHS', 'ONE_YEAR']),
-  label: z.string(),
   amount: z.number(),
   currency: z.string(),
 }) satisfies z.ZodType<SubscriptionPlan>;
@@ -29,10 +28,7 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
   public async fetchPlans(): Promise<SubscriptionPlan[]> {
     const response = await fetch(`${getApiUrl()}/subscription/plans`);
     if (!response.ok) {
-      throw new ApiError(
-        response.status,
-        `Failed to fetch subscription plans (${response.status})`
-      );
+      throw await apiErrorFrom(response, 'Failed to fetch subscription plans');
     }
     return subscriptionPlansSchema.parse(await response.json());
   }
@@ -40,10 +36,7 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
   public async fetchStatus(authorizedFetch: AuthorizedFetch): Promise<SubscriptionStatus> {
     const response = await authorizedFetch(`${getApiUrl()}/subscription`);
     if (!response.ok) {
-      throw new ApiError(
-        response.status,
-        `Failed to fetch subscription status (${response.status})`
-      );
+      throw await apiErrorFrom(response, 'Failed to fetch subscription status');
     }
     return subscriptionStatusSchema.parse(await response.json());
   }
@@ -58,7 +51,7 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
       body: JSON.stringify({ plan }),
     });
     if (!response.ok) {
-      throw new ApiError(response.status, `Failed to create checkout session (${response.status})`);
+      throw await apiErrorFrom(response, 'Failed to create checkout session');
     }
     return checkoutResponseSchema.parse(await response.json()).checkout_url;
   }
@@ -70,7 +63,7 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
       body: JSON.stringify({ code }),
     });
     if (!response.ok) {
-      throw new ApiError(response.status, `Failed to redeem code (${response.status})`);
+      throw await apiErrorFrom(response, 'Failed to redeem code');
     }
     return subscriptionStatusSchema.parse(await response.json());
   }

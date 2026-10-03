@@ -1,5 +1,16 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- **Breaking — requires back ≥ 0.24.0.** Questions are rendered from the typed `question.prompt` (28 types, one per pedagogical notion) instead of the removed `statement`: one dedicated display component per type with real math notation — stacked fractions, `<sup>` exponents, overlined square root, posed Euclidean division, minimal parentheses for operation priorities, `ax + b` equations and `f(x)` functions, true minus sign, French thousands separators, « Le double de / La moitié de », highlighted table, power of ten and complement target.
+- Every French label now lives in the front (`src/lib/labels.ts`): question categories, quests, titles, icons, subscription plans, REST error codes (`{"detail": CODE}`) and WS `ERROR` codes. No more `label` / `name` fields read from the API.
+
+### Removed
+
+- `GET /question-categories/labels` call (route removed from the back).
+
 ## [0.29.0] - 2026-10-03
 
 ### Added

@@ -50,10 +50,16 @@ describe('GameView - correction screen on the last question', () => {
       },
     ],
     questions: [
-      { id: 'q1', statement: '2 + 2', answer: 4, category: 'addition', time_limit_seconds: 10 },
+      {
+        id: 'q1',
+        prompt: { type: 'addition', left: 2, right: 2 },
+        answer: 4,
+        category: 'addition',
+        time_limit_seconds: 10,
+      },
       {
         id: 'q2',
-        statement: '7 x 8',
+        prompt: { type: 'multiplication', left: 7, right: 8 },
         answer: 56,
         category: 'multiplication',
         time_limit_seconds: 10,

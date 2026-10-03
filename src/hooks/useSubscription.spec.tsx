@@ -139,7 +139,9 @@ describe('useRedeem', () => {
   });
 
   it('surfaces the error when the code is rejected', async () => {
-    mocks.redeem.mockRejectedValue(new ApiError(400, 'Failed to redeem code (400)'));
+    mocks.redeem.mockRejectedValue(
+      new ApiError(400, 'Failed to redeem code', 'INVALID_REDEEM_CODE')
+    );
 
     const { result } = renderHook(() => useRedeem(), { wrapper });
 

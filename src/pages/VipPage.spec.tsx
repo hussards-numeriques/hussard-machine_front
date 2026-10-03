@@ -85,7 +85,7 @@ describe('VipPage', () => {
   it('shows an invalid code message on a 400 error', () => {
     mocks.isAuthenticated = true;
     mocks.isError = true;
-    mocks.error = new ApiError(400, 'Failed to redeem code (400)');
+    mocks.error = new ApiError(400, 'Failed to redeem code', 'INVALID_REDEEM_CODE');
     renderPage();
 
     expect(screen.getByText('Code invalide.')).toBeInTheDocument();

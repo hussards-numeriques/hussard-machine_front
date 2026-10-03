@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { TitleLabel } from '../PlayerTitle';
+import { resolveQuestLabel } from '../../lib/labels';
 import type { MyQuest, Quest } from '../../services/quests';
 
 export type QuestProgressCardMode =
@@ -80,7 +81,7 @@ export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
 }) => {
   return (
     <div className="rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 space-y-3">
-      <h3 className="font-bold text-slate-700">{quest.label}</h3>
+      <h3 className="font-bold text-slate-700">{resolveQuestLabel(quest.id)}</h3>
       <QuestProgressBar progress={progress} />
       <div className="space-y-2">
         {quest.tiers.map((tier) => {

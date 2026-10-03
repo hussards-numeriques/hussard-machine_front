@@ -9,9 +9,7 @@ describe('PlayerTitle', () => {
   });
 
   it('renders the label colored by rarity', () => {
-    render(
-      <PlayerTitle title={{ id: 'win-streak-gold', label: "Légende de l'Arène", rarity: 'GOLD' }} />
-    );
+    render(<PlayerTitle title={{ id: 'win-streak-gold', rarity: 'GOLD' }} />);
 
     const label = screen.getByTitle('Titre Épique');
     expect(label).toHaveTextContent("Légende de l'Arène");
@@ -19,7 +17,7 @@ describe('PlayerTitle', () => {
   });
 
   it('greys out the label and shows a padlock when locked', () => {
-    render(<TitleLabel title={{ label: 'Top Player', rarity: 'DIAMOND' }} locked />);
+    render(<TitleLabel title={{ id: 'win-streak-silver', rarity: 'DIAMOND' }} locked />);
 
     const label = screen.getByTitle('Titre Légendaire');
     expect(label).toHaveTextContent('🔒 Top Player');

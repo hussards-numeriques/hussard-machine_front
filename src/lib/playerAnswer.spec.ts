@@ -9,7 +9,13 @@ function buildGame(overrides: Partial<Game> = {}): Game {
     state: GameState.IN_PROGRESS,
     players: [],
     questions: [
-      { id: 'q1', statement: '1+1', answer: 2, category: 'addition', time_limit_seconds: 10 },
+      {
+        id: 'q1',
+        prompt: { type: 'addition', left: 1, right: 1 },
+        answer: 2,
+        category: 'addition',
+        time_limit_seconds: 10,
+      },
     ],
     current_question_index: 0,
     answers: [],

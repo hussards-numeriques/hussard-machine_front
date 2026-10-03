@@ -5,7 +5,6 @@ import type { AuthorizedFetch, IconCatalog, MyIconsResponse } from './port';
 const catalogSample: IconCatalog = [
   {
     id: 'subscriber-star',
-    name: 'Étoile Abonné',
     rarity: 'GOLD',
     url: 'http://localhost:8000/static/icons/subscriber-star.svg',
   },
@@ -16,7 +15,6 @@ const myIconsSample: MyIconsResponse = {
   icons: [
     {
       id: 'subscriber-star',
-      name: 'Étoile Abonné',
       rarity: 'GOLD',
       url: 'http://localhost:8000/static/icons/subscriber-star.svg',
       unlocked_at: '2026-08-15T10:00:00Z',

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { formatEuros } from '../../lib/money';
+import { SUBSCRIPTION_PLAN_LABELS } from '../../lib/labels';
 import { formatShortDate } from '../../lib/date';
 import {
   computeMonthlyEquivalentCents,
@@ -67,7 +68,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 isSelected ? 'bg-primary text-white' : 'bg-slate-50 text-slate-600'
               )}
             >
-              <span className="block font-bold">{plan.label}</span>
+              <span className="block font-bold">{SUBSCRIPTION_PLAN_LABELS[plan.key]}</span>
               <span className="block text-xs">
                 {`${formatEuros(computeMonthlyEquivalentCents(plan.amount, plan.key), plan.currency)}/mois`}
               </span>
@@ -125,7 +126,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         disabled={isPurchasePending || !hasAcceptedTerms}
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
-        {status?.active ? `Prolonger de ${selectedPlan.label}` : `Soutenir ${selectedPlan.label}`}
+        {status?.active
+          ? `Prolonger de ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`
+          : `Soutenir ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`}
       </button>
     </div>
   );

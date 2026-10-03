@@ -5,7 +5,6 @@ import type { MyTitle } from '../../services/quests';
 
 const title: MyTitle = {
   id: 'win-streak-gold',
-  label: "Légende de l'Arène",
   rarity: 'GOLD',
   unlocked_at: '2026-07-12T00:00:00',
 };

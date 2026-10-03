@@ -7,6 +7,7 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Mascot } from '../components/Mascot';
 import { useShinySession } from '../hooks/useShinySession';
+import { resolveApiErrorMessage } from '../lib/labels';
 import { LEVELS, resolveLevelLabel } from '../lib/grades';
 
 const DEFAULT_MAX_PLAYERS = 6;
@@ -62,8 +63,8 @@ export const HomePage: React.FC = () => {
         token,
       });
       goToGame(gameId, effectiveName);
-    } catch {
-      setError('Erreur lors de la création');
+    } catch (createError) {
+      setError(resolveApiErrorMessage(createError, 'Erreur lors de la création'));
     }
   };
 

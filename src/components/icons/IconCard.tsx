@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 import { resolveRarityBadgeStyle, resolveRarityLabel } from '../../lib/rarity';
+import { resolveIconLabel } from '../../lib/labels';
 import type { PlayerIcon } from '../../services/icons';
 
 interface IconCardProps {
@@ -18,6 +19,7 @@ export const IconCard: React.FC<IconCardProps> = ({
   onEquip,
   isPending,
 }) => {
+  const label = resolveIconLabel(icon.id);
   return (
     <div
       className={cn(
@@ -27,7 +29,7 @@ export const IconCard: React.FC<IconCardProps> = ({
     >
       <img
         src={icon.url}
-        alt={icon.name}
+        alt={label}
         className={cn('w-16 h-16 rounded-full object-cover', !unlocked && 'opacity-40 grayscale')}
       />
       <span
@@ -36,7 +38,7 @@ export const IconCard: React.FC<IconCardProps> = ({
           unlocked ? 'text-slate-700' : 'text-slate-400'
         )}
       >
-        {icon.name}
+        {label}
       </span>
       <span
         className={cn(

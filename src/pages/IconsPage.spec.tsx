@@ -6,7 +6,6 @@ import type { MyIconsResponse, IconCatalog } from '../services/icons';
 
 const icon: IconCatalog[number] = {
   id: 'rushy-smile',
-  name: 'Rushy Smile',
   rarity: 'BRONZE',
   url: 'https://example.com/rushy-smile.png',
 };
@@ -75,7 +74,6 @@ describe('IconsPage', () => {
       icons: [
         {
           id: icon.id,
-          name: icon.name,
           rarity: icon.rarity,
           url: icon.url,
           unlocked_at: '2026-08-15T12:00:00',
@@ -101,7 +99,6 @@ describe('IconsPage', () => {
       icons: [
         {
           id: icon.id,
-          name: icon.name,
           rarity: icon.rarity,
           url: icon.url,
           unlocked_at: '2026-08-15T12:00:00',

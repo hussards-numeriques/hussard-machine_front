@@ -77,6 +77,7 @@ calc-rush_front/
 │   │   ├── AuthModal.tsx             # Login / register modal
 │   │   ├── grade/
 │   │   │   └── GradeGuide.tsx        # Explanatory card: XP, grades, levels (fetches /game/config)
+│   │   ├── QuestionPrompt/           # One display component per question prompt type (see game-views.md)
 │   │   └── AnswerInput/
 │   │       ├── port.ts               # AnswerInputProps interface
 │   │       ├── adapter.ts            # Selects KeyboardInput or HandwritingInput by device
@@ -103,7 +104,6 @@ calc-rush_front/
 │   │   ├── gameSchemas.ts            # zod schemas for Game + WS server messages
 │   │   ├── gameConfig.ts             # GET /game/config (zod-validated)
 │   │   ├── profile.ts                # GET /me/details, POST /me/promote, POST /me/demote (zod-validated)
-│   │   ├── questionCategoryLabels.ts # Resolves question category labels
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
 │   │       ├── index.ts              # Exports the singleton instance (OnnxCrnnAdapter)
@@ -120,7 +120,8 @@ calc-rush_front/
 │       ├── utils.ts                  # cn() utility (clsx + tailwind-merge)
 │       ├── grades.ts                 # Grade/level unions, labels, styles (single source)
 │       ├── gradeProgress.ts          # Pure XP → segmented-bar progress computation
-│       └── useQuestionCategoryLabels.ts  # TanStack Query hook to load labels from the API
+│       ├── labels.ts                 # French labels for backend ids/codes (categories, quests, titles, icons, plans, REST/WS errors)
+│       └── mathFormat.ts             # Pure math formatting (fr-FR integers, − sign, expression tree, affine)
 │
 ├── index.html                        # Root HTML (SEO meta, Open Graph)
 ├── CLAUDE.md                         # LLM instructions (commands, conventions)

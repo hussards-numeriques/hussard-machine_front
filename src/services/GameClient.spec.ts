@@ -185,6 +185,19 @@ describe('GameClient - /ws/play protocol', () => {
     expect(onError.mock.calls[0][0]).toEqual(expect.any(String));
     expect(onError.mock.calls[0][0]).not.toBe('');
   });
+
+  it('translates WS error codes into French messages', () => {
+    const onError = vi.fn();
+    const client = new GameClient(vi.fn(), onError);
+    client.connectToLobby({ gameId: 'ABCD', playerName: 'Alice' });
+    const ws = openSocket(client);
+
+    ws.onmessage?.({
+      data: JSON.stringify({ type: 'ERROR', payload: 'JOIN_FAILED' }),
+    } as MessageEvent);
+
+    expect(onError).toHaveBeenCalledWith('Impossible de rejoindre ce salon.');
+  });
 });
 
 describe('createLobby', () => {

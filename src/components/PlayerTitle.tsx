@@ -1,9 +1,10 @@
 import React from 'react';
 import { cn } from '../lib/utils';
 import { resolveRarityLabel, resolveRarityTextStyle } from '../lib/rarity';
+import { resolveTitleLabel } from '../lib/labels';
 import type { PlayerTitle as PlayerTitleData } from '../types';
 
-type TitleData = Pick<PlayerTitleData, 'label' | 'rarity'>;
+type TitleData = Pick<PlayerTitleData, 'id' | 'rarity'>;
 
 interface TitleLabelProps {
   title: TitleData;
@@ -21,7 +22,7 @@ export const TitleLabel: React.FC<TitleLabelProps> = ({ title, locked = false, c
     )}
   >
     {locked && <span aria-hidden>🔒 </span>}
-    {title.label}
+    {resolveTitleLabel(title.id)}
   </span>
 );
 

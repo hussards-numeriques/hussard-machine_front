@@ -2,7 +2,6 @@ import type { Level } from '../../lib/grades';
 
 export interface QuestTitle {
   id: string;
-  label: string;
   rarity: string;
 }
 
@@ -13,7 +12,6 @@ export interface QuestTier {
 
 export interface Quest {
   id: string;
-  label: string;
   tiers: QuestTier[];
 }
 
@@ -21,7 +19,6 @@ export type QuestCatalog = Quest[];
 
 export interface MyTitle {
   id: string;
-  label: string;
   rarity: string;
   unlocked_at: string;
 }
@@ -34,7 +31,6 @@ export interface MyQuestTier {
 
 export interface MyQuest {
   id: string;
-  label: string;
   progress: number;
   tiers: MyQuestTier[];
 }

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { PlayerProfile } from '../types';
 import { getApiUrl } from './apiConfig';
-import { ApiError, type AuthorizedFetch } from './http';
+import { apiErrorFrom, type AuthorizedFetch } from './http';
 
 const gameHistoryParticipantSchema = z.object({
   display_name: z.string(),
@@ -43,7 +43,7 @@ export const fetchPlayerProfile = async (
 ): Promise<PlayerProfile> => {
   const response = await authorizedFetch(`${getApiUrl()}/me/details`);
   if (!response.ok) {
-    throw new ApiError(response.status, `Failed to fetch profile (${response.status})`);
+    throw await apiErrorFrom(response, 'Failed to fetch profile');
   }
   return playerProfileSchema.parse(await response.json());
 };
@@ -51,20 +51,20 @@ export const fetchPlayerProfile = async (
 export const promotePlayer = async (authorizedFetch: AuthorizedFetch): Promise<void> => {
   const response = await authorizedFetch(`${getApiUrl()}/me/promote`, { method: 'POST' });
   if (!response.ok) {
-    throw new ApiError(response.status, `Promotion failed (${response.status})`);
+    throw await apiErrorFrom(response, 'Promotion failed');
   }
 };
 
 export const demotePlayer = async (authorizedFetch: AuthorizedFetch): Promise<void> => {
   const response = await authorizedFetch(`${getApiUrl()}/me/demote`, { method: 'POST' });
   if (!response.ok) {
-    throw new ApiError(response.status, `Demotion failed (${response.status})`);
+    throw await apiErrorFrom(response, 'Demotion failed');
   }
 };
 
 export const deleteAccount = async (authorizedFetch: AuthorizedFetch): Promise<void> => {
   const response = await authorizedFetch(`${getApiUrl()}/me`, { method: 'DELETE' });
   if (!response.ok) {
-    throw new ApiError(response.status, `Account deletion failed (${response.status})`);
+    throw await apiErrorFrom(response, 'Account deletion failed');
   }
 };

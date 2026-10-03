@@ -7,7 +7,6 @@ export interface BotConfig {
 
 export interface PlayerTitle {
   id: string;
-  label: string;
   rarity: string;
 }
 
@@ -25,9 +24,57 @@ export interface Player {
   bot_config: BotConfig | null;
 }
 
+export type ArithmeticOperator = 'add' | 'subtract' | 'multiply' | 'divide';
+
+export type ExpressionNode =
+  | { kind: 'number'; value: number }
+  | {
+      kind: 'operation';
+      operator: ArithmeticOperator;
+      left: ExpressionNode;
+      right: ExpressionNode;
+    };
+
+export interface AffineExpression {
+  coefficient: number;
+  constant: number;
+}
+
+export type EuclideanDivisionPart = 'quotient' | 'remainder';
+
+export type QuestionPrompt =
+  | { type: 'addition'; left: number; right: number }
+  | { type: 'subtraction'; left: number; right: number }
+  | { type: 'multiplication_table'; table: number; factor: number }
+  | { type: 'multiplication'; left: number; right: number }
+  | { type: 'difference_of_squares'; center: number; offset: number }
+  | { type: 'division_table'; dividend: number; divisor: number }
+  | { type: 'division'; dividend: number; divisor: number }
+  | { type: 'complement'; value: number; target: number }
+  | { type: 'double'; value: number }
+  | { type: 'half'; value: number }
+  | { type: 'multiplication_by_power_of_10'; factor: number; exponent: number }
+  | { type: 'operation_priority'; expression: ExpressionNode }
+  | { type: 'relative_addition'; left: number; right: number }
+  | { type: 'relative_subtraction'; left: number; right: number }
+  | { type: 'relative_multiplication'; left: number; right: number }
+  | { type: 'relative_division'; dividend: number; divisor: number }
+  | { type: 'relative_operation_priority'; expression: ExpressionNode }
+  | { type: 'missing_factor'; factor: number; product: number }
+  | { type: 'euclidean_division'; dividend: number; divisor: number; asked: EuclideanDivisionPart }
+  | { type: 'fraction_of_quantity'; numerator: number; denominator: number; quantity: number }
+  | { type: 'percentage_of_quantity'; rate: number; quantity: number }
+  | { type: 'square'; base: number }
+  | { type: 'power'; base: number; exponent: number }
+  | { type: 'square_root'; radicand: number }
+  | { type: 'gcd'; left: number; right: number }
+  | { type: 'linear_equation'; left: AffineExpression; right: AffineExpression }
+  | { type: 'function_image'; function: AffineExpression; x: number }
+  | { type: 'function_antecedent'; function: AffineExpression; image: number };
+
 export interface Question {
   id: string;
-  statement: string;
+  prompt: QuestionPrompt;
   answer: number;
   category: string;
   time_limit_seconds: number;

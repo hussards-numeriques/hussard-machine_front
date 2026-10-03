@@ -5,7 +5,6 @@ import type { PlayerIcon } from '../../services/icons';
 
 const icon: PlayerIcon = {
   id: 'subscriber-star',
-  name: 'Étoile Abonné',
   rarity: 'GOLD',
   url: 'http://localhost:8000/static/icons/subscriber-star.svg',
 };

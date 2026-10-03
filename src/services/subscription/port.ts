@@ -2,7 +2,6 @@ export type SubscriptionPlanKey = 'ONE_MONTH' | 'THREE_MONTHS' | 'ONE_YEAR';
 
 export interface SubscriptionPlan {
   key: SubscriptionPlanKey;
-  label: string;
   amount: number;
   currency: string;
 }

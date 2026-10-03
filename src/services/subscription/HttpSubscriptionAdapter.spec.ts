@@ -4,9 +4,9 @@ import { ApiError } from '../http';
 import type { AuthorizedFetch, SubscriptionPlan } from './port';
 
 const plansSample: SubscriptionPlan[] = [
-  { key: 'ONE_MONTH', label: '1 mois', amount: 442, currency: 'eur' },
-  { key: 'THREE_MONTHS', label: '3 mois', amount: 842, currency: 'eur' },
-  { key: 'ONE_YEAR', label: '1 an', amount: 2718, currency: 'eur' },
+  { key: 'ONE_MONTH', amount: 442, currency: 'eur' },
+  { key: 'THREE_MONTHS', amount: 842, currency: 'eur' },
+  { key: 'ONE_YEAR', amount: 2718, currency: 'eur' },
 ];
 
 describe('HttpSubscriptionAdapter', () => {

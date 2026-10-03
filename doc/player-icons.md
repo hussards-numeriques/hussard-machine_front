@@ -10,12 +10,14 @@ No auth. Cached (`Cache-Control: public, max-age=604800`).
 [
   {
     "id": "subscriber-star",
-    "name": "Étoile Abonné",
     "rarity": "GOLD",
     "url": "http://localhost:8000/static/icons/subscriber-star.svg"
   }
 ]
 ```
+
+No display name is sent: the front translates the icon `id` with `resolveIconLabel`
+(`src/lib/labels.ts`, e.g. `subscriber-star` → « Étoile Abonné »).
 
 `rarity` is one of `BRONZE`/`SILVER`/`GOLD`/`DIAMOND` — same open-ended contract as title
 rarities (`doc/quests-titles.md`), treat unknown values gracefully.
@@ -28,7 +30,6 @@ rarities (`doc/quests-titles.md`), treat unknown values gracefully.
   "icons": [
     {
       "id": "subscriber-star",
-      "name": "Étoile Abonné",
       "rarity": "GOLD",
       "url": "http://localhost:8000/static/icons/subscriber-star.svg",
       "unlocked_at": "2026-08-15T10:00:00Z"

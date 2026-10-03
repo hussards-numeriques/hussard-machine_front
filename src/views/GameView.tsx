@@ -1,8 +1,8 @@
 import React from 'react';
 import { GameClient } from '../services/GameClient';
 import type { Answer, Game, Player, Question } from '../types';
-import { useQuestionCategoryLabels } from '../lib/useQuestionCategoryLabels';
-import { resolveCategoryLabel } from '../services/questionCategoryLabels';
+import { resolveQuestionCategoryLabel } from '../lib/labels';
+import { QuestionPrompt } from '../components/QuestionPrompt/QuestionPrompt';
 import { AnswerInput } from '../components/AnswerInput';
 import { computeFeedback } from '../lib/feedback';
 import { findPlayerAnswer, isSixSeven } from '../lib/playerAnswer';
@@ -133,18 +133,17 @@ const IntermissionCard: React.FC<{
 
 const QuestionCard: React.FC<{
   question: Question;
-  categoryLabel: string;
   remainingSeconds: number | null;
   myAnswer: Answer | null;
   onSubmit: (value: number) => void;
-}> = ({ question, categoryLabel, remainingSeconds, myAnswer, onSubmit }) => {
+}> = ({ question, remainingSeconds, myAnswer, onSubmit }) => {
   const isTimerLow = remainingSeconds !== null && remainingSeconds <= 3;
 
   return (
     <>
       <div className="flex items-center justify-between gap-2 text-xs">
         <span className="uppercase tracking-wider font-semibold text-slate-400">
-          {categoryLabel}
+          {resolveQuestionCategoryLabel(question.category)}
         </span>
         {remainingSeconds !== null && (
           <span
@@ -155,7 +154,7 @@ const QuestionCard: React.FC<{
         )}
       </div>
 
-      <div className="text-6xl font-black text-slate-800">{question.statement}</div>
+      <QuestionPrompt prompt={question.prompt} className="text-[clamp(2.25rem,12vw,3.75rem)]" />
 
       {myAnswer ? (
         <div className="space-y-2">
@@ -181,7 +180,6 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
   const [displayedQuestionIndex, setDisplayedQuestionIndex] = React.useState<number>(
     game.current_question_index
   );
-  const categoryLabels = useQuestionCategoryLabels();
 
   React.useEffect(() => {
     const { shouldUpdate, isQuestionSkipped } = shouldUpdateDisplayedQuestionIndex(
@@ -224,8 +222,6 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
 
   if (!currentQuestion) return <div>Chargement...</div>;
 
-  const categoryLabel = resolveCategoryLabel(categoryLabels, currentQuestion.category);
-
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm p-4 shadow-sm">
@@ -245,7 +241,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full space-y-8">
-        <div className="bg-white p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
+        <div className="bg-white px-6 py-10 sm:p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
           {questionCountdown !== null ? (
             <IntermissionCard
               game={game}
@@ -256,7 +252,6 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
           ) : (
             <QuestionCard
               question={currentQuestion}
-              categoryLabel={categoryLabel}
               remainingSeconds={remainingSeconds}
               myAnswer={myCurrentAnswer}
               onSubmit={(value) => {

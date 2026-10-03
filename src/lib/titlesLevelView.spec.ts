@@ -7,9 +7,7 @@ const baseResponse: MyTitlesResponse = {
   current_level: 'CM1',
   selected_title_id: null,
   titles: [],
-  quests: [
-    { id: 'win-streak', label: "Terminer 1er en parties d'affilée", progress: 0, tiers: [] },
-  ],
+  quests: [{ id: 'win-streak', progress: 0, tiers: [] }],
 };
 
 describe('resolveTitlesLevelView', () => {
@@ -25,7 +23,6 @@ describe('resolveTitlesLevelView', () => {
       titles: [
         {
           id: 'win-streak-bronze',
-          label: 'Petit Conquérant',
           rarity: 'BRONZE',
           unlocked_at: '2026-01-01',
         },
@@ -44,9 +41,7 @@ describe('resolveTitlesLevelView', () => {
       ...baseResponse,
       level: 'CE1',
       current_level: 'CM1',
-      quests: [
-        { id: 'win-streak', label: "Terminer 1er en parties d'affilée", progress: 1, tiers: [] },
-      ],
+      quests: [{ id: 'win-streak', progress: 1, tiers: [] }],
     };
 
     expect(resolveTitlesLevelView(response)).toEqual({

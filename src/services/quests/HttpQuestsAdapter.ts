@@ -13,14 +13,12 @@ const levelSchema = z.enum(LEVELS);
 
 const questTitleSchema = z.object({
   id: z.string(),
-  label: z.string(),
   rarity: z.string(),
 });
 
 const questCatalogSchema = z.array(
   z.object({
     id: z.string(),
-    label: z.string(),
     tiers: z.array(
       z.object({
         threshold: z.number(),
@@ -37,7 +35,6 @@ const myTitlesResponseSchema = z.object({
   titles: z.array(
     z.object({
       id: z.string(),
-      label: z.string(),
       rarity: z.string(),
       unlocked_at: z.string(),
     })
@@ -45,7 +42,6 @@ const myTitlesResponseSchema = z.object({
   quests: z.array(
     z.object({
       id: z.string(),
-      label: z.string(),
       progress: z.number(),
       tiers: z.array(
         z.object({

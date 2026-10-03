@@ -1,6 +1,5 @@
 export interface PlayerIcon {
   id: string;
-  name: string;
   rarity: string;
   url: string;
 }

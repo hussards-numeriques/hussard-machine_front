@@ -11,7 +11,7 @@ Trois routes REST (`src/services/subscription/`, port/adapter pattern) :
 
 | Route                         | Auth   | Notes                                                              |
 | ----------------------------- | ------ | ------------------------------------------------------------------ |
-| `GET /subscription/plans`     | none   | Catalogue public des 3 formules, prix en centimes (`amount`)       |
+| `GET /subscription/plans`     | none   | `[{ key, amount, currency }]`, prix en centimes (`amount`)         |
 | `GET /subscription`           | Bearer | `{ active, expires_at }` du joueur connecté                        |
 | `POST /subscription/checkout` | Bearer | `{ plan }` → `{ checkout_url }`, le front redirige la page entière |
 
@@ -25,7 +25,11 @@ Même forme que `src/services/quests/` (voir `doc/quests-titles.md`) : `port.ts`
 (types + `SubscriptionRepository`), `HttpSubscriptionAdapter.ts` (lève une
 `ApiError` — `src/services/http.ts` — sur toute réponse non-OK, pas une `Error`
 générique, pour permettre un futur affichage différencié par code statut),
-`index.ts` (exporte le singleton `subscriptionRepository`).
+`index.ts` (exporte le singleton `subscriptionRepository`). Les erreurs passent par
+`apiErrorFrom`, qui lit le code `{"detail": CODE}` dans `ApiError.code` (ex.
+`INVALID_REDEEM_CODE` sur `/vip`). Le libellé d'une formule vient de
+`SUBSCRIPTION_PLAN_LABELS[plan.key]` (`src/lib/labels.ts`), le prix de `formatEuros`
+(`Intl.NumberFormat('fr-FR')`).
 
 ## Hooks (`src/hooks/useSubscription.ts`)
 

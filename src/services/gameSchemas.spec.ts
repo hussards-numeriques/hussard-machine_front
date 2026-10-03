@@ -63,7 +63,7 @@ describe('serverMessageSchema', () => {
         players: [
           {
             ...backendGamePayload.players[0],
-            title: { id: 'win-streak-bronze', label: 'Petit Conquérant', rarity: 'BRONZE' },
+            title: { id: 'win-streak-bronze', rarity: 'BRONZE' },
           },
         ],
       },
@@ -72,7 +72,6 @@ describe('serverMessageSchema', () => {
     if (message.type !== 'GAME_UPDATE') throw new Error('unexpected message type');
     expect(message.payload.players[0].title).toEqual({
       id: 'win-streak-bronze',
-      label: 'Petit Conquérant',
       rarity: 'BRONZE',
     });
   });
@@ -140,5 +139,34 @@ describe('serverMessageSchema', () => {
     const message = serverMessageSchema.parse({ type: 'LOBBY_CLOSED', payload: {} });
 
     expect(message.type).toBe('LOBBY_CLOSED');
+  });
+
+  it('parses typed question prompts and rejects unknown prompt types', () => {
+    const question = {
+      id: 'q1',
+      prompt: { type: 'complement', value: 37, target: 100 },
+      answer: 63,
+      category: 'complement',
+      time_limit_seconds: 10,
+    };
+    const parse = (questions: unknown[]) =>
+      serverMessageSchema.safeParse({
+        type: 'GAME_UPDATE',
+        payload: { ...backendGamePayload, questions },
+      });
+
+    expect(parse([question]).success).toBe(true);
+    expect(parse([{ ...question, prompt: { type: 'unknown', value: 1 } }]).success).toBe(false);
+    expect(parse([{ ...question, statement: '37 + ? = 100', prompt: undefined }]).success).toBe(
+      false
+    );
+  });
+
+  it('parses WS error codes', () => {
+    expect(serverMessageSchema.parse({ type: 'ERROR', payload: 'ADD_BOT_FAILED' })).toEqual({
+      type: 'ERROR',
+      payload: 'ADD_BOT_FAILED',
+    });
+    expect(serverMessageSchema.safeParse({ type: 'ERROR', payload: 'Oups' }).success).toBe(false);
   });
 });

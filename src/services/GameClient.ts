@@ -1,6 +1,8 @@
 import type { Game } from '../types';
 import { getApiUrl, getWsUrl } from './apiConfig';
 import { createdGameSchema, serverMessageSchema, type ServerMessage } from './gameSchemas';
+import { apiErrorFrom } from './http';
+import { WS_ERROR_MESSAGES } from '../lib/labels';
 
 type GameUpdateCallback = (game: Game) => void;
 type ErrorCallback = (error: string) => void;
@@ -70,7 +72,7 @@ export class GameClient {
       body: JSON.stringify({ level: params.level, max_players: params.maxPlayers }),
     });
     if (!response.ok) {
-      throw new Error('Failed to create lobby');
+      throw await apiErrorFrom(response, 'Failed to create lobby');
     }
     return createdGameSchema.parse(await response.json()).game_id;
   }
@@ -132,7 +134,7 @@ export class GameClient {
 
     this.ws.onerror = (e) => {
       console.error('WS Error', e);
-      this.onError('Connection error');
+      this.onError('Erreur de connexion.');
     };
   }
 
@@ -157,7 +159,7 @@ export class GameClient {
         }
         break;
       case 'ERROR':
-        this.onError(message.payload);
+        this.onError(WS_ERROR_MESSAGES[message.payload]);
         break;
       case 'KICKED':
         this.onError('Tu as été exclu du salon.');

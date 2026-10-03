@@ -1,6 +1,15 @@
 import { z } from 'zod';
 import { GameState } from '../types';
-import type { Answer, BotConfig, Game, Player, PlayerTitle, Question } from '../types';
+import type {
+  Answer,
+  BotConfig,
+  ExpressionNode,
+  Game,
+  Player,
+  PlayerTitle,
+  Question,
+  QuestionPrompt,
+} from '../types';
 import { LEVELS } from '../lib/grades';
 
 const botConfigSchema = z.object({
@@ -10,7 +19,6 @@ const botConfigSchema = z.object({
 
 const titleSchema = z.object({
   id: z.string(),
-  label: z.string(),
   rarity: z.string(),
 }) satisfies z.ZodType<PlayerTitle>;
 
@@ -28,9 +36,70 @@ const playerSchema = z.object({
   bot_config: botConfigSchema.nullable(),
 }) satisfies z.ZodType<Player>;
 
+const integer = z.number().int();
+
+const expressionNodeSchema: z.ZodType<ExpressionNode> = z.lazy(() =>
+  z.discriminatedUnion('kind', [
+    z.object({ kind: z.literal('number'), value: integer }),
+    z.object({
+      kind: z.literal('operation'),
+      operator: z.enum(['add', 'subtract', 'multiply', 'divide']),
+      left: expressionNodeSchema,
+      right: expressionNodeSchema,
+    }),
+  ])
+);
+
+const affineSchema = z.object({ coefficient: integer, constant: integer });
+
+const questionPromptSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('addition'), left: integer, right: integer }),
+  z.object({ type: z.literal('subtraction'), left: integer, right: integer }),
+  z.object({ type: z.literal('multiplication_table'), table: integer, factor: integer }),
+  z.object({ type: z.literal('multiplication'), left: integer, right: integer }),
+  z.object({ type: z.literal('difference_of_squares'), center: integer, offset: integer }),
+  z.object({ type: z.literal('division_table'), dividend: integer, divisor: integer }),
+  z.object({ type: z.literal('division'), dividend: integer, divisor: integer }),
+  z.object({ type: z.literal('complement'), value: integer, target: integer }),
+  z.object({ type: z.literal('double'), value: integer }),
+  z.object({ type: z.literal('half'), value: integer }),
+  z.object({
+    type: z.literal('multiplication_by_power_of_10'),
+    factor: integer,
+    exponent: integer,
+  }),
+  z.object({ type: z.literal('operation_priority'), expression: expressionNodeSchema }),
+  z.object({ type: z.literal('relative_addition'), left: integer, right: integer }),
+  z.object({ type: z.literal('relative_subtraction'), left: integer, right: integer }),
+  z.object({ type: z.literal('relative_multiplication'), left: integer, right: integer }),
+  z.object({ type: z.literal('relative_division'), dividend: integer, divisor: integer }),
+  z.object({ type: z.literal('relative_operation_priority'), expression: expressionNodeSchema }),
+  z.object({ type: z.literal('missing_factor'), factor: integer, product: integer }),
+  z.object({
+    type: z.literal('euclidean_division'),
+    dividend: integer,
+    divisor: integer,
+    asked: z.enum(['quotient', 'remainder']),
+  }),
+  z.object({
+    type: z.literal('fraction_of_quantity'),
+    numerator: integer,
+    denominator: integer,
+    quantity: integer,
+  }),
+  z.object({ type: z.literal('percentage_of_quantity'), rate: integer, quantity: integer }),
+  z.object({ type: z.literal('square'), base: integer }),
+  z.object({ type: z.literal('power'), base: integer, exponent: integer }),
+  z.object({ type: z.literal('square_root'), radicand: integer }),
+  z.object({ type: z.literal('gcd'), left: integer, right: integer }),
+  z.object({ type: z.literal('linear_equation'), left: affineSchema, right: affineSchema }),
+  z.object({ type: z.literal('function_image'), function: affineSchema, x: integer }),
+  z.object({ type: z.literal('function_antecedent'), function: affineSchema, image: integer }),
+]) satisfies z.ZodType<QuestionPrompt>;
+
 const questionSchema = z.object({
   id: z.string(),
-  statement: z.string(),
+  prompt: questionPromptSchema,
   answer: z.number(),
   category: z.string(),
   time_limit_seconds: z.number(),
@@ -59,6 +128,9 @@ export const gameSchema = z.object({
   level: z.enum(LEVELS).optional().catch(undefined),
 }) satisfies z.ZodType<Game>;
 
+const WS_ERROR_CODES = ['JOIN_FAILED', 'ADD_BOT_FAILED', 'REMOVE_PLAYER_FAILED'] as const;
+export type WsErrorCode = (typeof WS_ERROR_CODES)[number];
+
 export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({
     type: z.literal('PLAYER_JOINED'),
@@ -67,7 +139,7 @@ export const serverMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('GAME_UPDATE'), payload: gameSchema }),
   z.object({ type: z.literal('COUNTDOWN'), payload: z.object({ seconds: z.number() }) }),
   z.object({ type: z.literal('QUESTION_COUNTDOWN'), payload: z.object({ seconds: z.number() }) }),
-  z.object({ type: z.literal('ERROR'), payload: z.string() }),
+  z.object({ type: z.literal('ERROR'), payload: z.enum(WS_ERROR_CODES) }),
   z.object({ type: z.literal('KICKED'), payload: z.object({}) }),
   z.object({ type: z.literal('LOBBY_CLOSED'), payload: z.object({}) }),
 ]);

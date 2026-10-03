@@ -2,6 +2,8 @@ import React from 'react';
 import type { Game } from '../../types';
 import { computeFeedback } from '../../lib/feedback';
 import type { AnswerResult } from '../../lib/playerAnswer';
+import { QuestionPrompt } from '../QuestionPrompt/QuestionPrompt';
+import { formatInteger } from '../../lib/mathFormat';
 
 interface CorrectionCardProps {
   game: Game;
@@ -36,7 +38,7 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
         {titleFor(feedback.status)}
       </div>
 
-      <div className="text-3xl font-black text-slate-800">{question.statement}</div>
+      <QuestionPrompt prompt={question.prompt} className="text-3xl" />
 
       {!isCorrect && (
         <div className="flex items-center justify-center gap-3 text-4xl font-black">
@@ -44,11 +46,13 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
             <span className="text-slate-400">⏱ Pas de réponse</span>
           ) : (
             <>
-              <span className="text-red-500 line-through">{feedback.given}</span>
+              <span className="text-red-500 line-through">
+                {feedback.given === null ? null : formatInteger(feedback.given)}
+              </span>
               <span className="text-slate-300">→</span>
             </>
           )}
-          <span className="text-green-600">{feedback.expected}</span>
+          <span className="text-green-600">{formatInteger(feedback.expected)}</span>
         </div>
       )}
 

@@ -41,6 +41,13 @@ prefix since the account level (the `current` entry and `current_level`) changes
 streak (always visible in the `Header`), titles are only consumed by the `/quests` page
 and by the unlock-detection hook below.
 
+## Labels (`src/lib/labels.ts`)
+
+The back sends no text (contract `back/docs/i18n-api-contract.md`): quests and titles only
+carry their `id` (WS `Player.title` is `{ id, rarity }`). `resolveQuestLabel` /
+`resolveTitleLabel` map ids to French labels (`Record<Id, string>`), falling back to the raw
+id for an unknown one.
+
 ## Rarity styling (`src/lib/rarity.ts`)
 
 `resolveRarityLabel`/`resolveRarityTextStyle`/`resolveRarityBadgeStyle`, mirrors `lib/grades.ts`.

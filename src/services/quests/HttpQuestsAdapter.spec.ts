@@ -5,11 +5,10 @@ import type { AuthorizedFetch, MyTitlesResponse, QuestCatalog } from './port';
 const catalogSample: QuestCatalog = [
   {
     id: 'win-streak',
-    label: "Terminer 1er en parties d'affilée",
     tiers: [
       {
         threshold: 5,
-        title: { id: 'win-streak-bronze', label: 'Petit Conquérant', rarity: 'BRONZE' },
+        title: { id: 'win-streak-bronze', rarity: 'BRONZE' },
       },
     ],
   },
@@ -22,7 +21,6 @@ const myTitlesSample: MyTitlesResponse = {
   titles: [
     {
       id: 'win-streak-bronze',
-      label: 'Petit Conquérant',
       rarity: 'BRONZE',
       unlocked_at: '2026-07-10T18:42:03',
     },
@@ -30,7 +28,6 @@ const myTitlesSample: MyTitlesResponse = {
   quests: [
     {
       id: 'win-streak',
-      label: "Terminer 1er en parties d'affilée",
       progress: 7,
       tiers: [{ threshold: 5, title_id: 'win-streak-bronze', unlocked: true }],
     },

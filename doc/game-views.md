@@ -39,6 +39,20 @@ Displays the player list and action buttons.
 
 Displays the current question, timer, scoreboard, and input component.
 
+### Question prompt (`src/components/QuestionPrompt/`)
+
+The back sends `question.prompt`, a discriminated union on `type` (28 types, one per
+pedagogical notion, contract `back/docs/i18n-api-contract.md` §1), validated in
+`gameSchemas.ts`. `QuestionPrompt` switches exhaustively on `prompt.type` (the compiler
+flags a missing case) and renders one dedicated component from `prompts.tsx` per type.
+Text formatting is pure and unit-tested in `src/lib/mathFormat.ts`: French thousands
+separators, true minus sign `−`, negative operands in parentheses unless leading, minimal
+parentheses for expression trees, affine `ax + b` rules. Layout helpers: `Blank` (the
+dashed `?` box), stacked `Fraction`, `<sup>` exponents, overlined `√`, French-style posed
+Euclidean division, `<var>` for `x` and `f`; non-linear layouts expose an `sr-only`
+reading. Font size is relative (`em`): `GameView` passes a viewport-clamped size,
+`CorrectionCard` `text-3xl`. The category label comes from `resolveQuestionCategoryLabel`.
+
 ### Question index management
 
 The server may increment `current_question_index` by 1 (normal progression) or skip several questions. The view maintains a local `displayedQuestionIndex` to avoid flashes:
