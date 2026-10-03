@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthClient, parseOAuthFragment } from './AuthClient';
+import { AuthClient, appUrlToCallbackPath, parseOAuthFragment } from './AuthClient';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
+
+vi.mock('@capacitor/browser', () => ({ Browser: { open: vi.fn() } }));
 
 describe('parseOAuthFragment', () => {
   it('extracts tokens from a success fragment', () => {
@@ -208,5 +212,29 @@ describe('AuthClient.refreshSession', () => {
     });
     expect(client.getAccessToken()).toBe('winner-access');
     expect(client.getRefreshToken()).toBe('winner-refresh');
+  });
+});
+
+describe('AuthClient.loginWithGoogle in the mobile app', () => {
+  it('opens the system browser with the app flag instead of navigating the WebView', async () => {
+    vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
+
+    await new AuthClient().loginWithGoogle();
+
+    expect(Browser.open).toHaveBeenCalledWith({
+      url: expect.stringMatching(/\/api\/v1\/auth\/google\/login\?app=1$/),
+    });
+  });
+});
+
+describe('appUrlToCallbackPath', () => {
+  it('maps the app deep link to the OAuth callback route, keeping the fragment', () => {
+    expect(appUrlToCallbackPath('fr.calcrush.app://auth/callback#access_token=abc')).toBe(
+      '/auth/callback#access_token=abc'
+    );
+  });
+
+  it('ignores unrelated deep links', () => {
+    expect(appUrlToCallbackPath('fr.calcrush.app://other')).toBeNull();
   });
 });

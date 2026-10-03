@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { Capacitor } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
 
 const authUserSchema = z.object({
   id: z.string(),
@@ -94,8 +96,13 @@ export class AuthClient {
     localStorage.removeItem(CACHED_USER_KEY);
   }
 
-  public loginWithGoogle(): void {
-    window.location.href = `${this.baseUrl}/api/v1/auth/google/login`;
+  public async loginWithGoogle(): Promise<void> {
+    const url = `${this.baseUrl}/api/v1/auth/google/login`;
+    if (Capacitor.isNativePlatform()) {
+      await Browser.open({ url: `${url}?app=1` });
+      return;
+    }
+    window.location.href = url;
   }
 
   public async login(payload: LoginPayload): Promise<TokenResponse> {
@@ -237,6 +244,13 @@ export class AuthClient {
     return null;
   }
 }
+
+const APP_CALLBACK_PREFIX = 'fr.calcrush.app://auth/callback';
+
+export const appUrlToCallbackPath = (url: string): string | null =>
+  url.startsWith(APP_CALLBACK_PREFIX)
+    ? `/auth/callback${url.slice(APP_CALLBACK_PREFIX.length)}`
+    : null;
 
 export function parseOAuthFragment(hash: string): { tokens?: TokenResponse; error?: string } {
   const raw = hash.startsWith('#') ? hash.slice(1) : hash;

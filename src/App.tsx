@@ -19,6 +19,7 @@ import { VipPage } from './pages/VipPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
+import { NativeAppBridge } from './components/NativeAppBridge';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <NativeAppBridge />
         <Routes>
           <Route element={<AppLayout />}>
             <Route index element={<HomePage />} />

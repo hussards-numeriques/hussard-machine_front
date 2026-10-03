@@ -225,7 +225,7 @@ const GoogleButton = () => {
         variant="secondary"
         size="lg"
         className="w-full"
-        onClick={() => client.loginWithGoogle()}
+        onClick={() => void client.loginWithGoogle()}
       >
         Continuer avec Google
       </Button>

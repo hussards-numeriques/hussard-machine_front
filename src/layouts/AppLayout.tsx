@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Footer } from '../components/Footer';
 import { Header } from '../components/Header';
+import { PushRegistration } from '../components/PushRegistration';
 import { AuthProvider } from '../contexts/AuthProvider';
 import { GameProvider } from '../contexts/GameProvider';
 import { StreakProvider } from '../contexts/StreakProvider';
@@ -13,6 +14,7 @@ export const AppLayout: React.FC = () => {
 
   return (
     <AuthProvider>
+      <PushRegistration />
       <StreakProvider>
         <GameProvider>
           <div className="min-h-screen flex flex-col bg-slate-50">
