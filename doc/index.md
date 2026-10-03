@@ -74,6 +74,11 @@ charte/anatomie, et le pipeline de génération des assets statiques (favicon, P
 bannière OG) via `npm run generate:icons`.
 → Read when: afficher la mascotte dans l'app, ajouter une pose, ou régénérer les icônes.
 
+### [mobile.md](mobile.md)
+
+Android app (Capacitor): `mobileandroid/` native project, `build:mobile` / `cap:sync` / `apk` scripts, and how native code (`NativeAppBridge`, `PushRegistration`, `@capacitor/*`) is kept out of the web bundle.
+→ Read when: touching native features, the mobile build, or anything imported from `@capacitor/*`.
+
 ### [routing.md](routing.md)
 
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.

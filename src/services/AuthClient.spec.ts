@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthClient, appUrlToCallbackPath, parseOAuthFragment } from './AuthClient';
-import { Capacitor } from '@capacitor/core';
 import { Browser } from '@capacitor/browser';
 
 vi.mock('@capacitor/browser', () => ({ Browser: { open: vi.fn() } }));
@@ -216,8 +215,12 @@ describe('AuthClient.refreshSession', () => {
 });
 
 describe('AuthClient.loginWithGoogle in the mobile app', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it('opens the system browser with the app flag instead of navigating the WebView', async () => {
-    vi.spyOn(Capacitor, 'isNativePlatform').mockReturnValue(true);
+    vi.stubEnv('MODE', 'mobile');
 
     await new AuthClient().loginWithGoogle();
 

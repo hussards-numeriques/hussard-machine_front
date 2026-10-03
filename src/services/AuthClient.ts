@@ -1,6 +1,4 @@
 import { z } from 'zod';
-import { Capacitor } from '@capacitor/core';
-import { Browser } from '@capacitor/browser';
 
 const authUserSchema = z.object({
   id: z.string(),
@@ -98,7 +96,8 @@ export class AuthClient {
 
   public async loginWithGoogle(): Promise<void> {
     const url = `${this.baseUrl}/api/v1/auth/google/login`;
-    if (Capacitor.isNativePlatform()) {
+    if (import.meta.env.MODE === 'mobile') {
+      const { Browser } = await import('@capacitor/browser');
       await Browser.open({ url: `${url}?app=1` });
       return;
     }

@@ -54,3 +54,9 @@ logs/
 # Temporary files
 *.tmp
 .cache/
+
+# Native mobile projects (not part of the web image)
+mobileandroid/
+mobileassets/
+dist-mobile/
+capacitor.config.json

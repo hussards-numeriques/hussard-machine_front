@@ -1,0 +1,15 @@
+{
+  "appId": "fr.calcrush.app",
+  "appName": "Calc Rush",
+  "webDir": "dist-mobile",
+  "android": {
+    "path": "mobileandroid"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 10000,
+      "backgroundColor": "#f8fafc",
+      "showSpinner": false
+    }
+  }
+}

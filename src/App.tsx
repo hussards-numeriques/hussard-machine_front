@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError } from './services/http';
@@ -19,7 +20,13 @@ import { VipPage } from './pages/VipPage';
 import { LegalNoticePage } from './pages/LegalNoticePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
-import { NativeAppBridge } from './components/NativeAppBridge';
+
+const NativeAppBridge =
+  import.meta.env.MODE === 'mobile'
+    ? lazy(() =>
+        import('./components/NativeAppBridge').then((m) => ({ default: m.NativeAppBridge }))
+      )
+    : null;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -33,7 +40,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <NativeAppBridge />
+        {NativeAppBridge && (
+          <Suspense>
+            <NativeAppBridge />
+          </Suspense>
+        )}
         <Routes>
           <Route element={<AppLayout />}>
             <Route index element={<HomePage />} />

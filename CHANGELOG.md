@@ -1,5 +1,16 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Android app (Capacitor): Google login through the system browser with a deep link back to the app, splash screen, and OneSignal push registration linked to the player account.
+- The native Android project now lives in `mobileandroid/`, with `npm run build:mobile`, `npm run cap:sync` and `npm run apk` scripts.
+
+### Changed
+
+- Native code (`@capacitor/*`, OneSignal) is only built in Vite's `mobile` mode: the web bundle served by Vercel stays free of it, and the mobile bundle drops web-only files (robots, sitemap, PWA manifest, favicons, OG image).
+
 ## [0.28.3] - 2026-09-29
 
 ### Changed
