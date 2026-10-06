@@ -3,13 +3,13 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Header } from './Header';
 
-const mocks = vi.hoisted(() => ({ active: false }));
+const mocks = vi.hoisted(() => ({ active: false, authenticated: true }));
 
 vi.mock('../contexts/useAuth', () => ({
   useAuth: () => ({
     client: {},
     user: { username: 'Tim' },
-    isAuthenticated: true,
+    isAuthenticated: mocks.authenticated,
     isLoading: false,
     login: vi.fn(),
     register: vi.fn(),
@@ -39,9 +39,27 @@ const renderHeader = () =>
     </MemoryRouter>
   );
 
+describe('Header - language pill', () => {
+  beforeEach(() => {
+    mocks.authenticated = true;
+  });
+
+  it('is shown to logged-out players only', () => {
+    mocks.authenticated = false;
+    const { unmount } = renderHeader();
+    expect(screen.getByRole('combobox', { name: 'Langue' })).toBeInTheDocument();
+    unmount();
+
+    mocks.authenticated = true;
+    renderHeader();
+    expect(screen.queryByRole('combobox', { name: 'Langue' })).not.toBeInTheDocument();
+  });
+});
+
 describe('Header - user menu', () => {
   beforeEach(() => {
     mocks.active = false;
+    mocks.authenticated = true;
   });
 
   it('shows the player level and grade, then the menu links before the logout button', () => {

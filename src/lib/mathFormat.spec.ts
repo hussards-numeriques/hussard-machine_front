@@ -98,4 +98,9 @@ describe('formatPercent', () => {
     await i18n.changeLanguage('en');
     expect(formatPercent(50)).toBe('50%');
   });
+
+  it('keeps Intl native spacing outside French', async () => {
+    await i18n.changeLanguage('de');
+    expect(formatPercent(50)).toBe('50\u00A0%');
+  });
 });

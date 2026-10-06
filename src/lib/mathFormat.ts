@@ -13,11 +13,15 @@ export const formatInteger = (value: number): string =>
 const formatOperand = (value: number, leading: boolean): string =>
   value < 0 && !leading ? `(${formatInteger(value)})` : formatInteger(value);
 
-export const formatPercent = (rate: number): string =>
-  new Intl.NumberFormat(i18n.language, { style: 'percent', maximumFractionDigits: 0 })
+export const formatPercent = (rate: number): string => {
+  const formatted = new Intl.NumberFormat(i18n.language, {
+    style: 'percent',
+    maximumFractionDigits: 0,
+  })
     .format(rate / 100)
-    .replace('-', MINUS)
-    .replace(/\u00A0/g, NARROW_NO_BREAK);
+    .replace('-', MINUS);
+  return i18n.language === 'fr' ? formatted.replace(/\u00A0/g, NARROW_NO_BREAK) : formatted;
+};
 
 export const OPERATOR_SYMBOLS: Record<ArithmeticOperator, string> = {
   add: '+',

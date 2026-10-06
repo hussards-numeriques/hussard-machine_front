@@ -6,6 +6,7 @@ import { usePlayerProfile } from '../hooks/usePlayerProfile';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { resolveGradeLabel, resolveLevelLabel } from '../lib/grades';
 import { AuthModal } from './AuthModal';
+import { LanguagePill } from './LanguagePill';
 import { Mascot } from './Mascot';
 import { PlayerAvatar } from './PlayerAvatar';
 import { StreakBadge } from './streak/StreakBadge';
@@ -133,13 +134,16 @@ export const Header: React.FC = () => {
             <UserMenu username={user.username} />
           </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => setShowAuthModal(true)}
-            className="pointer-events-auto text-sm font-black text-white bg-primary px-4 py-2 rounded-full shadow hover:bg-primary-dark transition-colors"
-          >
-            {t('header.login')}
-          </button>
+          <div className="pointer-events-auto flex items-center gap-2">
+            <LanguagePill />
+            <button
+              type="button"
+              onClick={() => setShowAuthModal(true)}
+              className="pointer-events-auto text-sm font-black text-white bg-primary px-4 py-2 rounded-full shadow hover:bg-primary-dark transition-colors"
+            >
+              {t('header.login')}
+            </button>
+          </div>
         )}
       </header>
 
