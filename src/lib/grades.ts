@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next';
+
 export const GRADES = ['BRONZE', 'SILVER', 'GOLD', 'PLATINE', 'DIAMOND'] as const;
 export type Grade = (typeof GRADES)[number];
 
@@ -13,14 +15,6 @@ export const LEVELS = [
   'TROISIEME',
 ] as const;
 export type Level = (typeof LEVELS)[number];
-
-const GRADE_LABELS: Record<Grade, string> = {
-  BRONZE: 'Bronze',
-  SILVER: 'Argent',
-  GOLD: 'Or',
-  PLATINE: 'Platine',
-  DIAMOND: 'Diamant',
-};
 
 const GRADE_STYLES: Record<Grade, string> = {
   BRONZE: 'bg-amber-100 text-amber-800 border-amber-300',
@@ -54,18 +48,6 @@ const GRADE_METALS: Record<Grade, string> = {
   DIAMOND: 'grade-metal-diamond',
 };
 
-const LEVEL_LABELS: Record<Level, string> = {
-  CP: 'CP',
-  CE1: 'CE1',
-  CE2: 'CE2',
-  CM1: 'CM1',
-  CM2: 'CM2',
-  SIXIEME: '6ème',
-  CINQUIEME: '5ème',
-  QUATRIEME: '4ème',
-  TROISIEME: '3ème',
-};
-
 export const DEFAULT_GRADE_STYLE = 'bg-slate-100 text-slate-600 border-slate-300';
 
 export const DEFAULT_GRADE_METAL = 'grade-metal-default';
@@ -75,8 +57,8 @@ const isGrade = (value: string): value is Grade => (GRADES as readonly string[])
 export const isLevel = (value: string): value is Level =>
   (LEVELS as readonly string[]).includes(value);
 
-export const resolveGradeLabel = (grade: string): string =>
-  isGrade(grade) ? GRADE_LABELS[grade] : grade;
+export const resolveGradeLabel = (grade: string, t: TFunction): string =>
+  isGrade(grade) ? t(`grades.${grade}`) : grade;
 
 export const resolveGradeStyle = (grade: string): string =>
   isGrade(grade) ? GRADE_STYLES[grade] : DEFAULT_GRADE_STYLE;
@@ -90,5 +72,5 @@ export const resolveGradeBarLightColor = (grade: string): string =>
 export const resolveGradeMetal = (grade: string): string =>
   isGrade(grade) ? GRADE_METALS[grade] : DEFAULT_GRADE_METAL;
 
-export const resolveLevelLabel = (level: string): string =>
-  isLevel(level) ? LEVEL_LABELS[level] : level;
+export const resolveLevelLabel = (level: string, t: TFunction, form: 'short' | 'long'): string =>
+  isLevel(level) ? t(`levels.${form}.${level}`) : level;

@@ -1,6 +1,8 @@
+import type { TFunction } from 'i18next';
 import React from 'react';
 import { cn } from '../lib/utils';
 import { resolveGradeLabel, resolveGradeMetal, resolveLevelLabel } from '../lib/grades';
+import { useTranslation } from 'react-i18next';
 
 type AvatarSize = 'sm' | 'md' | 'lg';
 
@@ -20,8 +22,10 @@ const SIZE_CLASSES: Record<AvatarSize, { face: string; text: string; ring: strin
     lg: { face: 'w-16 h-16', text: 'text-2xl', ring: 'p-[5px]', tab: 'text-xs px-2' },
   };
 
-const rankDescription = (grade: string, level: string | undefined): string =>
-  level ? `${resolveLevelLabel(level)} · ${resolveGradeLabel(grade)}` : resolveGradeLabel(grade);
+const rankDescription = (grade: string, level: string | undefined, t: TFunction): string =>
+  level
+    ? `${resolveLevelLabel(level, t, 'long')} · ${resolveGradeLabel(grade, t)}`
+    : resolveGradeLabel(grade, t);
 
 export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
   name,
@@ -31,13 +35,14 @@ export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
   iconUrl,
   size = 'md',
 }) => {
+  const { t } = useTranslation();
   const { face, text, ring, tab } = SIZE_CLASSES[size];
   const metal = resolveGradeMetal(grade);
 
   return (
     <div
       data-testid="player-avatar"
-      title={rankDescription(grade, level)}
+      title={rankDescription(grade, level, t)}
       className={cn('relative shrink-0 rounded-full grade-ring', ring, metal, level && 'mb-2')}
     >
       {iconUrl ? (
@@ -62,7 +67,7 @@ export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
             tab
           )}
         >
-          {resolveLevelLabel(level)}
+          {resolveLevelLabel(level, t, 'short')}
         </span>
       )}
     </div>

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { resolveRarityLabel } from '../../lib/rarity';
 import { TitleLabel } from '../PlayerTitle';
 import type { MyTitle } from '../../services/quests';
+import { useTranslation } from 'react-i18next';
 
 interface TitleUnlockToastProps {
   titles: MyTitle[];
@@ -13,6 +14,7 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
   title,
   onDismiss,
 }) => {
+  const { t } = useTranslation();
   useEffect(() => {
     const timeout = window.setTimeout(() => onDismiss(title.id), AUTO_DISMISS_MS);
     return () => window.clearTimeout(timeout);
@@ -21,7 +23,7 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
   return (
     <div className="flex flex-col items-center gap-2 px-5 py-3 rounded-2xl border-2 border-slate-100 bg-white shadow-xl animate-pop-in">
       <span className="text-sm font-bold text-slate-600">
-        🏆 Titre {resolveRarityLabel(title.rarity)} débloqué !
+        🏆 Titre {resolveRarityLabel(title.rarity, t)} débloqué !
       </span>
       <TitleLabel title={title} className="text-lg" />
     </div>

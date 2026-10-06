@@ -9,6 +9,7 @@ import { Mascot } from '../components/Mascot';
 import { useShinySession } from '../hooks/useShinySession';
 import { resolveApiErrorMessage } from '../lib/labels';
 import { LEVELS, resolveLevelLabel } from '../lib/grades';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_MAX_PLAYERS = 6;
 
@@ -41,6 +42,7 @@ const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => 
 };
 
 export const HomePage: React.FC = () => {
+  const { t } = useTranslation();
   const isShiny = useShinySession();
   const { client } = useGame();
   const { user, isAuthenticated, client: authClient } = useAuth();
@@ -90,7 +92,7 @@ export const HomePage: React.FC = () => {
       });
       goToGame(gameId, effectiveName);
     } catch (createError) {
-      setError(resolveApiErrorMessage(createError, 'Erreur lors de la création'));
+      setError(resolveApiErrorMessage(createError, 'Erreur lors de la création', t));
     }
   };
 
@@ -205,7 +207,7 @@ export const HomePage: React.FC = () => {
               >
                 {LEVELS.map((level) => (
                   <option key={level} value={level}>
-                    {resolveLevelLabel(level)}
+                    {resolveLevelLabel(level, t, 'long')}
                   </option>
                 ))}
               </select>

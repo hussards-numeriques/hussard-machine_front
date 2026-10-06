@@ -5,7 +5,8 @@ import { useRedeem } from '../hooks/useSubscription';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { ApiError } from '../services/http';
-import { API_ERROR_MESSAGES } from '../lib/labels';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 const VipNotice: React.FC<{ message: string }> = ({ message }) => (
   <div className="min-h-screen flex items-center justify-center p-4">
@@ -20,11 +21,12 @@ const VipNotice: React.FC<{ message: string }> = ({ message }) => (
 );
 
 const formatExpiry = (isoDate: string) =>
-  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(
+  new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }).format(
     new Date(isoDate)
   );
 
 export const VipPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [code, setCode] = useState('');
   const redeem = useRedeem();
@@ -75,9 +77,7 @@ export const VipPage: React.FC = () => {
           Activer
         </Button>
         {isInvalidCode && (
-          <p className="text-sm font-bold text-rose-600">
-            {API_ERROR_MESSAGES.INVALID_REDEEM_CODE}
-          </p>
+          <p className="text-sm font-bold text-rose-600">{t('errors.api.INVALID_REDEEM_CODE')}</p>
         )}
         {redeem.isError && !isInvalidCode && (
           <p className="text-sm font-bold text-rose-600">Une erreur est survenue, réessaie.</p>

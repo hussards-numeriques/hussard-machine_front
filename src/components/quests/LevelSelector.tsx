@@ -1,6 +1,7 @@
 import React from 'react';
 import { LEVELS, isLevel, resolveLevelLabel } from '../../lib/grades';
 import type { Level } from '../../lib/grades';
+import { useTranslation } from 'react-i18next';
 
 interface LevelSelectorProps {
   level: Level;
@@ -9,6 +10,7 @@ interface LevelSelectorProps {
 }
 
 export const LevelSelector: React.FC<LevelSelectorProps> = ({ level, currentLevel, onChange }) => {
+  const { t } = useTranslation();
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const next = event.target.value;
     if (!isLevel(next)) return;
@@ -28,7 +30,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({ level, currentLeve
       >
         {LEVELS.map((option) => (
           <option key={option} value={option}>
-            {resolveLevelLabel(option)}
+            {resolveLevelLabel(option, t, 'long')}
             {option === currentLevel ? ' (actuel)' : ''}
           </option>
         ))}

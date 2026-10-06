@@ -4,7 +4,11 @@ import {
   resolveGradeMetal,
   DEFAULT_GRADE_METAL,
   isLevel,
+  LEVELS,
+  resolveLevelLabel,
 } from './grades';
+import i18n from '../i18n';
+import { LOCALES } from '../i18n/locale';
 
 describe('resolveGradeMetal', () => {
   it.each([
@@ -48,5 +52,29 @@ describe('isLevel', () => {
 
   it('rejects an unknown value', () => {
     expect(isLevel('TERMINALE')).toBe(false);
+  });
+});
+
+describe('resolveLevelLabel', () => {
+  it('returns the French short and long labels', () => {
+    expect(resolveLevelLabel('SIXIEME', i18n.t, 'short')).toBe('6ème');
+    expect(resolveLevelLabel('CP', i18n.t, 'long')).toBe('CP');
+  });
+
+  it('returns the US label in English', () => {
+    const t = i18n.getFixedT('en');
+    expect(resolveLevelLabel('CP', t, 'short')).toBe('G1');
+    expect(resolveLevelLabel('TROISIEME', t, 'long')).toBe('Grade 9');
+  });
+
+  it.each(LOCALES)('keeps every short label within 4 characters in %s', (locale) => {
+    const t = i18n.getFixedT(locale);
+    LEVELS.forEach((level) => {
+      expect([...resolveLevelLabel(level, t, 'short')].length).toBeLessThanOrEqual(4);
+    });
+  });
+
+  it('returns an unknown level unchanged', () => {
+    expect(resolveLevelLabel('LYCEE', i18n.t, 'short')).toBe('LYCEE');
   });
 });

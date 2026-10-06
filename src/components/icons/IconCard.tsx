@@ -3,6 +3,7 @@ import { cn } from '../../lib/utils';
 import { resolveRarityBadgeStyle, resolveRarityLabel } from '../../lib/rarity';
 import { resolveIconLabel } from '../../lib/labels';
 import type { PlayerIcon } from '../../services/icons';
+import { useTranslation } from 'react-i18next';
 
 interface IconCardProps {
   icon: PlayerIcon;
@@ -19,7 +20,8 @@ export const IconCard: React.FC<IconCardProps> = ({
   onEquip,
   isPending,
 }) => {
-  const label = resolveIconLabel(icon.id);
+  const { t } = useTranslation();
+  const label = resolveIconLabel(icon.id, t);
   return (
     <div
       className={cn(
@@ -46,7 +48,7 @@ export const IconCard: React.FC<IconCardProps> = ({
           resolveRarityBadgeStyle(icon.rarity)
         )}
       >
-        {resolveRarityLabel(icon.rarity)}
+        {resolveRarityLabel(icon.rarity, t)}
       </span>
       {unlocked && (
         <button

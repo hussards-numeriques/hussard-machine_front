@@ -1,8 +1,10 @@
 import React from 'react';
 import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../../lib/grades';
 import { useGameConfig } from '../../hooks/useGameConfig';
+import { useTranslation } from 'react-i18next';
 
 export const GradeGuide: React.FC = () => {
+  const { t } = useTranslation();
   const { data: config, isLoading: loading } = useGameConfig();
 
   return (
@@ -34,7 +36,7 @@ export const GradeGuide: React.FC = () => {
                   key={grade}
                   className={`flex items-center gap-2 px-3 py-2 rounded-2xl border ${resolveGradeStyle(grade)}`}
                 >
-                  <span className="font-black text-sm">{resolveGradeLabel(grade)}</span>
+                  <span className="font-black text-sm">{resolveGradeLabel(grade, t)}</span>
                   <span className="text-xs opacity-70">{i * config.experience_per_grade} XP</span>
                 </div>
               ))}
@@ -53,7 +55,7 @@ export const GradeGuide: React.FC = () => {
                   key={level}
                   className="px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20"
                 >
-                  {resolveLevelLabel(level)}
+                  {resolveLevelLabel(level, t, 'long')}
                 </span>
               ))}
             </div>

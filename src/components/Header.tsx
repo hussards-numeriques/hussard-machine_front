@@ -10,6 +10,7 @@ import { Mascot } from './Mascot';
 import { PlayerAvatar } from './PlayerAvatar';
 import { StreakBadge } from './streak/StreakBadge';
 import { SubscriptionMenuCard, SupporterCrown } from './SubscriptionStatus';
+import { useTranslation } from 'react-i18next';
 
 const MENU_LINKS = [
   { to: '/profile', label: 'Mon profil' },
@@ -30,6 +31,7 @@ const HomeLink: React.FC = () => (
 );
 
 const UserMenu: React.FC<{ username: string }> = ({ username }) => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const { data: profile } = usePlayerProfile();
   const isSupporter = useSubscriptionStatus().data?.active === true;
@@ -80,7 +82,8 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
               <p className="text-base font-black text-slate-800 truncate">{username}</p>
               {profile && (
                 <p className="text-xs font-bold text-slate-400">
-                  {resolveLevelLabel(profile.level)} · {resolveGradeLabel(profile.grade)}
+                  {resolveLevelLabel(profile.level, t, 'long')} ·{' '}
+                  {resolveGradeLabel(profile.grade, t)}
                 </p>
               )}
             </div>

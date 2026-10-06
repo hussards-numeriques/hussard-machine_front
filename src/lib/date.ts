@@ -1,10 +1,12 @@
+import i18n from '../i18n';
+
 function parseIsoAsUtc(iso: string): Date {
   const hasTimezone = /[Zz]|[+-]\d{2}:\d{2}$/.test(iso);
   return new Date(hasTimezone ? iso : `${iso}Z`);
 }
 
 export function formatShortDate(iso: string): string {
-  return parseIsoAsUtc(iso).toLocaleDateString('fr-FR', {
+  return parseIsoAsUtc(iso).toLocaleDateString(i18n.language, {
     day: '2-digit',
     month: '2-digit',
     timeZone: 'UTC',
@@ -12,7 +14,7 @@ export function formatShortDate(iso: string): string {
 }
 
 export function formatLongDate(iso: string): string {
-  return parseIsoAsUtc(iso).toLocaleDateString('fr-FR', {
+  return parseIsoAsUtc(iso).toLocaleDateString(i18n.language, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

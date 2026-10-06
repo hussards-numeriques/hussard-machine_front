@@ -10,6 +10,7 @@ import { Mascot } from '../components/Mascot';
 import { CorrectionCard } from '../components/GameFeedback/CorrectionCard';
 import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop';
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
+import { useTranslation } from 'react-i18next';
 
 interface GameViewProps {
   client: GameClient;
@@ -137,13 +138,14 @@ const QuestionCard: React.FC<{
   myAnswer: Answer | null;
   onSubmit: (value: number) => void;
 }> = ({ question, remainingSeconds, myAnswer, onSubmit }) => {
+  const { t } = useTranslation();
   const isTimerLow = remainingSeconds !== null && remainingSeconds <= 3;
 
   return (
     <>
       <div className="flex items-center justify-between gap-2 text-xs">
         <span className="uppercase tracking-wider font-semibold text-slate-400">
-          {resolveQuestionCategoryLabel(question.category)}
+          {resolveQuestionCategoryLabel(question.category, t)}
         </span>
         {remainingSeconds !== null && (
           <span

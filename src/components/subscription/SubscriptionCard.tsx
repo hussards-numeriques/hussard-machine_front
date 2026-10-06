@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import { formatEuros } from '../../lib/money';
-import { SUBSCRIPTION_PLAN_LABELS } from '../../lib/labels';
+import { resolvePlanLabel } from '../../lib/labels';
 import { formatShortDate } from '../../lib/date';
 import {
   computeMonthlyEquivalentCents,
@@ -13,6 +13,7 @@ import type {
   SubscriptionPlanKey,
   SubscriptionStatus,
 } from '../../services/subscription';
+import { useTranslation } from 'react-i18next';
 
 interface SubscriptionCardProps {
   plans: SubscriptionPlan[];
@@ -30,6 +31,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onPurchase,
   isPurchasePending,
 }) => {
+  const { t } = useTranslation();
   const [selectedPlanKey, setSelectedPlanKey] = useState<SubscriptionPlanKey>(() =>
     defaultPlanKey(plans)
   );
@@ -68,7 +70,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 isSelected ? 'bg-primary text-white' : 'bg-slate-50 text-slate-600'
               )}
             >
-              <span className="block font-bold">{SUBSCRIPTION_PLAN_LABELS[plan.key]}</span>
+              <span className="block font-bold">{resolvePlanLabel(plan.key, t)}</span>
               <span className="block text-xs">
                 {`${formatEuros(computeMonthlyEquivalentCents(plan.amount, plan.key), plan.currency)}/mois`}
               </span>
@@ -118,8 +120,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
         {status?.active
-          ? `Prolonger · ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`
-          : `Passer à Calc Rush+ · ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`}
+          ? `Prolonger · ${resolvePlanLabel(selectedPlan.key, t)}`
+          : `Passer à Calc Rush+ · ${resolvePlanLabel(selectedPlan.key, t)}`}
       </button>
     </div>
   );

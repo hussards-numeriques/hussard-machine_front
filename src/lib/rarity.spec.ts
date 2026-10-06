@@ -1,3 +1,4 @@
+import i18n from '../i18n';
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_RARITY_BADGE_STYLE,
@@ -14,11 +15,11 @@ describe('resolveRarityLabel', () => {
     ['GOLD', 'Épique'],
     ['DIAMOND', 'Légendaire'],
   ])('maps %s to %s', (rarity, expected) => {
-    expect(resolveRarityLabel(rarity)).toBe(expected);
+    expect(resolveRarityLabel(rarity, i18n.t)).toBe(expected);
   });
 
   it('falls back to the raw value for an unknown rarity', () => {
-    expect(resolveRarityLabel('MYTHIC')).toBe('MYTHIC');
+    expect(resolveRarityLabel('MYTHIC', i18n.t)).toBe('MYTHIC');
   });
 });
 

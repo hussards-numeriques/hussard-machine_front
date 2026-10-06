@@ -1,8 +1,9 @@
+import i18n from '../i18n';
 import type { Game } from '../types';
 import { getApiUrl, getWsUrl } from './apiConfig';
 import { createdGameSchema, serverMessageSchema, type ServerMessage } from './gameSchemas';
 import { apiErrorFrom } from './http';
-import { WS_ERROR_MESSAGES } from '../lib/labels';
+import { resolveWsErrorMessage } from '../lib/labels';
 
 type GameUpdateCallback = (game: Game) => void;
 type ErrorCallback = (error: string) => void;
@@ -159,7 +160,7 @@ export class GameClient {
         }
         break;
       case 'ERROR':
-        this.onError(WS_ERROR_MESSAGES[message.payload]);
+        this.onError(resolveWsErrorMessage(message.payload, i18n.t));
         break;
       case 'KICKED':
         this.onError('Tu as été exclu de la partie.');

@@ -1,13 +1,14 @@
+import i18n from '../i18n';
 import type { AffineExpression, ArithmeticOperator, ExpressionNode } from '../types';
 
 const MINUS = '−';
 const NO_BREAK = ' ';
 const NARROW_NO_BREAK = ' ';
 
-const integerFormat = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
-
 export const formatInteger = (value: number): string =>
-  integerFormat.format(value).replace('-', MINUS);
+  new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 0 })
+    .format(value)
+    .replace('-', MINUS);
 
 const formatOperand = (value: number, leading: boolean): string =>
   value < 0 && !leading ? `(${formatInteger(value)})` : formatInteger(value);

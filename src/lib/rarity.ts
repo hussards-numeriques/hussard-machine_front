@@ -1,12 +1,7 @@
+import type { TFunction } from 'i18next';
+
 export const RARITIES = ['BRONZE', 'SILVER', 'GOLD', 'DIAMOND'] as const;
 export type Rarity = (typeof RARITIES)[number];
-
-const RARITY_LABELS: Record<Rarity, string> = {
-  BRONZE: 'Commun',
-  SILVER: 'Rare',
-  GOLD: 'Épique',
-  DIAMOND: 'Légendaire',
-};
 
 const RARITY_TEXT_STYLES: Record<Rarity, string> = {
   BRONZE: 'text-slate-500',
@@ -28,8 +23,8 @@ export const DEFAULT_RARITY_BADGE_STYLE = 'bg-slate-100 text-slate-600 border-sl
 const isRarity = (value: string): value is Rarity =>
   (RARITIES as readonly string[]).includes(value);
 
-export const resolveRarityLabel = (rarity: string): string =>
-  isRarity(rarity) ? RARITY_LABELS[rarity] : rarity;
+export const resolveRarityLabel = (rarity: string, t: TFunction): string =>
+  isRarity(rarity) ? t(`rarity.${rarity}`) : rarity;
 
 export const resolveRarityTextStyle = (rarity: string): string =>
   isRarity(rarity) ? RARITY_TEXT_STYLES[rarity] : DEFAULT_RARITY_TEXT_STYLE;

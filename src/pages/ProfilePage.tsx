@@ -22,11 +22,13 @@ import { PlayerAvatar } from '../components/PlayerAvatar';
 import { resolveGradeLabel, resolveGradeStyle, resolveLevelLabel } from '../lib/grades';
 import { SegmentedXpBar } from '../components/grade/SegmentedXpBar';
 import { DeleteAccountModal } from '../components/DeleteAccountModal';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 
 const RANK_MEDALS = ['🥇', '🥈', '🥉'];
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('fr-FR', {
+  return new Date(iso).toLocaleDateString(i18n.language, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -39,13 +41,16 @@ function formatDuration(seconds: number): string {
   return m > 0 ? `${m}min ${s}s` : `${s}s`;
 }
 
-const GradeBadge: React.FC<{ grade: string }> = ({ grade }) => (
-  <span
-    className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${resolveGradeStyle(grade)}`}
-  >
-    {resolveGradeLabel(grade)}
-  </span>
-);
+const GradeBadge: React.FC<{ grade: string }> = ({ grade }) => {
+  const { t } = useTranslation();
+  return (
+    <span
+      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${resolveGradeStyle(grade)}`}
+    >
+      {resolveGradeLabel(grade, t)}
+    </span>
+  );
+};
 
 const HistoryRow: React.FC<{
   entry: GameHistoryEntry;
@@ -198,6 +203,7 @@ const profileErrorMessage = (error: unknown): string => {
 };
 
 export const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { data: config } = useGameConfig();
   const profileQuery = usePlayerProfile();
@@ -282,9 +288,10 @@ export const ProfilePage: React.FC = () => {
   const previousLevelKey = config
     ? config.levels[config.levels.indexOf(profile.level) - 1]
     : undefined;
-  const nextLevelLabel = nextLevelKey != null ? resolveLevelLabel(nextLevelKey) : 'niveau suivant';
+  const nextLevelLabel =
+    nextLevelKey != null ? resolveLevelLabel(nextLevelKey, t, 'long') : 'niveau suivant';
   const previousLevelLabel =
-    previousLevelKey != null ? resolveLevelLabel(previousLevelKey) : 'niveau précédent';
+    previousLevelKey != null ? resolveLevelLabel(previousLevelKey, t, 'long') : 'niveau précédent';
   const canDemote = previousLevelKey != null;
 
   return (
@@ -303,7 +310,7 @@ export const ProfilePage: React.FC = () => {
             <h1 className="text-2xl font-black text-slate-800">{profile.username}</h1>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-sm font-bold text-slate-600 bg-white/60 px-2 py-0.5 rounded-full">
-                {resolveLevelLabel(profile.level)}
+                {resolveLevelLabel(profile.level, t, 'long')}
               </span>
               <GradeBadge grade={profile.grade} />
             </div>
@@ -416,7 +423,7 @@ export const ProfilePage: React.FC = () => {
         <LevelChangeConfirmModal
           variant={pendingLevelChange}
           targetLevel={pendingLevelChange === 'promote' ? nextLevelLabel : previousLevelLabel}
-          currentLevel={resolveLevelLabel(profile.level)}
+          currentLevel={resolveLevelLabel(profile.level, t, 'long')}
           onConfirm={() => {
             setPendingLevelChange(null);
             if (pendingLevelChange === 'promote') {

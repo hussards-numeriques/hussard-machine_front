@@ -3,6 +3,7 @@ import { cn } from '../../lib/utils';
 import { TitleLabel } from '../PlayerTitle';
 import { resolveQuestLabel } from '../../lib/labels';
 import type { MyQuest, Quest } from '../../services/quests';
+import { useTranslation } from 'react-i18next';
 
 export type QuestProgressCardMode =
   | { kind: 'editable'; onEquip: (titleId: string | null) => void; isPending: boolean }
@@ -79,9 +80,10 @@ export const QuestProgressCard: React.FC<QuestProgressCardProps> = ({
   selectedTitleId,
   mode,
 }) => {
+  const { t } = useTranslation();
   return (
     <div className="rounded-2xl border-2 border-slate-100 bg-slate-50 p-4 space-y-3">
-      <h3 className="font-bold text-slate-700">{resolveQuestLabel(quest.id)}</h3>
+      <h3 className="font-bold text-slate-700">{resolveQuestLabel(quest.id, t)}</h3>
       <QuestProgressBar progress={progress} />
       <div className="space-y-2">
         {quest.tiers.map((tier) => {
