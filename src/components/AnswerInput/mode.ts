@@ -10,20 +10,6 @@ export const ANSWER_INPUT_MODES: readonly AnswerInputMode[] = [
   'keypad',
 ];
 
-export const ANSWER_INPUT_MODE_LABELS: Record<AnswerInputMode, string> = {
-  auto: 'Automatique',
-  keyboard: 'Clavier',
-  handwriting: 'Écriture manuscrite',
-  keypad: 'Pavé numérique',
-};
-
-export const ANSWER_INPUT_MODE_DESCRIPTIONS: Record<AnswerInputMode, string> = {
-  auto: 'Choisit automatiquement selon ton appareil : écriture manuscrite sur tactile, clavier sinon.',
-  keyboard: 'Champ de saisie classique, ouvre le clavier de ton appareil.',
-  handwriting: 'Dessine le chiffre, il est reconnu automatiquement.',
-  keypad: "Un pavé de chiffres à l'écran, sans clavier.",
-};
-
 export const isAnswerInputMode = (value: unknown): value is AnswerInputMode =>
   typeof value === 'string' && (ANSWER_INPUT_MODES as readonly string[]).includes(value);
 

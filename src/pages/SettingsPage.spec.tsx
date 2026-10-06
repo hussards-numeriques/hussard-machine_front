@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SettingsPage } from './SettingsPage';
 import { ANSWER_INPUT_MODE_STORAGE_KEY } from '../hooks/useAnswerInputMode';
@@ -42,5 +42,21 @@ describe('SettingsPage', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /^Pavé numérique/i }));
     expect(localStorage.getItem(ANSWER_INPUT_MODE_STORAGE_KEY)).toBe('keypad');
+  });
+
+  it('switches the whole page language immediately', () => {
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /English/ }));
+    expect(screen.getByRole('heading', { name: 'Input mode' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /English/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('marks Automatic as active by default in the language card', () => {
+    renderPage();
+    const card = screen.getByRole('region', { name: 'Langue' });
+    expect(within(card).getByRole('button', { name: /Automatique/ })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
   });
 });

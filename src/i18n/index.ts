@@ -11,8 +11,12 @@ import { de } from './locales/de';
 export const LOCALE_STORAGE_KEY = 'calc-rush:locale';
 
 export const readLocalePreference = (): LocalePreference => {
-  const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-  return isLocalePreference(stored) ? stored : 'auto';
+  try {
+    const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
+    return isLocalePreference(stored) ? stored : 'auto';
+  } catch {
+    return 'auto';
+  }
 };
 
 export const applyLocale = (preference: LocalePreference): void => {
