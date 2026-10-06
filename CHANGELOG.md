@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Home menu wording states the intent of each choice: « Partie classée » (players of your level, XP), « Rejoindre avec un code », « Créer une partie privée » (any level, invitation code, bots, no ranking). Each choice has an ⓘ toggle revealing a one-sentence explanation.
+- Non-subscribers can click « Créer une partie privée »: it leads to `/subscription` instead of a greyed « Abonnement requis » button.
+- The word « salon » is gone from the UI: lobby header, join/create forms, error messages and profile history badge (« Rapide » → « Classée ») now speak of « partie » and « code d'invitation ».
+
 ## [0.30.0] - 2026-10-03
 
 ### Changed

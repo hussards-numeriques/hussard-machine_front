@@ -59,10 +59,10 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
     <div className="flex flex-col items-center min-h-screen p-4 space-y-8 max-w-2xl mx-auto w-full">
       <div className="text-center space-y-2 mt-8">
         {game.is_quick_game ? (
-          <h2 className="text-2xl font-bold text-slate-500">Partie Rapide</h2>
+          <h2 className="text-2xl font-bold text-slate-500">Partie classée</h2>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-slate-500">Code du Salon</h2>
+            <h2 className="text-2xl font-bold text-slate-500">Code d'invitation</h2>
             <div className="text-6xl font-black text-primary tracking-widest font-mono bg-white px-8 py-4 rounded-2xl shadow-sm border-2 border-slate-200">
               {game.id}
             </div>

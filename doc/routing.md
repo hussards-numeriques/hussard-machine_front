@@ -70,9 +70,9 @@ triggers a fresh connect — without it, React sees no changed dependency and sk
 
 ## Navigation between pages
 
-- `HomePage` → "Créer un salon" → `createLobby()` (REST) → `navigate('/game/:id', { state })`
-- `HomePage` → "Rejoindre un salon" → `navigate('/game/:code', { state })` (code typed by the user, not created via REST)
-- `HomePage` → "Partie Rapide" → `navigate('/game', { state })` (no REST call, no id — the backend picks the game on `JOIN`)
+- `HomePage` → "Créer une partie privée" → `createLobby()` (REST) → `navigate('/game/:id', { state })`
+- `HomePage` → "Rejoindre avec un code" → `navigate('/game/:code', { state })` (code typed by the user, not created via REST)
+- `HomePage` → "Partie classée" → `navigate('/game', { state })` (no REST call, no id — the backend picks the game on `JOIN`)
 - `PodiumView` → "Rejouer" → `navigate('/game', { state })` (same as quick game — always resumes/creates via `JOIN`, never reuses the finished game's id)
 - `PodiumView` → back → `navigate('/')`
 - `Header` → Rushy + « Calc Rush » home pill on all pages except `/`

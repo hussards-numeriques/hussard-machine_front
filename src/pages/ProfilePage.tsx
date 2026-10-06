@@ -68,7 +68,7 @@ const HistoryRow: React.FC<{
             <span className="text-sm font-bold text-slate-700">{formatDate(entry.played_at)}</span>
             {entry.is_quick_game && (
               <span className="text-xs bg-secondary/20 text-yellow-800 font-bold px-2 py-0.5 rounded-full">
-                Rapide
+                Classée
               </span>
             )}
           </div>

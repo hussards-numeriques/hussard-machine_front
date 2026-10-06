@@ -162,10 +162,10 @@ export class GameClient {
         this.onError(WS_ERROR_MESSAGES[message.payload]);
         break;
       case 'KICKED':
-        this.onError('Tu as été exclu du salon.');
+        this.onError('Tu as été exclu de la partie.');
         break;
       case 'LOBBY_CLOSED':
-        this.onError("L'hôte a quitté la partie, le salon a été fermé.");
+        this.onError("L'hôte a quitté la partie, elle a été fermée.");
         break;
     }
   }

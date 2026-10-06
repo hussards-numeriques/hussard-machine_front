@@ -29,7 +29,7 @@ describe('API errors', () => {
     expect(error.status).toBe(403);
     expect(error.code).toBe('SUBSCRIPTION_REQUIRED');
     expect(resolveApiErrorMessage(error, 'fallback')).toBe(
-      'Un abonnement actif est requis pour créer un salon.'
+      'Un abonnement actif est requis pour créer une partie privée.'
     );
   });
 

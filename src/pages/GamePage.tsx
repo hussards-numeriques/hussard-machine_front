@@ -64,7 +64,7 @@ export const GamePage: React.FC = () => {
   if (!game) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <p className="text-slate-600 font-bold">Connexion au salon...</p>
+        <p className="text-slate-600 font-bold">Connexion à la partie...</p>
       </div>
     );
   }

@@ -99,13 +99,13 @@ export const API_ERROR_MESSAGES: Record<ApiErrorCode, string> = {
   PROMOTION_NOT_ALLOWED: 'Promotion impossible.',
   DEMOTION_NOT_ALLOWED: 'Rétrogradation impossible.',
   AUTH_ACCOUNT_DELETION_FAILED: "Suppression du compte d'authentification impossible.",
-  SUBSCRIPTION_REQUIRED: 'Un abonnement actif est requis pour créer un salon.',
+  SUBSCRIPTION_REQUIRED: 'Un abonnement actif est requis pour créer une partie privée.',
   INVALID_REDEEM_CODE: 'Code invalide.',
   INVALID_WEBHOOK_SIGNATURE: 'Signature invalide.',
 };
 
 export const WS_ERROR_MESSAGES: Record<WsErrorCode, string> = {
-  JOIN_FAILED: 'Impossible de rejoindre ce salon.',
+  JOIN_FAILED: 'Impossible de rejoindre cette partie.',
   ADD_BOT_FAILED: "Impossible d'ajouter ce bot.",
   REMOVE_PLAYER_FAILED: 'Impossible de retirer ce joueur.',
 };

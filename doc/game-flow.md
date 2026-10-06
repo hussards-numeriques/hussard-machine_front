@@ -67,15 +67,15 @@ are typed by the `ClientMessage` union in `GameClient.ts`.
 
 ### Incoming WebSocket messages
 
-| Type                 | Payload               | Action                                                                                                                                                                                                                                                  |
-| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`                                                                                                                                                                                                           |
-| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                                                                                                                                                                                                                              |
-| `COUNTDOWN`          | `{ seconds }`         | Calls `onLaunchCountdown(seconds)` if defined (set by `LobbyView` via `setLaunchCountdownCallback()`). Backend sends 5→1 then 0 (GO) before the game starts.                                                                                            |
-| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined                                                                                                                                                                                                         |
-| `ERROR`              | `WsErrorCode`         | Calls `onError(WS_ERROR_MESSAGES[code])` (`JOIN_FAILED` / `ADD_BOT_FAILED` / `REMOVE_PLAYER_FAILED`, French messages in `src/lib/labels.ts`)                                                                                                            |
-| `KICKED`             | `{}`                  | Calls `onError('Tu as été exclu du salon.')` — routed through the same `onError` flow as `ERROR`, no dedicated UI surface. Sent to a player the host removes via `removePlayer()`; `GamePage` renders it in its generic error card (see below).         |
-| `LOBBY_CLOSED`       | `{}`                  | Calls `onError("L'hôte a quitté la partie, le salon a été fermé.")` — same `onError` flow, no dedicated UI surface. Sent to every other human still in a private lobby when its host disconnects before the game starts (the backend deletes the game). |
+| Type                 | Payload               | Action                                                                                                                                                                                                                                               |
+| -------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PLAYER_JOINED`      | `{ player_id, game }` | Stores `playerId`, calls `onGameUpdate(game)`                                                                                                                                                                                                        |
+| `GAME_UPDATE`        | `Game`                | Calls `onGameUpdate(game)`                                                                                                                                                                                                                           |
+| `COUNTDOWN`          | `{ seconds }`         | Calls `onLaunchCountdown(seconds)` if defined (set by `LobbyView` via `setLaunchCountdownCallback()`). Backend sends 5→1 then 0 (GO) before the game starts.                                                                                         |
+| `QUESTION_COUNTDOWN` | `{ seconds }`         | Calls `onQuestionCountdown(seconds)` if defined                                                                                                                                                                                                      |
+| `ERROR`              | `WsErrorCode`         | Calls `onError(WS_ERROR_MESSAGES[code])` (`JOIN_FAILED` / `ADD_BOT_FAILED` / `REMOVE_PLAYER_FAILED`, French messages in `src/lib/labels.ts`)                                                                                                         |
+| `KICKED`             | `{}`                  | Calls `onError('Tu as été exclu de la partie.')` — routed through the same `onError` flow as `ERROR`, no dedicated UI surface. Sent to a player the host removes via `removePlayer()`; `GamePage` renders it in its generic error card (see below).  |
+| `LOBBY_CLOSED`       | `{}`                  | Calls `onError("L'hôte a quitté la partie, elle a été fermée.")` — same `onError` flow, no dedicated UI surface. Sent to every other human still in a private lobby when its host disconnects before the game starts (the backend deletes the game). |
 
 ### Outgoing WebSocket messages
 
@@ -156,10 +156,16 @@ lobby still in `WAITING` state — that's done backend-side, no front handling n
 ### Creating a lobby (`HomePage`, `CREATE` mode)
 
 `HomePage` (`src/pages/HomePage.tsx`) has a third mode besides `MENU`/`JOIN`: `CREATE`, reached via
-the "Créer un salon" button. That button is gated by subscription — it's `disabled` (label
-"Abonnement requis") unless `isAuthenticated && subscriptionStatus?.active` (`useSubscriptionStatus`,
-see `doc/subscription.md`). Joining an existing salon by code (`JOIN` mode) stays free for everyone,
+the "Créer une partie privée" button. That button is gated by subscription: unless
+`isAuthenticated && subscriptionStatus?.active` (`useSubscriptionStatus`, see `doc/subscription.md`),
+clicking it navigates to `/subscription` instead of opening `CREATE` (it's only `disabled` while the
+status query loads). Joining a private game by invitation code (`JOIN` mode) stays free for everyone,
 authenticated or not.
+
+UI vocabulary: "Partie classée" (quick game, matchmaking by level, XP), "Partie privée" (lobby
+created by a host, no XP), "Code d'invitation" (the lobby id). The word "salon" is not shown to
+players. Each `MENU` choice is a `MenuChoice`: a short label plus an ⓘ toggle revealing one sentence
+of details.
 
 `CREATE` mode shows two inputs, then calls `client.createLobby()`:
 

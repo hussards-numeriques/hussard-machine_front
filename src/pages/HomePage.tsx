@@ -12,6 +12,34 @@ import { LEVELS, resolveLevelLabel } from '../lib/grades';
 
 const DEFAULT_MAX_PLAYERS = 6;
 
+interface MenuChoiceProps extends React.ComponentProps<typeof Button> {
+  label: string;
+  details: string;
+}
+
+const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => {
+  const [showDetails, setShowDetails] = React.useState(false);
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <Button size="lg" className="flex-1" {...props}>
+          {label}
+        </Button>
+        <button
+          type="button"
+          aria-label={`En savoir plus : ${label}`}
+          aria-expanded={showDetails}
+          onClick={() => setShowDetails((open) => !open)}
+          className="h-8 w-8 shrink-0 rounded-full border-2 border-slate-300 font-serif text-sm font-bold italic text-slate-400 hover:border-slate-400 hover:text-slate-600"
+        >
+          i
+        </button>
+      </div>
+      {showDetails && <p className="px-2 text-sm font-semibold text-slate-500">{details}</p>}
+    </div>
+  );
+};
+
 export const HomePage: React.FC = () => {
   const isShiny = useShinySession();
   const { client } = useGame();
@@ -28,9 +56,7 @@ export const HomePage: React.FC = () => {
 
   const effectiveName = isAuthenticated && user ? user.username : name;
   const canCreateLobby = isAuthenticated && (subscriptionStatus?.active ?? false);
-  const isCreateLobbyButtonDisabled = !canCreateLobby || isSubscriptionStatusLoading;
-  const createLobbyButtonLabel =
-    canCreateLobby || isSubscriptionStatusLoading ? 'Créer un salon' : 'Abonnement requis';
+  const isCreateLockedBehindSubscription = !canCreateLobby && !isSubscriptionStatusLoading;
 
   const goToGame = (gameId: string, playerName: string) => {
     const token = isAuthenticated ? authClient.getAccessToken() : null;
@@ -77,7 +103,7 @@ export const HomePage: React.FC = () => {
   const handleJoin = () => {
     if (!requireName()) return;
     if (!code.trim()) {
-      setError('Entre le code du salon !');
+      setError("Entre le code d'invitation !");
       return;
     }
     goToGame(code, effectiveName);
@@ -106,31 +132,38 @@ export const HomePage: React.FC = () => {
 
         {mode === 'MENU' && (
           <div className="flex flex-col gap-4 pt-4">
-            <Button size="lg" onClick={handleQuickGame}>
-              Partie Rapide
-            </Button>
-            <br />
-            <Button
+            <MenuChoice
+              label="Partie classée"
+              details="Affronte des joueurs de ton niveau. Tes points comptent pour ta progression."
+              onClick={handleQuickGame}
+            />
+            <div className="flex items-center gap-3 pt-2 text-sm font-bold text-slate-400">
+              <span className="h-px flex-1 bg-slate-200" />
+              Entre amis ou en classe
+              <span className="h-px flex-1 bg-slate-200" />
+            </div>
+            <MenuChoice
               variant="secondary"
-              size="lg"
-              onClick={() => setMode('CREATE')}
-              disabled={isCreateLobbyButtonDisabled}
-              title={
-                !canCreateLobby && !isSubscriptionStatusLoading ? 'Abonnement requis' : undefined
+              label="Rejoindre avec un code"
+              details="Entre le code qu'un ami ou ton prof t'a donné pour rejoindre sa partie."
+              onClick={() => setMode('JOIN')}
+            />
+            <MenuChoice
+              variant="secondary"
+              label="Créer une partie privée"
+              details="Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots. Ne compte pas pour le classement. Réservé aux Supporters."
+              disabled={isSubscriptionStatusLoading}
+              onClick={() =>
+                isCreateLockedBehindSubscription ? navigate('/subscription') : setMode('CREATE')
               }
-            >
-              {createLobbyButtonLabel}
-            </Button>
-            <Button variant="secondary" size="lg" onClick={() => setMode('JOIN')}>
-              Rejoindre un salon
-            </Button>
+            />
           </div>
         )}
 
         {mode === 'JOIN' && (
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
-              <label className="font-bold text-slate-600 ml-2">Code du salon</label>
+              <label className="font-bold text-slate-600 ml-2">Code d'invitation</label>
               <Input
                 placeholder="ABCD"
                 value={code}
@@ -149,6 +182,7 @@ export const HomePage: React.FC = () => {
 
         {mode === 'CREATE' && (
           <div className="space-y-4 pt-4">
+            <h2 className="text-center text-xl font-black text-slate-700">Partie privée</h2>
             <div className="space-y-2">
               <label className="font-bold text-slate-600 ml-2">Niveau des questions</label>
               <select
@@ -174,7 +208,7 @@ export const HomePage: React.FC = () => {
               />
             </div>
             <Button size="lg" className="w-full" onClick={handleCreate}>
-              Créer
+              Créer la partie
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => setMode('MENU')}>
               Retour

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { HomePage } from './HomePage';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
@@ -11,7 +11,7 @@ vi.mock('../hooks/useSubscription');
 vi.mock('../contexts/useGame');
 
 describe('HomePage - create lobby button', () => {
-  it('is disabled with "Abonnement requis" when the player has no active subscription', () => {
+  it('leads to the subscription page when the player has no active subscription', () => {
     vi.mocked(useAuth).mockReturnValue({
       client: { getAccessToken: () => 'tok' },
       user: { username: 'Alice' },
@@ -35,12 +35,16 @@ describe('HomePage - create lobby button', () => {
 
     render(
       <MemoryRouter>
-        <HomePage />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/subscription" element={<div>Subscription page</div>} />
+        </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Abonnement requis')).toBeInTheDocument();
-    expect(screen.getByText('Abonnement requis').closest('button')).toBeDisabled();
+    fireEvent.click(screen.getByText('Créer une partie privée'));
+
+    expect(screen.getByText('Subscription page')).toBeInTheDocument();
   });
 
   it('is enabled and opens the creation form when the player has an active subscription', () => {
@@ -71,7 +75,7 @@ describe('HomePage - create lobby button', () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText('Créer un salon'));
+    fireEvent.click(screen.getByText('Créer une partie privée'));
 
     expect(screen.getByText('Places')).toBeInTheDocument();
   });
@@ -105,8 +109,8 @@ describe('HomePage - create lobby button', () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText('Créer un salon'));
-    fireEvent.click(screen.getByText('Créer'));
+    fireEvent.click(screen.getByText('Créer une partie privée'));
+    fireEvent.click(screen.getByText('Créer la partie'));
 
     await waitFor(() => {
       expect(createLobby).toHaveBeenCalledWith({ level: 'CP', maxPlayers: 6, token: 'tok' });
@@ -142,11 +146,11 @@ describe('HomePage - create lobby button', () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByText('Créer un salon'));
+    fireEvent.click(screen.getByText('Créer une partie privée'));
     const capacityInput = container.querySelector('input[type="number"]');
     if (!capacityInput) throw new Error('capacity input not found');
     fireEvent.change(capacityInput, { target: { value: '' } });
-    fireEvent.click(screen.getByText('Créer'));
+    fireEvent.click(screen.getByText('Créer la partie'));
 
     await waitFor(() => {
       expect(screen.getByText('Le nombre de places doit être entre 2 et 30.')).toBeInTheDocument();
@@ -185,7 +189,6 @@ describe('HomePage - subscription status loading', () => {
       </MemoryRouter>
     );
 
-    expect(screen.queryByText('Abonnement requis')).not.toBeInTheDocument();
-    expect(screen.getByText('Créer un salon').closest('button')).toBeDisabled();
+    expect(screen.getByText('Créer une partie privée').closest('button')).toBeDisabled();
   });
 });

@@ -196,7 +196,7 @@ describe('GameClient - /ws/play protocol', () => {
       data: JSON.stringify({ type: 'ERROR', payload: 'JOIN_FAILED' }),
     } as MessageEvent);
 
-    expect(onError).toHaveBeenCalledWith('Impossible de rejoindre ce salon.');
+    expect(onError).toHaveBeenCalledWith('Impossible de rejoindre cette partie.');
   });
 });
 
