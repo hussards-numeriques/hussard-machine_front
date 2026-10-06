@@ -79,6 +79,11 @@ bannière OG) via `npm run generate:icons`.
 Android app (Capacitor): `mobileandroid/` native project, `build:mobile` / `cap:sync` / `apk` scripts, and how native code (`NativeAppBridge`, `PushRegistration`, `@capacitor/*`) is kept out of the web bundle.
 → Read when: touching native features, the mobile build, or anything imported from `@capacitor/*`.
 
+### [i18n.md](i18n.md)
+
+Interface in 6 languages (fr, en, es, it, pt-BR, de): `'auto' | Locale` preference, `resolveLocale`, locale file layout, adding a key or a language, short/long level labels, legal notice, Stripe locale.
+→ Read when: adding or changing any user-visible text, or adding a language.
+
 ### [routing.md](routing.md)
 
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.

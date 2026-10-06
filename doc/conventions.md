@@ -8,6 +8,11 @@
 - Component props are declared as a local `interface` in the component file
 - Domain enums (grades, levels, WS message types) are string-literal unions; lookups use `Record<Union, string>` so the compiler flags missing entries (see `src/lib/grades.ts`)
 
+## Internationalization
+
+- Every user-visible string goes through `t()`; no French literal in components (see [i18n.md](i18n.md))
+- Add the key to `locales/fr.ts` first, then the 5 other locales (`tsc` enforces it)
+
 ## Server state & data fetching
 
 - REST data goes through TanStack Query (`useQuery`/`useMutation`); query hooks live in `src/hooks/` (e.g. `useGameConfig`, `usePlayerProfile`). The `QueryClient` is created in `App.tsx` (HTTP errors are not retried)

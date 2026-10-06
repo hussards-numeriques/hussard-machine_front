@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Interface available in English, Spanish, Italian, Portuguese (Brazil) and German, with automatic detection and a language setting.
+
 ## [0.32.2] - 2026-10-06
 
 ### Changed
