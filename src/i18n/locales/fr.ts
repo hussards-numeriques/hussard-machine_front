@@ -462,6 +462,71 @@ export const fr = {
     loadFailed: 'Impossible de charger tes icônes pour le moment.',
     none: "Aucune icône débloquée pour l'instant.",
   },
+  parentalGate: {
+    title: 'Demande à un adulte',
+    intro: 'Le paiement est réservé aux adultes. Pour continuer, réponds à cette question :',
+    placeholder: 'Ta réponse',
+    wrong: 'Mauvaise réponse, essaie avec cette question.',
+    questions: {
+      ww2End: 'En quelle année s’est terminée la Seconde Guerre mondiale ?',
+      ww2Start: 'En quelle année a commencé la Seconde Guerre mondiale ?',
+      ww1Start: 'En quelle année a commencé la Première Guerre mondiale ?',
+      ww1Armistice: 'En quelle année a été signé l’armistice de la Première Guerre mondiale ?',
+      moonLanding:
+        'En quelle année l’être humain a-t-il marché sur la Lune pour la première fois ?',
+      berlinWall: 'En quelle année le mur de Berlin est-il tombé ?',
+      leapYearDays: 'Combien de jours y a-t-il dans une année bissextile ?',
+      footballPlayers: 'Combien de joueurs une équipe de football a-t-elle sur le terrain ?',
+      chessSquares: 'Combien y a-t-il de cases sur un échiquier ?',
+      centimetersInMeter: 'Combien de centimètres y a-t-il dans un mètre ?',
+    },
+  },
+  subscription: {
+    title: 'Abonnement',
+    loginRequired: 'Connecte-toi pour gérer ton abonnement.',
+    plansUnavailable: 'Impossible de charger les formules pour le moment.',
+    perks: {
+      private: {
+        title: 'Parties privées',
+        text: 'Invite ta classe ou tes amis avec un code.',
+      },
+      quests: {
+        title: 'Quêtes et titres',
+        text: 'Des titres visibles par tous en partie.',
+      },
+      crown: {
+        title: 'Couronne',
+        text: 'À côté de ton pseudo dans le menu.',
+      },
+    },
+    fairPlay: 'Le jeu reste gratuit et équitable pour tous.',
+    activeUntil: "Actif jusqu'au {{date}}.",
+    perMonth: '{{price}}/mois',
+    equivalentPerMonth: 'soit {{price}}/mois',
+    oneTime:
+      "Paiement unique, sans renouvellement automatique : l'abonnement s'arrête tout seul à la fin de la durée choisie.",
+    acceptTerms:
+      "J'accepte les <terms>conditions générales de vente</terms> et je demande l'exécution immédiate de l'abonnement, renonçant à mon droit de rétractation de 14 jours.",
+    purchase: 'Passer à Calc Rush+ · {{plan}}',
+    extend: 'Prolonger · {{plan}}',
+    checkoutFailed: 'Impossible de lancer le paiement, réessaie.',
+    termsOfSale: 'Conditions de vente',
+    backToProfile: 'Retour au profil',
+    statusLoginRequired: 'Connecte-toi pour voir le statut de ton abonnement.',
+    confirmed: 'Paiement confirmé, ton abonnement est actif !',
+    confirming: 'Confirmation en cours...',
+    slow: 'La confirmation prend plus de temps que prévu, réessaie de rafraîchir dans un instant.',
+    backToSubscription: "Retour à l'abonnement",
+    cancelled: "Paiement annulé, rien n'a été débité.",
+  },
+  vip: {
+    title: 'Code VIP',
+    loginRequired: 'Connecte-toi pour activer ton code.',
+    activatedUntil: "Abonnement activé jusqu'au {{date}} 🎉",
+    codePlaceholder: 'Ton code',
+    activate: 'Activer',
+    error: 'Une erreur est survenue, réessaie.',
+  },
 } as const;
 
 type Messages<T> = { [K in keyof T]: T[K] extends string ? string : Messages<T[K]> };

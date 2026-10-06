@@ -1,22 +1,40 @@
+import i18n from '../i18n';
+
+type ParentalGateQuestionId =
+  | 'ww2End'
+  | 'ww2Start'
+  | 'ww1Start'
+  | 'ww1Armistice'
+  | 'moonLanding'
+  | 'berlinWall'
+  | 'leapYearDays'
+  | 'footballPlayers'
+  | 'chessSquares'
+  | 'centimetersInMeter';
+
 export interface ParentalGateQuestion {
-  prompt: string;
-  answer: number;
+  readonly prompt: string;
+  readonly answer: number;
 }
 
-export const PARENTAL_GATE_QUESTIONS: readonly ParentalGateQuestion[] = [
-  { prompt: 'En quelle année s’est terminée la Seconde Guerre mondiale ?', answer: 1945 },
-  { prompt: 'En quelle année a commencé la Seconde Guerre mondiale ?', answer: 1939 },
-  { prompt: 'En quelle année a commencé la Première Guerre mondiale ?', answer: 1914 },
-  {
-    prompt: 'En quelle année a été signé l’armistice de la Première Guerre mondiale ?',
-    answer: 1918,
+const question = (id: ParentalGateQuestionId, answer: number): ParentalGateQuestion => ({
+  get prompt() {
+    return i18n.t(`parentalGate.questions.${id}`);
   },
-  { prompt: 'À quel âge devient-on majeur en France ?', answer: 18 },
-  { prompt: 'Quel est le numéro du département de Paris ?', answer: 75 },
-  { prompt: 'Quel numéro appelle-t-on pour joindre le SAMU ?', answer: 15 },
-  { prompt: 'Quelle est la vitesse maximale en ville, en km/h ?', answer: 50 },
-  { prompt: 'Quel numéro appelle-t-on pour joindre les pompiers ?', answer: 18 },
-  { prompt: 'Combien de centimes y a-t-il dans un euro ?', answer: 100 },
+  answer,
+});
+
+export const PARENTAL_GATE_QUESTIONS: readonly ParentalGateQuestion[] = [
+  question('ww2End', 1945),
+  question('ww2Start', 1939),
+  question('ww1Start', 1914),
+  question('ww1Armistice', 1918),
+  question('moonLanding', 1969),
+  question('berlinWall', 1989),
+  question('leapYearDays', 366),
+  question('footballPlayers', 11),
+  question('chessSquares', 64),
+  question('centimetersInMeter', 100),
 ];
 
 const DIGITS_ONLY = /^\d+$/;
@@ -30,6 +48,6 @@ export const pickQuestion = (
   exclude?: ParentalGateQuestion,
   random: () => number = Math.random
 ): ParentalGateQuestion => {
-  const candidates = PARENTAL_GATE_QUESTIONS.filter((question) => question !== exclude);
+  const candidates = PARENTAL_GATE_QUESTIONS.filter((candidate) => candidate !== exclude);
   return candidates[Math.floor(random() * candidates.length)];
 };

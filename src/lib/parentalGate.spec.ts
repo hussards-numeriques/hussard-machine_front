@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import i18n from '../i18n';
 import { PARENTAL_GATE_QUESTIONS, isCorrectAnswer, pickQuestion } from './parentalGate';
 
 const ww2End = PARENTAL_GATE_QUESTIONS.find((q) => q.answer === 1945)!;
@@ -32,5 +33,15 @@ describe('pickQuestion', () => {
     const first = PARENTAL_GATE_QUESTIONS[0];
 
     expect(pickQuestion(first, () => 0)).not.toBe(first);
+  });
+});
+
+describe('parentalGate in English', () => {
+  it('words every question in English and accepts its numeric answer', async () => {
+    await i18n.changeLanguage('en');
+    const ww2 = PARENTAL_GATE_QUESTIONS.find((q) => q.answer === 1945)!;
+
+    expect(ww2.prompt).toBe('In what year did World War II end?');
+    expect(isCorrectAnswer(ww2, ' 1 945 ')).toBe(true);
   });
 });

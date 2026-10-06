@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import { isCorrectAnswer, pickQuestion } from '../../lib/parentalGate';
 
@@ -8,6 +9,7 @@ interface ParentalGateProps {
 }
 
 export const ParentalGate: React.FC<ParentalGateProps> = ({ onPass, onCancel }) => {
+  const { t } = useTranslation();
   const [question, setQuestion] = useState(() => pickQuestion());
   const [typedAnswer, setTypedAnswer] = useState('');
   const [hasFailed, setHasFailed] = useState(false);
@@ -36,11 +38,9 @@ export const ParentalGate: React.FC<ParentalGateProps> = ({ onPass, onCancel }) 
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="parental-gate-title" className="text-2xl font-black text-primary-dark">
-          Demande à un adulte
+          {t('parentalGate.title')}
         </h2>
-        <p className="text-slate-600 text-sm leading-relaxed">
-          Le paiement est réservé aux adultes. Pour continuer, réponds à cette question :
-        </p>
+        <p className="text-slate-600 text-sm leading-relaxed">{t('parentalGate.intro')}</p>
         <form onSubmit={submit} className="space-y-4">
           <label className="block space-y-2">
             <span className="block font-bold text-slate-700">{question.prompt}</span>
@@ -49,23 +49,21 @@ export const ParentalGate: React.FC<ParentalGateProps> = ({ onPass, onCancel }) 
               inputMode="numeric"
               value={typedAnswer}
               onChange={(e) => setTypedAnswer(e.target.value)}
-              placeholder="Ta réponse"
+              placeholder={t('parentalGate.placeholder')}
               autoComplete="off"
               autoFocus
               className="w-full p-3 rounded-xl border-2 border-slate-300 focus:border-primary focus:ring-4 focus:ring-primary-light outline-none transition-all"
             />
           </label>
           {hasFailed && (
-            <p className="text-sm font-bold text-rose-600">
-              Mauvaise réponse, essaie avec cette question.
-            </p>
+            <p className="text-sm font-bold text-rose-600">{t('parentalGate.wrong')}</p>
           )}
           <div className="flex gap-3">
             <Button type="button" variant="secondary" className="flex-1" onClick={onCancel}>
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button type="submit" variant="primary" className="flex-1">
-              Valider
+              {t('answerInput.submit')}
             </Button>
           </div>
         </form>

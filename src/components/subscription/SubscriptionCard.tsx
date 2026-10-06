@@ -13,7 +13,7 @@ import type {
   SubscriptionPlanKey,
   SubscriptionStatus,
 } from '../../services/subscription';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 interface SubscriptionCardProps {
   plans: SubscriptionPlan[];
@@ -47,7 +47,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     <div className="bg-white rounded-3xl shadow-lg border-2 border-primary-light/50 p-8 space-y-6">
       {status?.active && status.expires_at && (
         <p className="text-sm font-bold text-emerald-700 bg-emerald-50 rounded-2xl border-2 border-emerald-100 p-4">
-          Actif jusqu'au {formatShortDate(status.expires_at)}.
+          {t('subscription.activeUntil', { date: formatShortDate(status.expires_at) })}
         </p>
       )}
 
@@ -72,7 +72,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             >
               <span className="block font-bold">{resolvePlanLabel(plan.key, t)}</span>
               <span className="block text-xs">
-                {`${formatEuros(computeMonthlyEquivalentCents(plan.amount, plan.key), plan.currency)}/mois`}
+                {t('subscription.perMonth', {
+                  price: formatEuros(
+                    computeMonthlyEquivalentCents(plan.amount, plan.key),
+                    plan.currency
+                  ),
+                })}
               </span>
               {savingsPercent !== null && savingsPercent > 0 && (
                 <span className="block text-xs font-bold text-emerald-500">-{savingsPercent}%</span>
@@ -87,13 +92,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {formatEuros(selectedPlan.amount, selectedPlan.currency)}
         </p>
         <p className="text-slate-500 text-sm">
-          {`soit ${formatEuros(selectedMonthlyEquivalent, selectedPlan.currency)}/mois`}
+          {t('subscription.equivalentPerMonth', {
+            price: formatEuros(selectedMonthlyEquivalent, selectedPlan.currency),
+          })}
         </p>
       </div>
 
       <p className="text-xs font-bold text-slate-500 bg-slate-50 rounded-2xl p-3">
-        Paiement unique, sans renouvellement automatique : l'abonnement s'arrête tout seul à la fin
-        de la durée choisie.
+        {t('subscription.oneTime')}
       </p>
 
       <label className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
@@ -104,12 +110,14 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           className="mt-0.5"
         />
         <span>
-          J'accepte les{' '}
-          <Link to="/terms-of-sale" className="font-bold text-primary hover:underline">
-            conditions générales de vente
-          </Link>{' '}
-          et je demande l'exécution immédiate de l'abonnement, renonçant à mon droit de rétractation
-          de 14 jours.
+          <Trans
+            i18nKey="subscription.acceptTerms"
+            components={{
+              terms: (
+                <Link to="/terms-of-sale" className="font-bold text-primary hover:underline" />
+              ),
+            }}
+          />
         </span>
       </label>
 
@@ -119,9 +127,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         disabled={isPurchasePending || !hasAcceptedTerms}
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
-        {status?.active
-          ? `Prolonger · ${resolvePlanLabel(selectedPlan.key, t)}`
-          : `Passer à Calc Rush+ · ${resolvePlanLabel(selectedPlan.key, t)}`}
+        {t(status?.active ? 'subscription.extend' : 'subscription.purchase', {
+          plan: resolvePlanLabel(selectedPlan.key, t),
+        })}
       </button>
     </div>
   );
