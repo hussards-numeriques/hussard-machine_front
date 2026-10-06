@@ -321,8 +321,8 @@ export const en = {
       remainder: 'What is the remainder?',
     },
     euclideanSpoken: {
-      quotient: 'Quotient of {{dividend}} divided by {{divisor}}',
-      remainder: 'Remainder of {{dividend}} divided by {{divisor}}',
+      quotient: 'Quotient of the integer division of {{dividend}} by {{divisor}}',
+      remainder: 'Remainder of the integer division of {{dividend}} by {{divisor}}',
     },
     power: '{{base}} to the power of {{exponent}}',
     squareRoot: 'Square root of {{radicand}}',

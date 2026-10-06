@@ -321,8 +321,8 @@ export const es = {
       remainder: '¿Cuál es el resto?',
     },
     euclideanSpoken: {
-      quotient: 'Cociente de dividir {{dividend}} entre {{divisor}}',
-      remainder: 'Resto de dividir {{dividend}} entre {{divisor}}',
+      quotient: 'Cociente de la división entera de {{dividend}} entre {{divisor}}',
+      remainder: 'Resto de la división entera de {{dividend}} entre {{divisor}}',
     },
     power: '{{base}} elevado a {{exponent}}',
     squareRoot: 'Raíz cuadrada de {{radicand}}',

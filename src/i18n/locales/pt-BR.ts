@@ -322,8 +322,8 @@ export const ptBR = {
       remainder: 'Qual é o resto?',
     },
     euclideanSpoken: {
-      quotient: 'Quociente de {{dividend}} dividido por {{divisor}}',
-      remainder: 'Resto de {{dividend}} dividido por {{divisor}}',
+      quotient: 'Quociente da divisão inteira de {{dividend}} por {{divisor}}',
+      remainder: 'Resto da divisão inteira de {{dividend}} por {{divisor}}',
     },
     power: '{{base}} elevado a {{exponent}}',
     squareRoot: 'Raiz quadrada de {{radicand}}',

@@ -283,7 +283,7 @@ export const it = {
     sixSeven: 'Six seven!',
     getReady: 'Preparati...',
     disconnectedName: '{{name}} (disconnesso)',
-    points: '{{score}} pt',
+    points: '{{score}} pti',
   },
   feedback: {
     correct: 'Risposta giusta',
@@ -322,8 +322,8 @@ export const it = {
       remainder: 'Qual è il resto?',
     },
     euclideanSpoken: {
-      quotient: 'Quoziente di {{dividend}} diviso {{divisor}}',
-      remainder: 'Resto di {{dividend}} diviso {{divisor}}',
+      quotient: 'Quoziente della divisione intera di {{dividend}} per {{divisor}}',
+      remainder: 'Resto della divisione intera di {{dividend}} per {{divisor}}',
     },
     power: '{{base}} elevato a {{exponent}}',
     squareRoot: 'Radice quadrata di {{radicand}}',

@@ -324,8 +324,8 @@ export const de = {
       remainder: 'Wie groß ist der Rest?',
     },
     euclideanSpoken: {
-      quotient: 'Quotient von {{dividend}} geteilt durch {{divisor}}',
-      remainder: 'Rest von {{dividend}} geteilt durch {{divisor}}',
+      quotient: 'Quotient der ganzzahligen Division von {{dividend}} durch {{divisor}}',
+      remainder: 'Rest der ganzzahligen Division von {{dividend}} durch {{divisor}}',
     },
     power: '{{base}} hoch {{exponent}}',
     squareRoot: 'Wurzel aus {{radicand}}',
