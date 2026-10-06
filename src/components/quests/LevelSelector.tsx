@@ -20,7 +20,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({ level, currentLeve
   return (
     <div className="space-y-2">
       <label htmlFor="quests-level" className="font-bold text-slate-600 text-sm">
-        Niveau affiché
+        {t('quests.levelDisplayed')}
       </label>
       <select
         id="quests-level"
@@ -31,7 +31,7 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({ level, currentLeve
         {LEVELS.map((option) => (
           <option key={option} value={option}>
             {resolveLevelLabel(option, t, 'long')}
-            {option === currentLevel ? ' (actuel)' : ''}
+            {option === currentLevel ? t('quests.currentSuffix') : ''}
           </option>
         ))}
       </select>

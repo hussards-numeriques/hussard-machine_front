@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/useAuth';
 import { useStreak } from '../../contexts/useStreak';
 import { useClickOutside } from '../../hooks/useClickOutside';
@@ -9,8 +10,6 @@ import { cn } from '../../lib/utils';
 import { StreakFlame, getNextStreakTier, getStreakTier } from './StreakFlame';
 import { DailyQuestIcon, type QuestState } from './DailyQuestIcon';
 import { useUtcMidnightCountdown } from './useUtcMidnightCountdown';
-
-const dayLabel = (days: number): string => (days <= 1 ? `${days} jour` : `${days} jours`);
 
 const CHIP_STYLES: Record<QuestState, string> = {
   secured: 'hover:bg-slate-100',
@@ -37,13 +36,14 @@ const toQuestState = (streak: StreakResponse, status: StreakStatus): QuestState 
 };
 
 const NextTierHint: React.FC<{ count: number }> = ({ count }) => {
+  const { t } = useTranslation();
   const next = getNextStreakTier(count);
   if (!next) {
-    return <p className="text-xs font-bold text-amber-600">Flamme ultime atteinte. Légendaire !</p>;
+    return <p className="text-xs font-bold text-amber-600">{t('streak.ultimate')}</p>;
   }
   return (
     <p className="text-xs font-bold text-slate-500">
-      Ta flamme évolue dans {dayLabel(next.min - count)}{' '}
+      {t('streak.nextTier', { count: next.min - count })}{' '}
       <span className="inline-block align-middle">
         <next.Flame size={16} animated={false} />
       </span>
@@ -52,6 +52,7 @@ const NextTierHint: React.FC<{ count: number }> = ({ count }) => {
 };
 
 export const StreakBadge: React.FC = () => {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { streak } = useStreak();
   const [open, setOpen] = useState(false);
@@ -70,17 +71,17 @@ export const StreakBadge: React.FC = () => {
   const tier = getStreakTier(status.count);
 
   const popoverMessage: Record<QuestState, string> = {
-    'last-chance': `Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans ${dayLabel(status.daysUntilFreeze ?? 0)}.`,
-    secured: `Série sécurisée pour aujourd'hui ! Prochaine quête dans ${countdown}.`,
-    'soft-risk': 'Joue aujourd’hui pour sécuriser ta série !',
-    neutral: 'Joue une partie aujourd’hui pour allumer ta flamme !',
+    'last-chance': t('streak.lastChance', { count: status.daysUntilFreeze ?? 0 }),
+    secured: t('streak.secured', { countdown }),
+    'soft-risk': t('streak.softRisk'),
+    neutral: t('streak.neutral'),
   };
 
   return (
     <div ref={containerRef}>
       <button
         type="button"
-        aria-label="Quête quotidienne"
+        aria-label={t('streak.dailyQuest')}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className={cn(
@@ -114,7 +115,7 @@ export const StreakBadge: React.FC = () => {
                   status.isAlive ? tier.valueColorClass : 'text-slate-400'
                 )}
               >
-                {status.isAlive ? dayLabel(status.count) : 'Aucune série'}
+                {status.isAlive ? t('streak.days', { count: status.count }) : t('streak.none')}
               </p>
               <NextTierHint count={status.count} />
             </div>
@@ -135,7 +136,7 @@ export const StreakBadge: React.FC = () => {
             onClick={close}
             className="block text-xs font-bold text-primary hover:underline"
           >
-            Comment marchent les séries ? →
+            {t('streak.howItWorks')}
           </Link>
         </div>
       )}

@@ -2,6 +2,8 @@ import type { Translation } from './fr';
 
 export const ptBR = {
   common: {
+    equip: 'Equipar',
+    equipped: '✓ Equipado',
     loading: 'Carregando...',
     backHome: 'Voltar ao início',
     cancel: 'Cancelar',
@@ -87,8 +89,34 @@ export const ptBR = {
     function: 'Função',
   },
   quests: {
+    loginRequired: 'Entre para ver suas missões e títulos.',
+    loadFailed: 'Não foi possível carregar suas missões agora.',
+    levelLoadFailed: 'Não foi possível carregar os títulos deste nível agora.',
+    backToMyLevel: 'Voltar ao meu nível',
+    paused:
+      'Seu progresso rumo aos próximos títulos está em pausa. Os títulos que você já desbloqueou continuam seus.',
+    viewSubscription: 'Ver a assinatura',
+    noTitlesActive:
+      'Nenhum título desbloqueado ainda. Avance nas missões abaixo para ganhar alguns!',
+    noTitlesInactive: 'Nenhum título desbloqueado neste nível.',
+    levelDisplayed: 'Nível exibido',
+    currentSuffix: ' (atual)',
+    wasEquipped: '✓ Estava equipado',
+    completed: '✓ Missão concluída',
+    progressToNext: '{{progress}} / {{threshold}} para o próximo título',
+    titleUnlocked: '🏆 Título {{rarity}} desbloqueado!',
+    banner: {
+      activeHeading: 'Títulos ativos — nível {{level}}.',
+      activeBody:
+        'Este é o seu nível atual: suas partidas em {{level}} fazem essas missões avançarem, e o título que você equipa aqui aparece no jogo.',
+      inactiveHeading: 'Nível {{level}} — títulos inativos.',
+      memoriesBody:
+        'Este não é mais o seu nível: esses títulos não aparecem mais no jogo e não podem ser equipados. Eles estão aqui por nostalgia! Seus títulos ativos são os do nível {{currentLevel}}.',
+      emptyBody:
+        'Nenhuma lembrança aqui ainda. Apenas os títulos do seu nível atual ({{currentLevel}}) estão ativos.',
+    },
     labels: {
-      'win-streak': 'Terminar em 1º em partidas seguidas',
+      'win-streak': 'Terminar em 1º lugar em várias partidas seguidas',
       'correct-answers': 'Acumular respostas certas',
       'perfect-games': 'Vencer partidas perfeitas (100% de respostas certas)',
     },
@@ -332,5 +360,109 @@ export const ptBR = {
     connectionError: 'Erro de conexão.',
     kicked: 'Você foi removido da partida.',
     hostLeft: 'O anfitrião saiu e a partida foi encerrada.',
+  },
+  profile: {
+    title: 'Perfil',
+    loginRequired: 'Entre para ver seu perfil.',
+    unavailable: 'Dados indisponíveis.',
+    notFound: 'Conta não encontrada. Entre em uma partida para criar seu perfil!',
+    loadFailed: 'Não foi possível carregar seu perfil.',
+    networkErrorRetry: 'Erro de rede, tente novamente mais tarde.',
+    networkError: 'Erro de rede.',
+    deletionFailed: 'Não foi possível excluir. Tente novamente em instantes.',
+    promotionFailed: 'A promoção falhou. Tente novamente.',
+    demotionFailed: 'A volta de nível falhou. Tente novamente.',
+    nextLevel: 'próximo nível',
+    previousLevel: 'nível anterior',
+    subscriptionUntil: 'Assinatura ativa até {{date}}.',
+    promoting: 'Promovendo...',
+    promote: 'Subir para {{level}}',
+    demoting: 'Voltando de nível...',
+    demote: 'Voltar para {{level}}',
+    history: 'Histórico',
+    gamesCount_one: '({{count}} partida)',
+    gamesCount_other: '({{count}} partidas)',
+    noGames: 'Nenhuma partida jogada ainda. É a sua vez!',
+    ranked: 'Classificatória',
+    historySummary: '{{correct}}/{{total}} respostas certas · {{score}} pts · {{duration}}',
+    columns: {
+      rank: 'Posição',
+      player: 'Jogador',
+      answers: 'Respostas',
+      points: 'Pontos',
+    },
+    bot: '(bot)',
+    rewardsLink: 'Progresso e recompensas →',
+    iconsLink: 'Ícones →',
+    backToProfile: '← Voltar ao perfil',
+    dangerTitle: 'Zona de perigo',
+    dangerText:
+      'Excluir sua conta apaga todos os seus dados para sempre. Não será possível recuperá-los.',
+    deleteAccount: 'Excluir minha conta',
+  },
+  progression: {
+    title: 'Progresso e recompensas',
+  },
+  grade: {
+    progression: 'Progresso',
+    maxGrade: '✨ Grau máximo — promoção disponível!',
+    xpToNext: '{{xp}} XP para {{grade}}',
+    guide: {
+      progressionTitle: 'A progressão',
+      progressionText:
+        'Cada partida te dá (ou tira) experiência (XP). Ao ganhar XP, você sobe de <strong>grau</strong> dentro do seu <strong>nível</strong>. Quando chega ao grau máximo, você pode escolher passar para o próximo nível.',
+      loadingThresholds: 'Carregando os limites...',
+      gradesTitle: 'Os graus',
+      gradesText:
+        'Cada grau exige {{xp}} XP. A promoção de nível fica disponível com {{threshold}} XP.',
+      levelsTitle: 'Os níveis',
+      levelsText:
+        'Existem {{total}} níveis. Você começa em {{first}} e pode chegar até {{last}}. Cada promoção zera o XP.',
+    },
+  },
+  streak: {
+    days_one: '{{count}} dia',
+    days_other: '{{count}} dias',
+    none: 'Sem sequência',
+    dailyQuest: 'Missão diária',
+    ultimate: 'Chama suprema alcançada. Lendário!',
+    nextTier_one: 'Sua chama evolui em {{count}} dia',
+    nextTier_other: 'Sua chama evolui em {{count}} dias',
+    lastChance_one:
+      'Última chance! Jogue hoje ou você perde sua sequência. ❄ A rede de segurança volta em {{count}} dia.',
+    lastChance_other:
+      'Última chance! Jogue hoje ou você perde sua sequência. ❄ A rede de segurança volta em {{count}} dias.',
+    secured: 'Sequência garantida por hoje! Próxima missão em {{countdown}}.',
+    softRisk: 'Jogue hoje para garantir sua sequência!',
+    neutral: 'Jogue uma partida hoje para acender sua chama!',
+    howItWorks: 'Como funcionam as sequências? →',
+    guide: {
+      title: 'As sequências diárias',
+      principleTitle: 'O princípio',
+      principleText:
+        'Responda pelo menos uma pergunta por dia para manter sua <strong>sequência</strong>: o número de dias seguidos em que você jogou. A sequência está ligada à sua conta, não ao seu dispositivo — então você precisa estar conectado para ela valer.',
+      tiersTitle: 'Os marcos',
+      tiersText: 'Quanto mais sua sequência cresce, mais sua chama evolui.',
+      fromDays_one: 'a partir de {{count}} dia',
+      fromDays_other: 'a partir de {{count}} dias',
+      questTitle: 'A missão do dia',
+      questText: 'Um indicador mostra o estado da sua sequência de hoje:',
+      states: {
+        secured: 'Já jogou hoje: sua sequência está garantida.',
+        'soft-risk': 'Ainda não jogou hoje, mas você ainda está protegido.',
+        'last-chance': 'Jogar hoje é a única forma de manter sua sequência.',
+        neutral: 'Nenhuma sequência em andamento.',
+      },
+      safetyTitle: 'A rede de segurança',
+      safetyText1:
+        'O congelamento é uma rede de segurança: perder um dia não quebra necessariamente sua sequência, mas ele entra em recarga.',
+      safetyText2:
+        'Enquanto a rede está em recarga, você está na última chance — precisa jogar hoje para manter sua sequência.',
+    },
+  },
+  iconsPage: {
+    loginRequired: 'Entre para ver seus ícones.',
+    loadFailed: 'Não foi possível carregar seus ícones agora.',
+    none: 'Nenhum ícone desbloqueado ainda.',
   },
 } satisfies Translation;

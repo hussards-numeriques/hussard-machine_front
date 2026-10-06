@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/useAuth';
 import { useMyTitles, useQuestCatalog, useSelectTitle } from '../hooks/useQuests';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
@@ -15,11 +16,14 @@ interface QuestsNoticeAction {
   onClick: () => void;
 }
 
-const QuestsNoticeHomeLink: React.FC = () => (
-  <Link to="/" className="inline-block text-primary font-bold hover:underline">
-    Retour à l'accueil
-  </Link>
-);
+const QuestsNoticeHomeLink: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Link to="/" className="inline-block text-primary font-bold hover:underline">
+      {t('common.backHome')}
+    </Link>
+  );
+};
 
 const QuestsNoticeActionButton: React.FC<{ action: QuestsNoticeAction }> = ({ action }) => (
   <button onClick={action.onClick} className="inline-block text-primary font-bold hover:underline">
@@ -30,17 +34,21 @@ const QuestsNoticeActionButton: React.FC<{ action: QuestsNoticeAction }> = ({ ac
 const QuestsNotice: React.FC<{ message: string; action?: QuestsNoticeAction }> = ({
   message,
   action,
-}) => (
-  <div className="min-h-screen flex items-center justify-center p-4">
-    <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
-      <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
-      <p className="text-slate-600">{message}</p>
-      {action ? <QuestsNoticeActionButton action={action} /> : <QuestsNoticeHomeLink />}
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
+        <h1 className="text-3xl font-black text-primary-dark">{t('header.questsTitles')}</h1>
+        <p className="text-slate-600">{message}</p>
+        {action ? <QuestsNoticeActionButton action={action} /> : <QuestsNoticeHomeLink />}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const QuestsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const catalogQuery = useQuestCatalog();
   const [viewedLevel, setViewedLevel] = useState<Level | null>(null);
@@ -51,29 +59,29 @@ export const QuestsPage: React.FC = () => {
   if (authLoading || (isAuthenticated && (catalogQuery.isLoading || myTitlesQuery.isLoading))) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">Chargement...</div>
+        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
       </div>
     );
   }
 
   if (!isAuthenticated) {
-    return <QuestsNotice message="Connecte-toi pour voir tes quêtes et tes titres." />;
+    return <QuestsNotice message={t('quests.loginRequired')} />;
   }
 
   if (!catalogQuery.data) {
-    return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
+    return <QuestsNotice message={t('quests.loadFailed')} />;
   }
 
   if (!myTitlesQuery.data) {
     if (viewedLevel !== null) {
       return (
         <QuestsNotice
-          message="Impossible de charger les titres de ce niveau pour le moment."
-          action={{ label: 'Revenir à mon niveau', onClick: () => setViewedLevel(null) }}
+          message={t('quests.levelLoadFailed')}
+          action={{ label: t('quests.backToMyLevel'), onClick: () => setViewedLevel(null) }}
         />
       );
     }
-    return <QuestsNotice message="Impossible de charger tes quêtes pour le moment." />;
+    return <QuestsNotice message={t('quests.loadFailed')} />;
   }
 
   const { titles, quests, selected_title_id, level, current_level } = myTitlesQuery.data;
@@ -82,7 +90,7 @@ export const QuestsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
-      <h1 className="text-3xl font-black text-primary-dark">Quêtes &amp; Titres</h1>
+      <h1 className="text-3xl font-black text-primary-dark">{t('header.questsTitles')}</h1>
 
       <LevelSelector
         level={viewedLevel ?? current_level}
@@ -94,21 +102,16 @@ export const QuestsPage: React.FC = () => {
 
       {isActive && subscriptionStatus.data?.active === false && (
         <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4 text-sm text-amber-800 space-y-2">
-          <p>
-            Ta progression vers les prochains titres est en pause. Les titres déjà débloqués restent
-            à toi.
-          </p>
+          <p>{t('quests.paused')}</p>
           <Link to="/subscription" className="font-bold underline">
-            Voir l'abonnement
+            {t('quests.viewSubscription')}
           </Link>
         </div>
       )}
 
       {titles.length === 0 && (
         <p className="text-slate-500 text-sm bg-white rounded-2xl border-2 border-slate-100 p-4">
-          {isActive
-            ? "Aucun titre débloqué pour l'instant. Progresse dans les quêtes ci-dessous pour en gagner !"
-            : 'Aucun titre débloqué à ce niveau.'}
+          {isActive ? t('quests.noTitlesActive') : t('quests.noTitlesInactive')}
         </p>
       )}
 
@@ -142,7 +145,7 @@ export const QuestsPage: React.FC = () => {
           to="/profile"
           className="block text-sm font-bold text-slate-500 hover:text-primary transition-colors"
         >
-          ← Retour au profil
+          {t('profile.backToProfile')}
         </Link>
       </div>
     </div>

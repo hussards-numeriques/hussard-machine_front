@@ -23,10 +23,11 @@ interface TierActionProps {
 }
 
 const TierAction: React.FC<TierActionProps> = ({ mode, equipped, titleId }) => {
+  const { t } = useTranslation();
   if (mode.kind === 'readonly') {
     return equipped ? (
       <span className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full border bg-slate-100 text-slate-500 border-slate-300">
-        ✓ Était équipé
+        {t('quests.wasEquipped')}
       </span>
     ) : null;
   }
@@ -43,18 +44,19 @@ const TierAction: React.FC<TierActionProps> = ({ mode, equipped, titleId }) => {
           : 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20'
       )}
     >
-      {equipped ? '✓ Équipé' : 'Équiper'}
+      {equipped ? t('common.equipped') : t('common.equip')}
     </button>
   );
 };
 
 const QuestProgressBar: React.FC<{ progress: MyQuest }> = ({ progress }) => {
+  const { t } = useTranslation();
   const nextThreshold = progress.tiers.find((tier) => !tier.unlocked)?.threshold;
 
   if (nextThreshold === undefined) {
     return (
       <div className="space-y-1">
-        <div className="text-xs font-bold text-emerald-600">✓ Quête terminée</div>
+        <div className="text-xs font-bold text-emerald-600">{t('quests.completed')}</div>
         <div className="h-2 rounded-full bg-emerald-400" />
       </div>
     );
@@ -65,7 +67,7 @@ const QuestProgressBar: React.FC<{ progress: MyQuest }> = ({ progress }) => {
   return (
     <div className="space-y-1">
       <div className="text-xs font-bold text-slate-500">
-        {progress.progress} / {nextThreshold} pour le prochain titre
+        {t('quests.progressToNext', { progress: progress.progress, threshold: nextThreshold })}
       </div>
       <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
         <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />

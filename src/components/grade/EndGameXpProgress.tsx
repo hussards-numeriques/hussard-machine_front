@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
+import { useTranslation } from 'react-i18next';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
@@ -23,6 +24,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
   config,
   level,
 }) => {
+  const { t } = useTranslation();
   const { before, after } = progress;
   const [animated, setAnimated] = useState(false);
   const [glowing, setGlowing] = useState(false);
@@ -100,7 +102,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
         className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2"
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+          <h3 className="text-sm font-bold text-slate-500">{t('grade.progression')}</h3>
           {level && <PlayerLevel level={level} />}
         </div>
 
@@ -145,7 +147,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="text-sm font-bold text-slate-500">Progression</h3>
+          <h3 className="text-sm font-bold text-slate-500">{t('grade.progression')}</h3>
           {level && <PlayerLevel level={level} />}
         </div>
         <span

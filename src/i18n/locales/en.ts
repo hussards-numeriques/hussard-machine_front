@@ -2,6 +2,8 @@ import type { Translation } from './fr';
 
 export const en = {
   common: {
+    equip: 'Equip',
+    equipped: '✓ Equipped',
     loading: 'Loading...',
     backHome: 'Back to home',
     cancel: 'Cancel',
@@ -87,8 +89,33 @@ export const en = {
     function: 'Function',
   },
   quests: {
+    loginRequired: 'Log in to see your quests and titles.',
+    loadFailed: "Couldn't load your quests right now.",
+    levelLoadFailed: "Couldn't load this level's titles right now.",
+    backToMyLevel: 'Back to my level',
+    paused:
+      'Your progress toward the next titles is paused. The titles you already unlocked are still yours.',
+    viewSubscription: 'View subscription',
+    noTitlesActive: 'No titles unlocked yet. Make progress on the quests below to earn some!',
+    noTitlesInactive: 'No titles unlocked at this level.',
+    levelDisplayed: 'Level shown',
+    currentSuffix: ' (current)',
+    wasEquipped: '✓ Was equipped',
+    completed: '✓ Quest completed',
+    progressToNext: '{{progress}} / {{threshold}} for the next title',
+    titleUnlocked: '🏆 {{rarity}} title unlocked!',
+    banner: {
+      activeHeading: 'Active titles — {{level}}.',
+      activeBody:
+        'This is your current level: your {{level}} games advance these quests, and the title you equip here shows up in game.',
+      inactiveHeading: '{{level}} — inactive titles.',
+      memoriesBody:
+        "This isn't your level anymore: these titles no longer show up in game and can't be equipped. They're here for old times' sake! Your active titles are the ones from {{currentLevel}}.",
+      emptyBody:
+        'No memories here yet. Only titles from your current level ({{currentLevel}}) are active.',
+    },
     labels: {
-      'win-streak': 'Finish 1st in a row of games',
+      'win-streak': 'Finish 1st in several games in a row',
       'correct-answers': 'Rack up correct answers',
       'perfect-games': 'Win perfect games (100% correct answers)',
     },
@@ -331,5 +358,107 @@ export const en = {
     connectionError: 'Connection error.',
     kicked: "You've been removed from the game.",
     hostLeft: 'The host left, so the game was closed.',
+  },
+  profile: {
+    title: 'Profile',
+    loginRequired: 'Log in to see your profile.',
+    unavailable: 'Data unavailable.',
+    notFound: 'Account not found. Join a game to create your profile!',
+    loadFailed: "Couldn't load your profile.",
+    networkErrorRetry: 'Network error, try again later.',
+    networkError: 'Network error.',
+    deletionFailed: 'Deletion failed. Try again in a moment.',
+    promotionFailed: 'Promotion failed. Try again.',
+    demotionFailed: 'Moving down failed. Try again.',
+    nextLevel: 'next level',
+    previousLevel: 'previous level',
+    subscriptionUntil: 'Subscription active until {{date}}.',
+    promoting: 'Promoting...',
+    promote: 'Move up to {{level}}',
+    demoting: 'Moving down...',
+    demote: 'Move back down to {{level}}',
+    history: 'History',
+    gamesCount_one: '({{count}} game)',
+    gamesCount_other: '({{count}} games)',
+    noGames: 'No games played yet. Your turn!',
+    ranked: 'Ranked',
+    historySummary: '{{correct}}/{{total}} correct answers · {{score}} pts · {{duration}}',
+    columns: {
+      rank: 'Rank',
+      player: 'Player',
+      answers: 'Answers',
+      points: 'Points',
+    },
+    bot: '(bot)',
+    rewardsLink: 'Progress & rewards →',
+    iconsLink: 'Icons →',
+    backToProfile: '← Back to profile',
+    dangerTitle: 'Danger zone',
+    dangerText: 'Deleting your account permanently erases all your data. It cannot be recovered.',
+    deleteAccount: 'Delete my account',
+  },
+  progression: {
+    title: 'Progress & rewards',
+  },
+  grade: {
+    progression: 'Progress',
+    maxGrade: '✨ Max rank — promotion available!',
+    xpToNext: '{{xp}} XP to {{grade}}',
+    guide: {
+      progressionTitle: 'Progression',
+      progressionText:
+        'Every game earns you (or costs you) experience (XP). By gaining XP, you move up in <strong>rank</strong> within your <strong>level</strong>. Once you reach the top rank, you can choose to move up to the next level.',
+      loadingThresholds: 'Loading thresholds...',
+      gradesTitle: 'The ranks',
+      gradesText: 'Each rank takes {{xp}} XP. Level promotion is available at {{threshold}} XP.',
+      levelsTitle: 'The levels',
+      levelsText:
+        'There are {{total}} levels. You start at {{first}} and can progress up to {{last}}. Each promotion resets your XP to zero.',
+    },
+  },
+  streak: {
+    days_one: '{{count}} day',
+    days_other: '{{count}} days',
+    none: 'No streak',
+    dailyQuest: 'Daily quest',
+    ultimate: 'Ultimate flame reached. Legendary!',
+    nextTier_one: 'Your flame evolves in {{count}} day',
+    nextTier_other: 'Your flame evolves in {{count}} days',
+    lastChance_one:
+      'Last chance! Play today or you lose your streak. ❄ Safety net back in {{count}} day.',
+    lastChance_other:
+      'Last chance! Play today or you lose your streak. ❄ Safety net back in {{count}} days.',
+    secured: 'Streak secured for today! Next quest in {{countdown}}.',
+    softRisk: 'Play today to secure your streak!',
+    neutral: 'Play a game today to light your flame!',
+    howItWorks: 'How do streaks work? →',
+    guide: {
+      title: 'Daily streaks',
+      principleTitle: 'How it works',
+      principleText:
+        'Answer at least one question every day to keep your <strong>streak</strong> going: the number of days in a row you played. The streak is tied to your account, not your device — so you need to be logged in for it to count.',
+      tiersTitle: 'The tiers',
+      tiersText: 'The longer your streak, the more your flame evolves.',
+      fromDays_one: 'from {{count}} day',
+      fromDays_other: 'from {{count}} days',
+      questTitle: 'Today’s quest',
+      questText: 'A badge shows the state of your streak for today:',
+      states: {
+        secured: 'Already played today: your streak is secured.',
+        'soft-risk': 'Not played yet today, but you’re still protected.',
+        'last-chance': 'Playing today is the only way to keep your streak.',
+        neutral: 'No streak going.',
+      },
+      safetyTitle: 'The safety net',
+      safetyText1:
+        'The freeze is a safety net: missing a day doesn’t necessarily break your streak, but it then goes on cooldown.',
+      safetyText2:
+        'While the net is recharging, you’re on your last chance — you must play today to keep your streak.',
+    },
+  },
+  iconsPage: {
+    loginRequired: 'Log in to see your icons.',
+    loadFailed: "Couldn't load your icons right now.",
+    none: 'No icons unlocked yet.',
   },
 } satisfies Translation;

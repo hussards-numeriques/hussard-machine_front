@@ -19,20 +19,28 @@ const resolveCopy = (view: TitlesLevelView, t: TFunction): TitlesLevelCopy => {
     case 'active': {
       const levelLabel = resolveLevelLabel(view.level, t, 'long');
       return {
-        heading: `Titres actifs — niveau ${levelLabel}.`,
-        body: `C'est ton niveau actuel : tes parties en ${levelLabel} font avancer ces quêtes, et le titre que tu équipes ici s'affiche en jeu.`,
+        heading: t('quests.banner.activeHeading', { level: levelLabel }),
+        body: t('quests.banner.activeBody', { level: levelLabel }),
       };
     }
     case 'inactive-memories': {
       return {
-        heading: `Niveau ${resolveLevelLabel(view.level, t, 'long')} — titres inactifs.`,
-        body: `Ce n'est plus ton niveau : ces titres ne s'affichent plus en jeu et ne peuvent pas être équipés. Ils sont là pour la nostalgie du passé ! Tes titres actifs sont ceux du niveau ${resolveLevelLabel(view.currentLevel, t, 'long')}.`,
+        heading: t('quests.banner.inactiveHeading', {
+          level: resolveLevelLabel(view.level, t, 'long'),
+        }),
+        body: t('quests.banner.memoriesBody', {
+          currentLevel: resolveLevelLabel(view.currentLevel, t, 'long'),
+        }),
       };
     }
     case 'inactive-empty': {
       return {
-        heading: `Niveau ${resolveLevelLabel(view.level, t, 'long')} — titres inactifs.`,
-        body: `Aucun souvenir ici pour l'instant. Seuls les titres de ton niveau actuel (${resolveLevelLabel(view.currentLevel, t, 'long')}) sont actifs.`,
+        heading: t('quests.banner.inactiveHeading', {
+          level: resolveLevelLabel(view.level, t, 'long'),
+        }),
+        body: t('quests.banner.emptyBody', {
+          currentLevel: resolveLevelLabel(view.currentLevel, t, 'long'),
+        }),
       };
     }
   }

@@ -23,7 +23,7 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
   return (
     <div className="flex flex-col items-center gap-2 px-5 py-3 rounded-2xl border-2 border-slate-100 bg-white shadow-xl animate-pop-in">
       <span className="text-sm font-bold text-slate-600">
-        🏆 Titre {resolveRarityLabel(title.rarity, t)} débloqué !
+        {t('quests.titleUnlocked', { rarity: resolveRarityLabel(title.rarity, t) })}
       </span>
       <TitleLabel title={title} className="text-lg" />
     </div>

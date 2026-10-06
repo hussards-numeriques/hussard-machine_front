@@ -1,5 +1,7 @@
 export const fr = {
   common: {
+    equip: 'Équiper',
+    equipped: '✓ Équipé',
     loading: 'Chargement...',
     backHome: "Retour à l'accueil",
     cancel: 'Annuler',
@@ -85,6 +87,32 @@ export const fr = {
     function: 'Fonction',
   },
   quests: {
+    loginRequired: 'Connecte-toi pour voir tes quêtes et tes titres.',
+    loadFailed: 'Impossible de charger tes quêtes pour le moment.',
+    levelLoadFailed: 'Impossible de charger les titres de ce niveau pour le moment.',
+    backToMyLevel: 'Revenir à mon niveau',
+    paused:
+      'Ta progression vers les prochains titres est en pause. Les titres déjà débloqués restent à toi.',
+    viewSubscription: "Voir l'abonnement",
+    noTitlesActive:
+      "Aucun titre débloqué pour l'instant. Progresse dans les quêtes ci-dessous pour en gagner !",
+    noTitlesInactive: 'Aucun titre débloqué à ce niveau.',
+    levelDisplayed: 'Niveau affiché',
+    currentSuffix: ' (actuel)',
+    wasEquipped: '✓ Était équipé',
+    completed: '✓ Quête terminée',
+    progressToNext: '{{progress}} / {{threshold}} pour le prochain titre',
+    titleUnlocked: '🏆 Titre {{rarity}} débloqué !',
+    banner: {
+      activeHeading: 'Titres actifs — niveau {{level}}.',
+      activeBody:
+        "C'est ton niveau actuel : tes parties en {{level}} font avancer ces quêtes, et le titre que tu équipes ici s'affiche en jeu.",
+      inactiveHeading: 'Niveau {{level}} — titres inactifs.',
+      memoriesBody:
+        "Ce n'est plus ton niveau : ces titres ne s'affichent plus en jeu et ne peuvent pas être équipés. Ils sont là pour la nostalgie du passé ! Tes titres actifs sont ceux du niveau {{currentLevel}}.",
+      emptyBody:
+        "Aucun souvenir ici pour l'instant. Seuls les titres de ton niveau actuel ({{currentLevel}}) sont actifs.",
+    },
     labels: {
       'win-streak': "Terminer 1er en parties d'affilée",
       'correct-answers': 'Cumuler des bonnes réponses',
@@ -329,6 +357,110 @@ export const fr = {
     connectionError: 'Erreur de connexion.',
     kicked: 'Tu as été exclu de la partie.',
     hostLeft: "L'hôte a quitté la partie, elle a été fermée.",
+  },
+  profile: {
+    title: 'Profil',
+    loginRequired: 'Connecte-toi pour voir ton profil.',
+    unavailable: 'Données indisponibles.',
+    notFound: 'Compte introuvable. Rejoins une partie pour créer ton profil !',
+    loadFailed: 'Impossible de charger ton profil.',
+    networkErrorRetry: 'Erreur réseau, réessaie plus tard.',
+    networkError: 'Erreur réseau.',
+    deletionFailed: 'La suppression a échoué. Réessaie dans quelques instants.',
+    promotionFailed: 'La promotion a échoué. Réessaie.',
+    demotionFailed: 'La rétrogradation a échoué. Réessaie.',
+    nextLevel: 'niveau suivant',
+    previousLevel: 'niveau précédent',
+    subscriptionUntil: "Abonnement actif jusqu'au {{date}}.",
+    promoting: 'Promotion en cours...',
+    promote: 'Monter en {{level}}',
+    demoting: 'Rétrogradation en cours...',
+    demote: 'Redescendre en {{level}}',
+    history: 'Historique',
+    gamesCount_one: '({{count}} partie)',
+    gamesCount_other: '({{count}} parties)',
+    noGames: "Aucune partie jouée pour l'instant. À toi de jouer !",
+    ranked: 'Classée',
+    historySummary: '{{correct}}/{{total}} bonnes réponses · {{score}} pts · {{duration}}',
+    columns: {
+      rank: 'Rang',
+      player: 'Joueur',
+      answers: 'Réponses',
+      points: 'Points',
+    },
+    bot: '(bot)',
+    rewardsLink: 'Progression & récompenses →',
+    iconsLink: 'Icônes →',
+    backToProfile: '← Retour au profil',
+    dangerTitle: 'Zone de danger',
+    dangerText:
+      'La suppression de ton compte efface définitivement toutes tes données. Aucune récupération ne sera possible.',
+    deleteAccount: 'Supprimer mon compte',
+  },
+  progression: {
+    title: 'Progression & récompenses',
+  },
+  grade: {
+    progression: 'Progression',
+    maxGrade: '✨ Grade max — promotion disponible !',
+    xpToNext: '{{xp}} XP pour {{grade}}',
+    guide: {
+      progressionTitle: 'La progression',
+      progressionText:
+        "Chaque partie te rapporte (ou te coûte) de l'expérience (XP). En gagnant de l'XP, tu montes en <strong>grade</strong> au sein de ton <strong>niveau</strong>. Une fois le grade maximum atteint, tu peux choisir de passer au niveau supérieur.",
+      loadingThresholds: 'Chargement des seuils...',
+      gradesTitle: 'Les grades',
+      gradesText:
+        'Chaque grade demande {{xp}} XP. La promotion de niveau est disponible à {{threshold}} XP.',
+      levelsTitle: 'Les niveaux',
+      levelsText:
+        "Il y a {{total}} niveaux. On commence au {{first}} et on peut progresser jusqu'en {{last}}. Chaque promotion remet l'XP à zéro.",
+    },
+  },
+  streak: {
+    days_one: '{{count}} jour',
+    days_other: '{{count}} jours',
+    none: 'Aucune série',
+    dailyQuest: 'Quête quotidienne',
+    ultimate: 'Flamme ultime atteinte. Légendaire !',
+    nextTier_one: 'Ta flamme évolue dans {{count}} jour',
+    nextTier_other: 'Ta flamme évolue dans {{count}} jours',
+    lastChance_one:
+      "Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans {{count}} jour.",
+    lastChance_other:
+      "Dernière chance ! Joue aujourd'hui ou tu perds ta série. ❄ Filet de sécurité de retour dans {{count}} jours.",
+    secured: "Série sécurisée pour aujourd'hui ! Prochaine quête dans {{countdown}}.",
+    softRisk: 'Joue aujourd’hui pour sécuriser ta série !',
+    neutral: 'Joue une partie aujourd’hui pour allumer ta flamme !',
+    howItWorks: 'Comment marchent les séries ? →',
+    guide: {
+      title: 'Les séries quotidiennes',
+      principleTitle: 'Le principe',
+      principleText:
+        'Réponds à au moins une question chaque jour pour entretenir ta <strong>série</strong> : le nombre de jours consécutifs où tu as joué. La série est liée à ton compte, pas à ton appareil — il faut donc être connecté pour qu’elle compte.',
+      tiersTitle: 'Les paliers',
+      tiersText: 'Plus ta série grandit, plus ta flamme évolue.',
+      fromDays_one: 'dès {{count}} jour',
+      fromDays_other: 'dès {{count}} jours',
+      questTitle: 'La quête du jour',
+      questText: 'Une pastille indique l’état de ta série pour aujourd’hui :',
+      states: {
+        secured: 'Déjà jouée aujourd’hui : ta série est sécurisée.',
+        'soft-risk': 'Pas encore jouée aujourd’hui, mais tu es encore protégé.',
+        'last-chance': 'Jouer aujourd’hui est le seul moyen de garder ta série.',
+        neutral: 'Aucune série en cours.',
+      },
+      safetyTitle: 'Le filet de sécurité',
+      safetyText1:
+        'Le gel est un filet de sécurité : rater une journée ne casse pas forcément ta série, mais il part alors en recharge.',
+      safetyText2:
+        'Tant que le filet est en recharge, tu es en dernière chance — il faut jouer aujourd’hui pour conserver ta série.',
+    },
+  },
+  iconsPage: {
+    loginRequired: 'Connecte-toi pour voir tes icônes.',
+    loadFailed: 'Impossible de charger tes icônes pour le moment.',
+    none: "Aucune icône débloquée pour l'instant.",
   },
 } as const;
 

@@ -2,6 +2,8 @@ import type { Translation } from './fr';
 
 export const de = {
   common: {
+    equip: 'Ausrüsten',
+    equipped: '✓ Ausgerüstet',
     loading: 'Wird geladen...',
     backHome: 'Zurück zur Startseite',
     cancel: 'Abbrechen',
@@ -87,6 +89,32 @@ export const de = {
     function: 'Funktion',
   },
   quests: {
+    loginRequired: 'Melde dich an, um deine Quests und Titel zu sehen.',
+    loadFailed: 'Deine Quests konnten gerade nicht geladen werden.',
+    levelLoadFailed: 'Die Titel dieses Levels konnten gerade nicht geladen werden.',
+    backToMyLevel: 'Zurück zu meinem Level',
+    paused:
+      'Dein Fortschritt zu den nächsten Titeln ist pausiert. Die bereits freigeschalteten Titel bleiben dir.',
+    viewSubscription: 'Abo ansehen',
+    noTitlesActive:
+      'Noch keine Titel freigeschaltet. Mach Fortschritte bei den Quests unten, um welche zu verdienen!',
+    noTitlesInactive: 'In diesem Level wurden keine Titel freigeschaltet.',
+    levelDisplayed: 'Angezeigtes Level',
+    currentSuffix: ' (aktuell)',
+    wasEquipped: '✓ War ausgerüstet',
+    completed: '✓ Quest abgeschlossen',
+    progressToNext: '{{progress}} / {{threshold}} bis zum nächsten Titel',
+    titleUnlocked: '🏆 Titel „{{rarity}}“ freigeschaltet!',
+    banner: {
+      activeHeading: 'Aktive Titel — Level {{level}}.',
+      activeBody:
+        'Das ist dein aktuelles Level: Deine Spiele in {{level}} bringen diese Quests voran, und der Titel, den du hier ausrüstest, wird im Spiel angezeigt.',
+      inactiveHeading: 'Level {{level}} — inaktive Titel.',
+      memoriesBody:
+        'Das ist nicht mehr dein Level: Diese Titel werden im Spiel nicht mehr angezeigt und können nicht ausgerüstet werden. Sie sind nur zur Erinnerung da! Deine aktiven Titel sind die aus Level {{currentLevel}}.',
+      emptyBody:
+        'Hier gibt es noch keine Erinnerungen. Nur die Titel deines aktuellen Levels ({{currentLevel}}) sind aktiv.',
+    },
     labels: {
       'win-streak': 'Mehrere Spiele in Folge als Erster beenden',
       'correct-answers': 'Richtige Antworten sammeln',
@@ -334,5 +362,109 @@ export const de = {
     connectionError: 'Verbindungsfehler.',
     kicked: 'Du wurdest aus dem Spiel entfernt.',
     hostLeft: 'Der Host hat das Spiel verlassen, es wurde geschlossen.',
+  },
+  profile: {
+    title: 'Profil',
+    loginRequired: 'Melde dich an, um dein Profil zu sehen.',
+    unavailable: 'Daten nicht verfügbar.',
+    notFound: 'Konto nicht gefunden. Tritt einem Spiel bei, um dein Profil zu erstellen!',
+    loadFailed: 'Dein Profil konnte nicht geladen werden.',
+    networkErrorRetry: 'Netzwerkfehler, versuche es später noch einmal.',
+    networkError: 'Netzwerkfehler.',
+    deletionFailed: 'Das Löschen ist fehlgeschlagen. Versuche es gleich noch einmal.',
+    promotionFailed: 'Der Aufstieg ist fehlgeschlagen. Versuche es noch einmal.',
+    demotionFailed: 'Das Zurückstufen ist fehlgeschlagen. Versuche es noch einmal.',
+    nextLevel: 'nächstes Level',
+    previousLevel: 'vorheriges Level',
+    subscriptionUntil: 'Abo aktiv bis {{date}}.',
+    promoting: 'Aufstieg läuft...',
+    promote: 'Aufsteigen in {{level}}',
+    demoting: 'Zurückstufen läuft...',
+    demote: 'Zurück in {{level}}',
+    history: 'Verlauf',
+    gamesCount_one: '({{count}} Spiel)',
+    gamesCount_other: '({{count}} Spiele)',
+    noGames: 'Noch kein Spiel gespielt. Du bist dran!',
+    ranked: 'Ranglistenspiel',
+    historySummary: '{{correct}}/{{total}} richtige Antworten · {{score}} Pkt. · {{duration}}',
+    columns: {
+      rank: 'Rang',
+      player: 'Spieler',
+      answers: 'Antworten',
+      points: 'Punkte',
+    },
+    bot: '(Bot)',
+    rewardsLink: 'Fortschritt & Belohnungen →',
+    iconsLink: 'Icons →',
+    backToProfile: '← Zurück zum Profil',
+    dangerTitle: 'Gefahrenbereich',
+    dangerText:
+      'Wenn du dein Konto löschst, werden alle deine Daten endgültig gelöscht. Eine Wiederherstellung ist nicht möglich.',
+    deleteAccount: 'Mein Konto löschen',
+  },
+  progression: {
+    title: 'Fortschritt & Belohnungen',
+  },
+  grade: {
+    progression: 'Fortschritt',
+    maxGrade: '✨ Höchster Rang — Aufstieg möglich!',
+    xpToNext: '{{xp}} XP bis {{grade}}',
+    guide: {
+      progressionTitle: 'Der Fortschritt',
+      progressionText:
+        'Jedes Spiel bringt dir Erfahrung (XP) ein (oder kostet dich welche). Mit XP steigst du innerhalb deines <strong>Levels</strong> im <strong>Rang</strong> auf. Hast du den höchsten Rang erreicht, kannst du ins nächste Level aufsteigen.',
+      loadingThresholds: 'Schwellenwerte werden geladen...',
+      gradesTitle: 'Die Ränge',
+      gradesText:
+        'Jeder Rang braucht {{xp}} XP. Der Level-Aufstieg ist ab {{threshold}} XP möglich.',
+      levelsTitle: 'Die Level',
+      levelsText:
+        'Es gibt {{total}} Level. Du startest bei {{first}} und kannst bis {{last}} aufsteigen. Bei jedem Aufstieg werden die XP auf null gesetzt.',
+    },
+  },
+  streak: {
+    days_one: '{{count}} Tag',
+    days_other: '{{count}} Tage',
+    none: 'Keine Serie',
+    dailyQuest: 'Tagesquest',
+    ultimate: 'Ultimative Flamme erreicht. Legendär!',
+    nextTier_one: 'Deine Flamme entwickelt sich in {{count}} Tag',
+    nextTier_other: 'Deine Flamme entwickelt sich in {{count}} Tagen',
+    lastChance_one:
+      'Letzte Chance! Spiele heute, sonst verlierst du deine Serie. ❄ Sicherheitsnetz wieder da in {{count}} Tag.',
+    lastChance_other:
+      'Letzte Chance! Spiele heute, sonst verlierst du deine Serie. ❄ Sicherheitsnetz wieder da in {{count}} Tagen.',
+    secured: 'Serie für heute gesichert! Nächste Quest in {{countdown}}.',
+    softRisk: 'Spiele heute, um deine Serie zu sichern!',
+    neutral: 'Spiele heute ein Spiel, um deine Flamme zu entzünden!',
+    howItWorks: 'Wie funktionieren Serien? →',
+    guide: {
+      title: 'Die täglichen Serien',
+      principleTitle: 'Das Prinzip',
+      principleText:
+        'Beantworte jeden Tag mindestens eine Frage, um deine <strong>Serie</strong> zu halten: die Anzahl der Tage in Folge, an denen du gespielt hast. Die Serie hängt an deinem Konto, nicht an deinem Gerät — du musst also angemeldet sein, damit sie zählt.',
+      tiersTitle: 'Die Stufen',
+      tiersText: 'Je länger deine Serie wird, desto mehr entwickelt sich deine Flamme.',
+      fromDays_one: 'ab {{count}} Tag',
+      fromDays_other: 'ab {{count}} Tagen',
+      questTitle: 'Die Quest des Tages',
+      questText: 'Ein Symbol zeigt den Stand deiner Serie für heute:',
+      states: {
+        secured: 'Heute schon gespielt: deine Serie ist gesichert.',
+        'soft-risk': 'Heute noch nicht gespielt, aber du bist noch geschützt.',
+        'last-chance': 'Heute zu spielen ist die einzige Möglichkeit, deine Serie zu behalten.',
+        neutral: 'Keine Serie aktiv.',
+      },
+      safetyTitle: 'Das Sicherheitsnetz',
+      safetyText1:
+        'Das Einfrieren ist ein Sicherheitsnetz: Ein verpasster Tag unterbricht deine Serie nicht unbedingt, aber es muss sich dann aufladen.',
+      safetyText2:
+        'Solange sich das Netz auflädt, hast du deine letzte Chance — du musst heute spielen, um deine Serie zu behalten.',
+    },
+  },
+  iconsPage: {
+    loginRequired: 'Melde dich an, um deine Icons zu sehen.',
+    loadFailed: 'Deine Icons konnten gerade nicht geladen werden.',
+    none: 'Noch keine Icons freigeschaltet.',
   },
 } satisfies Translation;

@@ -20,12 +20,10 @@ export const XpBarFooter: React.FC<XpBarFooterProps> = ({
     <div className="flex justify-between text-xs text-slate-500">
       <span>{experience} XP</span>
       {canPromote ? (
-        <span className="font-bold text-emerald-600 animate-pulse">
-          ✨ Grade max — promotion disponible !
-        </span>
+        <span className="font-bold text-emerald-600 animate-pulse">{t('grade.maxGrade')}</span>
       ) : nextGrade != null ? (
         <span>
-          {xpToNextGrade} XP pour {resolveGradeLabel(nextGrade, t)}
+          {t('grade.xpToNext', { xp: xpToNextGrade, grade: resolveGradeLabel(nextGrade, t) })}
         </span>
       ) : null}
     </div>

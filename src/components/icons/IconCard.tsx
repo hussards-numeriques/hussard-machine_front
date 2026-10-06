@@ -62,7 +62,7 @@ export const IconCard: React.FC<IconCardProps> = ({
               : 'bg-primary/10 text-primary border-primary/30 hover:bg-primary/20'
           )}
         >
-          {selected ? '✓ Équipé' : 'Équiper'}
+          {selected ? t('common.equipped') : t('common.equip')}
         </button>
       )}
     </div>
