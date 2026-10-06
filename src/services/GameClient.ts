@@ -135,7 +135,7 @@ export class GameClient {
 
     this.ws.onerror = (e) => {
       console.error('WS Error', e);
-      this.onError('Erreur de connexion.');
+      this.onError(i18n.t('gameClient.connectionError'));
     };
   }
 
@@ -163,10 +163,10 @@ export class GameClient {
         this.onError(resolveWsErrorMessage(message.payload, i18n.t));
         break;
       case 'KICKED':
-        this.onError('Tu as été exclu de la partie.');
+        this.onError(i18n.t('gameClient.kicked'));
         break;
       case 'LOBBY_CLOSED':
-        this.onError("L'hôte a quitté la partie, elle a été fermée.");
+        this.onError(i18n.t('gameClient.hostLeft'));
         break;
     }
   }

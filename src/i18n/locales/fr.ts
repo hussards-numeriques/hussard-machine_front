@@ -253,6 +253,83 @@ export const fr = {
     connecting: 'Connexion à la partie...',
     unknownState: 'État inconnu: {{state}}',
   },
+  lobby: {
+    seats: 'Places : {{current}}/{{max}}',
+    botDifficulty: {
+      EASY: 'Facile',
+      MEDIUM: 'Moyen',
+      HARD: 'Difficile',
+    },
+    players: 'Joueurs ({{count}})',
+    disconnected: 'Déconnecté',
+    robot: 'Robot',
+    kick: 'Exclure {{name}}',
+    leave: 'Quitter',
+    notReady: 'Je ne suis plus prêt',
+    ready: 'Je suis prêt !',
+    start: 'Lancer la partie !',
+  },
+  launch: {
+    title: 'La partie commence',
+    getReady: 'Prêts ?',
+    go: 'GO !',
+  },
+  game: {
+    question: 'Question {{current}} / {{total}}',
+    waiting: 'En attente des autres joueurs…',
+    sixSeven: 'Six seven !',
+    getReady: 'Préparez-vous...',
+    disconnectedName: '{{name}} (déconnecté)',
+    points: '{{score}} pts',
+  },
+  feedback: {
+    correct: 'Bonne réponse',
+    wrong: 'Mauvaise réponse',
+    timeout: 'Temps écoulé',
+    noAnswer: '⏱ Pas de réponse',
+    miss: 'Raté',
+    nextQuestion: 'Question suivante dans {{seconds}}…',
+    podium: 'Podium dans {{seconds}}…',
+  },
+  podium: {
+    title: 'Résultats Finaux',
+    replay: 'Rejouer',
+    fullRanking: 'Classement complet',
+  },
+  answerInput: {
+    submit: 'Valider',
+    clear: 'Effacer',
+    sent: 'Réponse envoyée...',
+    unreadable: 'Impossible de lire, réessaie',
+    recognitionError: 'Erreur de reconnaissance, réessaie',
+  },
+  answerDots: {
+    label: 'Réponses par question',
+    correct: 'Correcte',
+    incorrect: 'Incorrecte',
+    timeout: 'Sans réponse',
+  },
+  prompts: {
+    doubleOf: 'Le double de',
+    halfOf: 'La moitié de',
+    of: 'de',
+    gcd: 'PGCD',
+    euclideanQuestion: {
+      quotient: 'Quel est le quotient ?',
+      remainder: 'Quel est le reste ?',
+    },
+    euclideanSpoken: {
+      quotient: 'Quotient de la division euclidienne de {{dividend}} par {{divisor}}',
+      remainder: 'Reste de la division euclidienne de {{dividend}} par {{divisor}}',
+    },
+    power: '{{base}} puissance {{exponent}}',
+    squareRoot: 'Racine carrée de {{radicand}}',
+  },
+  gameClient: {
+    connectionError: 'Erreur de connexion.',
+    kicked: 'Tu as été exclu de la partie.',
+    hostLeft: "L'hôte a quitté la partie, elle a été fermée.",
+  },
 } as const;
 
 type Messages<T> = { [K in keyof T]: T[K] extends string ? string : Messages<T[K]> };

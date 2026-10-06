@@ -72,6 +72,7 @@ const ScoreBoard: React.FC<{ players: Player[]; currentPlayerId: string | null }
   players,
   currentPlayerId,
 }) => {
+  const { t } = useTranslation();
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
   return (
@@ -80,7 +81,7 @@ const ScoreBoard: React.FC<{ players: Player[]; currentPlayerId: string | null }
         const isMe = player.id === currentPlayerId;
         const displayName = player.is_connected
           ? truncateName(player.name)
-          : `${truncateName(player.name)} (déconnecté)`;
+          : t('game.disconnectedName', { name: truncateName(player.name) });
         return (
           <div
             key={player.id}
@@ -113,6 +114,7 @@ const IntermissionCard: React.FC<{
   questionIndex: number;
   countdown: number;
 }> = ({ game, playerId, questionIndex, countdown }) => {
+  const { t } = useTranslation();
   if (playerId && computeFeedback(game, playerId, questionIndex)) {
     return (
       <CorrectionCard
@@ -127,7 +129,7 @@ const IntermissionCard: React.FC<{
   return (
     <>
       <div className="text-9xl font-black text-primary animate-pulse">{countdown}</div>
-      <div className="text-2xl font-bold text-slate-600">Préparez-vous...</div>
+      <div className="text-2xl font-bold text-slate-600">{t('game.getReady')}</div>
     </>
   );
 };
@@ -161,14 +163,14 @@ const QuestionCard: React.FC<{
       {myAnswer ? (
         <div className="space-y-2">
           {isSixSeven(myAnswer) && (
-            <Mascot pose="sixseven" size={96} title="Six seven !" className="mx-auto" />
+            <Mascot pose="sixseven" size={96} title={t('game.sixSeven')} className="mx-auto" />
           )}
           <AnswerFeedbackPop
             key={question.id}
             isCorrect={myAnswer.is_correct}
             pointsEarned={myAnswer.points_earned}
           />
-          <div className="text-sm font-semibold text-slate-400">En attente des autres joueurs…</div>
+          <div className="text-sm font-semibold text-slate-400">{t('game.waiting')}</div>
         </div>
       ) : (
         <AnswerInput onSubmit={onSubmit} disabled={false} />
@@ -178,6 +180,7 @@ const QuestionCard: React.FC<{
 };
 
 export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerId }) => {
+  const { t } = useTranslation();
   const [questionCountdown, setQuestionCountdown] = React.useState<number | null>(null);
   const [displayedQuestionIndex, setDisplayedQuestionIndex] = React.useState<number>(
     game.current_question_index
@@ -222,14 +225,17 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     game.start_time_current_question
   );
 
-  if (!currentQuestion) return <div>Chargement...</div>;
+  if (!currentQuestion) return <div>{t('common.loading')}</div>;
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
       <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-sm p-4 shadow-sm">
         <div className="max-w-lg mx-auto w-full space-y-2">
           <div className="font-bold text-slate-500">
-            Question {displayedQuestionIndex + 1} / {game.questions.length}
+            {t('game.question', {
+              current: displayedQuestionIndex + 1,
+              total: game.questions.length,
+            })}
           </div>
           <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
             <div

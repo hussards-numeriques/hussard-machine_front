@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import type { AnswerInputProps } from './port';
 import { digitRecognitionPort } from '../../services/digit-recognition';
@@ -13,6 +14,7 @@ const fillWhite = (canvas: HTMLCanvasElement) => {
 };
 
 export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
+  const { t } = useTranslation();
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const drawing = React.useRef(false);
   const debounce = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -70,12 +72,12 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
     try {
       const value = await digitRecognitionPort.recognizeNumber(canvas);
       if (value === null) {
-        setError('Impossible de lire, réessaie');
+        setError(t('answerInput.unreadable'));
         return;
       }
       setRecognized(value);
     } catch {
-      setError('Erreur de reconnaissance, réessaie');
+      setError(t('answerInput.recognitionError'));
     } finally {
       setIsRecognizing(false);
     }
@@ -138,7 +140,7 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
           onClick={handleClear}
           disabled={disabled || (recognized === null && !error)}
         >
-          Effacer
+          {t('answerInput.clear')}
         </Button>
         <Button
           size="lg"
@@ -146,7 +148,7 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
           onClick={handleValidate}
           disabled={disabled || isRecognizing || recognized === null}
         >
-          {isRecognizing ? '...' : 'Valider'}
+          {isRecognizing ? '...' : t('answerInput.submit')}
         </Button>
       </div>
     </div>

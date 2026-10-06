@@ -1,4 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { Game } from '../../types';
 import { computeFeedback } from '../../lib/feedback';
 import type { AnswerResult } from '../../lib/playerAnswer';
@@ -12,10 +14,10 @@ interface CorrectionCardProps {
   countdown: number | null;
 }
 
-const titleFor = (status: AnswerResult): string => {
-  if (status === 'correct') return 'Bonne réponse';
-  if (status === 'timeout') return 'Temps écoulé';
-  return 'Mauvaise réponse';
+const titleFor = (status: AnswerResult, t: TFunction): string => {
+  if (status === 'correct') return t('feedback.correct');
+  if (status === 'timeout') return t('feedback.timeout');
+  return t('feedback.wrong');
 };
 
 export const CorrectionCard: React.FC<CorrectionCardProps> = ({
@@ -24,18 +26,18 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
   questionIndex,
   countdown,
 }) => {
+  const { t } = useTranslation();
   const feedback = computeFeedback(game, playerId, questionIndex);
   const question = game.questions[questionIndex];
   if (!feedback || !question) return null;
 
   const isCorrect = feedback.status === 'correct';
   const isLastQuestion = questionIndex === game.questions.length - 1;
-  const nextStepLabel = isLastQuestion ? 'Podium' : 'Question suivante';
 
   return (
     <div className="space-y-6 animate-pop-in">
       <div className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-        {titleFor(feedback.status)}
+        {titleFor(feedback.status, t)}
       </div>
 
       <QuestionPrompt prompt={question.prompt} className="text-3xl" />
@@ -43,7 +45,7 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
       {!isCorrect && (
         <div className="flex items-center justify-center gap-3 text-4xl font-black">
           {feedback.status === 'timeout' ? (
-            <span className="text-slate-400">⏱ Pas de réponse</span>
+            <span className="text-slate-400">{t('feedback.noAnswer')}</span>
           ) : (
             <>
               <span className="text-red-500 line-through">
@@ -62,7 +64,7 @@ export const CorrectionCard: React.FC<CorrectionCardProps> = ({
 
       {countdown !== null && (
         <div className="text-sm font-bold text-slate-400">
-          {nextStepLabel} dans {countdown}…
+          {t(isLastQuestion ? 'feedback.podium' : 'feedback.nextQuestion', { seconds: countdown })}
         </div>
       )}
     </div>

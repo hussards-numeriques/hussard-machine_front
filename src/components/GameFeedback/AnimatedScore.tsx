@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 interface AnimatedScoreProps {
@@ -6,6 +7,7 @@ interface AnimatedScoreProps {
 }
 
 export const AnimatedScore: React.FC<AnimatedScoreProps> = ({ score }) => {
+  const { t } = useTranslation();
   const [pulse, setPulse] = React.useState(false);
   const previousScore = React.useRef(score);
 
@@ -19,7 +21,7 @@ export const AnimatedScore: React.FC<AnimatedScoreProps> = ({ score }) => {
 
   return (
     <span className={cn('shrink-0 tabular-nums', pulse && 'animate-score-pulse text-green-600')}>
-      {score} pts
+      {t('game.points', { score })}
     </span>
   );
 };

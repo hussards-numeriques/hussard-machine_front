@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dot, type DotVariant } from './Dot';
 import type { AnswerResult } from '../lib/answerDots';
 
@@ -8,25 +9,20 @@ const ANSWER_RESULT_TO_DOT_VARIANT: Record<AnswerResult, DotVariant> = {
   timeout: 'neutral',
 };
 
-const ANSWER_RESULT_TO_LABEL: Record<AnswerResult, string> = {
-  correct: 'Correcte',
-  incorrect: 'Incorrecte',
-  timeout: 'Sans réponse',
-};
-
 interface AnswerDotsProps {
   results: AnswerResult[];
   maxWidthCh: number;
 }
 
 export const AnswerDots: React.FC<AnswerDotsProps> = ({ results, maxWidthCh }) => {
+  const { t } = useTranslation();
   if (results.length === 0) return null;
 
   return (
     <div
       data-testid="answer-dots"
       role="list"
-      aria-label="Réponses par question"
+      aria-label={t('answerDots.label')}
       className="flex flex-wrap justify-end gap-0.5"
       style={{ maxWidth: `${maxWidthCh}ch` }}
     >
@@ -34,7 +30,7 @@ export const AnswerDots: React.FC<AnswerDotsProps> = ({ results, maxWidthCh }) =
         <Dot
           key={index}
           variant={ANSWER_RESULT_TO_DOT_VARIANT[result]}
-          label={ANSWER_RESULT_TO_LABEL[result]}
+          label={t(`answerDots.${result}`)}
         />
       ))}
     </div>

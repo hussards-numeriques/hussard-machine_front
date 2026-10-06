@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
 
 interface AnswerFeedbackPopProps {
@@ -10,6 +11,7 @@ export const AnswerFeedbackPop: React.FC<AnswerFeedbackPopProps> = ({
   isCorrect,
   pointsEarned,
 }) => {
+  const { t } = useTranslation();
   const [faded, setFaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -25,7 +27,7 @@ export const AnswerFeedbackPop: React.FC<AnswerFeedbackPopProps> = ({
         faded && 'opacity-0'
       )}
     >
-      {isCorrect ? `+${pointsEarned}` : 'Raté'}
+      {isCorrect ? `+${pointsEarned}` : t('feedback.miss')}
     </div>
   );
 };

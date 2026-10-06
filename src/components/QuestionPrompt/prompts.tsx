@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { AffineExpression, QuestionPrompt } from '../../types';
 import {
   formatAffine,
@@ -115,19 +116,25 @@ export const ComplementPromptView: React.FC<PromptProps<'complement'>> = ({ prom
   </NoWrap>
 );
 
-export const DoublePromptView: React.FC<PromptProps<'double'>> = ({ prompt }) => (
-  <>
-    <Caption>Le double de</Caption>
-    {formatInteger(prompt.value)}
-  </>
-);
+export const DoublePromptView: React.FC<PromptProps<'double'>> = ({ prompt }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Caption>{t('prompts.doubleOf')}</Caption>
+      {formatInteger(prompt.value)}
+    </>
+  );
+};
 
-export const HalfPromptView: React.FC<PromptProps<'half'>> = ({ prompt }) => (
-  <>
-    <Caption>La moitié de</Caption>
-    {formatInteger(prompt.value)}
-  </>
-);
+export const HalfPromptView: React.FC<PromptProps<'half'>> = ({ prompt }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <Caption>{t('prompts.halfOf')}</Caption>
+      {formatInteger(prompt.value)}
+    </>
+  );
+};
 
 export const MultiplicationByPowerOf10PromptView: React.FC<
   PromptProps<'multiplication_by_power_of_10'>
@@ -169,19 +176,10 @@ export const MissingFactorPromptView: React.FC<PromptProps<'missing_factor'>> = 
   </NoWrap>
 );
 
-const EUCLIDEAN_QUESTIONS: Record<PromptOf<'euclidean_division'>['asked'], string> = {
-  quotient: 'Quel est le quotient ?',
-  remainder: 'Quel est le reste ?',
-};
-
-const EUCLIDEAN_SPOKEN: Record<PromptOf<'euclidean_division'>['asked'], string> = {
-  quotient: 'Quotient de la division euclidienne de',
-  remainder: 'Reste de la division euclidienne de',
-};
-
 export const EuclideanDivisionPromptView: React.FC<PromptProps<'euclidean_division'>> = ({
   prompt,
 }) => {
+  const { t } = useTranslation();
   const dividend = formatInteger(prompt.dividend);
   const divisor = formatInteger(prompt.divisor);
   const slot = (part: PromptOf<'euclidean_division'>['asked']) =>
@@ -189,8 +187,8 @@ export const EuclideanDivisionPromptView: React.FC<PromptProps<'euclidean_divisi
 
   return (
     <>
-      <Caption>{EUCLIDEAN_QUESTIONS[prompt.asked]}</Caption>
-      <Spoken text={`${EUCLIDEAN_SPOKEN[prompt.asked]} ${dividend} par ${divisor}`}>
+      <Caption>{t(`prompts.euclideanQuestion.${prompt.asked}`)}</Caption>
+      <Spoken text={t(`prompts.euclideanSpoken.${prompt.asked}`, { dividend, divisor })}>
         <span className="inline-grid grid-cols-[auto_auto] text-left">
           <span className="border-r-[0.06em] border-slate-800 pr-[0.25em] text-right">
             {dividend}
@@ -223,29 +221,36 @@ const Fraction: React.FC<{ numerator: number; denominator: number }> = ({
 
 export const FractionOfQuantityPromptView: React.FC<PromptProps<'fraction_of_quantity'>> = ({
   prompt,
-}) => (
-  <span className="inline-flex items-center justify-center">
-    <Fraction numerator={prompt.numerator} denominator={prompt.denominator} />
-    <Word>de</Word>
-    {formatInteger(prompt.quantity)}
-  </span>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <span className="inline-flex items-center justify-center">
+      <Fraction numerator={prompt.numerator} denominator={prompt.denominator} />
+      <Word>{t('prompts.of')}</Word>
+      {formatInteger(prompt.quantity)}
+    </span>
+  );
+};
 
 export const PercentageOfQuantityPromptView: React.FC<PromptProps<'percentage_of_quantity'>> = ({
   prompt,
-}) => (
-  <>
-    {formatPercent(prompt.rate)}
-    <Word>de</Word>
-    {formatInteger(prompt.quantity)}
-  </>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {formatPercent(prompt.rate)}
+      <Word>{t('prompts.of')}</Word>
+      {formatInteger(prompt.quantity)}
+    </>
+  );
+};
 
 const Exponentiation: React.FC<{ base: number; exponent: number }> = ({ base, exponent }) => {
+  const { t } = useTranslation();
   const formattedBase = base < 0 ? `(${formatInteger(base)})` : formatInteger(base);
   const formattedExponent = formatInteger(exponent);
   return (
-    <Spoken text={`${formattedBase} puissance ${formattedExponent}`}>
+    <Spoken text={t('prompts.power', { base: formattedBase, exponent: formattedExponent })}>
       {formattedBase}
       <sup className="self-start top-0 mt-[0.1em] ml-[0.05em] text-[0.55em] leading-none">
         {formattedExponent}
@@ -263,9 +268,10 @@ export const PowerPromptView: React.FC<PromptProps<'power'>> = ({ prompt }) => (
 );
 
 export const SquareRootPromptView: React.FC<PromptProps<'square_root'>> = ({ prompt }) => {
+  const { t } = useTranslation();
   const radicand = formatInteger(prompt.radicand);
   return (
-    <Spoken text={`Racine carrée de ${radicand}`}>
+    <Spoken text={t('prompts.squareRoot', { radicand })}>
       <span className="text-[1.15em] font-normal -mr-[0.05em]">√</span>
       <span className="border-t-[0.07em] border-slate-800 pt-[0.05em] pr-[0.1em] leading-none">
         {radicand}
@@ -274,11 +280,14 @@ export const SquareRootPromptView: React.FC<PromptProps<'square_root'>> = ({ pro
   );
 };
 
-export const GcdPromptView: React.FC<PromptProps<'gcd'>> = ({ prompt }) => (
-  <Small>
-    PGCD({formatInteger(prompt.left)}&nbsp;; {formatInteger(prompt.right)})
-  </Small>
-);
+export const GcdPromptView: React.FC<PromptProps<'gcd'>> = ({ prompt }) => {
+  const { t } = useTranslation();
+  return (
+    <Small>
+      {t('prompts.gcd')}({formatInteger(prompt.left)}&nbsp;; {formatInteger(prompt.right)})
+    </Small>
+  );
+};
 
 export const LinearEquationPromptView: React.FC<PromptProps<'linear_equation'>> = ({ prompt }) => (
   <>

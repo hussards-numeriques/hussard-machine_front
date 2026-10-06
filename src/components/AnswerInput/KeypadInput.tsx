@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import type { AnswerInputProps } from './port';
 
 const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
 export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
+  const { t } = useTranslation();
   const [digits, setDigits] = useState('');
   const [isNegative, setIsNegative] = useState(false);
 
@@ -40,7 +42,7 @@ export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) 
         <Button
           variant="secondary"
           size="md"
-          aria-label="Effacer"
+          aria-label={t('answerInput.clear')}
           className="px-4"
           onClick={handleBackspace}
           disabled={disabled || digits.length === 0}
@@ -86,7 +88,7 @@ export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) 
           onClick={handleValidate}
           disabled={disabled || digits.length === 0}
         >
-          Valider
+          {t('answerInput.submit')}
         </Button>
       </div>
     </div>

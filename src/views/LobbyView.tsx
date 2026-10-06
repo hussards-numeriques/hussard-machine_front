@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GameClient } from '../services/GameClient';
 import type { Game } from '../types';
 import { Button } from '../components/Button';
@@ -17,13 +18,10 @@ interface LobbyViewProps {
   onLeave: () => void;
 }
 
-const BOT_DIFFICULTIES: { value: 'EASY' | 'MEDIUM' | 'HARD'; label: string }[] = [
-  { value: 'EASY', label: 'Facile' },
-  { value: 'MEDIUM', label: 'Moyen' },
-  { value: 'HARD', label: 'Difficile' },
-];
+const BOT_DIFFICULTIES = ['EASY', 'MEDIUM', 'HARD'] as const;
 
 export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlayerId, onLeave }) => {
+  const { t } = useTranslation();
   const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
   const isReady = currentPlayer?.is_ready;
   const isHost =
@@ -59,10 +57,10 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
     <div className="flex flex-col items-center min-h-screen p-4 space-y-8 max-w-2xl mx-auto w-full">
       <div className="text-center space-y-2 mt-8">
         {game.is_quick_game ? (
-          <h2 className="text-2xl font-bold text-slate-500">Partie classée</h2>
+          <h2 className="text-2xl font-bold text-slate-500">{t('home.rankedGame')}</h2>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-slate-500">Code d'invitation</h2>
+            <h2 className="text-2xl font-bold text-slate-500">{t('home.inviteCode')}</h2>
             <div className="text-6xl font-black text-primary tracking-widest font-mono bg-white px-8 py-4 rounded-2xl shadow-sm border-2 border-slate-200">
               {game.id}
             </div>
@@ -73,10 +71,10 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
       {isHost && (
         <div className="w-full bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-4">
           <h3 className="text-lg font-bold text-slate-700">
-            Places : {game.players.length}/{game.max_players}
+            {t('lobby.seats', { current: game.players.length, max: game.max_players })}
           </h3>
           <div className="flex gap-2 flex-wrap">
-            {BOT_DIFFICULTIES.map(({ value, label }) => (
+            {BOT_DIFFICULTIES.map((value) => (
               <Button
                 key={value}
                 variant="secondary"
@@ -84,7 +82,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                 disabled={isFull}
                 onClick={() => client.addBot(value)}
               >
-                {label}
+                {t(`lobby.botDifficulty.${value}`)}
               </Button>
             ))}
           </div>
@@ -92,7 +90,9 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
       )}
 
       <div className="w-full bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100">
-        <h3 className="text-xl font-bold text-slate-700 mb-6">Joueurs ({game.players.length})</h3>
+        <h3 className="text-xl font-bold text-slate-700 mb-6">
+          {t('lobby.players', { count: game.players.length })}
+        </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {game.players.map((player) => (
@@ -121,7 +121,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
                 <PlayerTitle title={player.title} />
                 {(!player.is_connected || player.is_bot) && (
                   <div className="text-xs text-slate-500">
-                    {!player.is_connected ? 'Déconnecté' : 'Robot'}
+                    {!player.is_connected ? t('lobby.disconnected') : t('lobby.robot')}
                   </div>
                 )}
               </div>
@@ -140,7 +140,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
               {isHost && player.id !== currentPlayerId && (
                 <button
                   type="button"
-                  aria-label={`Exclure ${player.name}`}
+                  aria-label={t('lobby.kick', { name: player.name })}
                   onClick={() => client.removePlayer(player.id)}
                   className="text-rose-400 hover:text-rose-600 text-xl font-bold px-2"
                 >
@@ -158,7 +158,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
         <div className="fixed bottom-8 left-0 right-0 z-50 px-4 flex justify-center gap-4">
           {!isReady && (
             <Button size="lg" variant="secondary" onClick={onLeave} className="shadow-xl">
-              Quitter
+              {t('lobby.leave')}
             </Button>
           )}
 
@@ -168,7 +168,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
             onClick={handleReady}
             className="w-full max-w-xs shadow-xl"
           >
-            {isReady ? 'Je ne suis plus prêt' : 'Je suis prêt !'}
+            {isReady ? t('lobby.notReady') : t('lobby.ready')}
           </Button>
 
           {canStart && !game.is_quick_game && (
@@ -178,7 +178,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ client, game, currentPlaye
               onClick={handleStart}
               className="w-full max-w-xs shadow-xl animate-bounce-short"
             >
-              Lancer la partie !
+              {t('lobby.start')}
             </Button>
           )}
         </div>

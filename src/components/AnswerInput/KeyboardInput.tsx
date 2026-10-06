@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import type { AnswerInputProps } from './port';
 
 export const KeyboardInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
+  const { t } = useTranslation();
   const [answer, setAnswer] = React.useState('');
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -33,7 +35,7 @@ export const KeyboardInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }
         className="text-4xl font-bold py-6"
       />
       <Button type="submit" size="lg" className="w-full" disabled={disabled || !answer}>
-        {disabled ? 'Réponse envoyée...' : 'Valider'}
+        {disabled ? t('answerInput.sent') : t('answerInput.submit')}
       </Button>
     </form>
   );
