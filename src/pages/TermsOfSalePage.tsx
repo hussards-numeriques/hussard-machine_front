@@ -10,11 +10,14 @@ export const TermsOfSalePage: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-black text-slate-700">Objet</h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Les présentes conditions régissent la vente d'un abonnement de soutien optionnel (1, 3
-            ou 12 mois), en paiement unique et sans reconduction automatique. Cet abonnement ne
-            donne aucun avantage de jeu : XP, niveau, grade et streak restent identiques pour tous
-            les joueurs, avec ou sans abonnement. Il débloque uniquement la progression cosmétique
-            des quêtes et titres, ainsi qu'un badge de soutien visible dans le jeu.
+            Les présentes conditions régissent la vente de l'abonnement optionnel Calc Rush+ (1, 3
+            ou 12 mois), en paiement unique et sans reconduction automatique. Pendant sa durée, il
+            débloque : la création de parties privées (choix du niveau des questions, invitation de
+            joueurs par code, ajout de robots), sans gain d'XP ni effet sur le classement ; la
+            progression des quêtes et titres cosmétiques ; et une couronne affichée dans le menu
+            joueur. Il ne donne aucun avantage dans les parties classées : XP, niveau, grade et
+            streak restent identiques pour tous les joueurs, avec ou sans abonnement. Rejoindre une
+            partie privée avec un code reste gratuit.
           </p>
         </section>
 
@@ -63,9 +66,9 @@ export const TermsOfSalePage: React.FC = () => {
             l'article L221-28 du même code, ce délai ne s'applique pas dès lors que le service a été
             pleinement exécuté avant la fin du délai de rétractation, avec votre accord préalable et
             exprès, et avec votre reconnaissance de la perte de ce droit une fois le service
-            exécuté. Ce service étant à exécution immédiate (déblocage instantané de la
-            progression), vous renoncez expressément à ce délai en cochant la case de confirmation
-            prévue à cet effet avant l'achat.
+            exécuté. Ce service étant à exécution immédiate (déblocage instantané des
+            fonctionnalités), vous renoncez expressément à ce délai en cochant la case de
+            confirmation prévue à cet effet avant l'achat.
           </p>
         </section>
 

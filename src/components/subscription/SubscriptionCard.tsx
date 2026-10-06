@@ -89,18 +89,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         </p>
       </div>
 
-      <ul className="text-slate-600 text-sm leading-relaxed space-y-2 list-none">
-        <li>Ta progression vers les prochains titres continue.</li>
-        <li>Un badge de soutien visible dans le header.</li>
-        <li>Un coup de main direct pour payer l'infra du jeu.</li>
-      </ul>
-      <p className="text-slate-500 text-xs leading-relaxed">
-        Aucun avantage en jeu — XP, niveau, grade et streak restent les mêmes pour tout le monde.
-      </p>
-
       <p className="text-xs font-bold text-slate-500 bg-slate-50 rounded-2xl p-3">
-        Paiement unique. Pas de renouvellement automatique — ton soutien dure exactement la durée
-        choisie, puis s'arrête tout seul.
+        Paiement unique, sans renouvellement automatique : l'abonnement s'arrête tout seul à la fin
+        de la durée choisie.
       </p>
 
       <label className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
@@ -127,8 +118,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         className="w-full text-sm font-bold text-white bg-primary px-6 py-3 rounded-full disabled:opacity-50"
       >
         {status?.active
-          ? `Prolonger de ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`
-          : `Soutenir ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`}
+          ? `Prolonger · ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`
+          : `Passer à Calc Rush+ · ${SUBSCRIPTION_PLAN_LABELS[selectedPlan.key]}`}
       </button>
     </div>
   );

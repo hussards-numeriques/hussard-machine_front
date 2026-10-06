@@ -151,7 +151,7 @@ export const HomePage: React.FC = () => {
             <MenuChoice
               variant="secondary"
               label="Créer une partie privée"
-              details="Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots. Ne compte pas pour le classement. Réservé aux Supporters."
+              details="Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots. Ne compte pas pour le classement. Réservé à Calc Rush+."
               disabled={isSubscriptionStatusLoading}
               onClick={() =>
                 isCreateLockedBehindSubscription ? navigate('/subscription') : setMode('CREATE')

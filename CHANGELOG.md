@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- The subscription is now branded « Calc Rush+ » and `/subscription` sells player benefits instead of asking for support: headline « Crée tes parties, débloque tes titres », three perk cards readable at a glance (private games, quests and titles, crown), CTA « Passer à Calc Rush+ · <durée> » / « Prolonger · <durée> ». The indie-dev mention moves to a short footer note, with « le jeu reste gratuit et équitable ».
+- Player menu card: « Passe à Calc Rush+ » / « Calc Rush+ · Jusqu'au … » instead of « Deviens Supporter » / « Supporter ».
+- Terms of sale (`/terms-of-sale`) now describe what Calc Rush+ unlocks: private game creation (no XP, no ranking effect), quest and title progression, header crown; joining a private game by code stays free.
+
 ## [0.31.0] - 2026-10-06
 
 ### Changed

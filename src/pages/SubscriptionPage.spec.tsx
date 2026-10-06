@@ -100,7 +100,8 @@ describe('SubscriptionPage', () => {
     mocks.status = { active: false, expires_at: null };
     renderPage();
 
-    expect(screen.getByText('Soutenir Calc Rush')).toBeInTheDocument();
+    expect(screen.getByText('Calc Rush+')).toBeInTheDocument();
+    expect(screen.getByText('Parties privées')).toBeInTheDocument();
     expect(screen.getByText('8,42 €')).toBeInTheDocument();
     expect(screen.queryByText(/Actif jusqu'au/)).not.toBeInTheDocument();
   });
@@ -112,7 +113,7 @@ describe('SubscriptionPage', () => {
     renderPage();
 
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByText('Soutenir 3 mois'));
+    fireEvent.click(screen.getByText('Passer à Calc Rush+ · 3 mois'));
 
     expect(mocks.mutate).not.toHaveBeenCalled();
     fireEvent.change(screen.getByRole('textbox'), {
@@ -131,7 +132,7 @@ describe('SubscriptionPage', () => {
     renderPage();
 
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByText('Soutenir 3 mois'));
+    fireEvent.click(screen.getByText('Passer à Calc Rush+ · 3 mois'));
     fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

@@ -87,7 +87,7 @@ Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orches
 ### [subscription.md](subscription.md)
 
 Achat d'abonnement Stripe Checkout (1/3/12 mois, achat unique), pages de retour
-succès/annulation, couronne Supporter + carte du menu joueur dans le header, et bandeau de pause sur `/quests` quand inactif.
+succès/annulation, offre « Calc Rush+ » (page orientée bénéfices), couronne + carte du menu joueur dans le header, et bandeau de pause sur `/quests` quand inactif.
 → Read when: touching `/subscription*` routes, checkout, or the quests pause
 banner.
 

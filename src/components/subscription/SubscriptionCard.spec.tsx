@@ -51,7 +51,7 @@ describe('SubscriptionCard', () => {
 
   it('states there is no auto-renewal', () => {
     renderCard();
-    expect(screen.getByText(/Pas de renouvellement automatique/)).toBeInTheDocument();
+    expect(screen.getByText(/sans renouvellement automatique/)).toBeInTheDocument();
   });
 
   it('switches the displayed price when another plan is selected', () => {
@@ -64,28 +64,28 @@ describe('SubscriptionCard', () => {
     const { onPurchase } = renderCard();
     fireEvent.click(screen.getByRole('button', { name: /^1 an/ }));
     fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByText('Soutenir 1 an'));
+    fireEvent.click(screen.getByText('Passer à Calc Rush+ · 1 an'));
     expect(onPurchase).toHaveBeenCalledWith('ONE_YEAR');
   });
 
   it('disables the CTA while a purchase is pending', () => {
     renderCard({ isPurchasePending: true });
     fireEvent.click(screen.getByRole('checkbox'));
-    expect(screen.getByText('Soutenir 3 mois')).toBeDisabled();
+    expect(screen.getByText('Passer à Calc Rush+ · 3 mois')).toBeDisabled();
   });
 
   it('shows the active banner and switches the CTA to "Prolonger" when already subscribed', () => {
     const status: SubscriptionStatus = { active: true, expires_at: '2026-08-21T12:00:00' };
     renderCard({ status });
     expect(screen.getByText("Actif jusqu'au 21/08.")).toBeInTheDocument();
-    expect(screen.getByText('Prolonger de 3 mois')).toBeInTheDocument();
+    expect(screen.getByText('Prolonger · 3 mois')).toBeInTheDocument();
   });
 
   it('disables the CTA until the consent checkbox is checked', () => {
     renderCard();
-    expect(screen.getByText('Soutenir 3 mois')).toBeDisabled();
+    expect(screen.getByText('Passer à Calc Rush+ · 3 mois')).toBeDisabled();
     fireEvent.click(screen.getByRole('checkbox'));
-    expect(screen.getByText('Soutenir 3 mois')).not.toBeDisabled();
+    expect(screen.getByText('Passer à Calc Rush+ · 3 mois')).not.toBeDisabled();
   });
 
   it('links the consent checkbox label to the terms of sale', () => {

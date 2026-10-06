@@ -1,8 +1,9 @@
 # Abonnement Stripe
 
 Un joueur authentifié peut acheter un abonnement (1 mois / 3 mois / 1 an, achat
-unique, pas de récurrence Stripe) qui débloque la **progression** des quêtes
-(voir `doc/quests-titles.md`). Jouer reste 100% gratuit dans tous les cas — XP,
+unique, pas de récurrence Stripe), présenté sous le nom **Calc Rush+**, qui
+débloque la création de **parties privées** (voir `doc/game-flow.md`), la
+**progression** des quêtes (voir `doc/quests-titles.md`) et la couronne du header. Jouer reste 100% gratuit dans tous les cas — XP,
 niveau, grade et streak ne dépendent jamais de l'abonnement.
 
 ## Backend contract
@@ -42,15 +43,17 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 
 ## Pages
 
-- `/subscription` (`SubscriptionPage.tsx`) : intro + mascotte Rushy, puis une
-  carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
+- `/subscription` (`SubscriptionPage.tsx`) : titre « Calc Rush+ » + mascotte Rushy
+  et une accroche orientée bénéfice joueur (jamais « aidez le dev »), trois cartes
+  d'avantages lisibles sans clic (`PERKS` : parties privées, quêtes et titres,
+  couronne — n'y lister que des avantages réellement livrés), puis une carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
   sélecteur des 3 formules (par défaut sur 3 mois, simple accent visuel — jamais
   d'étiquette "populaire"/"recommandé"), le prix/mois et le % d'économie de
-  chaque formule affichés simultanément (`lib/subscriptionPricing.ts`), la
-  liste de ce que ça débloque (progression cosmétique des quêtes/titres,
-  badge de soutien, aide à l'infra — jamais d'avantage de jeu), et un rappel
+  chaque formule affichés simultanément (`lib/subscriptionPricing.ts`), et un rappel
   explicite qu'il s'agit d'un paiement unique sans renouvellement automatique.
-  Lien vers `/terms-of-sale` en bas de page.
+  CTA : « Passer à Calc Rush+ · <durée> » (abonné : « Prolonger · <durée> »).
+  En bas de page : « le jeu reste gratuit et équitable » + mention dev indé
+  (« ton abonnement finance les nouveautés »), puis lien vers `/terms-of-sale`.
   La carte d'achat (`SubscriptionCard`) n'active le bouton d'achat qu'une
   fois une case de consentement cochée (acceptation des CGV + renonciation
   au délai de rétractation de 14 jours).
@@ -91,11 +94,11 @@ A fourth route, `POST /subscription/redeem` (Bearer, `{ code }` → same shape a
 
 ## Affichage dans le header (`components/SubscriptionStatus.tsx`)
 
-L'abonné est présenté comme **Supporter** (cohérent avec « Soutenir Calc Rush ») :
+L'offre est nommée **Calc Rush+** partout dans l'UI (le composant garde son nom de code `SupporterCrown`) :
 
 - `SupporterCrown` : couronne dorée posée en biais sur l'avatar du header quand
-  `active === true` — c'est le « badge de soutien » promis sur `/subscription`.
+  `active === true` — c'est la « Couronne » listée dans les avantages de `/subscription`.
 - `SubscriptionMenuCard` : carte en tête du menu joueur, lien vers `/subscription`.
-  Non abonné → carte indigo « Deviens Supporter » ; abonné → carte dorée
-  « Supporter · Jusqu'au <date> » ; à ≤ 7 jours de l'expiration
+  Non abonné → carte indigo « Passe à Calc Rush+ » ; abonné → carte dorée
+  « Calc Rush+ · Jusqu'au <date> » ; à ≤ 7 jours de l'expiration
   (`daysUntil` de `lib/date.ts`) → carte rose « Expire dans N jours · Prolonger ».

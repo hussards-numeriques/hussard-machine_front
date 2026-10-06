@@ -58,8 +58,8 @@ export const SubscriptionMenuCard: React.FC<{ onNavigate: () => void }> = ({ onN
       >
         <SupporterCrown size={28} className="shrink-0 drop-shadow" />
         <span className="text-xs font-semibold leading-snug">
-          <span className="block text-sm font-black">Deviens Supporter</span>
-          Soutiens le jeu et fais avancer tes quêtes.
+          <span className="block text-sm font-black">Passe à Calc Rush+</span>
+          Crée tes parties, débloque tes titres.
         </span>
       </Link>
     );
@@ -81,7 +81,7 @@ export const SubscriptionMenuCard: React.FC<{ onNavigate: () => void }> = ({ onN
     >
       <SupporterCrown size={28} className="shrink-0" />
       <span className="text-xs font-semibold leading-snug text-amber-900">
-        <span className="block text-sm font-black text-amber-700">Supporter</span>
+        <span className="block text-sm font-black text-amber-700">Calc Rush+</span>
         {expiresSoon ? (
           <span className="text-rose-700">
             Expire dans {daysLeft <= 1 ? '1 jour' : `${daysLeft} jours`} ·{' '}

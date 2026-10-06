@@ -11,6 +11,12 @@ import { ParentalGate } from '../components/subscription/ParentalGate';
 import type { SubscriptionPlanKey } from '../services/subscription';
 import { Mascot } from '../components/Mascot';
 
+const PERKS = [
+  { title: 'Parties privées', description: 'Invite ta classe ou tes amis avec un code.' },
+  { title: 'Quêtes et titres', description: 'Des titres que tout le monde voit en partie.' },
+  { title: 'Couronne', description: 'Affichée à côté de ton pseudo dans le menu.' },
+];
+
 const SubscriptionNotice: React.FC<{ message: string }> = ({ message }) => (
   <div className="min-h-screen flex items-center justify-center p-4">
     <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
@@ -48,16 +54,20 @@ export const SubscriptionPage: React.FC = () => {
 
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center gap-4">
-        <Mascot pose="clindoeil" title="Rushy" className="w-20 h-20 hidden sm:block" />
-        <div>
-          <h1 className="text-3xl font-black text-primary-dark">Soutenir Calc Rush</h1>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Calc Rush est un projet indé. Ton soutien aide directement à payer l'infrastructure qui
-            fait tourner le jeu.
-          </p>
-        </div>
+      <div className="flex flex-col items-center text-center gap-2">
+        <Mascot pose="clindoeil" title="Rushy" className="w-20 h-20" />
+        <h1 className="text-3xl font-black text-primary-dark">Calc Rush+</h1>
+        <p className="text-slate-600 font-semibold">Crée tes parties, débloque tes titres.</p>
       </div>
+
+      <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {PERKS.map(({ title, description }) => (
+          <li key={title} className="bg-white rounded-2xl border-2 border-slate-100 p-4 shadow-sm">
+            <p className="font-black text-slate-800">{title}</p>
+            <p className="text-sm text-slate-500 leading-snug">{description}</p>
+          </li>
+        ))}
+      </ul>
 
       <SubscriptionCard
         plans={plansQuery.data}
@@ -83,6 +93,10 @@ export const SubscriptionPage: React.FC = () => {
       )}
 
       <div className="text-center space-y-2 pb-8">
+        <p className="text-xs text-slate-500 leading-relaxed">
+          Le jeu reste gratuit et équitable pour tous. Calc Rush est fait par un dev indé : ton
+          abonnement finance les nouveautés.
+        </p>
         <p className="flex justify-center items-center gap-3 text-sm font-bold text-slate-400">
           <Link to="/terms-of-sale" className="hover:text-primary transition-colors">
             Conditions de vente

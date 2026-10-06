@@ -32,7 +32,7 @@ describe('SubscriptionMenuCard', () => {
   it('invites a non-subscriber to become a supporter', () => {
     mocks.status = { active: false, expires_at: null };
     renderCard();
-    expect(screen.getByText('Deviens Supporter').closest('a')).toHaveAttribute(
+    expect(screen.getByText('Passe à Calc Rush+').closest('a')).toHaveAttribute(
       'href',
       '/subscription'
     );
@@ -41,7 +41,7 @@ describe('SubscriptionMenuCard', () => {
   it('shows the full expiry date when the subscription has time left', () => {
     mocks.status = { active: true, expires_at: '2099-08-21T12:00:00' };
     renderCard();
-    expect(screen.getByText('Supporter')).toBeInTheDocument();
+    expect(screen.getByText('Calc Rush+')).toBeInTheDocument();
     expect(screen.getByText(/21 août 2099/)).toBeInTheDocument();
   });
 
