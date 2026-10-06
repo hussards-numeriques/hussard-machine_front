@@ -1,71 +1,68 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import {
+  LegalPage,
+  LegalSection,
+  LEGAL_LINK_CLASS,
+  LEGAL_TEXT_CLASS,
+} from '../components/LegalPage';
+import { LEGAL_IDENTITY } from '../lib/legalIdentity';
 
 export const LegalNoticePage: React.FC = () => {
+  const { t } = useTranslation();
   return (
-    <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-8 space-y-6">
-        <h1 className="text-3xl font-black text-primary-dark">Mentions légales</h1>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Éditeur du site</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Le site Calc Rush (www.calc-rush.fr) est édité par Timothée Demares, entrepreneur
-            individuel.
-          </p>
-          <ul className="text-slate-600 text-sm leading-relaxed list-none space-y-1">
-            <li>SIRET : 930 571 476 00017</li>
-            <li>Adresse : 40 cours Henri Brunet, 33300 Bordeaux, France</li>
-            <li>
-              Email :{' '}
-              <a
-                href="mailto:timothee.demares@gmail.com"
-                className="font-bold text-primary hover:underline"
-              >
-                timothee.demares@gmail.com
-              </a>
-            </li>
-          </ul>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Hébergement</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Le site est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723,
-            États-Unis.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Paiement</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Les paiements sont traités par Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower,
-            Grand Canal Dock, Dublin, Irlande. Les données traitées par Stripe pour son propre
-            compte relèvent de sa propre politique de confidentialité.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Propriété intellectuelle</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            L'ensemble des contenus présents sur Calc Rush (textes, graphismes, logo) est protégé
-            par le droit d'auteur. Toute reproduction sans autorisation est interdite.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Contact</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Pour toute question relative au site, vous pouvez nous contacter à l'adresse :{' '}
-            <a
-              href="mailto:timothee.demares@gmail.com"
-              className="font-bold text-primary hover:underline"
-            >
-              timothee.demares@gmail.com
-            </a>
-            .
-          </p>
-        </section>
-      </div>
-    </div>
+    <LegalPage title={t('legal.notice.title')}>
+      <LegalSection title={t('legal.notice.publisher.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          {t('legal.notice.publisher.body', {
+            site: LEGAL_IDENTITY.site,
+            name: LEGAL_IDENTITY.name,
+          })}
+        </p>
+        <ul className={`${LEGAL_TEXT_CLASS} list-none space-y-1`}>
+          <li>{t('legal.notice.publisher.siret', { siret: LEGAL_IDENTITY.siret })}</li>
+          <li>{t('legal.notice.publisher.address', { address: LEGAL_IDENTITY.address })}</li>
+          <li>
+            <Trans
+              i18nKey="legal.notice.publisher.email"
+              values={{ email: LEGAL_IDENTITY.email }}
+              components={{
+                mail: <a href={`mailto:${LEGAL_IDENTITY.email}`} className={LEGAL_LINK_CLASS} />,
+              }}
+            />
+          </li>
+        </ul>
+      </LegalSection>
+      <LegalSection title={t('legal.notice.hosting.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          {t('legal.notice.hosting.body', {
+            host: LEGAL_IDENTITY.host,
+            address: LEGAL_IDENTITY.hostAddress,
+          })}
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.notice.payment.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          {t('legal.notice.payment.body', {
+            processor: LEGAL_IDENTITY.paymentProcessor,
+            address: LEGAL_IDENTITY.paymentProcessorAddress,
+          })}
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.notice.ip.title')}>
+        <p className={LEGAL_TEXT_CLASS}>{t('legal.notice.ip.body')}</p>
+      </LegalSection>
+      <LegalSection title={t('legal.notice.contact.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans
+            i18nKey="legal.notice.contact.body"
+            values={{ email: LEGAL_IDENTITY.email }}
+            components={{
+              mail: <a href={`mailto:${LEGAL_IDENTITY.email}`} className={LEGAL_LINK_CLASS} />,
+            }}
+          />
+        </p>
+      </LegalSection>
+    </LegalPage>
   );
 };

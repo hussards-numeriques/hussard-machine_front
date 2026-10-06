@@ -525,4 +525,151 @@ export const en = {
     activate: 'Activate',
     error: 'Something went wrong, try again.',
   },
+  legal: {
+    translationNotice:
+      'Translation provided for convenience only; the French version is the only legally binding one.',
+    terms: {
+      title: 'Terms of Use',
+      purpose: {
+        title: 'Purpose',
+        body: 'Calc Rush is a multiplayer game for practicing mental math. The service can be used with or without an account: playing is free in all cases.',
+      },
+      age: {
+        title: 'Access and age',
+        body: 'The service is open to everyone. Creating an account as a user under 15 requires the prior consent of a parent or legal guardian (see our <privacy>privacy policy</privacy>).',
+      },
+      account: {
+        title: 'User account',
+        body: 'An account is identified by an email address and a username. You are responsible for keeping your login details confidential. You can ask for your account to be deleted at any time by contacting us at <mail>{{email}}</mail>.',
+      },
+      conduct: {
+        title: 'Expected behavior',
+        body: 'Your username and your content must not be insulting or offensive, or impersonate a third party. We reserve the right to suspend an account in case of abuse.',
+      },
+      ip: {
+        title: 'Intellectual property',
+        body: 'The game, its brand and its graphics are protected by copyright (see our <notice>legal notice</notice>). Your username and your scores remain yours, but may be displayed publicly in the game leaderboards.',
+      },
+      availability: {
+        title: 'Availability',
+        body: 'The service is provided as is, with no guarantee of continuous availability (maintenance, technical incidents).',
+      },
+      liability: {
+        title: 'Liability',
+        body: 'Calc Rush is an educational and entertaining tool, with no guarantee of educational results. We cannot be held liable for any misuse of the service.',
+      },
+      termination: {
+        title: 'Termination',
+        body: 'You can delete your account at any time. We may terminate an account in case of a serious breach of these terms.',
+      },
+      law: {
+        title: 'Governing law',
+        body: 'These terms are governed by French law.',
+      },
+    },
+    sale: {
+      title: 'Terms of Sale',
+      purpose: {
+        title: 'Purpose',
+        body: 'These terms govern the sale of the optional Calc Rush+ subscription (1, 3 or 12 months), paid in a single payment with no automatic renewal. For its duration, it unlocks: the creation of private games (choice of question level, inviting players with a code, adding bots), with no XP gain and no effect on the leaderboard; progress on quests and cosmetic titles; and a crown displayed in the player menu. It gives no advantage in ranked games: XP, level, grade and streak remain identical for all players, with or without a subscription. Joining a private game with a code remains free.',
+      },
+      subscriber: {
+        title: 'Subscriber',
+        body: 'The purchase is made by the holder of the payment method used. If the beneficiary account belongs to a minor, the purchase must be made by a parent or by the holder of parental authority over that minor.',
+      },
+      price: {
+        title: 'Price',
+        body: 'The prices shown on the <subscription>Subscription page</subscription> are in euros, taxes included, with no hidden fees.',
+      },
+      payment: {
+        title: 'Payment terms',
+        body: 'Payment is processed by Stripe, through a secure payment page hosted by Stripe (Stripe Checkout). Calc Rush never stores or sees your bank card details.',
+      },
+      noRenewal: {
+        title: 'No renewal',
+        body: 'The subscription stops automatically at the end of the chosen period. No further payment is taken.',
+      },
+      withdrawal: {
+        title: 'Right of withdrawal',
+        body: 'Under Article L221-18 of the French Consumer Code, you generally have a 14-day withdrawal period for any distance purchase. Under Article L221-28 of the same code, this period does not apply once the service has been fully performed before the end of the withdrawal period, with your prior and express consent, and with your acknowledgment that you lose this right once the service has been performed. As this service is performed immediately (instant unlocking of features), you expressly waive this period by ticking the confirmation box provided for this purpose before the purchase.',
+      },
+      refund: {
+        title: 'Refunds',
+        body: 'No refund is possible once the service has been performed, because of the waiver above, except in case of a technical malfunction attributable to the publisher that prevents you from accessing the service during the paid period: a pro rata refund may then be granted on request.',
+      },
+      claims: {
+        title: 'Complaints and mediation',
+        body: 'For any complaint, please first contact us at <mail>{{email}}</mail>. A consumer mediator will be appointed shortly to handle disputes that could not be resolved directly with us.',
+      },
+      law: {
+        title: 'Governing law',
+        body: 'These terms of sale are governed by French law.',
+      },
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      controller: {
+        title: 'Data controller',
+        body: '{{name}}, sole proprietor, {{address}}, is the controller of the data collected on Calc Rush.',
+      },
+      data: {
+        title: 'Data collected',
+        body: 'You can play without creating an account. If you create an account, we only collect your email address, your username and your game scores (XP, level, grade, game history). If you take out a subscription, we also keep its status (active or not) and its expiry date.',
+      },
+      purpose: {
+        title: 'Purpose of processing',
+        body: 'This data is used only to run your account: authentication, saving your progress and showing your game history.',
+      },
+      storage: {
+        title: 'Storage and security',
+        body: "When you log in, an authentication token is stored in your browser's local storage (localStorage) to keep your session active. This token is never shared with a third party and is deleted when you log out.",
+      },
+      cookies: {
+        title: 'Cookies and trackers',
+        body: 'Calc Rush does not use any advertising or analytics cookies or trackers. No consent of this kind is therefore required.',
+      },
+      payment: {
+        title: 'Payment (Stripe)',
+        body: 'When you buy a subscription, the data needed for the payment (your email, the amount and the currency) is sent to Stripe, our processor in charge of handling the payment. Calc Rush never stores or sees your bank card details. Stripe may process this data outside the European Union (United States), under standard contractual safeguards recognized by the European Commission.',
+      },
+      minors: {
+        title: 'Minors',
+        body: 'Creating an account as a user under 15 requires the consent of a parent or legal guardian. A parent can ask for the deletion of an account created by their child without this consent by contacting us at <mail>{{email}}</mail>.',
+      },
+      retention: {
+        title: 'Retention period',
+        body: 'Your account data is kept as long as your account is active. You can ask for it to be deleted at any time by contacting us. Transaction data (subscription status, purchase history) is kept separately, for as long as needed to meet our legal accounting obligations.',
+      },
+      rights: {
+        title: 'Your rights',
+        body: 'Under the GDPR, you have the right to access, rectify, erase and port your data. To exercise these rights, contact us at: <mail>{{email}}</mail>.',
+      },
+    },
+    notice: {
+      title: 'Legal Notice',
+      publisher: {
+        title: 'Site publisher',
+        body: 'The Calc Rush site ({{site}}) is published by {{name}}, sole proprietor.',
+        siret: 'SIRET: {{siret}}',
+        address: 'Address: {{address}}, France',
+        email: 'Email: <mail>{{email}}</mail>',
+      },
+      hosting: {
+        title: 'Hosting',
+        body: 'The site is hosted by {{host}}, {{address}}, United States.',
+      },
+      payment: {
+        title: 'Payment',
+        body: 'Payments are processed by {{processor}}, {{address}}, Ireland. Data processed by Stripe on its own behalf is covered by its own privacy policy.',
+      },
+      ip: {
+        title: 'Intellectual property',
+        body: 'All content on Calc Rush (texts, graphics, logo) is protected by copyright. Any reproduction without permission is prohibited.',
+      },
+      contact: {
+        title: 'Contact',
+        body: 'For any question about the site, you can contact us at: <mail>{{email}}</mail>.',
+      },
+    },
+  },
 } satisfies Translation;

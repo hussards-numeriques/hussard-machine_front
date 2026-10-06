@@ -1,106 +1,77 @@
 import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import {
+  LegalPage,
+  LegalSection,
+  LEGAL_LINK_CLASS,
+  LEGAL_TEXT_CLASS,
+} from '../components/LegalPage';
+import { LEGAL_IDENTITY } from '../lib/legalIdentity';
 
 export const PrivacyPolicyPage: React.FC = () => {
+  const { t } = useTranslation();
   return (
-    <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
-      <div className="bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-8 space-y-6">
-        <h1 className="text-3xl font-black text-primary-dark">Politique de confidentialité</h1>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Responsable du traitement</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Timothée Demares, entrepreneur individuel, 40 cours Henri Brunet, 33300 Bordeaux, est
-            responsable du traitement des données collectées sur Calc Rush.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Données collectées</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Vous pouvez jouer sans créer de compte. Si vous créez un compte, nous collectons
-            uniquement votre adresse email, votre pseudo, et vos scores de jeu (XP, niveau, grade,
-            historique de parties). Si vous souscrivez un abonnement, nous conservons également son
-            statut (actif ou non) et sa date d'expiration.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Finalité du traitement</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Ces données servent uniquement à faire fonctionner votre compte : authentification,
-            sauvegarde de votre progression et affichage de votre historique de parties.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Stockage et sécurité</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Lors de votre connexion, un jeton d'authentification est stocké dans le stockage local
-            (localStorage) de votre navigateur afin de maintenir votre session. Ce jeton n'est
-            jamais transmis à un tiers et est supprimé lors de la déconnexion.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Cookies et traceurs</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Calc Rush n'utilise aucun cookie ni traceur publicitaire ou analytique. Aucun
-            consentement de ce type n'est donc requis.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Paiement (Stripe)</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Lors d'un achat d'abonnement, les données nécessaires au paiement (votre email, le
-            montant et la devise) sont transmises à Stripe, notre sous-traitant chargé du traitement
-            du paiement. Calc Rush ne stocke ni ne voit jamais vos données de carte bancaire. Stripe
-            peut traiter ces données en dehors de l'Union européenne (États-Unis), dans le cadre de
-            garanties contractuelles types reconnues par la Commission européenne.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Mineurs</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            La création d'un compte par un utilisateur de moins de 15 ans nécessite le consentement
-            d'un parent ou d'un tuteur légal. Un parent peut demander la suppression d'un compte
-            créé par son enfant sans ce consentement en nous contactant à l'adresse{' '}
-            <a
-              href="mailto:timothee.demares@gmail.com"
-              className="font-bold text-primary hover:underline"
-            >
-              timothee.demares@gmail.com
-            </a>
-            .
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Durée de conservation</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Vos données de compte sont conservées tant que votre compte est actif. Vous pouvez
-            demander leur suppression à tout moment en nous contactant. Les données de transaction
-            (statut d'abonnement, historique d'achat) sont conservées séparément, le temps
-            nécessaire au respect de nos obligations comptables légales.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-black text-slate-700">Vos droits</h2>
-          <p className="text-slate-600 text-sm leading-relaxed">
-            Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement
-            et de portabilité de vos données. Pour exercer ces droits, contactez-nous à l'adresse :{' '}
-            <a
-              href="mailto:timothee.demares@gmail.com"
-              className="font-bold text-primary hover:underline"
-            >
-              timothee.demares@gmail.com
-            </a>
-            .
-          </p>
-        </section>
-      </div>
-    </div>
+    <LegalPage title={t('legal.privacy.title')}>
+      <LegalSection title={t('legal.privacy.controller.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans
+            i18nKey="legal.privacy.controller.body"
+            values={{ name: LEGAL_IDENTITY.name, address: LEGAL_IDENTITY.address }}
+          />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.data.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.data.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.purpose.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.purpose.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.storage.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.storage.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.cookies.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.cookies.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.payment.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.payment.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.minors.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans
+            i18nKey="legal.privacy.minors.body"
+            values={{ email: LEGAL_IDENTITY.email }}
+            components={{
+              mail: <a href={`mailto:${LEGAL_IDENTITY.email}`} className={LEGAL_LINK_CLASS} />,
+            }}
+          />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.retention.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans i18nKey="legal.privacy.retention.body" />
+        </p>
+      </LegalSection>
+      <LegalSection title={t('legal.privacy.rights.title')}>
+        <p className={LEGAL_TEXT_CLASS}>
+          <Trans
+            i18nKey="legal.privacy.rights.body"
+            values={{ email: LEGAL_IDENTITY.email }}
+            components={{
+              mail: <a href={`mailto:${LEGAL_IDENTITY.email}`} className={LEGAL_LINK_CLASS} />,
+            }}
+          />
+        </p>
+      </LegalSection>
+    </LegalPage>
   );
 };

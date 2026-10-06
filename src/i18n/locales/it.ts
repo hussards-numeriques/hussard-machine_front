@@ -529,4 +529,151 @@ export const it = {
     activate: 'Attiva',
     error: 'Si è verificato un errore, riprova.',
   },
+  legal: {
+    translationNotice:
+      'Traduzione fornita a titolo indicativo; solo la versione francese è giuridicamente vincolante.',
+    terms: {
+      title: 'Condizioni di utilizzo',
+      purpose: {
+        title: 'Oggetto',
+        body: 'Calc Rush è un gioco multigiocatore per allenarsi nel calcolo mentale. Il servizio è accessibile con o senza account: giocare è sempre gratuito.',
+      },
+      age: {
+        title: 'Accesso ed età',
+        body: 'Il servizio è aperto a tutti. La creazione di un account da parte di un utente di età inferiore ai 15 anni richiede il previo consenso di un genitore o di un tutore legale (si veda la nostra <privacy>informativa sulla privacy</privacy>).',
+      },
+      account: {
+        title: 'Account utente',
+        body: "Un account è identificato da un indirizzo email e da uno pseudonimo. Lei è responsabile della riservatezza delle proprie credenziali. Può richiedere la cancellazione del proprio account in qualsiasi momento contattandoci all'indirizzo <mail>{{email}}</mail>.",
+      },
+      conduct: {
+        title: 'Comportamento atteso',
+        body: "Il Suo pseudonimo e i Suoi contenuti non devono essere ingiuriosi, offensivi o usurpare l'identità di un terzo. Ci riserviamo il diritto di sospendere un account in caso di abuso.",
+      },
+      ip: {
+        title: 'Proprietà intellettuale',
+        body: "Il gioco, il suo marchio e la sua grafica sono protetti dal diritto d'autore (si vedano le nostre <notice>note legali</notice>). Il Suo pseudonimo e i Suoi punteggi restano Suoi, ma possono essere visualizzati pubblicamente nelle classifiche del gioco.",
+      },
+      availability: {
+        title: 'Disponibilità',
+        body: 'Il servizio è fornito allo stato in cui si trova, senza garanzia di disponibilità continua (manutenzione, incidenti tecnici).',
+      },
+      liability: {
+        title: 'Responsabilità',
+        body: 'Calc Rush è uno strumento educativo e ludico, senza garanzia di risultati didattici. Non potremo essere ritenuti responsabili di un uso improprio del servizio.',
+      },
+      termination: {
+        title: 'Risoluzione',
+        body: 'Può eliminare il proprio account in qualsiasi momento. Possiamo risolvere un account in caso di grave violazione delle presenti condizioni.',
+      },
+      law: {
+        title: 'Legge applicabile',
+        body: 'Le presenti condizioni sono soggette al diritto francese.',
+      },
+    },
+    sale: {
+      title: 'Condizioni generali di vendita',
+      purpose: {
+        title: 'Oggetto',
+        body: "Le presenti condizioni disciplinano la vendita dell'abbonamento opzionale Calc Rush+ (1, 3 o 12 mesi), con pagamento unico e senza rinnovo automatico. Per tutta la sua durata, sblocca: la creazione di partite private (scelta del livello delle domande, invito di giocatori tramite codice, aggiunta di robot), senza guadagno di XP né effetto sulla classifica; l'avanzamento delle missioni e dei titoli cosmetici; e una corona visualizzata nel menu del giocatore. Non offre alcun vantaggio nelle partite classificate: XP, livello, grado e serie restano identici per tutti i giocatori, con o senza abbonamento. Unirsi a una partita privata con un codice resta gratuito.",
+      },
+      subscriber: {
+        title: 'Sottoscrittore',
+        body: "L'acquisto è effettuato dal titolare del mezzo di pagamento utilizzato. Se l'account beneficiario appartiene a un minore, l'acquisto deve essere effettuato da un genitore o dal titolare della responsabilità genitoriale su tale minore.",
+      },
+      price: {
+        title: 'Prezzo',
+        body: 'I prezzi indicati nella <subscription>pagina Abbonamento</subscription> sono in euro, tasse incluse, senza costi nascosti.',
+      },
+      payment: {
+        title: 'Modalità di pagamento',
+        body: 'Il pagamento è gestito da Stripe, tramite una pagina di pagamento sicura ospitata da Stripe (Stripe Checkout). Calc Rush non memorizza né vede mai i dati della Sua carta bancaria.',
+      },
+      noRenewal: {
+        title: 'Assenza di rinnovo',
+        body: "L'abbonamento si interrompe automaticamente alla fine del periodo scelto. Non viene effettuato alcun addebito successivo.",
+      },
+      withdrawal: {
+        title: 'Diritto di recesso',
+        body: "Ai sensi dell'articolo L221-18 del Codice del consumo francese, Lei dispone in linea di principio di un termine di recesso di 14 giorni per qualsiasi acquisto a distanza. Ai sensi dell'articolo L221-28 dello stesso codice, tale termine non si applica quando il servizio è stato pienamente eseguito prima della fine del termine di recesso, con il Suo previo ed espresso consenso e con il Suo riconoscimento della perdita di tale diritto una volta eseguito il servizio. Trattandosi di un servizio a esecuzione immediata (sblocco istantaneo delle funzionalità), Lei rinuncia espressamente a tale termine spuntando la casella di conferma prevista a tale scopo prima dell'acquisto.",
+      },
+      refund: {
+        title: 'Rimborso',
+        body: "Nessun rimborso è possibile una volta eseguito il servizio, a causa della rinuncia di cui sopra, salvo malfunzionamento tecnico imputabile all'editore che Le impedisca di accedere al servizio durante il periodo pagato: in tal caso potrà essere concesso, su richiesta, un rimborso proporzionale.",
+      },
+      claims: {
+        title: 'Reclami e mediazione',
+        body: "Per qualsiasi reclamo, ci contatti innanzitutto all'indirizzo <mail>{{email}}</mail>. Sarà prossimamente designato un mediatore dei consumi per la gestione delle controversie che non abbiano trovato soluzione direttamente con noi.",
+      },
+      law: {
+        title: 'Legge applicabile',
+        body: 'Le presenti condizioni generali di vendita sono soggette al diritto francese.',
+      },
+    },
+    privacy: {
+      title: 'Informativa sulla privacy',
+      controller: {
+        title: 'Titolare del trattamento',
+        body: '{{name}}, imprenditore individuale, {{address}}, è il titolare del trattamento dei dati raccolti su Calc Rush.',
+      },
+      data: {
+        title: 'Dati raccolti',
+        body: 'Può giocare senza creare un account. Se crea un account, raccogliamo esclusivamente il Suo indirizzo email, il Suo pseudonimo e i Suoi punteggi di gioco (XP, livello, grado, cronologia delle partite). Se sottoscrive un abbonamento, conserviamo inoltre il suo stato (attivo o meno) e la sua data di scadenza.',
+      },
+      purpose: {
+        title: 'Finalità del trattamento',
+        body: 'Questi dati servono esclusivamente al funzionamento del Suo account: autenticazione, salvataggio dei Suoi progressi e visualizzazione della cronologia delle Sue partite.',
+      },
+      storage: {
+        title: 'Archiviazione e sicurezza',
+        body: "Al momento dell'accesso, un token di autenticazione viene memorizzato nell'archiviazione locale (localStorage) del Suo browser per mantenere la Sua sessione. Questo token non viene mai trasmesso a terzi ed è eliminato alla disconnessione.",
+      },
+      cookies: {
+        title: 'Cookie e tracker',
+        body: 'Calc Rush non utilizza alcun cookie né tracker pubblicitario o analitico. Non è pertanto richiesto alcun consenso di questo tipo.',
+      },
+      payment: {
+        title: 'Pagamento (Stripe)',
+        body: "In caso di acquisto di un abbonamento, i dati necessari al pagamento (la Sua email, l'importo e la valuta) sono trasmessi a Stripe, nostro responsabile del trattamento incaricato della gestione del pagamento. Calc Rush non memorizza né vede mai i dati della Sua carta bancaria. Stripe può trattare tali dati al di fuori dell'Unione europea (Stati Uniti), nell'ambito di garanzie contrattuali standard riconosciute dalla Commissione europea.",
+      },
+      minors: {
+        title: 'Minori',
+        body: "La creazione di un account da parte di un utente di età inferiore ai 15 anni richiede il consenso di un genitore o di un tutore legale. Un genitore può richiedere la cancellazione di un account creato dal proprio figlio senza tale consenso contattandoci all'indirizzo <mail>{{email}}</mail>.",
+      },
+      retention: {
+        title: 'Periodo di conservazione',
+        body: "I dati del Suo account sono conservati finché il Suo account è attivo. Può richiederne la cancellazione in qualsiasi momento contattandoci. I dati delle transazioni (stato dell'abbonamento, cronologia degli acquisti) sono conservati separatamente, per il tempo necessario al rispetto dei nostri obblighi contabili di legge.",
+      },
+      rights: {
+        title: 'I Suoi diritti',
+        body: "Ai sensi del GDPR, Lei dispone di un diritto di accesso, rettifica, cancellazione e portabilità dei Suoi dati. Per esercitare tali diritti, ci contatti all'indirizzo: <mail>{{email}}</mail>.",
+      },
+    },
+    notice: {
+      title: 'Note legali',
+      publisher: {
+        title: 'Editore del sito',
+        body: 'Il sito Calc Rush ({{site}}) è edito da {{name}}, imprenditore individuale.',
+        siret: 'SIRET: {{siret}}',
+        address: 'Indirizzo: {{address}}, Francia',
+        email: 'Email: <mail>{{email}}</mail>',
+      },
+      hosting: {
+        title: 'Hosting',
+        body: 'Il sito è ospitato da {{host}}, {{address}}, Stati Uniti.',
+      },
+      payment: {
+        title: 'Pagamento',
+        body: 'I pagamenti sono gestiti da {{processor}}, {{address}}, Irlanda. I dati trattati da Stripe per proprio conto sono soggetti alla sua informativa sulla privacy.',
+      },
+      ip: {
+        title: 'Proprietà intellettuale',
+        body: "Tutti i contenuti presenti su Calc Rush (testi, grafica, logo) sono protetti dal diritto d'autore. Qualsiasi riproduzione senza autorizzazione è vietata.",
+      },
+      contact: {
+        title: 'Contatto',
+        body: "Per qualsiasi domanda relativa al sito, può contattarci all'indirizzo: <mail>{{email}}</mail>.",
+      },
+    },
+  },
 } satisfies Translation;
