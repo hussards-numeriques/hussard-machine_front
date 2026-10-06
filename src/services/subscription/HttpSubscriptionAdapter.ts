@@ -6,6 +6,7 @@ import type {
   SubscriptionRepository,
   SubscriptionStatus,
 } from './port';
+import type { Locale } from '../../i18n/locale';
 import { getApiUrl } from '../apiConfig';
 import { apiErrorFrom } from '../http';
 
@@ -43,12 +44,13 @@ export class HttpSubscriptionAdapter implements SubscriptionRepository {
 
   public async createCheckoutSession(
     authorizedFetch: AuthorizedFetch,
-    plan: SubscriptionPlanKey
+    plan: SubscriptionPlanKey,
+    locale: Locale
   ): Promise<string> {
     const response = await authorizedFetch(`${getApiUrl()}/subscription/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan }),
+      body: JSON.stringify({ plan, locale }),
     });
     if (!response.ok) {
       throw await apiErrorFrom(response, 'Failed to create checkout session');

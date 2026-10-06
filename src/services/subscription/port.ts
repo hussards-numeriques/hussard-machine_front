@@ -1,3 +1,5 @@
+import type { Locale } from '../../i18n/locale';
+
 export type SubscriptionPlanKey = 'ONE_MONTH' | 'THREE_MONTHS' | 'ONE_YEAR';
 
 export interface SubscriptionPlan {
@@ -18,7 +20,8 @@ export interface SubscriptionRepository {
   fetchStatus(authorizedFetch: AuthorizedFetch): Promise<SubscriptionStatus>;
   createCheckoutSession(
     authorizedFetch: AuthorizedFetch,
-    plan: SubscriptionPlanKey
+    plan: SubscriptionPlanKey,
+    locale: Locale
   ): Promise<string>;
   redeem(authorizedFetch: AuthorizedFetch, code: string): Promise<SubscriptionStatus>;
 }

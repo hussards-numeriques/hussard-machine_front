@@ -57,7 +57,7 @@ describe('HttpSubscriptionAdapter', () => {
     await expect(adapter.fetchStatus(authorizedFetch)).rejects.toThrow(ApiError);
   });
 
-  it('POSTs the plan key and returns the checkout url', async () => {
+  it('POSTs the plan key and locale, and returns the checkout url', async () => {
     const authorizedFetch = vi.fn<AuthorizedFetch>(
       async () =>
         new Response(
@@ -69,13 +69,13 @@ describe('HttpSubscriptionAdapter', () => {
     );
     const adapter = new HttpSubscriptionAdapter();
 
-    const result = await adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH');
+    const result = await adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH', 'fr');
 
     expect(authorizedFetch).toHaveBeenCalledTimes(1);
     const [url, init] = authorizedFetch.mock.calls[0];
     expect((url as string).endsWith('/subscription/checkout')).toBe(true);
     expect(init?.method).toBe('POST');
-    expect(init?.body).toBe(JSON.stringify({ plan: 'ONE_MONTH' }));
+    expect(JSON.parse(init?.body as string)).toEqual({ plan: 'ONE_MONTH', locale: 'fr' });
     expect(result).toBe('https://checkout.stripe.com/c/pay/cs_test_1');
   });
 
@@ -83,9 +83,24 @@ describe('HttpSubscriptionAdapter', () => {
     const authorizedFetch = vi.fn(async () => new Response('nope', { status: 401 }));
     const adapter = new HttpSubscriptionAdapter();
 
-    await expect(adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH')).rejects.toThrow(
+    await expect(adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH', 'en')).rejects.toThrow(
       ApiError
     );
+  });
+
+  it('sends the locale with the checkout request', async () => {
+    const authorizedFetch = vi.fn<AuthorizedFetch>(
+      async () =>
+        new Response(JSON.stringify({ checkout_url: 'https://checkout.stripe.com/x' }), {
+          status: 200,
+        })
+    );
+    const adapter = new HttpSubscriptionAdapter();
+
+    await adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH', 'pt-BR');
+
+    const [, init] = authorizedFetch.mock.calls[0];
+    expect(JSON.parse(init!.body as string)).toEqual({ plan: 'ONE_MONTH', locale: 'pt-BR' });
   });
 
   it('rejects a checkout_url that is not a valid URL', async () => {
@@ -97,7 +112,9 @@ describe('HttpSubscriptionAdapter', () => {
     );
     const adapter = new HttpSubscriptionAdapter();
 
-    await expect(adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH')).rejects.toThrow();
+    await expect(
+      adapter.createCheckoutSession(authorizedFetch, 'ONE_MONTH', 'en')
+    ).rejects.toThrow();
   });
 
   describe('redeem', () => {

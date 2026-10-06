@@ -101,7 +101,7 @@ describe('useStartCheckout', () => {
     Object.defineProperty(window, 'location', { configurable: true, value: originalLocation });
   });
 
-  it('calls the repository with the plan key and redirects to the returned url', async () => {
+  it('calls the repository with the plan key and locale and redirects to the returned url', async () => {
     mocks.createCheckoutSession.mockResolvedValue('https://checkout.stripe.com/c/pay/cs_test_1');
 
     const { result } = renderHook(() => useStartCheckout(), { wrapper });
@@ -111,7 +111,11 @@ describe('useStartCheckout', () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(mocks.createCheckoutSession).toHaveBeenCalledWith(expect.any(Function), 'ONE_MONTH');
+    expect(mocks.createCheckoutSession).toHaveBeenCalledWith(
+      expect.any(Function),
+      'ONE_MONTH',
+      expect.any(String)
+    );
     expect(window.location.assign).toHaveBeenCalledWith(
       'https://checkout.stripe.com/c/pay/cs_test_1'
     );
