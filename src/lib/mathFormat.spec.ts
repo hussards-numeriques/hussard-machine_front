@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import i18n from '../i18n';
 import type { ExpressionNode } from '../types';
-import { formatAffine, formatBinary, formatExpression, formatInteger } from './mathFormat';
+import {
+  formatAffine,
+  formatBinary,
+  formatExpression,
+  formatInteger,
+  formatPercent,
+} from './mathFormat';
 
 const plain = (text: string) => text.replace(/[\u00A0\u202F]/g, ' ');
 const n = (value: number): ExpressionNode => ({ kind: 'number', value });
@@ -79,5 +86,16 @@ describe('formatAffine', () => {
     [{ coefficient: 4, constant: 0 }, '4x'],
   ])('formats %o as %s', (expression, expected) => {
     expect(plain(formatAffine(expression))).toBe(expected);
+  });
+});
+
+describe('formatPercent', () => {
+  it('uses the French narrow no-break space', () => {
+    expect(formatPercent(50)).toBe('50\u202F%');
+  });
+
+  it('follows the active language', async () => {
+    await i18n.changeLanguage('en');
+    expect(formatPercent(50)).toBe('50%');
   });
 });

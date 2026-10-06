@@ -121,6 +121,7 @@ export const en = {
     },
   },
   titles: {
+    tooltip: '{{rarity}} title',
     'win-streak-bronze': 'Little Conqueror',
     'win-streak-silver': 'Top Player',
     'win-streak-gold': 'Arena Legend',

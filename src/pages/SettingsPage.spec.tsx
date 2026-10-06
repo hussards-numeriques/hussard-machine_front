@@ -38,6 +38,14 @@ describe('SettingsPage', () => {
     expect(screen.getByText(/Connecte-toi/i)).toBeInTheDocument();
   });
 
+  it('lets logged-out players change the language', () => {
+    mocks.isAuthenticated = false;
+    renderPage();
+    fireEvent.click(screen.getByRole('button', { name: /English/ }));
+    expect(screen.getByRole('button', { name: /English/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.queryByRole('heading', { name: 'Input mode' })).not.toBeInTheDocument();
+  });
+
   it('persists the selected mode', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: /^Pavé numérique/i }));

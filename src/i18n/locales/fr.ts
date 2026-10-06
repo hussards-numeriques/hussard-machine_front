@@ -120,6 +120,7 @@ export const fr = {
     },
   },
   titles: {
+    tooltip: 'Titre {{rarity}}',
     'win-streak-bronze': 'Petit Conquérant',
     'win-streak-silver': 'Top Player',
     'win-streak-gold': "Légende de l'Arène",

@@ -9,7 +9,7 @@ import {
   useSubscriptionPlans,
   useSubscriptionStatus,
 } from './useSubscription';
-import { LOCALE_STORAGE_KEY } from '../i18n';
+import i18n from '../i18n';
 import { ApiError } from '../services/http';
 
 const mocks = vi.hoisted(() => ({
@@ -103,7 +103,7 @@ describe('useStartCheckout', () => {
   });
 
   it('calls the repository with the plan key and locale and redirects to the returned url', async () => {
-    localStorage.setItem(LOCALE_STORAGE_KEY, 'de');
+    await i18n.changeLanguage('de');
     mocks.createCheckoutSession.mockResolvedValue('https://checkout.stripe.com/c/pay/cs_test_1');
 
     const { result } = renderHook(() => useStartCheckout(), { wrapper });

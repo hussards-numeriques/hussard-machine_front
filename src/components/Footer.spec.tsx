@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import i18n, { LOCALE_STORAGE_KEY } from '../i18n';
 import { Footer } from './Footer';
 
 describe('Footer', () => {
@@ -38,5 +39,27 @@ describe('Footer', () => {
   it('links to the terms of use page', () => {
     render(<Footer />, { wrapper: MemoryRouter });
     expect(screen.getByRole('link', { name: 'CGU' })).toHaveAttribute('href', '/terms');
+  });
+
+  describe('language picker', () => {
+    beforeEach(() => localStorage.clear());
+
+    it('switches the language', () => {
+      render(<Footer />, { wrapper: MemoryRouter });
+      fireEvent.change(screen.getByRole('combobox', { name: 'Langue' }), {
+        target: { value: 'en' },
+      });
+      expect(i18n.language).toBe('en');
+      expect(screen.getByRole('link', { name: 'Terms of Sale' })).toBeInTheDocument();
+    });
+
+    it('reflects the stored preference', () => {
+      localStorage.setItem(LOCALE_STORAGE_KEY, 'de');
+      act(() => {
+        void i18n.changeLanguage('de');
+      });
+      render(<Footer />, { wrapper: MemoryRouter });
+      expect(screen.getByRole('combobox')).toHaveValue('de');
+    });
   });
 });

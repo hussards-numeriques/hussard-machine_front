@@ -5,11 +5,16 @@ import type { LocalePreference } from '../i18n/locale';
 const listeners = new Set<() => void>();
 
 const subscribe = (listener: () => void): (() => void) => {
+  const onStorage = (event: StorageEvent): void => {
+    if (event.key !== LOCALE_STORAGE_KEY) return;
+    applyLocale(readLocalePreference());
+    listener();
+  };
   listeners.add(listener);
-  window.addEventListener('storage', listener);
+  window.addEventListener('storage', onStorage);
   return () => {
     listeners.delete(listener);
-    window.removeEventListener('storage', listener);
+    window.removeEventListener('storage', onStorage);
   };
 };
 

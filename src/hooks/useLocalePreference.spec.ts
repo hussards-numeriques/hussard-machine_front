@@ -34,6 +34,16 @@ describe('useLocalePreference', () => {
     expect(i18n.language).toBe('en');
   });
 
+  it('applies the preference changed in another tab', () => {
+    const { result } = renderHook(() => useLocalePreference());
+    act(() => {
+      localStorage.setItem(LOCALE_STORAGE_KEY, 'it');
+      window.dispatchEvent(new StorageEvent('storage', { key: LOCALE_STORAGE_KEY }));
+    });
+    expect(result.current[0]).toBe('it');
+    expect(i18n.language).toBe('it');
+  });
+
   it('falls back to auto when storage throws on read', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new Error('blocked');

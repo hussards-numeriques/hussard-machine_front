@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { Player } from '../types';
 import { Mascot } from './Mascot';
 import { PlayerAvatar } from './PlayerAvatar';
@@ -10,13 +11,18 @@ interface LaunchCountdownOverlayProps {
   players: Player[];
 }
 
+const countdownLabel = (seconds: number | null, t: TFunction): string => {
+  if (seconds === null) return t('launch.getReady');
+  if (seconds === 0) return t('launch.go');
+  return String(seconds);
+};
+
 export const LaunchCountdownOverlay: React.FC<LaunchCountdownOverlayProps> = ({
   seconds,
   players,
 }) => {
   const { t } = useTranslation();
-  const label =
-    seconds === null ? t('launch.getReady') : seconds === 0 ? t('launch.go') : String(seconds);
+  const label = countdownLabel(seconds, t);
   const isNumber = seconds !== null && seconds > 0;
 
   return (

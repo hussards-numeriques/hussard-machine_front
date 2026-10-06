@@ -17,7 +17,7 @@ export const TitleLabel: React.FC<TitleLabelProps> = ({ title, locked = false, c
   const { t } = useTranslation();
   return (
     <span
-      title={`Titre ${resolveRarityLabel(title.rarity, t)}`}
+      title={t('titles.tooltip', { rarity: resolveRarityLabel(title.rarity, t) })}
       className={cn(
         'inline-block max-w-full truncate align-top text-xs font-extrabold italic',
         locked ? 'text-slate-400' : resolveRarityTextStyle(title.rarity),

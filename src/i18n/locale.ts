@@ -13,7 +13,7 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   de: 'Deutsch',
 };
 
-const isLocale = (value: unknown): value is Locale =>
+export const isLocale = (value: unknown): value is Locale =>
   typeof value === 'string' && (LOCALES as readonly string[]).includes(value);
 
 export const isLocalePreference = (value: unknown): value is LocalePreference =>

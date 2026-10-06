@@ -12,14 +12,12 @@ const LANGUAGE_OPTIONS: readonly LocalePreference[] = ['auto', ...LOCALES];
 const SettingsNotice: React.FC<{ message: string }> = ({ message }) => {
   const { t } = useTranslation();
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
-        <h1 className="text-3xl font-black text-primary-dark">{t('settings.title')}</h1>
-        <p className="text-slate-600">{message}</p>
-        <Link to="/" className="inline-block text-primary font-bold hover:underline">
-          {t('common.backHome')}
-        </Link>
-      </div>
+    <div className="bg-white rounded-3xl shadow-xl border-2 border-slate-100 p-8 text-center space-y-4">
+      <h1 className="text-3xl font-black text-primary-dark">{t('settings.title')}</h1>
+      <p className="text-slate-600">{message}</p>
+      <Link to="/" className="inline-block text-primary font-bold hover:underline">
+        {t('common.backHome')}
+      </Link>
     </div>
   );
 };
@@ -113,13 +111,13 @@ export const SettingsPage: React.FC = () => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <SettingsNotice message={t('settings.loginRequired')} />;
-  }
-
   return (
     <div className="min-h-screen p-4 pt-20 max-w-2xl mx-auto space-y-6">
-      <InputModeCard />
+      {isAuthenticated ? (
+        <InputModeCard />
+      ) : (
+        <SettingsNotice message={t('settings.loginRequired')} />
+      )}
       <LanguageCard />
     </div>
   );

@@ -122,6 +122,7 @@ export const ptBR = {
     },
   },
   titles: {
+    tooltip: 'Título {{rarity}}',
     'win-streak-bronze': 'Pequeno Conquistador',
     'win-streak-silver': 'Jogador Top',
     'win-streak-gold': 'Lenda da Arena',

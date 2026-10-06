@@ -122,6 +122,7 @@ export const de = {
     },
   },
   titles: {
+    tooltip: 'Titel: {{rarity}}',
     'win-streak-bronze': 'Kleiner Eroberer',
     'win-streak-silver': 'Top-Spieler',
     'win-streak-gold': 'Arena-Legende',

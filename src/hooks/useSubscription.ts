@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
 import { subscriptionRepository } from '../services/subscription';
 import type { SubscriptionPlanKey } from '../services/subscription';
-import { readLocalePreference } from '../i18n';
-import { resolveLocale } from '../i18n/locale';
+import i18n, { readLocalePreference } from '../i18n';
+import { isLocale, resolveLocale } from '../i18n/locale';
 
 export const SUBSCRIPTION_PLANS_QUERY_KEY = ['subscription-plans'];
 export const SUBSCRIPTION_STATUS_QUERY_KEY = ['subscription-status'];
@@ -36,7 +36,9 @@ export const useStartCheckout = () => {
       subscriptionRepository.createCheckoutSession(
         (input, init) => client.authorizedFetch(input, init),
         plan,
-        resolveLocale(readLocalePreference(), navigator.languages)
+        isLocale(i18n.language)
+          ? i18n.language
+          : resolveLocale(readLocalePreference(), navigator.languages)
       ),
     onMutate: (plan) => {
       posthog.capture('subscription_started', { plan });
