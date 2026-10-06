@@ -76,6 +76,9 @@ export const SubscriptionPage: React.FC = () => {
             </li>
           ))}
         </ul>
+        <p className="text-center text-sm font-semibold text-white/80">
+          Le jeu reste gratuit et équitable pour tous.
+        </p>
       </section>
 
       <SubscriptionCard
@@ -102,7 +105,6 @@ export const SubscriptionPage: React.FC = () => {
       )}
 
       <div className="text-center space-y-2 pb-8">
-        <p className="text-xs text-slate-500">Le jeu reste gratuit et équitable pour tous.</p>
         <p className="flex justify-center items-center gap-3 text-sm font-bold text-slate-400">
           <Link to="/terms-of-sale" className="hover:text-primary transition-colors">
             Conditions de vente

@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- `/subscription`: « Le jeu reste gratuit et équitable pour tous » moves from the page footer to the bottom of the Calc Rush+ gradient banner, centered, so it is actually seen.
+
 ## [0.32.1] - 2026-10-06
 
 ### Changed

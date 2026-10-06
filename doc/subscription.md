@@ -54,8 +54,8 @@ dédoublonne déjà sur la clé `['subscription-status']`.
   chaque formule affichés simultanément (`lib/subscriptionPricing.ts`), et un rappel
   explicite qu'il s'agit d'un paiement unique sans renouvellement automatique.
   CTA : « Passer à Calc Rush+ · <durée> » (abonné : « Prolonger · <durée> »).
-  En bas de page : « le jeu reste gratuit et équitable » (pas de mention « projet
-  indé » : la page doit faire produit, pas appel aux dons), puis lien vers `/terms-of-sale`.
+  En bas du bandeau, centré : « le jeu reste gratuit et équitable ». Pas de mention « projet
+  indé » : la page doit faire produit, pas appel aux dons. En bas de page : lien vers `/terms-of-sale`.
   La carte d'achat (`SubscriptionCard`) n'active le bouton d'achat qu'une
   fois une case de consentement cochée (acceptation des CGV + renonciation
   au délai de rétractation de 14 jours).
