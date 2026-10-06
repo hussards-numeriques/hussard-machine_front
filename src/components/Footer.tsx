@@ -8,7 +8,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="py-6 text-center text-xs text-slate-400">
-      <div className="flex justify-center items-center gap-3">
+      <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
         <a
           href="https://www.alextraveylan.fr/fr/contact"
           target="_blank"

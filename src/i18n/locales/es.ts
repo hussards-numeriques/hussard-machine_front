@@ -226,14 +226,14 @@ export const es = {
   levelChange: {
     promote: {
       title: '¿Pasar a {{level}}?',
-      message: 'Las cuentas se harán más difíciles.',
+      message: 'Los cálculos se harán más difíciles.',
       titles:
         'En cuanto a los títulos, pasas a la progresión de {{target}}: nuevas misiones y nuevos títulos por conseguir. Los de {{current}} se pueden consultar en Misiones y títulos, pero ya no estarán activos.',
     },
     demote: {
       title: '¿Volver a {{level}}?',
       message:
-        'Perderás los XP de tu nivel actual: empiezas con los XP justos para volver a subir enseguida si quieres. Las cuentas serán más fáciles, pero con menos reto.',
+        'Perderás los XP de tu nivel actual: empiezas con los XP justos para volver a subir enseguida si quieres. Los cálculos serán más fáciles, pero con menos reto.',
       titles:
         'En cuanto a los títulos, recuperas la progresión de {{target}}. Los de {{current}} se pueden consultar en Misiones y títulos, pero ya no estarán activos.',
     },

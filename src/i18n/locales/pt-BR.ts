@@ -226,14 +226,14 @@ export const ptBR = {
   levelChange: {
     promote: {
       title: 'Subir para {{level}}?',
-      message: 'As contas vão ficar mais difíceis.',
+      message: 'Os cálculos vão ficar mais difíceis.',
       titles:
         'Quanto aos títulos, você passa para a progressão de {{target}}: novas missões e novos títulos para conquistar. Os de {{current}} continuam disponíveis em Missões e títulos, mas não ficarão mais ativos.',
     },
     demote: {
       title: 'Voltar para {{level}}?',
       message:
-        'Você vai perder o XP do seu nível atual: recomeça com XP suficiente para subir de novo na hora, se quiser. As contas serão mais fáceis, mas com menos desafio.',
+        'Você vai perder o XP do seu nível atual: recomeça com XP suficiente para subir de novo na hora, se quiser. Os cálculos serão mais fáceis, mas com menos desafio.',
       titles:
         'Quanto aos títulos, você volta para a progressão de {{target}}. Os de {{current}} continuam disponíveis em Missões e títulos, mas não ficarão mais ativos.',
     },

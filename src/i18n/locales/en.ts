@@ -248,7 +248,7 @@ export const en = {
   home: {
     namePlaceholder: 'SuperMath...',
     loggedInAs: 'Logged in as <name>{{username}}</name>',
-    yourName: 'Your Username',
+    yourName: 'Your username',
     rankedGame: 'Ranked game',
     rankedDetails: 'Face players at your level. Your points count toward your progress.',
     friendsOrClass: 'With friends or in class',
@@ -384,7 +384,7 @@ export const en = {
     ranked: 'Ranked',
     historySummary: '{{correct}}/{{total}} correct answers · {{score}} pts · {{duration}}',
     columns: {
-      rank: 'Rank',
+      rank: 'Place',
       player: 'Player',
       answers: 'Answers',
       points: 'Points',
@@ -401,7 +401,7 @@ export const en = {
     title: 'Progress & rewards',
   },
   grade: {
-    progression: 'Progress',
+    progression: 'Progression',
     maxGrade: '✨ Max rank — promotion available!',
     xpToNext: '{{xp}} XP to {{grade}}',
     guide: {

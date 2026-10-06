@@ -1,10 +1,11 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import i18n, { LOCALE_STORAGE_KEY, readLocalePreference } from '../i18n';
 import { useLocalePreference } from './useLocalePreference';
 
 describe('useLocalePreference', () => {
   beforeEach(() => localStorage.clear());
+  afterEach(() => vi.restoreAllMocks());
 
   it('defaults to auto', () => {
     const { result } = renderHook(() => useLocalePreference());
@@ -38,7 +39,6 @@ describe('useLocalePreference', () => {
       throw new Error('blocked');
     });
     expect(readLocalePreference()).toBe('auto');
-    vi.restoreAllMocks();
   });
 
   it('still switches language when storage throws on write', () => {
@@ -48,6 +48,5 @@ describe('useLocalePreference', () => {
     const { result } = renderHook(() => useLocalePreference());
     act(() => result.current[1]('es'));
     expect(i18n.language).toBe('es');
-    vi.restoreAllMocks();
   });
 });
