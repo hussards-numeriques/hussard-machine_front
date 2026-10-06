@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- `/subscription`: the title, tagline and three perks now sit in a large indigo → violet gradient banner (Calc Rush+ signature color, same as the player menu card), each perk with a bold title and one line. The « dev indé » footer note is removed; only « Le jeu reste gratuit et équitable pour tous » remains.
+- Home: the « Créer une partie privée » ⓘ ends with « Inclus dans Calc Rush+ », the brand name in gradient text. « ton prof » becomes « ton professeur ».
+
 ## [0.32.0] - 2026-10-06
 
 ### Changed

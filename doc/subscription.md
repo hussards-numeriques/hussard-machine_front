@@ -44,16 +44,18 @@ dédoublonne déjà sur la clé `['subscription-status']`.
 ## Pages
 
 - `/subscription` (`SubscriptionPage.tsx`) : titre « Calc Rush+ » + mascotte Rushy
-  et une accroche orientée bénéfice joueur (jamais « aidez le dev »), trois cartes
-  d'avantages lisibles sans clic (`PERKS` : parties privées, quêtes et titres,
-  couronne — n'y lister que des avantages réellement livrés), puis une carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
+  et une accroche orientée bénéfice joueur (jamais « aidez le dev »), le tout dans
+  un bandeau dégradé `from-primary to-violet-500` (couleur signature de Calc Rush+,
+  comme la carte du menu joueur) qui liste les avantages en blanc, lisibles sans clic
+  (`PERKS` : parties privées, quêtes et titres, couronne — n'y lister que des
+  avantages réellement livrés), puis une carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
   sélecteur des 3 formules (par défaut sur 3 mois, simple accent visuel — jamais
   d'étiquette "populaire"/"recommandé"), le prix/mois et le % d'économie de
   chaque formule affichés simultanément (`lib/subscriptionPricing.ts`), et un rappel
   explicite qu'il s'agit d'un paiement unique sans renouvellement automatique.
   CTA : « Passer à Calc Rush+ · <durée> » (abonné : « Prolonger · <durée> »).
-  En bas de page : « le jeu reste gratuit et équitable » + mention dev indé
-  (« ton abonnement finance les nouveautés »), puis lien vers `/terms-of-sale`.
+  En bas de page : « le jeu reste gratuit et équitable » (pas de mention « projet
+  indé » : la page doit faire produit, pas appel aux dons), puis lien vers `/terms-of-sale`.
   La carte d'achat (`SubscriptionCard`) n'active le bouton d'achat qu'une
   fois une case de consentement cochée (acceptation des CGV + renonciation
   au délai de rétractation de 14 jours).

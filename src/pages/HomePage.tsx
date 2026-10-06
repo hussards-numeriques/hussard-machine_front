@@ -14,7 +14,7 @@ const DEFAULT_MAX_PLAYERS = 6;
 
 interface MenuChoiceProps extends React.ComponentProps<typeof Button> {
   label: string;
-  details: string;
+  details: React.ReactNode;
 }
 
 const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => {
@@ -35,7 +35,7 @@ const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => 
           i
         </button>
       </div>
-      {showDetails && <p className="px-2 text-sm font-semibold text-slate-500">{details}</p>}
+      {showDetails && <div className="px-2 text-sm font-semibold text-slate-500">{details}</div>}
     </div>
   );
 };
@@ -145,13 +145,26 @@ export const HomePage: React.FC = () => {
             <MenuChoice
               variant="secondary"
               label="Rejoindre avec un code"
-              details="Entre le code qu'un ami ou ton prof t'a donné pour rejoindre sa partie."
+              details="Entre le code qu'un ami ou ton professeur t'a donné pour rejoindre sa partie."
               onClick={() => setMode('JOIN')}
             />
             <MenuChoice
               variant="secondary"
               label="Créer une partie privée"
-              details="Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots. Ne compte pas pour le classement. Réservé à Calc Rush+."
+              details={
+                <>
+                  <p>
+                    Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots.
+                    Ne compte pas pour le classement.
+                  </p>
+                  <p className="pt-1">
+                    Inclus dans{' '}
+                    <span className="bg-gradient-to-r from-primary to-violet-500 bg-clip-text font-black text-transparent">
+                      Calc Rush+
+                    </span>
+                  </p>
+                </>
+              }
               disabled={isSubscriptionStatusLoading}
               onClick={() =>
                 isCreateLockedBehindSubscription ? navigate('/subscription') : setMode('CREATE')

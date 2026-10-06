@@ -165,7 +165,8 @@ authenticated or not.
 UI vocabulary: "Partie classée" (quick game, matchmaking by level, XP), "Partie privée" (lobby
 created by a host, no XP), "Code d'invitation" (the lobby id). The word "salon" is not shown to
 players. Each `MENU` choice is a `MenuChoice`: a short label plus an ⓘ toggle revealing one sentence
-of details.
+of details (a `ReactNode`: the private-game one ends with « Inclus dans Calc Rush+ », the brand name
+in indigo → violet gradient text).
 
 `CREATE` mode shows two inputs, then calls `client.createLobby()`:
 
