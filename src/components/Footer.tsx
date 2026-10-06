@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Footer: React.FC = () => {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
 
   return (
@@ -13,22 +15,22 @@ export const Footer: React.FC = () => {
           rel="noopener noreferrer"
           className="hover:text-primary transition-colors"
         >
-          Contact
+          {t('footer.contact')}
         </a>
         <Link to="/terms-of-sale" className="hover:text-primary transition-colors">
-          CGV
+          {t('footer.termsOfSale')}
         </Link>
         <Link to="/terms" className="hover:text-primary transition-colors">
-          CGU
+          {t('footer.terms')}
         </Link>
         <Link to="/legal-notice" className="hover:text-primary transition-colors">
-          Mentions légales
+          {t('footer.legalNotice')}
         </Link>
         <Link to="/privacy-policy" className="hover:text-primary transition-colors">
-          Confidentialité
+          {t('footer.privacy')}
         </Link>
       </div>
-      <div className="mt-2">© {year} Calc Rush. Tous droits réservés.</div>
+      <div className="mt-2">{t('footer.rights', { year })}</div>
     </footer>
   );
 };

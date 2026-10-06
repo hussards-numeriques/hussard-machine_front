@@ -9,7 +9,7 @@ import { Mascot } from '../components/Mascot';
 import { useShinySession } from '../hooks/useShinySession';
 import { resolveApiErrorMessage } from '../lib/labels';
 import { LEVELS, resolveLevelLabel } from '../lib/grades';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 const DEFAULT_MAX_PLAYERS = 6;
 
@@ -19,6 +19,7 @@ interface MenuChoiceProps extends React.ComponentProps<typeof Button> {
 }
 
 const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => {
+  const { t } = useTranslation();
   const [showDetails, setShowDetails] = React.useState(false);
   return (
     <div className="space-y-2">
@@ -28,7 +29,7 @@ const MenuChoice: React.FC<MenuChoiceProps> = ({ label, details, ...props }) => 
         </Button>
         <button
           type="button"
-          aria-label={`En savoir plus : ${label}`}
+          aria-label={t('home.moreInfo', { label })}
           aria-expanded={showDetails}
           onClick={() => setShowDetails((open) => !open)}
           className="h-8 w-8 shrink-0 rounded-full border-2 border-slate-300 font-serif text-sm font-bold italic text-slate-400 hover:border-slate-400 hover:text-slate-600"
@@ -67,7 +68,7 @@ export const HomePage: React.FC = () => {
 
   const requireName = (): boolean => {
     if (!effectiveName.trim()) {
-      setError("Entre ton pseudo d'abord !");
+      setError(t('home.errors.nameRequired'));
       return false;
     }
     return true;
@@ -76,12 +77,12 @@ export const HomePage: React.FC = () => {
   const handleCreate = async () => {
     if (!requireName()) return;
     if (createMaxPlayers < 2 || createMaxPlayers > 30 || Number.isNaN(createMaxPlayers)) {
-      setError('Le nombre de places doit être entre 2 et 30.');
+      setError(t('home.errors.seatsRange'));
       return;
     }
     const token = authClient.getAccessToken();
     if (!token) {
-      setError('Erreur lors de la création');
+      setError(t('home.errors.createFailed'));
       return;
     }
     try {
@@ -92,7 +93,7 @@ export const HomePage: React.FC = () => {
       });
       goToGame(gameId, effectiveName);
     } catch (createError) {
-      setError(resolveApiErrorMessage(createError, 'Erreur lors de la création', t));
+      setError(resolveApiErrorMessage(createError, t('home.errors.createFailed'), t));
     }
   };
 
@@ -105,7 +106,7 @@ export const HomePage: React.FC = () => {
   const handleJoin = () => {
     if (!requireName()) return;
     if (!code.trim()) {
-      setError("Entre le code d'invitation !");
+      setError(t('home.errors.codeRequired'));
       return;
     }
     goToGame(code, effectiveName);
@@ -119,13 +120,17 @@ export const HomePage: React.FC = () => {
       <div className="w-full space-y-4 bg-white p-8 rounded-3xl shadow-xl border-2 border-slate-100">
         {isAuthenticated && user ? (
           <div className="text-center text-slate-600 font-bold">
-            Connecté en tant que <span className="text-primary-dark">{user.username}</span>
+            <Trans
+              i18nKey="home.loggedInAs"
+              values={{ username: user.username }}
+              components={{ name: <span className="text-primary-dark" /> }}
+            />
           </div>
         ) : (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Ton Pseudo</label>
+            <label className="font-bold text-slate-600 ml-2">{t('home.yourName')}</label>
             <Input
-              placeholder="SuperMaths..."
+              placeholder={t('home.namePlaceholder')}
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -135,35 +140,36 @@ export const HomePage: React.FC = () => {
         {mode === 'MENU' && (
           <div className="flex flex-col gap-4 pt-4">
             <MenuChoice
-              label="Partie classée"
-              details="Affronte des joueurs de ton niveau. Tes points comptent pour ta progression."
+              label={t('home.rankedGame')}
+              details={t('home.rankedDetails')}
               onClick={handleQuickGame}
             />
             <div className="flex items-center gap-3 pt-2 text-sm font-bold text-slate-400">
               <span className="h-px flex-1 bg-slate-200" />
-              Entre amis ou en classe
+              {t('home.friendsOrClass')}
               <span className="h-px flex-1 bg-slate-200" />
             </div>
             <MenuChoice
               variant="secondary"
-              label="Rejoindre avec un code"
-              details="Entre le code qu'un ami ou ton professeur t'a donné pour rejoindre sa partie."
+              label={t('home.joinWithCode')}
+              details={t('home.joinDetails')}
               onClick={() => setMode('JOIN')}
             />
             <MenuChoice
               variant="secondary"
-              label="Créer une partie privée"
+              label={t('home.createPrivate')}
               details={
                 <>
-                  <p>
-                    Choisis le niveau, invite tes amis ou ta classe avec un code, ajoute des robots.
-                    Ne compte pas pour le classement.
-                  </p>
+                  <p>{t('home.createDetails')}</p>
                   <p className="pt-1">
-                    Inclus dans{' '}
-                    <span className="bg-gradient-to-r from-primary to-violet-500 bg-clip-text font-black text-transparent">
-                      Calc Rush+
-                    </span>
+                    <Trans
+                      i18nKey="home.includedIn"
+                      components={{
+                        plus: (
+                          <span className="bg-gradient-to-r from-primary to-violet-500 bg-clip-text font-black text-transparent" />
+                        ),
+                      }}
+                    />
                   </p>
                 </>
               }
@@ -178,7 +184,7 @@ export const HomePage: React.FC = () => {
         {mode === 'JOIN' && (
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
-              <label className="font-bold text-slate-600 ml-2">Code d'invitation</label>
+              <label className="font-bold text-slate-600 ml-2">{t('home.inviteCode')}</label>
               <Input
                 placeholder="ABCD"
                 value={code}
@@ -187,19 +193,21 @@ export const HomePage: React.FC = () => {
               />
             </div>
             <Button size="lg" className="w-full" onClick={handleJoin}>
-              C'est parti !
+              {t('home.letsGo')}
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => setMode('MENU')}>
-              Retour
+              {t('common.back')}
             </Button>
           </div>
         )}
 
         {mode === 'CREATE' && (
           <div className="space-y-4 pt-4">
-            <h2 className="text-center text-xl font-black text-slate-700">Partie privée</h2>
+            <h2 className="text-center text-xl font-black text-slate-700">
+              {t('home.privateGame')}
+            </h2>
             <div className="space-y-2">
-              <label className="font-bold text-slate-600 ml-2">Niveau des questions</label>
+              <label className="font-bold text-slate-600 ml-2">{t('home.questionLevel')}</label>
               <select
                 className="w-full text-center text-2xl p-4 rounded-xl border-2 border-slate-300 outline-none"
                 value={createLevel}
@@ -213,7 +221,7 @@ export const HomePage: React.FC = () => {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="font-bold text-slate-600 ml-2">Places</label>
+              <label className="font-bold text-slate-600 ml-2">{t('home.seats')}</label>
               <Input
                 type="number"
                 min={2}
@@ -223,10 +231,10 @@ export const HomePage: React.FC = () => {
               />
             </div>
             <Button size="lg" className="w-full" onClick={handleCreate}>
-              Créer la partie
+              {t('home.createGame')}
             </Button>
             <Button variant="secondary" className="w-full" onClick={() => setMode('MENU')}>
-              Retour
+              {t('common.back')}
             </Button>
           </div>
         )}

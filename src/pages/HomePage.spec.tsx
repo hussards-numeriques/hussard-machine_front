@@ -5,6 +5,7 @@ import { HomePage } from './HomePage';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { useGame } from '../contexts/useGame';
+import i18n from '../i18n';
 
 vi.mock('../contexts/useAuth');
 vi.mock('../hooks/useSubscription');
@@ -190,5 +191,32 @@ describe('HomePage - subscription status loading', () => {
     );
 
     expect(screen.getByText('Créer une partie privée').closest('button')).toBeDisabled();
+  });
+});
+
+describe('HomePage - i18n', () => {
+  it('renders the main call to action in English', async () => {
+    vi.mocked(useAuth).mockReturnValue({
+      client: { getAccessToken: () => 'tok' },
+      user: null,
+      isAuthenticated: false,
+      isLoading: false,
+    } as unknown as ReturnType<typeof useAuth>);
+    vi.mocked(useSubscriptionStatus).mockReturnValue({
+      data: undefined,
+      isLoading: false,
+    } as unknown as ReturnType<typeof useSubscriptionStatus>);
+    vi.mocked(useGame).mockReturnValue({
+      client: { createLobby: vi.fn() },
+    } as unknown as ReturnType<typeof useGame>);
+    await i18n.changeLanguage('en');
+
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Ranked game')).toBeInTheDocument();
   });
 });

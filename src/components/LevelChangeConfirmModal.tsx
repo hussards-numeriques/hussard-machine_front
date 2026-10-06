@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from './Button';
 
 export type LevelChangeVariant = 'promote' | 'demote';
@@ -11,29 +12,9 @@ interface LevelChangeConfirmModalProps {
   onCancel: () => void;
 }
 
-interface LevelChangeCopy {
-  title: (targetLevel: string) => string;
-  message: string;
-  titlesMessage: (targetLevel: string, currentLevel: string) => string;
-  confirmVariant: 'success' | 'secondary';
-}
-
-const LEVEL_CHANGE_COPY: Record<LevelChangeVariant, LevelChangeCopy> = {
-  promote: {
-    title: (targetLevel) => `Passer en ${targetLevel} ?`,
-    message: 'Les calculs vont devenir plus difficiles.',
-    titlesMessage: (targetLevel, currentLevel) =>
-      `Côté titres, tu passes à la progression de ${targetLevel} : nouvelles quêtes, nouveaux titres à décrocher. Ceux de ${currentLevel} restent consultables dans Quêtes & Titres, mais ne seront plus actifs.`,
-    confirmVariant: 'success',
-  },
-  demote: {
-    title: (targetLevel) => `Redescendre en ${targetLevel} ?`,
-    message:
-      "Tu vas perdre l'XP de ton niveau actuel — tu repars avec juste assez d'XP pour repasser ce niveau immédiatement si tu veux. Les calculs seront plus simples, mais moins de défi.",
-    titlesMessage: (targetLevel, currentLevel) =>
-      `Côté titres, tu retrouves la progression de ${targetLevel}. Ceux de ${currentLevel} restent consultables dans Quêtes & Titres, mais ne seront plus actifs.`,
-    confirmVariant: 'secondary',
-  },
+const CONFIRM_VARIANT: Record<LevelChangeVariant, 'success' | 'secondary'> = {
+  promote: 'success',
+  demote: 'secondary',
 };
 
 export const LevelChangeConfirmModal: React.FC<LevelChangeConfirmModalProps> = ({
@@ -43,7 +24,7 @@ export const LevelChangeConfirmModal: React.FC<LevelChangeConfirmModalProps> = (
   onConfirm,
   onCancel,
 }) => {
-  const copy = LEVEL_CHANGE_COPY[variant];
+  const { t } = useTranslation();
 
   return (
     <div
@@ -54,22 +35,26 @@ export const LevelChangeConfirmModal: React.FC<LevelChangeConfirmModalProps> = (
         className="w-full max-w-md bg-white rounded-3xl shadow-2xl border-2 border-slate-100 p-8 space-y-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-black text-primary-dark">{copy.title(targetLevel)}</h2>
-        <p className="text-slate-600 text-sm leading-relaxed">{copy.message}</p>
+        <h2 className="text-2xl font-black text-primary-dark">
+          {t(`levelChange.${variant}.title`, { level: targetLevel })}
+        </h2>
         <p className="text-slate-600 text-sm leading-relaxed">
-          {copy.titlesMessage(targetLevel, currentLevel)}
+          {t(`levelChange.${variant}.message`)}
+        </p>
+        <p className="text-slate-600 text-sm leading-relaxed">
+          {t(`levelChange.${variant}.titles`, { target: targetLevel, current: currentLevel })}
         </p>
         <div className="flex gap-3">
           <Button type="button" variant="primary" className="flex-1" onClick={onCancel}>
-            Annuler
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
-            variant={copy.confirmVariant}
+            variant={CONFIRM_VARIANT[variant]}
             className="flex-1"
             onClick={onConfirm}
           >
-            Confirmer
+            {t('common.confirm')}
           </Button>
         </div>
       </div>

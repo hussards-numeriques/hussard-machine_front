@@ -1,5 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
+import type { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useAuth } from '../contexts/useAuth';
 import { AuthError } from '../services/AuthClient';
@@ -10,21 +12,25 @@ const USERNAME_MIN = 3;
 const USERNAME_MAX = 50;
 const PASSWORD_MIN = 8;
 
-const loginSchema = z.object({
-  username: z.string().min(1, 'Entre ton pseudo.'),
-  password: z.string().min(1, 'Entre ton mot de passe.'),
-});
+const createLoginSchema = (t: TFunction) =>
+  z.object({
+    username: z.string().min(1, t('auth.validation.usernameRequired')),
+    password: z.string().min(1, t('auth.validation.passwordRequired')),
+  });
 
-const registerSchema = z.object({
-  email: z.string().email('Email invalide.'),
-  username: z
-    .string()
-    .min(USERNAME_MIN, `Le pseudo doit faire entre ${USERNAME_MIN} et ${USERNAME_MAX} caractères.`)
-    .max(USERNAME_MAX, `Le pseudo doit faire entre ${USERNAME_MIN} et ${USERNAME_MAX} caractères.`),
-  password: z
-    .string()
-    .min(PASSWORD_MIN, `Le mot de passe doit faire au moins ${PASSWORD_MIN} caractères.`),
-});
+const createRegisterSchema = (t: TFunction) => {
+  const usernameLength = t('auth.validation.usernameLength', {
+    min: USERNAME_MIN,
+    max: USERNAME_MAX,
+  });
+  return z.object({
+    email: z.string().email(t('auth.validation.invalidEmail')),
+    username: z.string().min(USERNAME_MIN, usernameLength).max(USERNAME_MAX, usernameLength),
+    password: z
+      .string()
+      .min(PASSWORD_MIN, t('auth.validation.passwordLength', { min: PASSWORD_MIN })),
+  });
+};
 
 type Mode = 'LOGIN' | 'REGISTER';
 
@@ -46,19 +52,20 @@ const ServerError = ({ message }: { message: string | null }) => {
 };
 
 const LoginForm = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm({
     defaultValues: { username: '', password: '' },
-    validators: { onSubmit: loginSchema },
+    validators: { onSubmit: createLoginSchema(t) },
     onSubmit: async ({ value }) => {
       setServerError(null);
       try {
         await login(value);
         onClose();
       } catch (err) {
-        setServerError(err instanceof AuthError ? err.message : 'Une erreur est survenue.');
+        setServerError(err instanceof AuthError ? err.message : t('auth.genericError'));
       }
     },
   });
@@ -75,9 +82,9 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
         name="username"
         children={(field) => (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Pseudo</label>
+            <label className="font-bold text-slate-600 ml-2">{t('auth.username')}</label>
             <Input
-              placeholder="SuperMaths"
+              placeholder={t('auth.usernamePlaceholder')}
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
@@ -92,7 +99,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
         name="password"
         children={(field) => (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Mot de passe</label>
+            <label className="font-bold text-slate-600 ml-2">{t('auth.password')}</label>
             <Input
               type="password"
               placeholder="••••••••"
@@ -112,7 +119,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
         selector={(state) => state.isSubmitting}
         children={(isSubmitting) => (
           <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Patiente...' : 'Se connecter'}
+            {isSubmitting ? t('auth.submitting') : t('auth.login')}
           </Button>
         )}
       />
@@ -121,19 +128,20 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
 };
 
 const RegisterForm = ({ onClose }: { onClose: () => void }) => {
+  const { t } = useTranslation();
   const { register } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm({
     defaultValues: { email: '', username: '', password: '' },
-    validators: { onSubmit: registerSchema },
+    validators: { onSubmit: createRegisterSchema(t) },
     onSubmit: async ({ value }) => {
       setServerError(null);
       try {
         await register(value);
         onClose();
       } catch (err) {
-        setServerError(err instanceof AuthError ? err.message : 'Une erreur est survenue.');
+        setServerError(err instanceof AuthError ? err.message : t('auth.genericError'));
       }
     },
   });
@@ -150,10 +158,10 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
         name="email"
         children={(field) => (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Email</label>
+            <label className="font-bold text-slate-600 ml-2">{t('auth.email')}</label>
             <Input
               type="email"
-              placeholder="toi@exemple.com"
+              placeholder={t('auth.emailPlaceholder')}
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
@@ -168,9 +176,9 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
         name="username"
         children={(field) => (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Pseudo</label>
+            <label className="font-bold text-slate-600 ml-2">{t('auth.username')}</label>
             <Input
-              placeholder="SuperMaths"
+              placeholder={t('auth.usernamePlaceholder')}
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={(e) => field.handleChange(e.target.value)}
@@ -187,7 +195,7 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
         name="password"
         children={(field) => (
           <div className="space-y-2">
-            <label className="font-bold text-slate-600 ml-2">Mot de passe</label>
+            <label className="font-bold text-slate-600 ml-2">{t('auth.password')}</label>
             <Input
               type="password"
               placeholder="••••••••"
@@ -208,7 +216,7 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
         selector={(state) => state.isSubmitting}
         children={(isSubmitting) => (
           <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? 'Patiente...' : "S'inscrire"}
+            {isSubmitting ? t('auth.submitting') : t('auth.register')}
           </Button>
         )}
       />
@@ -217,6 +225,7 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
 };
 
 const GoogleButton = () => {
+  const { t } = useTranslation();
   const { client } = useAuth();
   return (
     <div className="space-y-4">
@@ -227,11 +236,11 @@ const GoogleButton = () => {
         className="w-full"
         onClick={() => void client.loginWithGoogle()}
       >
-        Continuer avec Google
+        {t('auth.google')}
       </Button>
       <div className="flex items-center gap-3 text-slate-400 text-sm font-bold">
         <span className="h-px flex-1 bg-slate-200" />
-        ou
+        {t('auth.or')}
         <span className="h-px flex-1 bg-slate-200" />
       </div>
     </div>
@@ -239,6 +248,7 @@ const GoogleButton = () => {
 };
 
 export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>('LOGIN');
 
   const flip = () => setMode((prev) => (prev === 'LOGIN' ? 'REGISTER' : 'LOGIN'));
@@ -254,13 +264,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
       >
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-black text-primary-dark">
-            {mode === 'LOGIN' ? 'Connexion' : 'Inscription'}
+            {mode === 'LOGIN' ? t('auth.loginTitle') : t('auth.registerTitle')}
           </h2>
           <button
             type="button"
             onClick={onClose}
             className="text-slate-400 hover:text-slate-700 text-2xl font-bold"
-            aria-label="Fermer"
+            aria-label={t('common.close')}
           >
             ×
           </button>
@@ -276,7 +286,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ onClose }) => {
             onClick={flip}
             className="text-primary font-bold hover:underline text-sm"
           >
-            {mode === 'LOGIN' ? "Pas de compte ? S'inscrire" : 'Déjà un compte ? Se connecter'}
+            {mode === 'LOGIN' ? t('auth.noAccount') : t('auth.haveAccount')}
           </button>
         </div>
       </div>

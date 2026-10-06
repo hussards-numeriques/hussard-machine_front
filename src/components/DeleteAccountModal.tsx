@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button } from './Button';
 
 interface DeleteAccountModalProps {
@@ -10,12 +11,12 @@ interface DeleteAccountModalProps {
 }
 
 const DELETED_DATA = [
-  'ton profil, ton niveau et ton XP',
-  'ton historique de parties et ta série de jours',
-  'tes quêtes, titres et icônes débloqués',
-  'ton abonnement en cours et ses avantages',
-  'ton compte de connexion (identifiant, e-mail, mot de passe)',
-];
+  'deleteAccount.data.profile',
+  'deleteAccount.data.history',
+  'deleteAccount.data.quests',
+  'deleteAccount.data.subscription',
+  'deleteAccount.data.login',
+] as const;
 
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   username,
@@ -24,6 +25,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const { t } = useTranslation();
   const [typedUsername, setTypedUsername] = useState('');
   const canConfirm = typedUsername === username && !isDeleting;
   const cancelUnlessDeleting = () => {
@@ -45,21 +47,23 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="delete-account-title" className="text-2xl font-black text-rose-600">
-          Supprimer ton compte ?
+          {t('deleteAccount.title')}
         </h2>
         <p className="text-slate-600 text-sm leading-relaxed">
-          Cette action est <strong>définitive</strong>. Toutes tes données seront effacées
-          immédiatement, et <strong>aucune récupération ne sera possible</strong>, même en
-          contactant le support :
+          <Trans i18nKey="deleteAccount.warning" components={{ strong: <strong /> }} />
         </p>
         <ul className="list-disc pl-5 text-slate-600 text-sm space-y-1">
           {DELETED_DATA.map((item) => (
-            <li key={item}>{item}</li>
+            <li key={item}>{t(item)}</li>
           ))}
         </ul>
         <label className="block space-y-2">
           <span className="text-sm font-bold text-slate-700">
-            Pour confirmer, tape ton pseudo : <span className="text-rose-600">{username}</span>
+            <Trans
+              i18nKey="deleteAccount.confirmPrompt"
+              values={{ username }}
+              components={{ highlight: <span className="text-rose-600" /> }}
+            />
           </span>
           <input
             type="text"
@@ -81,7 +85,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             onClick={onCancel}
             disabled={isDeleting}
           >
-            Annuler
+            {t('common.cancel')}
           </Button>
           <Button
             type="button"
@@ -90,7 +94,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             onClick={onConfirm}
             disabled={!canConfirm}
           >
-            {isDeleting ? 'Suppression...' : 'Supprimer définitivement'}
+            {isDeleting ? t('deleteAccount.deleting') : t('deleteAccount.confirm')}
           </Button>
         </div>
       </div>

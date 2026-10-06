@@ -5,10 +5,12 @@ import { GameState } from '../types';
 import { LobbyView } from '../views/LobbyView';
 import { GameView } from '../views/GameView';
 import { PodiumView } from '../views/PodiumView';
+import { useTranslation } from 'react-i18next';
 import { useTitleUnlocks } from '../hooks/useTitleUnlocks';
 import { useXpProgress } from '../hooks/useXpProgress';
 
 export const GamePage: React.FC = () => {
+  const { t } = useTranslation();
   const { gameId } = useParams<{ gameId?: string }>();
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,13 +50,13 @@ export const GamePage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center p-8 bg-white rounded-xl shadow-xl border-2 border-rose-200">
-          <h1 className="text-2xl font-bold text-rose-600 mb-4">Oups !</h1>
+          <h1 className="text-2xl font-bold text-rose-600 mb-4">{t('gamePage.oops')}</h1>
           <p className="text-slate-600 mb-6">{error}</p>
           <button
             onClick={handleBackHome}
             className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors"
           >
-            Retour à l'accueil
+            {t('common.backHome')}
           </button>
         </div>
       </div>
@@ -64,7 +66,7 @@ export const GamePage: React.FC = () => {
   if (!game) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <p className="text-slate-600 font-bold">Connexion à la partie...</p>
+        <p className="text-slate-600 font-bold">{t('gamePage.connecting')}</p>
       </div>
     );
   }
@@ -93,6 +95,6 @@ export const GamePage: React.FC = () => {
         />
       );
     default:
-      return <div>État inconnu: {game.state}</div>;
+      return <div>{t('gamePage.unknownState', { state: game.state })}</div>;
   }
 };

@@ -13,22 +13,25 @@ import { SubscriptionMenuCard, SupporterCrown } from './SubscriptionStatus';
 import { useTranslation } from 'react-i18next';
 
 const MENU_LINKS = [
-  { to: '/profile', label: 'Mon profil' },
-  { to: '/quests', label: 'Quêtes & Titres' },
-  { to: '/icons', label: 'Icônes' },
-  { to: '/settings', label: 'Réglages' },
-];
+  { to: '/profile', labelKey: 'header.profile' },
+  { to: '/quests', labelKey: 'header.questsTitles' },
+  { to: '/icons', labelKey: 'header.icons' },
+  { to: '/settings', labelKey: 'header.settings' },
+] as const;
 
-const HomeLink: React.FC = () => (
-  <Link
-    to="/"
-    aria-label="Accueil"
-    className="pointer-events-auto flex items-center gap-1.5 hover:scale-105 transition-transform"
-  >
-    <Mascot size={44} pose="joyeux" title="Rushy" className="drop-shadow" />
-    <span className="text-sm font-black text-primary-dark hidden sm:inline">Calc Rush</span>
-  </Link>
-);
+const HomeLink: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Link
+      to="/"
+      aria-label={t('header.home')}
+      className="pointer-events-auto flex items-center gap-1.5 hover:scale-105 transition-transform"
+    >
+      <Mascot size={44} pose="joyeux" title="Rushy" className="drop-shadow" />
+      <span className="text-sm font-black text-primary-dark hidden sm:inline">Calc Rush</span>
+    </Link>
+  );
+};
 
 const UserMenu: React.FC<{ username: string }> = ({ username }) => {
   const { t } = useTranslation();
@@ -59,7 +62,7 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
     <div ref={containerRef}>
       <button
         type="button"
-        aria-label="Menu du joueur"
+        aria-label={t('header.playerMenu')}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
         className="relative flex items-center gap-2 rounded-full pr-0 sm:pr-3 hover:bg-slate-100 transition-colors"
@@ -89,14 +92,14 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
             </div>
           </div>
           <SubscriptionMenuCard onNavigate={close} />
-          {MENU_LINKS.map(({ to, label }) => (
+          {MENU_LINKS.map(({ to, labelKey }) => (
             <Link
               key={to}
               to={to}
               onClick={close}
               className="block px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 border-t border-slate-100"
             >
-              {label}
+              {t(labelKey)}
             </Link>
           ))}
           <button
@@ -104,7 +107,7 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
             onClick={handleLogout}
             className="w-full text-left px-4 py-3 text-sm font-bold text-rose-600 hover:bg-rose-50 border-t border-slate-100"
           >
-            Se déconnecter
+            {t('header.logout')}
           </button>
         </div>
       )}
@@ -113,6 +116,7 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
 };
 
 export const Header: React.FC = () => {
+  const { t } = useTranslation();
   const { user, isAuthenticated, isLoading } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const location = useLocation();
@@ -134,7 +138,7 @@ export const Header: React.FC = () => {
             onClick={() => setShowAuthModal(true)}
             className="pointer-events-auto text-sm font-black text-white bg-primary px-4 py-2 rounded-full shadow hover:bg-primary-dark transition-colors"
           >
-            Se connecter
+            {t('header.login')}
           </button>
         )}
       </header>

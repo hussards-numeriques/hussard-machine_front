@@ -4,6 +4,10 @@ export const de = {
   common: {
     loading: 'Wird geladen...',
     backHome: 'Zurück zur Startseite',
+    cancel: 'Abbrechen',
+    back: 'Zurück',
+    confirm: 'Bestätigen',
+    close: 'Schließen',
   },
   locale: {
     auto: 'Automatisch',
@@ -133,5 +137,125 @@ export const de = {
     SILVER: 'Selten',
     GOLD: 'Episch',
     DIAMOND: 'Legendär',
+  },
+  footer: {
+    contact: 'Kontakt',
+    termsOfSale: 'Verkaufsbedingungen',
+    terms: 'AGB',
+    legalNotice: 'Impressum',
+    privacy: 'Datenschutz',
+    rights: '© {{year}} Calc Rush. Alle Rechte vorbehalten.',
+  },
+  header: {
+    home: 'Startseite',
+    playerMenu: 'Spielermenü',
+    profile: 'Mein Profil',
+    questsTitles: 'Quests & Titel',
+    icons: 'Icons',
+    settings: 'Einstellungen',
+    logout: 'Abmelden',
+    login: 'Anmelden',
+  },
+  auth: {
+    loginTitle: 'Anmeldung',
+    registerTitle: 'Registrierung',
+    google: 'Weiter mit Google',
+    or: 'oder',
+    username: 'Nutzername',
+    usernamePlaceholder: 'SuperMathe',
+    password: 'Passwort',
+    email: 'E-Mail',
+    emailPlaceholder: 'du@beispiel.de',
+    submitting: 'Moment...',
+    login: 'Anmelden',
+    register: 'Registrieren',
+    noAccount: 'Noch kein Konto? Registriere dich',
+    haveAccount: 'Schon ein Konto? Melde dich an',
+    genericError: 'Es ist ein Fehler aufgetreten.',
+    validation: {
+      usernameRequired: 'Gib deinen Nutzernamen ein.',
+      passwordRequired: 'Gib dein Passwort ein.',
+      invalidEmail: 'Ungültige E-Mail.',
+      usernameLength: 'Der Nutzername muss zwischen {{min}} und {{max}} Zeichen lang sein.',
+      passwordLength: 'Das Passwort muss mindestens {{min}} Zeichen lang sein.',
+    },
+  },
+  deleteAccount: {
+    title: 'Dein Konto löschen?',
+    warning:
+      'Diese Aktion ist <strong>endgültig</strong>. Alle deine Daten werden sofort gelöscht und <strong>nichts kann wiederhergestellt werden</strong>, auch nicht über den Support:',
+    data: {
+      profile: 'dein Profil, dein Level und deine XP',
+      history: 'dein Spielverlauf und deine Tagesserie',
+      quests: 'deine freigeschalteten Quests, Titel und Icons',
+      subscription: 'dein laufendes Abo und seine Vorteile',
+      login: 'dein Zugangskonto (Nutzername, E-Mail, Passwort)',
+    },
+    confirmPrompt:
+      'Zur Bestätigung gib deinen Nutzernamen ein: <highlight>{{username}}</highlight>',
+    deleting: 'Wird gelöscht...',
+    confirm: 'Endgültig löschen',
+  },
+  levelChange: {
+    promote: {
+      title: 'Zu {{level}} wechseln?',
+      message: 'Die Rechenaufgaben werden schwerer.',
+      titles:
+        'Bei den Titeln wechselst du zum Fortschritt von {{target}}: neue Quests, neue Titel zu holen. Die von {{current}} kannst du weiterhin unter Quests & Titel ansehen, sie sind aber nicht mehr aktiv.',
+    },
+    demote: {
+      title: 'Zurück zu {{level}}?',
+      message:
+        'Du verlierst die XP deines aktuellen Levels — du startest mit gerade genug XP, um sofort wieder aufzusteigen, wenn du willst. Die Aufgaben werden einfacher, aber weniger herausfordernd.',
+      titles:
+        'Bei den Titeln kehrst du zum Fortschritt von {{target}} zurück. Die von {{current}} kannst du weiterhin unter Quests & Titel ansehen, sie sind aber nicht mehr aktiv.',
+    },
+  },
+  subscriptionStatus: {
+    upsellTitle: 'Hol dir Calc Rush+',
+    upsellText: 'Erstelle deine Spiele, schalte deine Titel frei.',
+    expiresIn_one: 'Läuft in {{count}} Tag ab',
+    expiresIn_other: 'Läuft in {{count}} Tagen ab',
+    extend: 'Verlängern',
+    until: 'Bis {{date}}',
+  },
+  home: {
+    namePlaceholder: 'SuperMathe...',
+    loggedInAs: 'Angemeldet als <name>{{username}}</name>',
+    yourName: 'Dein Nutzername',
+    rankedGame: 'Ranglistenspiel',
+    rankedDetails:
+      'Tritt gegen Spieler auf deinem Level an. Deine Punkte zählen für deinen Fortschritt.',
+    friendsOrClass: 'Mit Freunden oder in der Klasse',
+    joinWithCode: 'Mit Code beitreten',
+    joinDetails:
+      'Gib den Code ein, den ein Freund oder deine Lehrkraft dir gegeben hat, um dem Spiel beizutreten.',
+    createPrivate: 'Privates Spiel erstellen',
+    createDetails:
+      'Wähle das Level, lade Freunde oder deine Klasse mit einem Code ein und füge Bots hinzu. Zählt nicht für die Rangliste.',
+    includedIn: 'Enthalten in <plus>Calc Rush+</plus>',
+    moreInfo: 'Mehr erfahren: {{label}}',
+    inviteCode: 'Einladungscode',
+    letsGo: "Los geht's!",
+    privateGame: 'Privates Spiel',
+    questionLevel: 'Level der Fragen',
+    seats: 'Plätze',
+    createGame: 'Spiel erstellen',
+    errors: {
+      nameRequired: 'Gib zuerst deinen Nutzernamen ein!',
+      seatsRange: 'Die Anzahl der Plätze muss zwischen 2 und 30 liegen.',
+      createFailed: 'Fehler beim Erstellen',
+      codeRequired: 'Gib den Einladungscode ein!',
+    },
+  },
+  oauth: {
+    failed: 'Google-Anmeldung nicht möglich.',
+    failedWithReason: 'Google-Anmeldung fehlgeschlagen: {{message}}',
+    inProgress: 'Anmeldung läuft…',
+  },
+  gamePage: {
+    oops: 'Hoppla!',
+    connecting: 'Verbindung zum Spiel...',
+    unknownState: 'Unbekannter Zustand: {{state}}',
   },
 } satisfies Translation;

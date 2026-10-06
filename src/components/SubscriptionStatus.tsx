@@ -1,5 +1,6 @@
 import React, { useId } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { daysUntil, formatLongDate } from '../lib/date';
 import { cn } from '../lib/utils';
@@ -43,6 +44,7 @@ export const SupporterCrown: React.FC<{ size?: number; className?: string }> = (
 };
 
 export const SubscriptionMenuCard: React.FC<{ onNavigate: () => void }> = ({ onNavigate }) => {
+  const { t } = useTranslation();
   const { data } = useSubscriptionStatus();
 
   if (!data) {
@@ -58,8 +60,8 @@ export const SubscriptionMenuCard: React.FC<{ onNavigate: () => void }> = ({ onN
       >
         <SupporterCrown size={28} className="shrink-0 drop-shadow" />
         <span className="text-xs font-semibold leading-snug">
-          <span className="block text-sm font-black">Passe à Calc Rush+</span>
-          Crée tes parties, débloque tes titres.
+          <span className="block text-sm font-black">{t('subscriptionStatus.upsellTitle')}</span>
+          {t('subscriptionStatus.upsellText')}
         </span>
       </Link>
     );
@@ -84,11 +86,11 @@ export const SubscriptionMenuCard: React.FC<{ onNavigate: () => void }> = ({ onN
         <span className="block text-sm font-black text-amber-700">Calc Rush+</span>
         {expiresSoon ? (
           <span className="text-rose-700">
-            Expire dans {daysLeft <= 1 ? '1 jour' : `${daysLeft} jours`} ·{' '}
-            <span className="font-black underline">Prolonger</span>
+            {t('subscriptionStatus.expiresIn', { count: Math.max(daysLeft, 1) })} ·{' '}
+            <span className="font-black underline">{t('subscriptionStatus.extend')}</span>
           </span>
         ) : (
-          <>Jusqu'au {formatLongDate(data.expires_at)}</>
+          <>{t('subscriptionStatus.until', { date: formatLongDate(data.expires_at) })}</>
         )}
       </span>
     </Link>
