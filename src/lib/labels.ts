@@ -2,6 +2,9 @@ import type { TFunction } from 'i18next';
 import type { SubscriptionPlanKey } from '../services/subscription';
 import { ApiError } from '../services/http';
 import type { WsErrorCode } from '../services/gameSchemas';
+import type { QuestionPrompt } from '../types';
+
+export type PromptType = QuestionPrompt['type'];
 
 const QUESTION_CATEGORIES = [
   'addition',
@@ -22,6 +25,37 @@ const QUESTION_CATEGORIES = [
   'divisibility',
   'function',
 ] as const;
+
+const PROMPT_TYPE_FLAGS: Record<PromptType, true> = {
+  addition: true,
+  subtraction: true,
+  multiplication_table: true,
+  multiplication: true,
+  difference_of_squares: true,
+  division_table: true,
+  division: true,
+  complement: true,
+  double: true,
+  half: true,
+  multiplication_by_power_of_10: true,
+  operation_priority: true,
+  relative_addition: true,
+  relative_subtraction: true,
+  relative_multiplication: true,
+  relative_division: true,
+  relative_operation_priority: true,
+  missing_factor: true,
+  euclidean_division: true,
+  fraction_of_quantity: true,
+  percentage_of_quantity: true,
+  square: true,
+  power: true,
+  square_root: true,
+  gcd: true,
+  linear_equation: true,
+  function_image: true,
+  function_antecedent: true,
+};
 
 const QUEST_IDS = ['win-streak', 'correct-answers', 'perfect-games'] as const;
 
@@ -44,6 +78,12 @@ const isOneOf = <K extends string>(ids: readonly K[], value: string): value is K
 
 export const resolveQuestionCategoryLabel = (id: string, t: TFunction): string =>
   isOneOf(QUESTION_CATEGORIES, id) ? t(`questionCategories.${id}`) : id;
+
+export const isPromptType = (value: string): value is PromptType =>
+  Object.hasOwn(PROMPT_TYPE_FLAGS, value);
+
+export const resolvePromptTypeLabel = (type: PromptType, t: TFunction): string =>
+  t(`promptTypes.${type}`);
 
 export const resolveQuestLabel = (id: string, t: TFunction): string =>
   isOneOf(QUEST_IDS, id) ? t(`quests.labels.${id}`) : id;

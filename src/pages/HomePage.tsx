@@ -144,6 +144,14 @@ export const HomePage: React.FC = () => {
               details={t('home.rankedDetails')}
               onClick={handleQuickGame}
             />
+            {canCreateLobby && (
+              <MenuChoice
+                variant="success"
+                label={t('home.practice')}
+                details={t('home.practiceDetails')}
+                onClick={() => navigate('/practice')}
+              />
+            )}
             <div className="flex items-center gap-3 pt-2 text-sm font-bold text-slate-400">
               <span className="h-px flex-1 bg-slate-200" />
               {t('home.friendsOrClass')}

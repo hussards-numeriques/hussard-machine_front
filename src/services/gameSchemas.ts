@@ -52,7 +52,7 @@ const expressionNodeSchema: z.ZodType<ExpressionNode> = z.lazy(() =>
 
 const affineSchema = z.object({ coefficient: integer, constant: integer });
 
-const questionPromptSchema = z.discriminatedUnion('type', [
+export const questionPromptSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('addition'), left: integer, right: integer }),
   z.object({ type: z.literal('subtraction'), left: integer, right: integer }),
   z.object({ type: z.literal('multiplication_table'), table: integer, factor: integer }),

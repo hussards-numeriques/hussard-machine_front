@@ -37,8 +37,8 @@ générique, pour permettre un futur affichage différencié par code statut),
 `useSubscriptionPlans()` (public, `staleTime: Infinity`), `useSubscriptionStatus()`
 (activé seulement si authentifié, `staleTime` 5 min pour ne pas refetch à chaque navigation), `useStartCheckout()` (redirige
 `window.location.assign` vers `checkout_url` en `onSuccess`). Pas de
-Context/Provider dédié — le statut est lu par 4 endroits (`SubscriptionPage`,
-`SubscriptionSuccessPage`, `Header` via `SubscriptionStatus`, `QuestsPage`), `useQuery`
+Context/Provider dédié — le statut est lu par `SubscriptionPage`,
+`SubscriptionSuccessPage`, `Header` (via `SubscriptionStatus` + lien « Entraînement »), `HomePage`, `QuestsPage` et `PracticePage`, `useQuery`
 dédoublonne déjà sur la clé `['subscription-status']`.
 
 ## Pages
@@ -47,7 +47,7 @@ dédoublonne déjà sur la clé `['subscription-status']`.
   et une accroche orientée bénéfice joueur (jamais « aidez le dev »), le tout dans
   un bandeau dégradé `from-primary to-violet-500` (couleur signature de Calc Rush+,
   comme la carte du menu joueur) qui liste les avantages en blanc, lisibles sans clic
-  (`PERKS` : parties privées, quêtes et titres, couronne — n'y lister que des
+  (`PERKS` : mode entraînement (voir `doc/practice.md`), parties privées, quêtes et titres, couronne — n'y lister que des
   avantages réellement livrés), puis une carte unique (`components/subscription/SubscriptionCard.tsx`) avec un
   sélecteur des 3 formules (par défaut sur 3 mois, simple accent visuel — jamais
   d'étiquette "populaire"/"recommandé"), le prix/mois et le % d'économie de

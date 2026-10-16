@@ -12,7 +12,7 @@ import type { SubscriptionPlanKey } from '../services/subscription';
 import { Mascot } from '../components/Mascot';
 import { useTranslation } from 'react-i18next';
 
-const PERKS = ['private', 'quests', 'crown'] as const;
+const PERKS = ['practice', 'private', 'quests', 'crown'] as const;
 
 const SubscriptionNotice: React.FC<{ message: string }> = ({ message }) => {
   const { t } = useTranslation();

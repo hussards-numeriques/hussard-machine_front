@@ -239,7 +239,7 @@ dependency, works offline. Input tensor `input` `[1,1,32,128]`, output `logits` 
 
 The session is created by `preload()` and cached (`loadPromise`; reset on failure so a
 later call retries). `recognizeNumber` awaits `preload()`, so without preloading the first
-recognition pays for the whole download (~2 s on mobile). To avoid that, `LobbyView` calls
+recognition pays for the whole download (~2 s on mobile). To avoid that, `LobbyView` (and `PracticePage`, on the setup screen) calls
 `preload()` when `useResolvedAnswerInputMode()` is `handwriting` — the model is ready
 before the first question.
 

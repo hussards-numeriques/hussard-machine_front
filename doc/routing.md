@@ -8,6 +8,7 @@ BrowserRouter
 │   ├── /           → HomePage
 │   ├── /profile    → ProfilePage
 │   ├── /quests     → QuestsPage
+│   ├── /practice   → PracticePage (Calc Rush+ only, redirects to /subscription otherwise — see doc/practice.md)
 │   ├── /icons      → IconsPage
 │   ├── /terms      → TermsPage
 │   ├── /terms-of-sale → TermsOfSalePage
@@ -77,6 +78,7 @@ triggers a fresh connect — without it, React sees no changed dependency and sk
 - `PodiumView` → back → `navigate('/')`
 - `Header` → Rushy + « Calc Rush » home pill on all pages except `/`
 - `Header` → user menu → "Quêtes & Titres" → `navigate('/quests')` (authenticated users only, see `doc/quests-titles.md`)
+- `HomePage` → « S'entraîner » / `Header` → user menu → « Entraînement » → `navigate('/practice')` (active subscribers only, see `doc/practice.md`)
 - `Header` → user menu → Supporter card → `navigate('/subscription')` (authenticated users only, see `doc/subscription.md`)
 
 ## Adding a new page

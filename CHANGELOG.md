@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Practice mode (`/practice`), Calc Rush+ only: pick a grade (preset to the player's), a category and a topic (auto-selected when the category has only one), then a 5, 10 or 20-question series with no timer and no opponent. Questions come one at a time from `GET /practice/{level}/{category}/{prompt_type}` (next one prefetched), rendered by the in-game `QuestionPrompt` and answered with the player's `AnswerInput` mode. A right answer cheers (Rushy, mini confetti, auto-advance); a wrong one calmly shows the player's answer and the right one, and waits for « Question suivante ». The series ends on an encouraging score (e.g. 8/10) with a row of stars, confetti, « Rejouer cette notion » and « Changer de notion ». Entry points (home button, player menu link) only appear for subscribers; a `SUBSCRIPTION_REQUIRED` answer redirects to `/subscription`.
+- `/subscription`: new « Mode entraînement » perk; `/terms-of-sale` lists practice mode among what Calc Rush+ unlocks (six languages).
+- Labels for the 28 pedagogical topics (prompt types) and the `PRACTICE_NOT_AVAILABLE` error, in all six languages.
+
 ## [0.33.0] - 2026-10-07
 
 ### Added

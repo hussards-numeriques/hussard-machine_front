@@ -89,6 +89,14 @@ Interface in 6 languages (fr, en, es, it, pt-BR, de): `'auto' | Locale` preferen
 Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orchestrator, navigation convention with state.
 → Read when: adding a page, modifying navigation, understanding how `GamePage` switches between views.
 
+### [practice.md](practice.md)
+
+Mode entraînement réservé aux abonnés Calc Rush+ : route `/practice`, `GET /practice/catalog` et
+`GET /practice/{level}/{category}/{prompt_type}` (`services/practice.ts`, `hooks/usePractice.ts`),
+logique pure de série (`lib/practice.ts`), écrans configuration / question / résultat
+(`components/practice/`), points d'entrée visibles uniquement pour les abonnés.
+→ Read when: touching practice mode, the topic (prompt type) labels, or the subscriber-only entry points.
+
 ### [subscription.md](subscription.md)
 
 Achat d'abonnement Stripe Checkout (1/3/12 mois, achat unique), pages de retour

@@ -10,6 +10,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { QuestsPage } from './pages/QuestsPage';
 import { IconsPage } from './pages/IconsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { PracticePage } from './pages/PracticePage';
 import { TermsPage } from './pages/TermsPage';
 import { TermsOfSalePage } from './pages/TermsOfSalePage';
 import { ProgressionPage } from './pages/ProgressionPage';
@@ -51,6 +52,7 @@ function App() {
             <Route path="profile" element={<ProfilePage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="quests" element={<QuestsPage />} />
+            <Route path="practice" element={<PracticePage />} />
             <Route path="icons" element={<IconsPage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="terms-of-sale" element={<TermsOfSalePage />} />

@@ -102,6 +102,7 @@ describe('SubscriptionPage', () => {
 
     expect(screen.getByText('Calc Rush+')).toBeInTheDocument();
     expect(screen.getByText('Parties privées')).toBeInTheDocument();
+    expect(screen.getByText('Mode entraînement')).toBeInTheDocument();
     expect(screen.getByText('8,42 €')).toBeInTheDocument();
     expect(screen.queryByText(/Actif jusqu'au/)).not.toBeInTheDocument();
   });

@@ -220,3 +220,39 @@ describe('HomePage - i18n', () => {
     expect(screen.getByText('Ranked game')).toBeInTheDocument();
   });
 });
+
+describe('HomePage - practice entry', () => {
+  const renderAs = (active: boolean) => {
+    vi.mocked(useAuth).mockReturnValue({
+      client: { getAccessToken: () => 'tok' },
+      user: { username: 'Alice' },
+      isAuthenticated: true,
+      isLoading: false,
+    } as unknown as ReturnType<typeof useAuth>);
+    vi.mocked(useSubscriptionStatus).mockReturnValue({
+      data: { active, expires_at: null },
+    } as unknown as ReturnType<typeof useSubscriptionStatus>);
+    vi.mocked(useGame).mockReturnValue({
+      client: { createLobby: vi.fn() },
+    } as unknown as ReturnType<typeof useGame>);
+    return render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/practice" element={<div>Practice page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+  };
+
+  it('is hidden from a non-subscriber', () => {
+    renderAs(false);
+    expect(screen.queryByText("S'entraîner")).not.toBeInTheDocument();
+  });
+
+  it('leads a subscriber to the practice page', () => {
+    renderAs(true);
+    fireEvent.click(screen.getByText("S'entraîner"));
+    expect(screen.getByText('Practice page')).toBeInTheDocument();
+  });
+});

@@ -79,6 +79,18 @@ describe('Header - user menu', () => {
     ]);
   });
 
+  it('adds the practice link for a supporter only', () => {
+    const { unmount } = renderHeader();
+    fireEvent.click(screen.getByRole('button', { name: 'Menu du joueur' }));
+    expect(screen.queryByRole('link', { name: 'Entraînement' })).not.toBeInTheDocument();
+    unmount();
+
+    mocks.active = true;
+    renderHeader();
+    fireEvent.click(screen.getByRole('button', { name: 'Menu du joueur' }));
+    expect(screen.getByRole('link', { name: 'Entraînement' })).toHaveAttribute('href', '/practice');
+  });
+
   it('crowns the avatar of a supporter only', () => {
     const { unmount } = renderHeader();
     expect(screen.queryByTestId('supporter-crown')).not.toBeInTheDocument();
