@@ -8,6 +8,10 @@
 - `/subscription`: new « Mode entraînement » perk; `/terms-of-sale` lists practice mode among what Calc Rush+ unlocks (six languages).
 - Labels for the 28 pedagogical topics (prompt types) and the `PRACTICE_NOT_AVAILABLE` error, in all six languages.
 
+### Changed
+
+- Language picker moved from the header back to the footer (it was crowding the header); still available in the settings.
+
 ## [0.33.0] - 2026-10-07
 
 ### Added
