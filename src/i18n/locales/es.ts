@@ -11,6 +11,12 @@ export const es = {
     confirm: 'Confirmar',
     close: 'Cerrar',
   },
+  loadingTips: {
+    inputMode:
+      '💡 Consejo: puedes cambiar el modo de entrada (teclado, escritura, teclado numérico) en Ajustes.',
+    levelUp: '💡 Consejo: sube de rango (Bronce → Diamante) en tu página de Perfil.',
+    language: '💡 Consejo: puedes cambiar el idioma en el pie de página o en Ajustes.',
+  },
   locale: {
     auto: 'Automático',
   },
@@ -337,6 +343,8 @@ export const es = {
     sent: 'Respuesta enviada...',
     unreadable: 'No se puede leer, inténtalo otra vez',
     recognitionError: 'Error de reconocimiento, inténtalo otra vez',
+    betaNotice: '🧪 El reconocimiento de escritura todavía se está mejorando.',
+    betaNoticeSettingsLink: 'Puedes elegir otro modo en <settings>Ajustes</settings>.',
   },
   answerDots: {
     label: 'Respuestas por pregunta',

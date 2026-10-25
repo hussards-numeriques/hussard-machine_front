@@ -7,6 +7,7 @@ import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { QuestProgressCard } from '../components/quests/QuestProgressCard';
 import { TitlesLevelBanner } from '../components/quests/TitlesLevelBanner';
 import { LevelSelector } from '../components/quests/LevelSelector';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { resolveTitlesLevelView } from '../lib/titlesLevelView';
 import { cn } from '../lib/utils';
 import type { Level } from '../lib/grades';
@@ -57,11 +58,7 @@ export const QuestsPage: React.FC = () => {
   const subscriptionStatus = useSubscriptionStatus();
 
   if (authLoading || (isAuthenticated && (catalogQuery.isLoading || myTitlesQuery.isLoading))) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

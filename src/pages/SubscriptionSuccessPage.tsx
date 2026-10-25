@@ -4,6 +4,7 @@ import posthog from 'posthog-js';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { useTranslation } from 'react-i18next';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 export const POLL_INTERVAL_MS = 1500;
 export const MAX_POLL_ATTEMPTS = 6;
@@ -42,11 +43,7 @@ export const SubscriptionSuccessPage: React.FC = () => {
   }, [authLoading, isAuthenticated, statusLoading, refetch, confirmed, pollAttempts]);
 
   if (authLoading || statusLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

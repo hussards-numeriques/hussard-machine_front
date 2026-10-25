@@ -13,6 +13,7 @@ import {
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { formatLongDate } from '../lib/date';
 import { AnswerDots } from '../components/AnswerDots';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { getAggregatedAnswerResults } from '../lib/answerDots';
 import {
   LevelChangeConfirmModal,
@@ -271,11 +272,7 @@ export const ProfilePage: React.FC = () => {
   };
 
   if (authLoading || profileQuery.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

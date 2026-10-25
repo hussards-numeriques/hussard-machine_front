@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/useAuth';
 import { useRedeem } from '../hooks/useSubscription';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { ApiError } from '../services/http';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -35,11 +36,7 @@ export const VipPage: React.FC = () => {
   const redeem = useRedeem();
 
   if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/useAuth';
 import { useAnswerInputMode } from '../hooks/useAnswerInputMode';
 import { useLocalePreference } from '../hooks/useLocalePreference';
 import { ANSWER_INPUT_MODES } from '../components/AnswerInput/mode';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { LOCALES, LOCALE_NAMES, type LocalePreference } from '../i18n/locale';
 
 const LANGUAGE_OPTIONS: readonly LocalePreference[] = ['auto', ...LOCALES];
@@ -104,11 +105,7 @@ export const SettingsPage: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (

@@ -11,6 +11,11 @@ export const en = {
     confirm: 'Confirm',
     close: 'Close',
   },
+  loadingTips: {
+    inputMode: '💡 Tip: you can change the input mode (keyboard, handwriting, keypad) in Settings.',
+    levelUp: '💡 Tip: level up your rank (Bronze → Diamond) on your Profile page.',
+    language: '💡 Tip: you can change the language in the footer or in Settings.',
+  },
   locale: {
     auto: 'Automatic',
   },
@@ -336,6 +341,8 @@ export const en = {
     sent: 'Answer sent...',
     unreadable: "Can't read that, try again",
     recognitionError: 'Recognition error, try again',
+    betaNotice: '🧪 Handwriting recognition is still being improved.',
+    betaNoticeSettingsLink: 'You can pick another mode in <settings>Settings</settings>.',
   },
   answerDots: {
     label: 'Answers by question',

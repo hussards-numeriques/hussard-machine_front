@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { HandwritingInput } from './HandwritingInput';
 
 vi.mock('../../services/digit-recognition', () => ({
@@ -7,6 +8,12 @@ vi.mock('../../services/digit-recognition', () => ({
 }));
 
 import { digitRecognitionPort } from '../../services/digit-recognition';
+
+const authMocks = vi.hoisted(() => ({ isAuthenticated: false }));
+
+vi.mock('../../contexts/useAuth', () => ({
+  useAuth: () => ({ isAuthenticated: authMocks.isAuthenticated }),
+}));
 
 const ctxStub = {
   fillStyle: '',
@@ -25,6 +32,7 @@ const ctxStub = {
 
 beforeEach(() => {
   vi.useFakeTimers();
+  authMocks.isAuthenticated = false;
   HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(ctxStub);
   HTMLCanvasElement.prototype.setPointerCapture = vi.fn();
   vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValue(0);
@@ -34,6 +42,13 @@ afterEach(() => {
   vi.useRealTimers();
   vi.clearAllMocks();
 });
+
+const renderInput = (onSubmit = vi.fn(), disabled = false) =>
+  render(
+    <MemoryRouter>
+      <HandwritingInput onSubmit={onSubmit} disabled={disabled} />
+    </MemoryRouter>
+  );
 
 async function drawNumber(canvas: HTMLCanvasElement) {
   fireEvent.pointerDown(canvas, { clientX: 10, clientY: 10, pointerId: 1 });
@@ -46,15 +61,30 @@ async function drawNumber(canvas: HTMLCanvasElement) {
 
 describe('HandwritingInput', () => {
   it('renders the sign, clear and submit controls', () => {
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     expect(screen.getByRole('button', { name: 'Valider' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '±' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Effacer' })).toBeInTheDocument();
     expect(document.querySelector('canvas')).toBeInTheDocument();
   });
 
+  it('shows the beta notice without a settings link for an anonymous player', () => {
+    authMocks.isAuthenticated = false;
+    renderInput();
+    expect(
+      screen.getByText("🧪 La reconnaissance d'écriture est encore en cours d'amélioration.")
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Réglages' })).not.toBeInTheDocument();
+  });
+
+  it('shows a link to settings for an authenticated player', () => {
+    authMocks.isAuthenticated = true;
+    renderInput();
+    expect(screen.getByRole('link', { name: 'Réglages' })).toHaveAttribute('href', '/settings');
+  });
+
   it('maps pointer coords to the backing store when displayed size differs', () => {
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     const canvas = document.querySelector('canvas')!;
     // Backing store 400x200 affiche sur 200x100 (facteur 2) : le doigt a 100,50
     // en pixels affiches doit tomber a 200,100 dans le backing store.
@@ -67,7 +97,7 @@ describe('HandwritingInput', () => {
 
   it('displays the recognized number in a single pass', async () => {
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(123);
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     await drawNumber(document.querySelector('canvas')!);
     expect(screen.getByTestId('current-answer')).toHaveTextContent('123');
   });
@@ -76,7 +106,7 @@ describe('HandwritingInput', () => {
     vi.mocked(digitRecognitionPort.recognizeNumber)
       .mockResolvedValueOnce(12)
       .mockResolvedValueOnce(345);
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     const canvas = document.querySelector('canvas')!;
     await drawNumber(canvas);
     expect(screen.getByTestId('current-answer')).toHaveTextContent('12');
@@ -87,7 +117,7 @@ describe('HandwritingInput', () => {
   it('submits the parsed positive number', async () => {
     const onSubmit = vi.fn();
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(7);
-    render(<HandwritingInput onSubmit={onSubmit} disabled={false} />);
+    renderInput(onSubmit);
     await drawNumber(document.querySelector('canvas')!);
     fireEvent.click(screen.getByRole('button', { name: 'Valider' }));
     expect(onSubmit).toHaveBeenCalledWith(7);
@@ -96,7 +126,7 @@ describe('HandwritingInput', () => {
   it('applies the negative sign on submit', async () => {
     const onSubmit = vi.fn();
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(42);
-    render(<HandwritingInput onSubmit={onSubmit} disabled={false} />);
+    renderInput(onSubmit);
     await drawNumber(document.querySelector('canvas')!);
     fireEvent.click(screen.getByRole('button', { name: '±' }));
     fireEvent.click(screen.getByRole('button', { name: 'Valider' }));
@@ -105,7 +135,7 @@ describe('HandwritingInput', () => {
 
   it('clears the recognized number', async () => {
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(42);
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     const canvas = document.querySelector('canvas')!;
     await drawNumber(canvas);
     expect(screen.getByTestId('current-answer')).toHaveTextContent('42');
@@ -115,7 +145,7 @@ describe('HandwritingInput', () => {
 
   it('shows an error and sets no result when recognition returns null', async () => {
     vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(null);
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={false} />);
+    renderInput();
     await drawNumber(document.querySelector('canvas')!);
     expect(screen.getByText('Impossible de lire, réessaie')).toBeInTheDocument();
     expect(screen.getByTestId('current-answer')).toHaveTextContent('');
@@ -123,12 +153,12 @@ describe('HandwritingInput', () => {
 
   it('does not submit an empty answer', () => {
     const onSubmit = vi.fn();
-    render(<HandwritingInput onSubmit={onSubmit} disabled={false} />);
+    renderInput(onSubmit);
     expect(screen.getByRole('button', { name: 'Valider' })).toBeDisabled();
   });
 
   it('disables controls when disabled prop is true', () => {
-    render(<HandwritingInput onSubmit={vi.fn()} disabled={true} />);
+    renderInput(vi.fn(), true);
     expect(screen.getByRole('button', { name: 'Valider' })).toBeDisabled();
   });
 });

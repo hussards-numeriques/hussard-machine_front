@@ -143,6 +143,15 @@ Numeric text field with a "Submit" button. Submission via Enter or click.
 Draw canvas with handwritten number recognition. The player writes the **whole number**
 (one or several digits) on the canvas; a CRNN model reads the full sequence at once.
 
+### Beta notice
+
+An amber bordered box above the canvas (`answerInput.betaNotice`) tells the player
+recognition is still being improved. A logged-in player additionally sees a
+`<Trans>`-rendered line (`answerInput.betaNoticeSettingsLink`) linking to `/settings` to
+switch mode — hidden for anonymous players since `/settings` is auth-gated. The `<Trans>`
+interpolation tag is named `settings`, not `link`: `<link>` collides with the void HTML
+element of the same name and react-i18next silently drops its children.
+
 ### Pointer interactions
 
 Uses `PointerEvent` events (compatible with stylus, finger, mouse). The canvas backing

@@ -11,6 +11,12 @@ export const it = {
     confirm: 'Conferma',
     close: 'Chiudi',
   },
+  loadingTips: {
+    inputMode:
+      '💡 Suggerimento: puoi cambiare la modalità di input (tastiera, scrittura, tastierino) nelle Impostazioni.',
+    levelUp: '💡 Suggerimento: sali di rango (Bronzo → Diamante) nella tua pagina Profilo.',
+    language: '💡 Suggerimento: puoi cambiare la lingua nel footer o nelle Impostazioni.',
+  },
   locale: {
     auto: 'Automatico',
   },
@@ -338,6 +344,9 @@ export const it = {
     sent: 'Risposta inviata...',
     unreadable: 'Non riesco a leggere, riprova',
     recognitionError: 'Errore di riconoscimento, riprova',
+    betaNotice: '🧪 Il riconoscimento della scrittura è ancora in fase di miglioramento.',
+    betaNoticeSettingsLink:
+      "Puoi scegliere un'altra modalità nelle <settings>Impostazioni</settings>.",
   },
   answerDots: {
     label: 'Risposte per domanda',

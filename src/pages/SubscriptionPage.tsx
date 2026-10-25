@@ -7,6 +7,7 @@ import {
   useSubscriptionStatus,
 } from '../hooks/useSubscription';
 import { SubscriptionCard } from '../components/subscription/SubscriptionCard';
+import { LoadingScreen } from '../components/LoadingScreen';
 import { ParentalGate } from '../components/subscription/ParentalGate';
 import type { SubscriptionPlanKey } from '../services/subscription';
 import { Mascot } from '../components/Mascot';
@@ -38,11 +39,7 @@ export const SubscriptionPage: React.FC = () => {
   const [planAwaitingAdult, setPlanAwaitingAdult] = useState<SubscriptionPlanKey | null>(null);
 
   if (authLoading || (isAuthenticated && statusQuery.isLoading) || plansQuery.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

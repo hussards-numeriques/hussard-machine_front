@@ -7,6 +7,7 @@ import { usePlayerProfile } from '../hooks/usePlayerProfile';
 import { isSubscriptionRequiredError, usePracticeCatalog } from '../hooks/usePractice';
 import { useResolvedAnswerInputMode } from '../hooks/useAnswerInputMode';
 import { digitRecognitionPort } from '../services/digit-recognition';
+import { LoadingScreen } from '../components/LoadingScreen';
 import type { PracticeNotion } from '../services/practice';
 import { Button } from '../components/Button';
 import { PracticeSetup } from '../components/practice/PracticeSetup';
@@ -25,15 +26,6 @@ import {
 } from '../lib/practice';
 
 type DraftChoice = Omit<PracticeChoice, 'level'> & { level: Level | null };
-
-const PracticeLoading: React.FC = () => {
-  const { t } = useTranslation();
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-    </div>
-  );
-};
 
 const PracticeCatalogError: React.FC<{ onRetry: () => void }> = ({ onRetry }) => {
   const { t } = useTranslation();
@@ -81,7 +73,7 @@ export const PracticePage: React.FC = () => {
     setSeries((current) => current && startSeries(current.notion, current.length, Date.now()));
   const handleBackToSetup = () => setSeries(null);
 
-  if (authLoading || status.isLoading) return <PracticeLoading />;
+  if (authLoading || status.isLoading) return <LoadingScreen />;
 
   if (
     !isAuthenticated ||
@@ -105,7 +97,7 @@ export const PracticePage: React.FC = () => {
   }
 
   if (catalog.isError) return <PracticeCatalogError onRetry={() => void catalog.refetch()} />;
-  if (!catalog.data) return <PracticeLoading />;
+  if (!catalog.data) return <LoadingScreen />;
 
   const choice: PracticeChoice = {
     ...draft,

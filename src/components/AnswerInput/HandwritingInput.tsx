@@ -1,8 +1,10 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import type { AnswerInputProps } from './port';
 import { digitRecognitionPort } from '../../services/digit-recognition';
+import { useAuth } from '../../contexts/useAuth';
 
 const RECOGNIZE_DELAY_MS = 700;
 
@@ -15,6 +17,7 @@ const fillWhite = (canvas: HTMLCanvasElement) => {
 
 export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const drawing = React.useRef(false);
   const debounce = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -106,6 +109,17 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
 
   return (
     <div className="space-y-4">
+      <div className="rounded-xl border-2 border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-center text-xs text-amber-700">
+        <p>{t('answerInput.betaNotice')}</p>
+        {isAuthenticated && (
+          <p>
+            <Trans
+              i18nKey="answerInput.betaNoticeSettingsLink"
+              components={{ settings: <Link to="/settings" className="underline font-bold" /> }}
+            />
+          </p>
+        )}
+      </div>
       <p
         data-testid="current-answer"
         className="text-center text-3xl font-bold tracking-widest text-slate-800 min-h-[2.5rem]"

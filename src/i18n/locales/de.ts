@@ -11,6 +11,12 @@ export const de = {
     confirm: 'Bestätigen',
     close: 'Schließen',
   },
+  loadingTips: {
+    inputMode:
+      '💡 Tipp: Du kannst den Eingabemodus (Tastatur, Handschrift, Nummernblock) in den Einstellungen ändern.',
+    levelUp: '💡 Tipp: Steig im Rang auf (Bronze → Diamant) auf deiner Profilseite.',
+    language: '💡 Tipp: Du kannst die Sprache in der Fußzeile oder in den Einstellungen ändern.',
+  },
   locale: {
     auto: 'Automatisch',
   },
@@ -340,6 +346,9 @@ export const de = {
     sent: 'Antwort gesendet...',
     unreadable: 'Nicht lesbar, versuch es nochmal',
     recognitionError: 'Erkennungsfehler, versuch es nochmal',
+    betaNotice: '🧪 Die Handschrifterkennung wird noch verbessert.',
+    betaNoticeSettingsLink:
+      'Du kannst in den <settings>Einstellungen</settings> einen anderen Modus wählen.',
   },
   answerDots: {
     label: 'Antworten pro Frage',

@@ -9,6 +9,12 @@ export const fr = {
     confirm: 'Confirmer',
     close: 'Fermer',
   },
+  loadingTips: {
+    inputMode:
+      '💡 Astuce : tu peux changer le mode de saisie (clavier, écriture, pavé) dans Réglages.',
+    levelUp: '💡 Astuce : progresse pour monter de rang (Bronze → Diamant) sur ta page Profil.',
+    language: '💡 Astuce : tu peux changer la langue dans le pied de page ou dans Réglages.',
+  },
   locale: {
     auto: 'Automatique',
   },
@@ -335,6 +341,8 @@ export const fr = {
     sent: 'Réponse envoyée...',
     unreadable: 'Impossible de lire, réessaie',
     recognitionError: 'Erreur de reconnaissance, réessaie',
+    betaNotice: "🧪 La reconnaissance d'écriture est encore en cours d'amélioration.",
+    betaNoticeSettingsLink: 'Tu peux choisir un autre mode dans <settings>Réglages</settings>.',
   },
   answerDots: {
     label: 'Réponses par question',

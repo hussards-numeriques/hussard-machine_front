@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/useAuth';
 import { useIconCatalog, useMyIcons, useSelectIcon } from '../hooks/useIcons';
 import { IconCard } from '../components/icons/IconCard';
+import { LoadingScreen } from '../components/LoadingScreen';
 
 const IconsNotice: React.FC<{ message: string }> = ({ message }) => {
   const { t } = useTranslation();
@@ -28,11 +29,7 @@ export const IconsPage: React.FC = () => {
   const selectIcon = useSelectIcon();
 
   if (authLoading || (isAuthenticated && (catalogQuery.isLoading || myIconsQuery.isLoading))) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-slate-400 text-lg font-bold animate-pulse">{t('common.loading')}</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isAuthenticated) {

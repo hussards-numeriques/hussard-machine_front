@@ -11,6 +11,12 @@ export const ptBR = {
     confirm: 'Confirmar',
     close: 'Fechar',
   },
+  loadingTips: {
+    inputMode:
+      '💡 Dica: você pode mudar o modo de entrada (teclado, escrita, teclado numérico) em Configurações.',
+    levelUp: '💡 Dica: suba de rank (Bronze → Diamante) na sua página de Perfil.',
+    language: '💡 Dica: você pode mudar o idioma no rodapé ou em Configurações.',
+  },
   locale: {
     auto: 'Automático',
   },
@@ -338,6 +344,8 @@ export const ptBR = {
     sent: 'Resposta enviada...',
     unreadable: 'Não consegui ler, tente de novo',
     recognitionError: 'Erro de reconhecimento, tente de novo',
+    betaNotice: '🧪 O reconhecimento de escrita ainda está sendo melhorado.',
+    betaNoticeSettingsLink: 'Você pode escolher outro modo em <settings>Configurações</settings>.',
   },
   answerDots: {
     label: 'Respostas por pergunta',

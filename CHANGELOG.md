@@ -1,5 +1,12 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Handwriting canvas: an amber notice above it says recognition is still being improved; a logged-in player also gets a link to switch input mode in Réglages (hidden for anonymous players, since Réglages requires an account).
+- Loading screens (Profile, Settings, Quests, Icons, VIP, Subscription, Practice) now show a short tip below the spinner, picked at random with a weighted bias towards the most useful ones (changing input mode in Réglages, levelling up a rank on the Profile page, switching language from the footer or Réglages).
+
 ## [0.34.0] - 2026-10-25
 
 ### Added
