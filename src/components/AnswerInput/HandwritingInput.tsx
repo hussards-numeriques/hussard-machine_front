@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import type { AnswerInputProps } from './port';
 import { digitRecognitionPort } from '../../services/digit-recognition';
@@ -109,33 +108,30 @@ export const HandwritingInput: React.FC<AnswerInputProps> = ({ onSubmit, disable
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border-2 border-dashed border-amber-300 bg-amber-50 px-3 py-2 text-center text-xs text-amber-700">
-        <p>{t('answerInput.betaNotice')}</p>
-        {isAuthenticated && (
-          <p>
-            <Trans
-              i18nKey="answerInput.betaNoticeSettingsLink"
-              components={{ settings: <Link to="/settings" className="underline font-bold" /> }}
-            />
-          </p>
-        )}
-      </div>
       <p
         data-testid="current-answer"
         className="text-center text-3xl font-bold tracking-widest text-slate-800 min-h-[2.5rem]"
       >
         {display}
       </p>
-      <canvas
-        ref={canvasRef}
-        width={400}
-        height={200}
-        className="w-full rounded-xl border-2 border-slate-200 bg-white touch-none"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      />
+      <div className="relative">
+        <span
+          data-testid="handwriting-beta-badge"
+          className="pointer-events-none absolute -top-2.5 right-3 z-10 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700"
+        >
+          {t(isAuthenticated ? 'answerInput.betaBadgeAccount' : 'answerInput.betaBadge')}
+        </span>
+        <canvas
+          ref={canvasRef}
+          width={400}
+          height={200}
+          className="w-full rounded-xl border-2 border-slate-200 bg-white touch-none"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+        />
+      </div>
       {error && <p className="text-sm text-red-500 text-center">{error}</p>}
       <div className="flex gap-2">
         <Button

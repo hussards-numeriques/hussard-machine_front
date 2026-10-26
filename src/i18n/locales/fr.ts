@@ -9,11 +9,30 @@ export const fr = {
     confirm: 'Confirmer',
     close: 'Fermer',
   },
-  loadingTips: {
-    inputMode:
-      '💡 Astuce : tu peux changer le mode de saisie (clavier, écriture, pavé) dans Réglages.',
-    levelUp: '💡 Astuce : progresse pour monter de rang (Bronze → Diamant) sur ta page Profil.',
-    language: '💡 Astuce : tu peux changer la langue dans le pied de page ou dans Réglages.',
+  gameTips: {
+    guest: {
+      progress: 'Connecte-toi pour garder ta progression : XP, rang et historique de tes parties.',
+      customize:
+        'Avec un compte, tu personnalises ton parcours : icône, niveau scolaire et titres.',
+      streak: 'Connecté, tu entretiens une série quotidienne 🔥 en jouant chaque jour.',
+    },
+    member: {
+      levelUp: "Gagne de l'XP à chaque partie pour monter de rang, de Bronze à Diamant.",
+      inputMode: 'Tu peux changer le mode de saisie (clavier, écriture, pavé) dans Réglages.',
+      schoolLevel:
+        'Tu peux passer au niveau scolaire supérieur depuis ton profil quand tu te sens prêt.',
+      titles: 'Avec Calc Rush+, tes quêtes progressent et débloquent des titres à afficher.',
+      practice: "Avec Calc Rush+, tu peux t'entraîner à ton rythme sur le sujet de ton choix.",
+      privateGames:
+        'Avec Calc Rush+, tu peux créer des parties privées pour tes amis ou ta classe.',
+    },
+    subscriber: {
+      practice: 'Le mode Entraînement te laisse réviser le sujet de ton choix, à ton rythme.',
+      privateGames: 'Crée une partie privée et invite tes amis ou ta classe avec un code.',
+      quests: 'Tes quêtes avancent : termine-les pour débloquer des titres.',
+      icon: 'Change ton icône de profil depuis la page Icônes.',
+      inputMode: 'Tu peux changer le mode de saisie (clavier, écriture, pavé) dans Réglages.',
+    },
   },
   locale: {
     auto: 'Automatique',
@@ -341,8 +360,8 @@ export const fr = {
     sent: 'Réponse envoyée...',
     unreadable: 'Impossible de lire, réessaie',
     recognitionError: 'Erreur de reconnaissance, réessaie',
-    betaNotice: "🧪 La reconnaissance d'écriture est encore en cours d'amélioration.",
-    betaNoticeSettingsLink: 'Tu peux choisir un autre mode dans <settings>Réglages</settings>.',
+    betaBadge: '🧪 Expérimental',
+    betaBadgeAccount: '🧪 Expérimental · modifiable dans Réglages',
   },
   answerDots: {
     label: 'Réponses par question',

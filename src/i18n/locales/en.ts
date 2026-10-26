@@ -11,10 +11,27 @@ export const en = {
     confirm: 'Confirm',
     close: 'Close',
   },
-  loadingTips: {
-    inputMode: '💡 Tip: you can change the input mode (keyboard, handwriting, keypad) in Settings.',
-    levelUp: '💡 Tip: level up your rank (Bronze → Diamond) on your Profile page.',
-    language: '💡 Tip: you can change the language in the footer or in Settings.',
+  gameTips: {
+    guest: {
+      progress: 'Log in to keep your progress: XP, rank and game history.',
+      customize: 'With an account you shape your journey: icon, school level and titles.',
+      streak: 'Logged in, you build a daily streak 🔥 by playing every day.',
+    },
+    member: {
+      levelUp: 'Earn XP in every game to climb from Bronze to Diamond.',
+      inputMode: 'You can change the input mode (keyboard, handwriting, keypad) in Settings.',
+      schoolLevel: 'You can move up a school level from your profile when you feel ready.',
+      titles: 'With Calc Rush+, your quests progress and unlock titles to show off.',
+      practice: 'With Calc Rush+, you can practice at your own pace on any topic you choose.',
+      privateGames: 'With Calc Rush+, you can create private games for your friends or class.',
+    },
+    subscriber: {
+      practice: 'Practice mode lets you review any topic you choose, at your own pace.',
+      privateGames: 'Create a private game and invite friends or your class with a code.',
+      quests: 'Your quests are progressing: complete them to unlock titles.',
+      icon: 'Change your profile icon from the Icons page.',
+      inputMode: 'You can change the input mode (keyboard, handwriting, keypad) in Settings.',
+    },
   },
   locale: {
     auto: 'Automatic',
@@ -341,8 +358,8 @@ export const en = {
     sent: 'Answer sent...',
     unreadable: "Can't read that, try again",
     recognitionError: 'Recognition error, try again',
-    betaNotice: '🧪 Handwriting recognition is still being improved.',
-    betaNoticeSettingsLink: 'You can pick another mode in <settings>Settings</settings>.',
+    betaBadge: '🧪 Experimental',
+    betaBadgeAccount: '🧪 Experimental · changeable in Settings',
   },
   answerDots: {
     label: 'Answers by question',

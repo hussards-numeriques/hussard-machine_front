@@ -11,11 +11,31 @@ export const de = {
     confirm: 'Bestätigen',
     close: 'Schließen',
   },
-  loadingTips: {
-    inputMode:
-      '💡 Tipp: Du kannst den Eingabemodus (Tastatur, Handschrift, Nummernblock) in den Einstellungen ändern.',
-    levelUp: '💡 Tipp: Steig im Rang auf (Bronze → Diamant) auf deiner Profilseite.',
-    language: '💡 Tipp: Du kannst die Sprache in der Fußzeile oder in den Einstellungen ändern.',
+  gameTips: {
+    guest: {
+      progress: 'Melde dich an, um deinen Fortschritt zu behalten: XP, Rang und Spielverlauf.',
+      customize: 'Mit einem Konto gestaltest du deinen Weg: Symbol, Klassenstufe und Titel.',
+      streak: 'Angemeldet baust du eine tägliche Serie 🔥 auf, wenn du jeden Tag spielst.',
+    },
+    member: {
+      levelUp: 'Sammle in jedem Spiel XP, um von Bronze bis Diamant aufzusteigen.',
+      inputMode:
+        'Du kannst den Eingabemodus (Tastatur, Handschrift, Nummernblock) in den Einstellungen ändern.',
+      schoolLevel:
+        'Du kannst in deinem Profil in die nächste Klassenstufe wechseln, wenn du bereit bist.',
+      titles: 'Mit Calc Rush+ kommen deine Quests voran und schalten Titel zum Anzeigen frei.',
+      practice: 'Mit Calc Rush+ kannst du in deinem Tempo das Thema üben, das du willst.',
+      privateGames:
+        'Mit Calc Rush+ kannst du private Spiele für Freunde oder deine Klasse erstellen.',
+    },
+    subscriber: {
+      practice: 'Im Trainingsmodus wiederholst du das Thema deiner Wahl in deinem Tempo.',
+      privateGames: 'Erstelle ein privates Spiel und lade Freunde oder deine Klasse per Code ein.',
+      quests: 'Deine Quests kommen voran: schließe sie ab, um Titel freizuschalten.',
+      icon: 'Ändere dein Profilsymbol auf der Symbole-Seite.',
+      inputMode:
+        'Du kannst den Eingabemodus (Tastatur, Handschrift, Nummernblock) in den Einstellungen ändern.',
+    },
   },
   locale: {
     auto: 'Automatisch',
@@ -346,9 +366,8 @@ export const de = {
     sent: 'Antwort gesendet...',
     unreadable: 'Nicht lesbar, versuch es nochmal',
     recognitionError: 'Erkennungsfehler, versuch es nochmal',
-    betaNotice: '🧪 Die Handschrifterkennung wird noch verbessert.',
-    betaNoticeSettingsLink:
-      'Du kannst in den <settings>Einstellungen</settings> einen anderen Modus wählen.',
+    betaBadge: '🧪 Experimentell',
+    betaBadgeAccount: '🧪 Experimentell · änderbar in den Einstellungen',
   },
   answerDots: {
     label: 'Antworten pro Frage',

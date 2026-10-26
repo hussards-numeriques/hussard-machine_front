@@ -68,19 +68,19 @@ describe('HandwritingInput', () => {
     expect(document.querySelector('canvas')).toBeInTheDocument();
   });
 
-  it('shows the beta notice without a settings link for an anonymous player', () => {
+  it('shows the experimental badge without the settings hint for an anonymous player', () => {
     authMocks.isAuthenticated = false;
     renderInput();
-    expect(
-      screen.getByText("🧪 La reconnaissance d'écriture est encore en cours d'amélioration.")
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Réglages' })).not.toBeInTheDocument();
+    expect(screen.getByTestId('handwriting-beta-badge')).toHaveTextContent(/^🧪 Expérimental$/);
   });
 
-  it('shows a link to settings for an authenticated player', () => {
+  it('mentions that the mode can be changed in settings for an authenticated player', () => {
     authMocks.isAuthenticated = true;
     renderInput();
-    expect(screen.getByRole('link', { name: 'Réglages' })).toHaveAttribute('href', '/settings');
+    expect(screen.getByTestId('handwriting-beta-badge')).toHaveTextContent(
+      '🧪 Expérimental · modifiable dans Réglages'
+    );
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('maps pointer coords to the backing store when displayed size differs', () => {

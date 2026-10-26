@@ -10,6 +10,7 @@ import { Mascot } from '../components/Mascot';
 import { CorrectionCard } from '../components/GameFeedback/CorrectionCard';
 import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop';
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
+import { GameTip } from '../components/GameTip';
 import { useTranslation } from 'react-i18next';
 
 interface GameViewProps {
@@ -117,12 +118,15 @@ const IntermissionCard: React.FC<{
   const { t } = useTranslation();
   if (playerId && computeFeedback(game, playerId, questionIndex)) {
     return (
-      <CorrectionCard
-        game={game}
-        playerId={playerId}
-        questionIndex={questionIndex}
-        countdown={countdown}
-      />
+      <>
+        <CorrectionCard
+          game={game}
+          playerId={playerId}
+          questionIndex={questionIndex}
+          countdown={countdown}
+        />
+        <GameTip />
+      </>
     );
   }
 
@@ -130,6 +134,7 @@ const IntermissionCard: React.FC<{
     <>
       <div className="text-9xl font-black text-primary animate-pulse">{countdown}</div>
       <div className="text-2xl font-bold text-slate-600">{t('game.getReady')}</div>
+      <GameTip />
     </>
   );
 };

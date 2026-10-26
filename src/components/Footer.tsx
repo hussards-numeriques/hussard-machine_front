@@ -32,13 +32,17 @@ export const Footer: React.FC = () => {
         <Link to="/privacy-policy" className="hover:text-primary transition-colors">
           {t('footer.privacy')}
         </Link>
+      </div>
+      <label className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 hover:border-primary transition-colors">
+        <span aria-hidden="true">🌐</span>
+        <span>{t('settings.language.title')}</span>
         <select
           aria-label={t('settings.language.title')}
           value={preference}
           onChange={(event) => {
             if (isLocalePreference(event.target.value)) setPreference(event.target.value);
           }}
-          className="bg-transparent text-xs text-slate-400 hover:text-primary transition-colors cursor-pointer"
+          className="bg-transparent text-xs font-semibold text-slate-600 cursor-pointer focus:outline-none"
         >
           <option value="auto">{t('locale.auto')}</option>
           {LOCALES.map((locale) => (
@@ -47,8 +51,8 @@ export const Footer: React.FC = () => {
             </option>
           ))}
         </select>
-      </div>
-      <div className="mt-2">{t('footer.rights', { year })}</div>
+      </label>
+      <div className="mt-3">{t('footer.rights', { year })}</div>
     </footer>
   );
 };

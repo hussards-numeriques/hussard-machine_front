@@ -1,5 +1,13 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Handwriting canvas: the long amber notice (with a link to Réglages) is replaced by a small « Expérimental » badge on the top-right border of the canvas; logged-in players see « modifiable dans Réglages ». No link anymore, since leaving mid-game eliminates the player.
+- Language picker in the footer is now a labelled `🌐 Langue` pill on its own row, separated from the legal links.
+- Tips moved from the page loading screens to the ~5 s intermission between questions during a game, and are now tailored to the player's status (guest, logged in, Calc Rush+ subscriber). Loading screens are plain again.
+
 ## [0.35.0] - 2026-10-25
 
 ### Added

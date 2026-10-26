@@ -5,6 +5,10 @@ import { GameView } from './views/GameView';
 import { GameClient } from './services/GameClient';
 import type { Game } from './types';
 
+vi.mock('./contexts/useAuth', () => ({
+  useAuth: () => ({ isAuthenticated: false, isLoading: false }),
+}));
+
 describe('GameView - correction screen on the last question', () => {
   let client: GameClient;
 
@@ -103,5 +107,8 @@ describe('GameView - correction screen on the last question', () => {
     expect(screen.getByText('Mauvaise réponse')).toBeInTheDocument();
     expect(screen.getByText('54')).toBeInTheDocument();
     expect(screen.getByText('56')).toBeInTheDocument();
+    expect(
+      screen.getByText(/Connecte-toi|Avec un compte|Connecté, tu entretiens/)
+    ).toBeInTheDocument();
   });
 });

@@ -159,3 +159,13 @@ Layout rule for a player row: **left = rank** (avatar: grade ring + level tab), 
 2. Data comes from a new WS message → see [game-flow.md](game-flow.md) to add the callback
 3. New game state → add to `GameState` (types.ts) and the `switch` in `GamePage`
 4. New reusable component → place in `src/components/` with its interface in a `port.ts` if multiple implementations are possible
+
+## Intermission tips (`GameTip`)
+
+During the ~5 s intermission between questions (`IntermissionCard` in `GameView`, both the
+correction card and the « get ready » screen), `GameTip` shows one random tip below the card.
+Tips depend on the player's status (`lib/gameTips.ts`): `guest` (not logged in: keep progress,
+personalise), `member` (logged in: ranks, input mode, school level, and what Calc Rush+
+adds) and `subscriber` (reminder of practice mode, private games, quests, icons). Texts live
+under `gameTips.<audience>.<id>` in every locale. The pick is a random seed stored once per
+intermission; the tip is derived from it during render.

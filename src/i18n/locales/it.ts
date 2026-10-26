@@ -11,11 +11,30 @@ export const it = {
     confirm: 'Conferma',
     close: 'Chiudi',
   },
-  loadingTips: {
-    inputMode:
-      '💡 Suggerimento: puoi cambiare la modalità di input (tastiera, scrittura, tastierino) nelle Impostazioni.',
-    levelUp: '💡 Suggerimento: sali di rango (Bronzo → Diamante) nella tua pagina Profilo.',
-    language: '💡 Suggerimento: puoi cambiare la lingua nel footer o nelle Impostazioni.',
+  gameTips: {
+    guest: {
+      progress: 'Accedi per conservare i tuoi progressi: XP, rango e cronologia delle partite.',
+      customize: 'Con un account personalizzi il tuo percorso: icona, livello scolastico e titoli.',
+      streak: "Con l'accesso effettuato, mantieni una serie giornaliera 🔥 giocando ogni giorno.",
+    },
+    member: {
+      levelUp: 'Guadagna XP a ogni partita per salire da Bronzo a Diamante.',
+      inputMode:
+        'Puoi cambiare la modalità di input (tastiera, scrittura, tastierino) nelle Impostazioni.',
+      schoolLevel:
+        'Puoi passare al livello scolastico successivo dal tuo profilo quando ti senti pronto.',
+      titles: 'Con Calc Rush+, le tue missioni avanzano e sbloccano titoli da mostrare.',
+      practice: "Con Calc Rush+, puoi allenarti con i tuoi tempi sull'argomento che preferisci.",
+      privateGames: 'Con Calc Rush+, puoi creare partite private per i tuoi amici o la tua classe.',
+    },
+    subscriber: {
+      practice: "La modalità Allenamento ti fa ripassare l'argomento che vuoi, con i tuoi tempi.",
+      privateGames: 'Crea una partita privata e invita amici o la tua classe con un codice.',
+      quests: 'Le tue missioni avanzano: completale per sbloccare titoli.',
+      icon: "Cambia l'icona del tuo profilo dalla pagina Icone.",
+      inputMode:
+        'Puoi cambiare la modalità di input (tastiera, scrittura, tastierino) nelle Impostazioni.',
+    },
   },
   locale: {
     auto: 'Automatico',
@@ -344,9 +363,8 @@ export const it = {
     sent: 'Risposta inviata...',
     unreadable: 'Non riesco a leggere, riprova',
     recognitionError: 'Errore di riconoscimento, riprova',
-    betaNotice: '🧪 Il riconoscimento della scrittura è ancora in fase di miglioramento.',
-    betaNoticeSettingsLink:
-      "Puoi scegliere un'altra modalità nelle <settings>Impostazioni</settings>.",
+    betaBadge: '🧪 Sperimentale',
+    betaBadgeAccount: '🧪 Sperimentale · modificabile nelle Impostazioni',
   },
   answerDots: {
     label: 'Risposte per domanda',

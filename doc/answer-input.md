@@ -143,14 +143,13 @@ Numeric text field with a "Submit" button. Submission via Enter or click.
 Draw canvas with handwritten number recognition. The player writes the **whole number**
 (one or several digits) on the canvas; a CRNN model reads the full sequence at once.
 
-### Beta notice
+### Experimental badge
 
-An amber bordered box above the canvas (`answerInput.betaNotice`) tells the player
-recognition is still being improved. A logged-in player additionally sees a
-`<Trans>`-rendered line (`answerInput.betaNoticeSettingsLink`) linking to `/settings` to
-switch mode — hidden for anonymous players since `/settings` is auth-gated. The `<Trans>`
-interpolation tag is named `settings`, not `link`: `<link>` collides with the void HTML
-element of the same name and react-i18next silently drops its children.
+A small amber badge (`data-testid="handwriting-beta-badge"`) straddles the top-right
+border of the canvas (`answerInput.betaBadge`), `pointer-events-none` so it never blocks
+drawing. A logged-in player sees `answerInput.betaBadgeAccount`, which adds that the mode
+can be changed in Settings. It is plain text, never a link: leaving the page mid-game
+eliminates the player.
 
 ### Pointer interactions
 
