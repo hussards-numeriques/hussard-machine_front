@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Sound effects: synthesized with the Web Audio API (no audio files, no music, no SEO or bundle impact) for correct and wrong answers, the last-3-seconds tick, the launch countdown and GO, keypad taps, XP gain, grade-up, title unlock and the podium. Sounds can be turned off in Réglages (device-only, available to guests).
+
 ## [0.35.4] - 2026-10-26
 
 ### Changed

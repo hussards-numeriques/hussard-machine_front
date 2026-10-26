@@ -5,6 +5,7 @@ import type { Player } from '../types';
 import { Mascot } from './Mascot';
 import { PlayerAvatar } from './PlayerAvatar';
 import { cn } from '../lib/utils';
+import { useSound } from '../hooks/useSound';
 
 interface LaunchCountdownOverlayProps {
   seconds: number | null;
@@ -22,8 +23,14 @@ export const LaunchCountdownOverlay: React.FC<LaunchCountdownOverlayProps> = ({
   players,
 }) => {
   const { t } = useTranslation();
+  const play = useSound();
   const label = countdownLabel(seconds, t);
   const isNumber = seconds !== null && seconds > 0;
+
+  React.useEffect(() => {
+    if (seconds === null) return;
+    play(seconds === 0 ? 'go' : 'countdown');
+  }, [seconds, play]);
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 px-4 bg-slate-50">

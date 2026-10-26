@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
+import { useSound } from '../../hooks/useSound';
 import type { AnswerInputProps } from './port';
 
 const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 
 export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) => {
   const { t } = useTranslation();
+  const play = useSound();
   const [digits, setDigits] = useState('');
   const [isNegative, setIsNegative] = useState(false);
 
@@ -19,8 +21,14 @@ export const KeypadInput: React.FC<AnswerInputProps> = ({ onSubmit, disabled }) 
   }, [disabled]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const appendDigit = (digit: string) => setDigits((prev) => prev + digit);
-  const handleBackspace = () => setDigits((prev) => prev.slice(0, -1));
+  const appendDigit = (digit: string) => {
+    play('tap');
+    setDigits((prev) => prev + digit);
+  };
+  const handleBackspace = () => {
+    play('tap');
+    setDigits((prev) => prev.slice(0, -1));
+  };
 
   const handleValidate = () => {
     if (digits.length === 0) return;

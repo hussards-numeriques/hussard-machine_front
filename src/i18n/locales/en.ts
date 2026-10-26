@@ -59,6 +59,12 @@ export const en = {
       title: 'Language',
       autoDescription: "Follows your device's language.",
     },
+    sound: {
+      title: 'Sounds',
+      description: 'Plays in-game sounds: correct answers, countdown, victory…',
+      on: 'On',
+      off: 'Off',
+    },
   },
   grades: {
     BRONZE: 'Bronze',

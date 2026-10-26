@@ -6,6 +6,7 @@ import type { XpProgress } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
 import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
 import { cn } from '../../lib/utils';
+import { useSound } from '../../hooks/useSound';
 import { PlayerLevel } from '../PlayerLevel';
 import { GradeLabelRow } from './GradeLabelRow';
 import { XpBarFooter } from './XpBarFooter';
@@ -25,6 +26,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
   level,
 }) => {
   const { t } = useTranslation();
+  const play = useSound();
   const { before, after } = progress;
   const [animated, setAnimated] = useState(false);
   const [glowing, setGlowing] = useState(false);
@@ -55,6 +57,12 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
     : beforeGradeIndex;
 
   const justCrossedGrade = after != null && afterGradeIndex > beforeGradeIndex;
+  const hasGainedXp = after != null && after.experience > before.experience;
+
+  useEffect(() => {
+    if (!animated || !hasGainedXp) return;
+    play(justCrossedGrade ? 'levelUp' : 'xp');
+  }, [animated, hasGainedXp, justCrossedGrade, play]);
 
   useEffect(() => {
     if (!animated || !justCrossedGrade || firedEffectRef.current) {

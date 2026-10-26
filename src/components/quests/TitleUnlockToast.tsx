@@ -3,6 +3,7 @@ import { resolveRarityLabel } from '../../lib/rarity';
 import { TitleLabel } from '../PlayerTitle';
 import type { MyTitle } from '../../services/quests';
 import { useTranslation } from 'react-i18next';
+import { useSound } from '../../hooks/useSound';
 
 interface TitleUnlockToastProps {
   titles: MyTitle[];
@@ -15,6 +16,10 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
   onDismiss,
 }) => {
   const { t } = useTranslation();
+  const play = useSound();
+  useEffect(() => {
+    play('unlock');
+  }, [play]);
   useEffect(() => {
     const timeout = window.setTimeout(() => onDismiss(title.id), AUTO_DISMISS_MS);
     return () => window.clearTimeout(timeout);

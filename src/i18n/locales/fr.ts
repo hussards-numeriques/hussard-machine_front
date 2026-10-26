@@ -60,6 +60,12 @@ export const fr = {
       title: 'Langue',
       autoDescription: 'Suit la langue de ton appareil.',
     },
+    sound: {
+      title: 'Sons',
+      description: 'Joue les sons de la partie : bonne réponse, compte à rebours, victoire…',
+      on: 'Activés',
+      off: 'Désactivés',
+    },
   },
   grades: {
     BRONZE: 'Bronze',

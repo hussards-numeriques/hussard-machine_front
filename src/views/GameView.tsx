@@ -12,6 +12,7 @@ import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop'
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
 import { GameTip } from '../components/GameTip';
 import { useTranslation } from 'react-i18next';
+import { useSound } from '../hooks/useSound';
 
 interface GameViewProps {
   client: GameClient;
@@ -146,7 +147,13 @@ const QuestionCard: React.FC<{
   onSubmit: (value: number) => void;
 }> = ({ question, remainingSeconds, myAnswer, onSubmit }) => {
   const { t } = useTranslation();
+  const play = useSound();
   const isTimerLow = remainingSeconds !== null && remainingSeconds <= 3;
+  const isTicking = isTimerLow && remainingSeconds > 0 && myAnswer === null;
+
+  React.useEffect(() => {
+    if (isTicking) play('tick');
+  }, [isTicking, remainingSeconds, play]);
 
   return (
     <>

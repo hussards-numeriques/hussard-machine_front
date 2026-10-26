@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../lib/utils';
+import { useSound } from '../../hooks/useSound';
 
 interface AnswerFeedbackPopProps {
   isCorrect: boolean;
@@ -12,7 +13,12 @@ export const AnswerFeedbackPop: React.FC<AnswerFeedbackPopProps> = ({
   pointsEarned,
 }) => {
   const { t } = useTranslation();
+  const play = useSound();
   const [faded, setFaded] = React.useState(false);
+
+  React.useEffect(() => {
+    play(isCorrect ? 'correct' : 'wrong');
+  }, [play, isCorrect]);
 
   React.useEffect(() => {
     const timeout = window.setTimeout(() => setFaded(true), 1000);

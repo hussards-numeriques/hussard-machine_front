@@ -16,6 +16,7 @@ import type { MyTitle } from '../services/quests';
 import { useGameConfig } from '../hooks/useGameConfig';
 import { EndGameXpProgress } from '../components/grade/EndGameXpProgress';
 import type { XpProgress } from '../hooks/useXpProgress';
+import { useSound } from '../hooks/useSound';
 
 interface PodiumViewProps {
   game: Game;
@@ -34,11 +35,13 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const play = useSound();
   const { data: config } = useGameConfig();
   const { isAuthenticated, client: authClient } = useAuth();
   const sortedPlayers = [...game.players].sort((a, b) => b.score - a.score);
   const winner = sortedPlayers[0];
   const currentPlayer = game.players.find((p) => p.id === currentPlayerId);
+  const isOnPodium = sortedPlayers.slice(0, 3).some((p) => p.id === currentPlayerId);
 
   const handleReplay = () => {
     const token = isAuthenticated ? authClient.getAccessToken() : null;
@@ -52,6 +55,10 @@ export const PodiumView: React.FC<PodiumViewProps> = ({
       origin: { y: 0.6 },
     });
   }, []);
+
+  React.useEffect(() => {
+    play(isOnPodium ? 'victory' : 'finish');
+  }, [play, isOnPodium]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-8 bg-slate-50 text-slate-900">

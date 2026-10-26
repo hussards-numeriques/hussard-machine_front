@@ -63,6 +63,12 @@ export const de = {
       title: 'Sprache',
       autoDescription: 'Folgt der Sprache deines Geräts.',
     },
+    sound: {
+      title: 'Töne',
+      description: 'Spielt Spieltöne ab: richtige Antwort, Countdown, Sieg…',
+      on: 'An',
+      off: 'Aus',
+    },
   },
   grades: {
     BRONZE: 'Bronze',

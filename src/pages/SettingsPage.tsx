@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/useAuth';
 import { useAnswerInputMode } from '../hooks/useAnswerInputMode';
 import { useLocalePreference } from '../hooks/useLocalePreference';
+import { useSoundEnabled } from '../hooks/useSoundEnabled';
+import { soundPlayer } from '../services/sound';
 import { ANSWER_INPUT_MODES } from '../components/AnswerInput/mode';
 import { LoadingScreen } from '../components/LoadingScreen';
 import { LOCALES, LOCALE_NAMES, type LocalePreference } from '../i18n/locale';
@@ -71,6 +73,43 @@ const InputModeCard: React.FC = () => {
   );
 };
 
+const SoundCard: React.FC = () => {
+  const { t } = useTranslation();
+  const [enabled, setEnabled] = useSoundEnabled();
+
+  const choose = (value: boolean) => {
+    setEnabled(value);
+    if (value) soundPlayer.play('correct');
+  };
+
+  return (
+    <section
+      aria-labelledby="settings-sound"
+      className="bg-white rounded-3xl shadow-lg border-2 border-slate-100 p-6 space-y-4"
+    >
+      <div>
+        <h2 id="settings-sound" className="text-2xl font-black text-slate-700">
+          {t('settings.sound.title')}
+        </h2>
+        <p className="text-sm text-slate-400">{t('settings.deviceOnly')}</p>
+      </div>
+      <p className="text-sm text-slate-500">{t('settings.sound.description')}</p>
+      <div className="space-y-3">
+        <OptionButton
+          isActive={enabled}
+          label={t('settings.sound.on')}
+          onClick={() => choose(true)}
+        />
+        <OptionButton
+          isActive={!enabled}
+          label={t('settings.sound.off')}
+          onClick={() => choose(false)}
+        />
+      </div>
+    </section>
+  );
+};
+
 const LanguageCard: React.FC = () => {
   const { t } = useTranslation();
   const [preference, setPreference] = useLocalePreference();
@@ -115,6 +154,7 @@ export const SettingsPage: React.FC = () => {
       ) : (
         <SettingsNotice message={t('settings.loginRequired')} />
       )}
+      <SoundCard />
       <LanguageCard />
     </div>
   );

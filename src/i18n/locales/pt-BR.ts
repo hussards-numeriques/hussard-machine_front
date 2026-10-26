@@ -63,6 +63,12 @@ export const ptBR = {
       title: 'Idioma',
       autoDescription: 'Segue o idioma do seu dispositivo.',
     },
+    sound: {
+      title: 'Sons',
+      description: 'Toca os sons do jogo: resposta certa, contagem regressiva, vitória…',
+      on: 'Ativados',
+      off: 'Desativados',
+    },
   },
   grades: {
     BRONZE: 'Bronze',

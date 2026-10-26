@@ -62,6 +62,12 @@ export const it = {
       title: 'Lingua',
       autoDescription: 'Segue la lingua del tuo dispositivo.',
     },
+    sound: {
+      title: 'Suoni',
+      description: 'Riproduce i suoni di gioco: risposta corretta, conto alla rovescia, vittoria…',
+      on: 'Attivi',
+      off: 'Disattivati',
+    },
   },
   grades: {
     BRONZE: 'Bronzo',
