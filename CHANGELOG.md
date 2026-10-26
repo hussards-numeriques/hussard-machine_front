@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Minimum Node.js is now 24 (active LTS): `engines` in `package.json`, `.nvmrc`, README, and the CI (previously Node 20, already below what Capacitor 8's CLI requires). The Docker build was already on Node 24. Node 25 stays supported locally but is end-of-life, so it is not used for CI or Docker.
+
 ## [0.35.2] - 2026-10-26
 
 ### Fixed

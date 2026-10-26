@@ -13,7 +13,7 @@ The web interface for Calc Rush, built with React and Vite.
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 24+ (see `.nvmrc`)
 - npm
 
 ### Initialization
