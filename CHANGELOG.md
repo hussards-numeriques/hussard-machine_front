@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- Test suite no longer breaks on Node 25, whose built-in `localStorage` shadowed jsdom's: `vite.config.ts` now runs test workers with `--no-experimental-webstorage` when the running Node supports that flag (Node 20 in CI is unaffected).
+
 ## [0.35.1] - 2026-10-26
 
 ### Changed

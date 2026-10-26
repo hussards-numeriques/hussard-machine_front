@@ -6,6 +6,10 @@ import { defineConfig } from 'vitest/config';
 
 const MOBILE_OUT_DIR = 'dist-mobile';
 
+const DISABLE_NODE_WEBSTORAGE = process.allowedNodeEnvironmentFlags.has('--experimental-webstorage')
+  ? ['--no-experimental-webstorage']
+  : [];
+
 const WEB_ONLY_PUBLIC_FILES = [
   'robots.txt',
   'sitemap.xml',
@@ -59,6 +63,7 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
     pool: 'forks',
+    execArgv: DISABLE_NODE_WEBSTORAGE,
     maxConcurrency: 1,
   },
 }));
