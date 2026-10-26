@@ -209,7 +209,6 @@ export const de = {
     questsTitles: 'Quests & Titel',
     icons: 'Icons',
     settings: 'Einstellungen',
-    practice: 'Training',
     logout: 'Abmelden',
     login: 'Anmelden',
   },

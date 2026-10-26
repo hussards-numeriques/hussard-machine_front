@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- Practice mode entry removed from the player menu; it is now reachable only from the home page (Calc Rush+ subscribers only).
+
 ## [0.35.3] - 2026-10-26
 
 ### Changed

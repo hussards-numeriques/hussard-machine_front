@@ -204,7 +204,6 @@ export const en = {
     questsTitles: 'Quests & Titles',
     icons: 'Icons',
     settings: 'Settings',
-    practice: 'Practice',
     logout: 'Log out',
     login: 'Log in',
   },

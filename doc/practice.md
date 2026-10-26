@@ -49,8 +49,8 @@ exporté par `services/gameSchemas.ts`). Erreurs (`ApiError.code`) : `INVALID_TO
 
 ## Points d'entrée (abonnés uniquement)
 
-Bouton « S'entraîner » sur `HomePage` et lien « Entraînement » en tête du menu joueur
-(`Header`), tous deux absents du DOM si l'abonnement n'est pas actif. Avantage « Mode
+Bouton « S'entraîner » sur `HomePage` uniquement (pas dans le menu joueur), absent du DOM
+si l'abonnement n'est pas actif. Avantage « Mode
 entraînement » listé en premier dans `PERKS` de `/subscription`.
 
 ## i18n
@@ -58,7 +58,7 @@ entraînement » listé en premier dans `PERKS` de `/subscription`.
 `practice.*`, `promptTypes.*` (libellé de chaque notion, résolu par
 `resolvePromptTypeLabel` ; `isPromptType` s'appuie sur un `Record<PromptType, true>` donc un
 nouveau type de prompt oublié casse `tsc`), `errors.api.PRACTICE_NOT_AVAILABLE`,
-`header.practice`, `home.practice*`, `subscription.perks.practice`.
+`home.practice*`, `subscription.perks.practice`.
 
 ## Tests
 

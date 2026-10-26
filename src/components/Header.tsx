@@ -12,8 +12,6 @@ import { StreakBadge } from './streak/StreakBadge';
 import { SubscriptionMenuCard, SupporterCrown } from './SubscriptionStatus';
 import { useTranslation } from 'react-i18next';
 
-const PRACTICE_LINK = { to: '/practice', labelKey: 'header.practice' } as const;
-
 const MENU_LINKS = [
   { to: '/profile', labelKey: 'header.profile' },
   { to: '/quests', labelKey: 'header.questsTitles' },
@@ -94,7 +92,7 @@ const UserMenu: React.FC<{ username: string }> = ({ username }) => {
             </div>
           </div>
           <SubscriptionMenuCard onNavigate={close} />
-          {(isSupporter ? [PRACTICE_LINK, ...MENU_LINKS] : MENU_LINKS).map(({ to, labelKey }) => (
+          {MENU_LINKS.map(({ to, labelKey }) => (
             <Link
               key={to}
               to={to}

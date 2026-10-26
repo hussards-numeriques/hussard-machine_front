@@ -209,7 +209,6 @@ export const ptBR = {
     questsTitles: 'Missões e títulos',
     icons: 'Ícones',
     settings: 'Ajustes',
-    practice: 'Treino',
     logout: 'Sair',
     login: 'Entrar',
   },

@@ -208,7 +208,6 @@ export const it = {
     questsTitles: 'Missioni e titoli',
     icons: 'Icone',
     settings: 'Impostazioni',
-    practice: 'Allenamento',
     logout: 'Esci',
     login: 'Accedi',
   },

@@ -208,7 +208,6 @@ export const es = {
     questsTitles: 'Misiones y títulos',
     icons: 'Iconos',
     settings: 'Ajustes',
-    practice: 'Entrenamiento',
     logout: 'Cerrar sesión',
     login: 'Iniciar sesión',
   },

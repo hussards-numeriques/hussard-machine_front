@@ -206,7 +206,6 @@ export const fr = {
     questsTitles: 'Quêtes & Titres',
     icons: 'Icônes',
     settings: 'Réglages',
-    practice: 'Entraînement',
     logout: 'Se déconnecter',
     login: 'Se connecter',
   },
