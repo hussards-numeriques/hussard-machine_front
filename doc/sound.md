@@ -16,19 +16,19 @@ Short synthesized sound effects (no music) tied to stimulating actions. Everythi
 
 ## Where sounds play
 
-| Sound       | Trigger                                                              |
-| ----------- | -------------------------------------------------------------------- |
-| `correct`   | `useAnswerSound` in `GameView`, once per answered question (correct) |
-| `wrong`     | `useAnswerSound` in `GameView`, once per answered question (wrong)   |
-| `tick`      | `QuestionCard`, each of the last 3 seconds while not answered        |
-| `countdown` | `LaunchCountdownOverlay`, 5→1                                        |
-| `go`        | `LaunchCountdownOverlay`, 0                                          |
-| `tap`       | `KeypadInput` digit / backspace                                      |
-| `xp`        | `EndGameXpProgress` bar animation when XP was gained                 |
-| `levelUp`   | `EndGameXpProgress` when a grade was just crossed (instead of `xp`)  |
-| `unlock`    | `TitleUnlockToast` appears                                           |
-| `victory`   | `PodiumView` when the current player is in the top 3                 |
-| `finish`    | `PodiumView` otherwise                                               |
+| Sound       | Trigger                                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------- |
+| `correct`   | `useAnswerSound` in `GameView`, once per answered question (correct)                                      |
+| `wrong`     | `useAnswerSound` in `GameView`, once per answered question (wrong)                                        |
+| `tick`      | `QuestionCard`, each of the last 3 seconds while not answered                                             |
+| `countdown` | `LaunchCountdownOverlay`, 5→1                                                                             |
+| `go`        | `LaunchCountdownOverlay`, 0                                                                               |
+| `tap`       | `KeypadInput` digit / backspace                                                                           |
+| `xp`        | `EndGameXpProgress` bar animation: 3 to 16 rising blops (`xpBlopCount`), scaled by XP gained vs one grade |
+| `levelUp`   | `EndGameXpProgress` when a grade was just crossed (instead of `xp`)                                       |
+| `unlock`    | `TitleUnlockToast` appears                                                                                |
+| `victory`   | `PodiumView` when the current player is in the top 3                                                      |
+| `finish`    | `PodiumView` otherwise                                                                                    |
 
 ## Adding or tuning a sound
 
