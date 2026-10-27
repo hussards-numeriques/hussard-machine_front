@@ -11,23 +11,24 @@ Short synthesized sound effects (no music) tied to stimulating actions. Everythi
 | `src/services/sound/WebAudioSoundPlayer.ts`  | Adapter: one oscillator + envelope per note, shared compressor and master gain, lazy `AudioContext`                                                          |
 | `src/services/sound/unlockOnFirstGesture.ts` | Resumes the `AudioContext` on pointerup/click/touchend/keydown and keeps listening until it is really `running` (autoplay policy, iOS); called in `main.tsx` |
 | `src/hooks/useSoundEnabled.ts`               | On/off preference in `localStorage` (`calc-rush:sound-enabled`, default on), device-only                                                                     |
+| `src/hooks/useAnswerSound.ts`                | Plays `correct`/`wrong` once per question id (survives `AnswerFeedbackPop` remounts)                                                                         |
 | `src/hooks/useSound.ts`                      | Returns `play(id)`, a no-op when sounds are disabled. Components call this, never the player directly                                                        |
 
 ## Where sounds play
 
-| Sound       | Trigger                                                             |
-| ----------- | ------------------------------------------------------------------- |
-| `correct`   | `AnswerFeedbackPop` mounts with a correct answer                    |
-| `wrong`     | `AnswerFeedbackPop` mounts with a wrong answer                      |
-| `tick`      | `QuestionCard`, each of the last 3 seconds while not answered       |
-| `countdown` | `LaunchCountdownOverlay`, 5→1                                       |
-| `go`        | `LaunchCountdownOverlay`, 0                                         |
-| `tap`       | `KeypadInput` digit / backspace                                     |
-| `xp`        | `EndGameXpProgress` bar animation when XP was gained                |
-| `levelUp`   | `EndGameXpProgress` when a grade was just crossed (instead of `xp`) |
-| `unlock`    | `TitleUnlockToast` appears                                          |
-| `victory`   | `PodiumView` when the current player is in the top 3                |
-| `finish`    | `PodiumView` otherwise                                              |
+| Sound       | Trigger                                                              |
+| ----------- | -------------------------------------------------------------------- |
+| `correct`   | `useAnswerSound` in `GameView`, once per answered question (correct) |
+| `wrong`     | `useAnswerSound` in `GameView`, once per answered question (wrong)   |
+| `tick`      | `QuestionCard`, each of the last 3 seconds while not answered        |
+| `countdown` | `LaunchCountdownOverlay`, 5→1                                        |
+| `go`        | `LaunchCountdownOverlay`, 0                                          |
+| `tap`       | `KeypadInput` digit / backspace                                      |
+| `xp`        | `EndGameXpProgress` bar animation when XP was gained                 |
+| `levelUp`   | `EndGameXpProgress` when a grade was just crossed (instead of `xp`)  |
+| `unlock`    | `TitleUnlockToast` appears                                           |
+| `victory`   | `PodiumView` when the current player is in the top 3                 |
+| `finish`    | `PodiumView` otherwise                                               |
 
 ## Adding or tuning a sound
 

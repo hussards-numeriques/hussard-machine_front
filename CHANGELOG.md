@@ -1,5 +1,15 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- The correct/wrong answer sound was played a second time when the next question appeared (and again on the podium); it now plays once per question.
+
+### Changed
+
+- XP gain sound is now a low, rising "gourd filling" bubble instead of a bright arpeggio.
+
 ## [0.36.1] - 2026-10-27
 
 ### Fixed

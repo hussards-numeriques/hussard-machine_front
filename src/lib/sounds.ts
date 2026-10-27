@@ -37,6 +37,8 @@ const G6 = 91;
 const A6 = 93;
 const C7 = 96;
 
+const GOURD_FILL_MIDIS = [48, 50, 52, 53, 55, 57, 59, 60, 62];
+
 const note = (
   midi: number,
   startSeconds: number,
@@ -72,7 +74,7 @@ export const SOUND_NOTES: Record<SoundId, readonly SoundNote[]> = {
     note(G6, 0.04, 0.6, 0.15),
   ],
   tap: [note(G5, 0, 0.04, 0.2, 'triangle')],
-  xp: arpeggio([C6, E6, G6, C7, E6 + 12], 0.06, 0.3, 0.3, 'triangle'),
+  xp: arpeggio(GOURD_FILL_MIDIS, 0.07, 0.14, 0.4),
   levelUp: [
     ...arpeggio([G4, C5, E5, G5, C6, E6, G6], 0.07, 0.35, 0.3, 'triangle'),
     note(C6, 0.55, 0.9, 0.3, 'triangle'),

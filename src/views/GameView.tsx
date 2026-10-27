@@ -12,6 +12,7 @@ import { AnswerFeedbackPop } from '../components/GameFeedback/AnswerFeedbackPop'
 import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
 import { GameTip } from '../components/GameTip';
 import { useTranslation } from 'react-i18next';
+import { useAnswerSound } from '../hooks/useAnswerSound';
 import { useSound } from '../hooks/useSound';
 
 interface GameViewProps {
@@ -217,6 +218,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     ? findPlayerAnswer(game, currentPlayerId, currentQuestion.id)
     : null;
   const hasAnswered = myCurrentAnswer !== null;
+  useAnswerSound(myCurrentAnswer);
 
   React.useEffect(() => {
     client.setQuestionCountdownCallback((seconds: number) => {
