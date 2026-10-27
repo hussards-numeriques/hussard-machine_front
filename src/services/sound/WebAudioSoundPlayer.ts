@@ -1,4 +1,4 @@
-import { SOUND_NOTES, midiToFrequency, type SoundId, type SoundNote } from '../../lib/sounds';
+import { SOUND_NOTES, midiToFrequency, type Sound, type SoundNote } from '../../lib/sounds';
 import type { SoundPlayer } from './port';
 
 const MASTER_VOLUME = 0.6;
@@ -14,16 +14,16 @@ export class WebAudioSoundPlayer implements SoundPlayer {
   private context: AudioContext | null = null;
   private output: AudioNode | null = null;
 
-  play(id: SoundId): void {
+  play(sound: Sound): void {
     const context = this.ensureContext();
     if (!context || !this.output) return;
     if (isRunning(context)) {
-      this.schedule(context, this.output, id);
+      this.schedule(context, this.output, sound);
       return;
     }
     const output = this.output;
     void this.resume(context).then((running) => {
-      if (running) this.schedule(context, output, id);
+      if (running) this.schedule(context, output, sound);
     });
   }
 
@@ -42,8 +42,9 @@ export class WebAudioSoundPlayer implements SoundPlayer {
     return isRunning(context);
   }
 
-  private schedule(context: AudioContext, output: AudioNode, id: SoundId): void {
-    SOUND_NOTES[id].forEach((n) => this.scheduleNote(context, output, n, context.currentTime));
+  private schedule(context: AudioContext, output: AudioNode, sound: Sound): void {
+    const notes = typeof sound === 'string' ? SOUND_NOTES[sound] : sound;
+    notes.forEach((n) => this.scheduleNote(context, output, n, context.currentTime));
   }
 
   private ensureContext(): AudioContext | null {

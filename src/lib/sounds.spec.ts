@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { SOUND_NOTES, midiToFrequency, soundDurationSeconds, type SoundId } from './sounds';
+import {
+  SOUND_NOTES,
+  midiToFrequency,
+  soundDurationSeconds,
+  xpBlopCount,
+  xpFillNotes,
+  type SoundId,
+} from './sounds';
 
 const SOUND_IDS = Object.keys(SOUND_NOTES) as SoundId[];
 
@@ -32,5 +39,35 @@ describe('SOUND_NOTES', () => {
 
   it('keeps the tick shorter than the correct jingle', () => {
     expect(soundDurationSeconds('tick')).toBeLessThan(soundDurationSeconds('correct'));
+  });
+});
+
+describe('xpBlopCount', () => {
+  it('gives a handful of blops for a tiny gain', () => {
+    expect(xpBlopCount(1, 100)).toBe(3);
+  });
+
+  it('gives more blops the more XP was gained', () => {
+    expect(xpBlopCount(60, 100)).toBeGreaterThan(xpBlopCount(20, 100));
+  });
+
+  it('caps the blops once a whole grade worth of XP is gained', () => {
+    expect(xpBlopCount(100, 100)).toBe(xpBlopCount(500, 100));
+  });
+});
+
+describe('xpFillNotes', () => {
+  it('plays exactly the requested number of blops, rising in pitch', () => {
+    const notes = xpFillNotes(6);
+    expect(notes).toHaveLength(6);
+    const midis = notes.map((n) => n.midi);
+    expect(midis).toEqual([...midis].sort((a, b) => a - b));
+  });
+
+  it('always starts and ends on the same pitches whatever the count', () => {
+    const few = xpFillNotes(3);
+    const many = xpFillNotes(12);
+    expect(few[0].midi).toBe(many[0].midi);
+    expect(few[few.length - 1].midi).toBe(many[many.length - 1].midi);
   });
 });

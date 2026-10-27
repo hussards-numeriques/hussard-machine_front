@@ -7,6 +7,7 @@ import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeP
 import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
 import { cn } from '../../lib/utils';
 import { useSound } from '../../hooks/useSound';
+import { xpBlopCount, xpFillNotes } from '../../lib/sounds';
 import { PlayerLevel } from '../PlayerLevel';
 import { GradeLabelRow } from './GradeLabelRow';
 import { XpBarFooter } from './XpBarFooter';
@@ -57,12 +58,14 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
     : beforeGradeIndex;
 
   const justCrossedGrade = after != null && afterGradeIndex > beforeGradeIndex;
-  const hasGainedXp = after != null && after.experience > before.experience;
+  const gainedXp = after != null ? after.experience - before.experience : 0;
+  const hasGainedXp = gainedXp > 0;
+  const experiencePerGrade = config.experience_per_grade;
 
   useEffect(() => {
     if (!animated || !hasGainedXp) return;
-    play(justCrossedGrade ? 'levelUp' : 'xp');
-  }, [animated, hasGainedXp, justCrossedGrade, play]);
+    play(justCrossedGrade ? 'levelUp' : xpFillNotes(xpBlopCount(gainedXp, experiencePerGrade)));
+  }, [animated, hasGainedXp, justCrossedGrade, gainedXp, experiencePerGrade, play]);
 
   useEffect(() => {
     if (!animated || !justCrossedGrade || firedEffectRef.current) {
@@ -141,7 +144,6 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
   }
 
   const diffSegments = computeGradeDiffSegments(before, after, config);
-  const gainedXp = after.experience - before.experience;
   const { nextGrade, xpToNextGrade } = computeGradeProgress(
     after.experience,
     after.canPromote,

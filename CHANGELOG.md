@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Changed
+
+- XP gain sound: the number of blops now scales with the XP gained in the game (3 to 16, capped at one grade worth of XP).
+
 ## [0.36.2] - 2026-10-27
 
 ### Fixed

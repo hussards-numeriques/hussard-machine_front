@@ -1,6 +1,6 @@
-import type { SoundId } from '../../lib/sounds';
+import type { Sound } from '../../lib/sounds';
 
 export interface SoundPlayer {
-  play: (id: SoundId) => void;
+  play: (sound: Sound) => void;
   unlock: () => Promise<boolean>;
 }

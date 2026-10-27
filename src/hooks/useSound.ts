@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import type { SoundId } from '../lib/sounds';
+import type { Sound } from '../lib/sounds';
 import { soundPlayer } from '../services/sound';
 import { useSoundEnabled } from './useSoundEnabled';
 
-export const useSound = (): ((id: SoundId) => void) => {
+export const useSound = (): ((sound: Sound) => void) => {
   const [enabled] = useSoundEnabled();
   return useCallback(
-    (id: SoundId) => {
-      if (enabled) soundPlayer.play(id);
+    (sound: Sound) => {
+      if (enabled) soundPlayer.play(sound);
     },
     [enabled]
   );

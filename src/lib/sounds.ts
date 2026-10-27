@@ -37,8 +37,6 @@ const G6 = 91;
 const A6 = 93;
 const C7 = 96;
 
-const GOURD_FILL_MIDIS = [48, 50, 52, 53, 55, 57, 59, 60, 62];
-
 const note = (
   midi: number,
   startSeconds: number,
@@ -55,6 +53,27 @@ const arpeggio = (
   wave: OscillatorType = 'sine'
 ): SoundNote[] =>
   midis.map((midi, index) => note(midi, index * stepSeconds, durationSeconds, volume, wave));
+
+const GOURD_LOW_MIDI = 48;
+const GOURD_HIGH_MIDI = 62;
+const GOURD_BLOP_STEP_SECONDS = 0.07;
+const GOURD_BLOP_DURATION_SECONDS = 0.14;
+const GOURD_MIN_BLOPS = 3;
+const GOURD_MAX_BLOPS = 16;
+
+export const xpBlopCount = (gainedXp: number, experiencePerGrade: number): number => {
+  const share = Math.min(1, Math.max(0, gainedXp / experiencePerGrade));
+  return GOURD_MIN_BLOPS + Math.round(share * (GOURD_MAX_BLOPS - GOURD_MIN_BLOPS));
+};
+
+export const xpFillNotes = (blopCount: number): readonly SoundNote[] =>
+  Array.from({ length: blopCount }, (_, index) => {
+    const fillRatio = blopCount > 1 ? index / (blopCount - 1) : 0;
+    const midi = GOURD_LOW_MIDI + Math.round(fillRatio * (GOURD_HIGH_MIDI - GOURD_LOW_MIDI));
+    return note(midi, index * GOURD_BLOP_STEP_SECONDS, GOURD_BLOP_DURATION_SECONDS, 0.4);
+  });
+
+export type Sound = SoundId | readonly SoundNote[];
 
 export const SOUND_NOTES: Record<SoundId, readonly SoundNote[]> = {
   correct: [
@@ -74,7 +93,7 @@ export const SOUND_NOTES: Record<SoundId, readonly SoundNote[]> = {
     note(G6, 0.04, 0.6, 0.15),
   ],
   tap: [note(G5, 0, 0.04, 0.2, 'triangle')],
-  xp: arpeggio(GOURD_FILL_MIDIS, 0.07, 0.14, 0.4),
+  xp: xpFillNotes(GOURD_MAX_BLOPS),
   levelUp: [
     ...arpeggio([G4, C5, E5, G5, C6, E6, G6], 0.07, 0.35, 0.3, 'triangle'),
     note(C6, 0.55, 0.9, 0.3, 'triangle'),
