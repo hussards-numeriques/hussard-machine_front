@@ -4,14 +4,14 @@ Short synthesized sound effects (no music) tied to stimulating actions. Everythi
 
 ## Structure
 
-| File                                         | Role                                                                                                        |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `src/lib/sounds.ts`                          | `SoundId` union, `SOUND_NOTES: Record<SoundId, SoundNote[]>` (the "score" of each sound), `midiToFrequency` |
-| `src/services/sound/port.ts`                 | `SoundPlayer` contract (`play`, `unlock`)                                                                   |
-| `src/services/sound/WebAudioSoundPlayer.ts`  | Adapter: one oscillator + envelope per note, shared compressor and master gain, lazy `AudioContext`         |
-| `src/services/sound/unlockOnFirstGesture.ts` | Resumes the `AudioContext` on the first pointer/key/touch (autoplay policy, iOS); called in `main.tsx`      |
-| `src/hooks/useSoundEnabled.ts`               | On/off preference in `localStorage` (`calc-rush:sound-enabled`, default on), device-only                    |
-| `src/hooks/useSound.ts`                      | Returns `play(id)`, a no-op when sounds are disabled. Components call this, never the player directly       |
+| File                                         | Role                                                                                                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/lib/sounds.ts`                          | `SoundId` union, `SOUND_NOTES: Record<SoundId, SoundNote[]>` (the "score" of each sound), `midiToFrequency`                                                  |
+| `src/services/sound/port.ts`                 | `SoundPlayer` contract (`play`, `unlock`)                                                                                                                    |
+| `src/services/sound/WebAudioSoundPlayer.ts`  | Adapter: one oscillator + envelope per note, shared compressor and master gain, lazy `AudioContext`                                                          |
+| `src/services/sound/unlockOnFirstGesture.ts` | Resumes the `AudioContext` on pointerup/click/touchend/keydown and keeps listening until it is really `running` (autoplay policy, iOS); called in `main.tsx` |
+| `src/hooks/useSoundEnabled.ts`               | On/off preference in `localStorage` (`calc-rush:sound-enabled`, default on), device-only                                                                     |
+| `src/hooks/useSound.ts`                      | Returns `play(id)`, a no-op when sounds are disabled. Components call this, never the player directly                                                        |
 
 ## Where sounds play
 

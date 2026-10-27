@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- Sound effects stayed silent on mobile (and sometimes desktop): audio is now unlocked on the first gesture that actually works, and sounds requested while the audio context is suspended are played once it resumes instead of being dropped.
+
 ## [0.36.0] - 2026-10-26
 
 ### Added

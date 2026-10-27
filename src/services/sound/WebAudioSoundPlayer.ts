@@ -6,6 +6,8 @@ const ATTACK_SECONDS = 0.005;
 const SILENCE = 0.0001;
 const STOP_MARGIN_SECONDS = 0.05;
 
+const isRunning = (context: AudioContext): boolean => context.state === 'running';
+
 const isAudioSupported = (): boolean => typeof AudioContext !== 'undefined';
 
 export class WebAudioSoundPlayer implements SoundPlayer {
@@ -15,17 +17,33 @@ export class WebAudioSoundPlayer implements SoundPlayer {
   play(id: SoundId): void {
     const context = this.ensureContext();
     if (!context || !this.output) return;
-    if (context.state !== 'running') {
-      void context.resume();
+    if (isRunning(context)) {
+      this.schedule(context, this.output, id);
       return;
     }
     const output = this.output;
-    SOUND_NOTES[id].forEach((n) => this.scheduleNote(context, output, n, context.currentTime));
+    void this.resume(context).then((running) => {
+      if (running) this.schedule(context, output, id);
+    });
   }
 
-  unlock(): void {
+  unlock(): Promise<boolean> {
     const context = this.ensureContext();
-    if (context && context.state !== 'running') void context.resume();
+    return context ? this.resume(context) : Promise.resolve(false);
+  }
+
+  private async resume(context: AudioContext): Promise<boolean> {
+    if (isRunning(context)) return true;
+    try {
+      await context.resume();
+    } catch {
+      return false;
+    }
+    return isRunning(context);
+  }
+
+  private schedule(context: AudioContext, output: AudioNode, id: SoundId): void {
+    SOUND_NOTES[id].forEach((n) => this.scheduleNote(context, output, n, context.currentTime));
   }
 
   private ensureContext(): AudioContext | null {
