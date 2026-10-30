@@ -14,7 +14,7 @@ describe('Footer', () => {
   it('links to the external contact page in a new tab', () => {
     render(<Footer />, { wrapper: MemoryRouter });
     const link = screen.getByRole('link', { name: 'Contact' });
-    expect(link).toHaveAttribute('href', 'https://www.alextraveylan.fr/fr/contact');
+    expect(link).toHaveAttribute('href', 'https://www.alextraveylan.fr/fr/calc-rush/contact');
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });

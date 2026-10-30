@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocalePreference } from '../hooks/useLocalePreference';
 import { LOCALES, LOCALE_NAMES, isLocalePreference } from '../i18n/locale';
+import { getPortfolioContactUrl } from '../lib/portfolioContact';
 
 export const Footer: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const year = new Date().getFullYear();
   const [preference, setPreference] = useLocalePreference();
 
@@ -13,7 +14,7 @@ export const Footer: React.FC = () => {
     <footer className="py-6 text-center text-xs text-slate-400">
       <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
         <a
-          href="https://www.alextraveylan.fr/fr/contact"
+          href={getPortfolioContactUrl(i18n.resolvedLanguage ?? i18n.language)}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-primary transition-colors"
