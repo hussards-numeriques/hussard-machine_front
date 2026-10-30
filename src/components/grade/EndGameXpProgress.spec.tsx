@@ -1,8 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render as rtlRender, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { EndGameXpProgress } from './EndGameXpProgress';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
+
+const render = (ui: ReactElement) => rtlRender(ui, { wrapper: MemoryRouter });
 
 vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
 
@@ -71,6 +75,19 @@ describe('EndGameXpProgress', () => {
     render(<EndGameXpProgress progress={progress} config={config} />);
     expect(screen.getByText('500 XP')).toBeInTheDocument();
     expect(screen.getByText(/promotion disponible/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Monter de niveau' })).toHaveAttribute(
+      'href',
+      '/profile'
+    );
+  });
+
+  it('hides the level-up link when promotion is not available', () => {
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: { experience: 140, canPromote: false },
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    expect(screen.queryByRole('link', { name: 'Monter de niveau' })).not.toBeInTheDocument();
   });
 
   it('fires a confetti burst once when a grade boundary is crossed', async () => {

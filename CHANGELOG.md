@@ -1,5 +1,22 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Added
+
+- Level change modal now reminds that you will only play against players of the target level.
+- New intermission tips: ranked is same-level only, private games mix levels, titles are per level, Calc Rush+ titles are permanent, no auto-renewal.
+- Title unlock toast links to Quests to equip the title (displayed 10 s).
+- "Move up a level" link to the profile under the end-of-game XP bar when promotion is available.
+
+### Changed
+
+- Removed decorative emojis from the max-grade label, title unlock toast and subscription activation message.
+
+### Fixed
+
+- Mobile in-game layout: the question card is top-aligned instead of centered, removing the large gap under the header.
+
 ## [0.36.3] - 2026-10-27
 
 ### Changed

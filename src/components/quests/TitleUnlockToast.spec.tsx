@@ -1,4 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { TitleUnlockToast } from './TitleUnlockToast';
 import type { MyTitle } from '../../services/quests';
@@ -11,23 +12,35 @@ const title: MyTitle = {
 
 describe('TitleUnlockToast', () => {
   it('renders nothing when there are no new titles', () => {
-    const { container } = render(<TitleUnlockToast titles={[]} />);
+    const { container } = render(
+      <MemoryRouter>
+        <TitleUnlockToast titles={[]} />
+      </MemoryRouter>
+    );
     expect(container).toBeEmptyDOMElement();
   });
 
   it('shows a toast for a newly unlocked title', () => {
-    render(<TitleUnlockToast titles={[title]} />);
+    render(
+      <MemoryRouter>
+        <TitleUnlockToast titles={[title]} />
+      </MemoryRouter>
+    );
     expect(screen.getByText(/Titre Épique débloqué/)).toBeInTheDocument();
     expect(screen.getByText("Légende de l'Arène")).toBeInTheDocument();
   });
 
   it('auto-dismisses the toast after the timeout', () => {
     vi.useFakeTimers();
-    render(<TitleUnlockToast titles={[title]} />);
+    render(
+      <MemoryRouter>
+        <TitleUnlockToast titles={[title]} />
+      </MemoryRouter>
+    );
     expect(screen.getByText(/débloqué/)).toBeInTheDocument();
 
     act(() => {
-      vi.advanceTimersByTime(6000);
+      vi.advanceTimersByTime(10000);
     });
 
     expect(screen.queryByText(/débloqué/)).not.toBeInTheDocument();

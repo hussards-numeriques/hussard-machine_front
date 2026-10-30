@@ -113,7 +113,7 @@ Displays the podium (top 3 in columns), the action buttons, then the full rankin
   the post-game state (`useXpProgress`, mirrors the `useTitleUnlocks` snapshot/diff
   pattern), a `+X XP`/negative badge, and a gold glow + micro-confetti whenever a
   grade is crossed — including the crossing into the last grade (`DIAMOND`), which
-  simultaneously turns `can_promote` on; there is no separate promotion notification.
+  simultaneously turns `can_promote` on; there is no separate promotion notification, but a « Monter de niveau » link to `/profile` appears under the bar while `can_promote` is on.
   Identical for salon and quick games; a salon game always shows `+0 XP`. The card
   renders as soon as the pre-game (`before`) snapshot is known — showing a frozen,
   non-animated bar with no badge — instead of waiting for the post-game (`after`)
@@ -166,6 +166,6 @@ During the ~5 s intermission between questions (`IntermissionCard` in `GameView`
 correction card and the « get ready » screen), `GameTip` shows one random tip below the card.
 Tips depend on the player's status (`lib/gameTips.ts`): `guest` (not logged in: keep progress,
 personalise), `member` (logged in: ranks, input mode, school level, and what Calc Rush+
-adds) and `subscriber` (reminder of practice mode, private games, quests, icons). Texts live
+adds) and `subscriber` (reminder of practice mode, private games, quests, icons). Member and subscriber tips also cover ranked matchmaking (same school level only, private game to mix levels), per-level titles, permanent titles with Calc Rush+ and the absence of auto-renewal. Texts live
 under `gameTips.<audience>.<id>` in every locale. The pick is a random seed stored once per
 intermission; the tip is derived from it during render.

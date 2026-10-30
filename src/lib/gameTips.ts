@@ -1,7 +1,30 @@
 const TIP_IDS = {
-  guest: ['progress', 'customize', 'streak'],
-  member: ['levelUp', 'inputMode', 'schoolLevel', 'titles', 'practice', 'privateGames'],
-  subscriber: ['practice', 'privateGames', 'quests', 'icon', 'inputMode'],
+  guest: ['progress', 'customize', 'streak', 'rankedLevel'],
+  member: [
+    'levelUp',
+    'inputMode',
+    'schoolLevel',
+    'titles',
+    'practice',
+    'privateGames',
+    'rankedLevel',
+    'mixedLevels',
+    'titlesPerLevel',
+    'permanentTitles',
+    'noAutoRenew',
+  ],
+  subscriber: [
+    'practice',
+    'privateGames',
+    'quests',
+    'icon',
+    'inputMode',
+    'rankedLevel',
+    'mixedLevels',
+    'titlesPerLevel',
+    'permanentTitles',
+    'noAutoRenew',
+  ],
 } as const;
 
 export type TipAudience = keyof typeof TIP_IDS;

@@ -3,13 +3,14 @@ import { resolveRarityLabel } from '../../lib/rarity';
 import { TitleLabel } from '../PlayerTitle';
 import type { MyTitle } from '../../services/quests';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { useSound } from '../../hooks/useSound';
 
 interface TitleUnlockToastProps {
   titles: MyTitle[];
 }
 
-const AUTO_DISMISS_MS = 6000;
+const AUTO_DISMISS_MS = 10000;
 
 const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
   title,
@@ -31,6 +32,13 @@ const Toast: React.FC<{ title: MyTitle; onDismiss: (id: string) => void }> = ({
         {t('quests.titleUnlocked', { rarity: resolveRarityLabel(title.rarity, t) })}
       </span>
       <TitleLabel title={title} className="text-lg" />
+      <Link
+        to="/quests"
+        onClick={() => onDismiss(title.id)}
+        className="text-sm font-bold text-primary underline"
+      >
+        {t('quests.equipTitle')}
+      </Link>
     </div>
   );
 };

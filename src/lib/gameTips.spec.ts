@@ -21,7 +21,7 @@ describe('pickGameTipKey', () => {
   });
 
   it('picks the last tip of the audience for a random value of exactly 1', () => {
-    expect(pickGameTipKey('subscriber', 1)).toBe('gameTips.subscriber.inputMode');
+    expect(pickGameTipKey('subscriber', 1)).toBe('gameTips.subscriber.noAutoRenew');
   });
 
   it('stays within the audience tips', () => {

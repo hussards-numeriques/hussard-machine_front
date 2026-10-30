@@ -16,6 +16,7 @@ export const de = {
       progress: 'Melde dich an, um deinen Fortschritt zu behalten: XP, Rang und Spielverlauf.',
       customize: 'Mit einem Konto gestaltest du deinen Weg: Symbol, Klassenstufe und Titel.',
       streak: 'Angemeldet baust du eine tägliche Serie 🔥 auf, wenn du jeden Tag spielst.',
+      rankedLevel: 'In Ranglistenspielen spielst du nur gegen Spieler deiner Klassenstufe.',
     },
     member: {
       levelUp: 'Sammle in jedem Spiel XP, um von Bronze bis Diamant aufzusteigen.',
@@ -27,6 +28,13 @@ export const de = {
       practice: 'Mit Calc Rush+ kannst du in deinem Tempo das Thema üben, das du willst.',
       privateGames:
         'Mit Calc Rush+ kannst du private Spiele für Freunde oder deine Klasse erstellen.',
+      rankedLevel: 'In Ranglistenspielen spielst du nur gegen Spieler deiner Klassenstufe.',
+      mixedLevels: 'Um mit Spielern mehrerer Stufen zu spielen, brauchst du ein privates Spiel.',
+      titlesPerLevel:
+        'Titel gehören zu jeder Klassenstufe: mit einem Wechsel startest du bei neuen Titeln.',
+      permanentTitles: 'Mit Calc Rush+ gehören dir die gewonnenen Titel für immer.',
+      noAutoRenew:
+        'Calc Rush+ verlängert sich nicht automatisch: Du bist nur für den bezahlten Zeitraum Abonnent.',
     },
     subscriber: {
       practice: 'Im Trainingsmodus wiederholst du das Thema deiner Wahl in deinem Tempo.',
@@ -35,6 +43,13 @@ export const de = {
       icon: 'Ändere dein Profilsymbol auf der Symbole-Seite.',
       inputMode:
         'Du kannst den Eingabemodus (Tastatur, Handschrift, Nummernblock) in den Einstellungen ändern.',
+      rankedLevel: 'In Ranglistenspielen spielst du nur gegen Spieler deiner Klassenstufe.',
+      mixedLevels: 'Um mit Spielern mehrerer Stufen zu spielen, brauchst du ein privates Spiel.',
+      titlesPerLevel:
+        'Titel gehören zu jeder Klassenstufe: mit einem Wechsel startest du bei neuen Titeln.',
+      permanentTitles: 'Mit Calc Rush+ gehören dir die gewonnenen Titel für immer.',
+      noAutoRenew:
+        'Calc Rush+ verlängert sich nicht automatisch: Du bist nur für den bezahlten Zeitraum Abonnent.',
     },
   },
   locale: {
@@ -136,7 +151,8 @@ export const de = {
     wasEquipped: '✓ War ausgerüstet',
     completed: '✓ Quest abgeschlossen',
     progressToNext: '{{progress}} / {{threshold}} bis zum nächsten Titel',
-    titleUnlocked: '🏆 Titel „{{rarity}}“ freigeschaltet!',
+    titleUnlocked: 'Titel „{{rarity}}“ freigeschaltet!',
+    equipTitle: 'Titel ausrüsten',
     banner: {
       activeHeading: 'Aktive Titel — Level {{level}}.',
       activeBody:
@@ -272,6 +288,8 @@ export const de = {
       titles:
         'Bei den Titeln kehrst du zum Fortschritt von {{target}} zurück. Die von {{current}} kannst du weiterhin unter Quests & Titel ansehen, sie sind aber nicht mehr aktiv.',
     },
+    opponents:
+      'Du spielst nur noch gegen Spieler aus {{target}}, nicht mehr gegen die aus {{current}}.',
   },
   subscriptionStatus: {
     upsellTitle: 'Hol dir Calc Rush+',
@@ -445,7 +463,8 @@ export const de = {
   },
   grade: {
     progression: 'Fortschritt',
-    maxGrade: '✨ Höchster Rang — Aufstieg möglich!',
+    maxGrade: 'Höchster Rang — Aufstieg möglich!',
+    promoteLink: 'Zur nächsten Stufe',
     xpToNext: '{{xp}} XP bis {{grade}}',
     guide: {
       progressionTitle: 'Der Fortschritt',
@@ -638,7 +657,7 @@ export const de = {
   vip: {
     title: 'VIP-Code',
     loginRequired: 'Melde dich an, um deinen Code zu aktivieren.',
-    activatedUntil: 'Abo aktiviert bis {{date}} 🎉',
+    activatedUntil: 'Abo aktiviert bis {{date}}',
     codePlaceholder: 'Dein Code',
     activate: 'Aktivieren',
     error: 'Etwas ist schiefgelaufen, versuch es noch einmal.',

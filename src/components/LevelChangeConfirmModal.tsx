@@ -42,6 +42,9 @@ export const LevelChangeConfirmModal: React.FC<LevelChangeConfirmModalProps> = (
           {t(`levelChange.${variant}.message`)}
         </p>
         <p className="text-slate-600 text-sm leading-relaxed">
+          {t('levelChange.opponents', { target: targetLevel, current: currentLevel })}
+        </p>
+        <p className="text-slate-600 text-sm leading-relaxed">
           {t(`levelChange.${variant}.titles`, { target: targetLevel, current: currentLevel })}
         </p>
         <div className="flex gap-3">

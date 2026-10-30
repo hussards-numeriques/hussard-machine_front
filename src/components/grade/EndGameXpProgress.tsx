@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
@@ -20,6 +21,15 @@ interface EndGameXpProgressProps {
 
 const TRANSITION_DURATION_MS = 700;
 const GLOW_DURATION_MS = 2000;
+
+const PromoteLink: React.FC = () => {
+  const { t } = useTranslation();
+  return (
+    <Link to="/profile" className="block text-sm font-bold text-primary underline">
+      {t('grade.promoteLink')}
+    </Link>
+  );
+};
 
 export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
   progress,
@@ -139,6 +149,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
           nextGrade={nextGrade}
           xpToNextGrade={xpToNextGrade}
         />
+        {before.canPromote && <PromoteLink />}
       </div>
     );
   }
@@ -237,6 +248,7 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
         nextGrade={nextGrade}
         xpToNextGrade={xpToNextGrade}
       />
+      {after.canPromote && <PromoteLink />}
     </div>
   );
 };

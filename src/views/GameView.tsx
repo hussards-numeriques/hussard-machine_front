@@ -262,7 +262,7 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-4 max-w-lg mx-auto w-full space-y-8">
+      <div className="flex-1 flex flex-col items-center justify-start sm:justify-center p-4 max-w-lg mx-auto w-full space-y-8">
         <div className="bg-white px-6 py-10 sm:p-12 rounded-3xl shadow-xl border-2 border-slate-100 w-full text-center space-y-8">
           {questionCountdown !== null ? (
             <IntermissionCard

@@ -126,7 +126,7 @@ No server event for unlocks, so the front detects them by diffing `GET /me/title
    calculation is asynchronous.
 3. `GamePage` passes the result to `PodiumView` as `newTitles`, rendered by
    `TitleUnlockToast` (`src/components/quests/`), one auto-dismissing toast per newly
-   unlocked title.
+   unlocked title, each with a link to `/quests` to equip it (10 s before auto-dismiss).
 
 If `gameLevel` is unknown, or the player never passed through `WAITING`/`COUNTDOWN` in this `GamePage` mount (e.g.
 reconnect mid-game), no snapshot exists and detection is skipped entirely rather than
