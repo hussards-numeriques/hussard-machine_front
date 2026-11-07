@@ -94,6 +94,7 @@ nouveau type de prompt oublié casse `tsc`), `errors.api.PRACTICE_NOT_AVAILABLE`
 
 ## Tests
 
-`lib/practice.spec.ts`, `services/practice.spec.ts`, `pages/PracticePage.spec.tsx` (garde,
+`lib/practice.spec.ts`, `services/practice.spec.ts`, `components/practice/PracticeRun.spec.tsx`
+(temps limité, verrou du bouton après un temps écoulé), `pages/PracticePage.spec.tsx` (garde,
 configuration, série complète, relance), plus les cas de visibilité dans `Header.spec.tsx`
 et `HomePage.spec.tsx`.

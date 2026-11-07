@@ -60,11 +60,11 @@ The server may increment `current_question_index` by 1 (normal progression) or s
 - Advances only if `currentIndex === displayedIndex + 1` (normal progression)
 - On skip (`currentIndex > displayedIndex + 1`), displays the new question directly and logs a warning
 
-### Timer (`useQuestionTimer`)
+### Timer (`useCountdown` and `CountdownBadge`)
 
-Local hook that calculates remaining seconds from `question.time_limit_seconds` and `game.start_time_current_question` (Unix timestamp). Refreshes every 250ms.
+`hooks/useCountdown.ts` calculates remaining seconds from `question.time_limit_seconds` and `game.start_time_current_question` (Unix timestamp). Refreshes every 250ms. `components/CountdownBadge.tsx` displays them (red at 3 s or less) and plays the `tick` sound while `ticking` is true. Both are shared with practice mode (`PracticeRun`).
 
-When `questionCountdown !== null` (inter-question countdown active), the timer is paused.
+When `questionCountdown !== null` (inter-question countdown active), the countdown is disabled (`null` duration) and the badge is not rendered.
 
 ### Inter-question countdown (`questionCountdown`)
 

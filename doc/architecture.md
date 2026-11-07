@@ -75,6 +75,7 @@ calc-rush_front/
 │   │   ├── Header.tsx                # Fixed header: home pill + player HUD (streak chip, avatar menu)
 │   │   ├── Footer.tsx                # Discreet footer (home page only): copyright + legal links
 │   │   ├── AuthModal.tsx             # Login / register modal
+│   │   ├── CountdownBadge.tsx        # Remaining-seconds badge + tick sound (game and practice)
 │   │   ├── grade/
 │   │   │   └── GradeGuide.tsx        # Explanatory card: XP, grades, levels (fetches /game/config)
 │   │   ├── QuestionPrompt/           # One display component per question prompt type (see game-views.md)
@@ -114,6 +115,7 @@ calc-rush_front/
 │   │       └── preprocessing.spec.ts
 │   │
 │   ├── hooks/
+│   │   ├── useCountdown.ts           # Remaining seconds from a duration and a start time (game and practice)
 │   │   ├── useGameConfig.ts          # TanStack Query hook for /game/config
 │   │   ├── usePlayerProfile.ts       # TanStack Query hooks for profile + promotion
 │   │   └── useShinySession.ts        # Shiny mascot easter egg
