@@ -4,16 +4,16 @@ import { computeRemainingSeconds, useCountdown } from './useCountdown';
 
 const T = 1_700_000_000;
 
+beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(T * 1000);
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 describe('computeRemainingSeconds', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(T * 1000);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('returns the full duration when there is no start time', () => {
     expect(computeRemainingSeconds(12, null)).toBe(12);
   });
@@ -28,15 +28,6 @@ describe('computeRemainingSeconds', () => {
 });
 
 describe('useCountdown', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(T * 1000);
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
   it('returns null without a duration', () => {
     const { result } = renderHook(() => useCountdown(null, T));
     expect(result.current).toBeNull();
@@ -69,5 +60,24 @@ describe('useCountdown', () => {
 
     expect(recorded.slice(afterNullIndex)).not.toContain(2);
     expect(recorded[recorded.length - 1]).toBe(10);
+  });
+
+  it('never shows the previous value when the duration or start time changes', () => {
+    const seen: (number | null)[] = [];
+    const { rerender, result } = renderHook(
+      ({ duration, start }: { duration: number; start: number }) => {
+        const value = useCountdown(duration, start);
+        seen.push(value);
+        return value;
+      },
+      { initialProps: { duration: 5, start: T - 3 } }
+    );
+    expect(result.current).toBe(2);
+
+    seen.length = 0;
+    rerender({ duration: 10, start: T });
+
+    expect(seen).not.toContain(2);
+    expect(result.current).toBe(10);
   });
 });

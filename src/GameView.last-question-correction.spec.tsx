@@ -32,7 +32,7 @@ describe('GameView - correction screen on the last question', () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   const lastQuestionGame: Game = {
@@ -89,6 +89,7 @@ describe('GameView - correction screen on the last question', () => {
   it('shows the correction for the last question when the server sends the pre-podium countdown', () => {
     // Given: the backend sends the same QUESTION_COUNTDOWN sequence after the last question
     // as it does between every other question, before flipping game.state to FINISHED.
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     const setQuestionCountdownCallbackSpy = vi.spyOn(client, 'setQuestionCountdownCallback');
 
     renderWithQueryClient(
@@ -107,8 +108,6 @@ describe('GameView - correction screen on the last question', () => {
     expect(screen.getByText('Mauvaise réponse')).toBeInTheDocument();
     expect(screen.getByText('54')).toBeInTheDocument();
     expect(screen.getByText('56')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Connecte-toi|Avec un compte|Connecté, tu entretiens/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Connecte-toi pour garder ta progression/)).toBeInTheDocument();
   });
 });

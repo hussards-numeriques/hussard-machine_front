@@ -35,4 +35,10 @@ describe('CountdownBadge', () => {
     render(<CountdownBadge remainingSeconds={0} ticking />);
     expect(play).not.toHaveBeenCalled();
   });
+
+  it('ticks again each time the remaining seconds change', () => {
+    const { rerender } = render(<CountdownBadge remainingSeconds={3} ticking />);
+    rerender(<CountdownBadge remainingSeconds={2} ticking />);
+    expect(play).toHaveBeenCalledTimes(2);
+  });
 });
