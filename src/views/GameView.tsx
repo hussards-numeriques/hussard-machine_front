@@ -13,7 +13,8 @@ import { AnimatedScore } from '../components/GameFeedback/AnimatedScore';
 import { GameTip } from '../components/GameTip';
 import { useTranslation } from 'react-i18next';
 import { useAnswerSound } from '../hooks/useAnswerSound';
-import { useSound } from '../hooks/useSound';
+import { useCountdown } from '../hooks/useCountdown';
+import { CountdownBadge } from '../components/CountdownBadge';
 
 interface GameViewProps {
   client: GameClient;
@@ -39,34 +40,6 @@ const logQuestionSkipWarning = (fromIndex: number, toIndex: number) => {
   console.warn(
     `Saut de question détecté: ${fromIndex} -> ${toIndex}. Affichage de la question ${toIndex}`
   );
-};
-
-const computeRemainingSeconds = (question: Question, startTime: number | null): number => {
-  if (startTime === null) return question.time_limit_seconds;
-  const elapsed = Date.now() / 1000 - startTime;
-  const remaining = question.time_limit_seconds - elapsed;
-  return Math.max(0, Math.ceil(remaining));
-};
-
-const useQuestionTimer = (
-  question: Question | undefined,
-  startTime: number | null
-): number | null => {
-  const [remaining, setRemaining] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (!question) {
-      setRemaining(null);
-      return;
-    }
-    setRemaining(computeRemainingSeconds(question, startTime));
-    const interval = window.setInterval(() => {
-      setRemaining(computeRemainingSeconds(question, startTime));
-    }, 250);
-    return () => window.clearInterval(interval);
-  }, [question, startTime]);
-
-  return remaining;
 };
 
 const truncateName = (name: string) => (name.length > 20 ? name.substring(0, 20) + '...' : name);
@@ -148,13 +121,6 @@ const QuestionCard: React.FC<{
   onSubmit: (value: number) => void;
 }> = ({ question, remainingSeconds, myAnswer, onSubmit }) => {
   const { t } = useTranslation();
-  const play = useSound();
-  const isTimerLow = remainingSeconds !== null && remainingSeconds <= 3;
-  const isTicking = isTimerLow && remainingSeconds > 0 && myAnswer === null;
-
-  React.useEffect(() => {
-    if (isTicking) play('tick');
-  }, [isTicking, remainingSeconds, play]);
 
   return (
     <>
@@ -163,11 +129,7 @@ const QuestionCard: React.FC<{
           {resolveQuestionCategoryLabel(question.category, t)}
         </span>
         {remainingSeconds !== null && (
-          <span
-            className={`tabular-nums font-bold ${isTimerLow ? 'text-red-500' : 'text-slate-400'}`}
-          >
-            {remainingSeconds}s
-          </span>
+          <CountdownBadge remainingSeconds={remainingSeconds} ticking={myAnswer === null} />
         )}
       </div>
 
@@ -234,8 +196,8 @@ export const GameView: React.FC<GameViewProps> = ({ client, game, currentPlayerI
     };
   }, [client]);
 
-  const remainingSeconds = useQuestionTimer(
-    questionCountdown === null ? currentQuestion : undefined,
+  const remainingSeconds = useCountdown(
+    questionCountdown === null && currentQuestion ? currentQuestion.time_limit_seconds : null,
     game.start_time_current_question
   );
 
