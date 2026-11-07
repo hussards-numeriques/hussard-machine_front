@@ -4,7 +4,8 @@ import { ApiError, type AuthorizedFetch } from '../services/http';
 import {
   fetchPracticeCatalog,
   fetchPracticeQuestion,
-  type PracticeNotion,
+  fetchPracticeTimesTables,
+  type PracticeTopic,
 } from '../services/practice';
 import {
   currentQuestionIndex,
@@ -15,6 +16,8 @@ import {
 import { SUBSCRIPTION_STATUS_QUERY_KEY } from './useSubscription';
 
 export const PRACTICE_CATALOG_QUERY_KEY = ['practice-catalog'];
+
+export const PRACTICE_TIMES_TABLES_QUERY_KEY = ['practice-times-tables'];
 
 export const isSubscriptionRequiredError = (error: unknown): boolean =>
   error instanceof ApiError && error.code === 'SUBSCRIPTION_REQUIRED';
@@ -47,8 +50,22 @@ export const usePracticeCatalog = () => {
   });
 };
 
+export const usePracticeTimesTables = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+  const authorizedFetch = useAuthorizedFetch();
+  const queryClient = useQueryClient();
+
+  return useQuery({
+    queryKey: PRACTICE_TIMES_TABLES_QUERY_KEY,
+    queryFn: () =>
+      fetchPracticeTimesTables(authorizedFetch).catch(refreshSubscriptionOnExpiry(queryClient)),
+    enabled: isAuthenticated && !isLoading,
+    staleTime: Infinity,
+  });
+};
+
 const usePracticeQuestionAt = (
-  notion: PracticeNotion,
+  topic: PracticeTopic,
   runId: number,
   index: number,
   enabled: boolean
@@ -59,9 +76,7 @@ const usePracticeQuestionAt = (
   return useQuery({
     queryKey: ['practice-question', runId, index],
     queryFn: () =>
-      fetchPracticeQuestion(authorizedFetch, notion).catch(
-        refreshSubscriptionOnExpiry(queryClient)
-      ),
+      fetchPracticeQuestion(authorizedFetch, topic).catch(refreshSubscriptionOnExpiry(queryClient)),
     enabled,
     staleTime: Infinity,
   });
@@ -70,13 +85,13 @@ const usePracticeQuestionAt = (
 export const usePracticeQuestion = (series: PracticeSeries) => {
   const index = currentQuestionIndex(series);
   const current = usePracticeQuestionAt(
-    series.notion,
+    series.topic,
     series.runId,
     index,
     !isSeriesFinished(series)
   );
   usePracticeQuestionAt(
-    series.notion,
+    series.topic,
     series.runId,
     index + 1,
     current.isSuccess && !isLastQuestion(series)

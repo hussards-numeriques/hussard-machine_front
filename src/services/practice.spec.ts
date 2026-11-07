@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { fetchPracticeCatalog, fetchPracticeQuestion } from './practice';
+import {
+  fetchPracticeCatalog,
+  fetchPracticeQuestion,
+  fetchPracticeTimesTables,
+  type PracticeTopic,
+} from './practice';
 import { ApiError, type AuthorizedFetch } from './http';
 
 const respond = (body: unknown, status = 200) =>
@@ -32,7 +37,12 @@ describe('fetchPracticeCatalog', () => {
 });
 
 describe('fetchPracticeQuestion', () => {
-  const notion = { level: 'CM1', category: 'division', promptType: 'division_table' } as const;
+  const notion = {
+    kind: 'notion',
+    level: 'CM1',
+    category: 'division',
+    promptType: 'division_table',
+  } as const;
 
   it('fetches one question for the notion', async () => {
     const authorizedFetch = respond({
@@ -64,5 +74,58 @@ describe('fetchPracticeQuestion', () => {
     ).catch((e: unknown) => e);
 
     expect((error as ApiError).code).toBe('PRACTICE_NOT_AVAILABLE');
+  });
+});
+
+describe('fetchPracticeTimesTables', () => {
+  it('fetches /practice/times-tables', async () => {
+    const authorizedFetch = respond({ tables: [1, 2] });
+
+    const tables = await fetchPracticeTimesTables(authorizedFetch);
+
+    expect((authorizedFetch.mock.calls[0][0] as string).endsWith('/practice/times-tables')).toBe(
+      true
+    );
+    expect(tables).toEqual([1, 2]);
+  });
+
+  it('throws an ApiError carrying the subscription code', async () => {
+    const error = await fetchPracticeTimesTables(
+      respond({ detail: 'SUBSCRIPTION_REQUIRED' }, 403)
+    ).catch((e: unknown) => e);
+
+    expect((error as ApiError).code).toBe('SUBSCRIPTION_REQUIRED');
+  });
+});
+
+describe('fetchPracticeQuestion for times tables', () => {
+  const topic: PracticeTopic = { kind: 'timesTables', tables: [6, 7] };
+
+  it('sends one tables parameter per table', async () => {
+    const authorizedFetch = respond({
+      prompt: { type: 'multiplication_table', table: 6, factor: 3 },
+      answer: 18,
+    });
+
+    const question = await fetchPracticeQuestion(authorizedFetch, topic);
+
+    expect(
+      (authorizedFetch.mock.calls[0][0] as string).endsWith(
+        '/practice/times-tables/question?tables=6&tables=7'
+      )
+    ).toBe(true);
+    expect(question).toEqual({
+      prompt: { type: 'multiplication_table', table: 6, factor: 3 },
+      answer: 18,
+    });
+  });
+
+  it('throws an ApiError carrying the subscription code', async () => {
+    const error = await fetchPracticeQuestion(
+      respond({ detail: 'SUBSCRIPTION_REQUIRED' }, 403),
+      topic
+    ).catch((e: unknown) => e);
+
+    expect((error as ApiError).code).toBe('SUBSCRIPTION_REQUIRED');
   });
 });

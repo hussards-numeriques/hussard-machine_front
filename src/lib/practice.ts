@@ -1,6 +1,6 @@
 import type { Level } from './grades';
 import type { PromptType } from './labels';
-import type { PracticeCatalog, PracticeNotion } from '../services/practice';
+import type { PracticeCatalog, PracticeNotion, PracticeTopic } from '../services/practice';
 
 export const SERIES_LENGTHS = [5, 10, 20] as const;
 export type SeriesLength = (typeof SERIES_LENGTHS)[number];
@@ -45,19 +45,39 @@ export const resolvePracticeOptions = (
 
 export type PracticeOutcome = 'correct' | 'incorrect';
 
+export const TIME_LIMIT_MIN_SECONDS = 2;
+export const TIME_LIMIT_MAX_SECONDS = 99;
+export const DEFAULT_TIME_LIMIT_SECONDS = 10;
+
+export const clampTimeLimit = (value: number): number =>
+  Number.isNaN(value)
+    ? DEFAULT_TIME_LIMIT_SECONDS
+    : Math.min(TIME_LIMIT_MAX_SECONDS, Math.max(TIME_LIMIT_MIN_SECONDS, Math.round(value)));
+
+export const toggleTable = (tables: number[], table: number): number[] =>
+  (tables.includes(table) ? tables.filter((t) => t !== table) : [...tables, table]).sort(
+    (a, b) => a - b
+  );
+
+export type PendingAnswer =
+  | { kind: 'answered'; given: number; outcome: PracticeOutcome }
+  | { kind: 'timedOut' };
+
 export interface PracticeSeries {
-  notion: PracticeNotion;
+  topic: PracticeTopic;
   length: SeriesLength;
   runId: number;
+  timeLimitSeconds: number | null;
   outcomes: PracticeOutcome[];
-  pending: { given: number; outcome: PracticeOutcome } | null;
+  pending: PendingAnswer | null;
 }
 
 export const startSeries = (
-  notion: PracticeNotion,
+  topic: PracticeTopic,
   length: SeriesLength,
-  runId: number
-): PracticeSeries => ({ notion, length, runId, outcomes: [], pending: null });
+  runId: number,
+  timeLimitSeconds: number | null
+): PracticeSeries => ({ topic, length, runId, timeLimitSeconds, outcomes: [], pending: null });
 
 export const currentQuestionIndex = (series: PracticeSeries): number => series.outcomes.length;
 
@@ -68,12 +88,25 @@ export const answerQuestion = (
 ): PracticeSeries =>
   series.pending !== null
     ? series
-    : { ...series, pending: { given, outcome: given === expected ? 'correct' : 'incorrect' } };
+    : {
+        ...series,
+        pending: {
+          kind: 'answered',
+          given,
+          outcome: given === expected ? 'correct' : 'incorrect',
+        },
+      };
+
+export const timeOutQuestion = (series: PracticeSeries): PracticeSeries =>
+  series.pending !== null ? series : { ...series, pending: { kind: 'timedOut' } };
+
+const pendingOutcome = (pending: PendingAnswer): PracticeOutcome =>
+  pending.kind === 'answered' ? pending.outcome : 'incorrect';
 
 export const nextQuestion = (series: PracticeSeries): PracticeSeries =>
   series.pending === null
     ? series
-    : { ...series, outcomes: [...series.outcomes, series.pending.outcome], pending: null };
+    : { ...series, outcomes: [...series.outcomes, pendingOutcome(series.pending)], pending: null };
 
 export const isSeriesFinished = (series: PracticeSeries): boolean =>
   series.outcomes.length >= series.length;

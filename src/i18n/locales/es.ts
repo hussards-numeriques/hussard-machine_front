@@ -537,6 +537,8 @@ export const es = {
     },
   },
   practice: {
+    timesTablesLabel_one: 'Tabla del {{tables}}',
+    timesTablesLabel_other: 'Tablas del {{tables}}',
     title: 'Entrenamiento',
     subtitle: 'Sin cronómetro ni rival: ¡tómate tu tiempo!',
     level: 'Nivel',

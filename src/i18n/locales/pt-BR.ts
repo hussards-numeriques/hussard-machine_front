@@ -540,6 +540,8 @@ export const ptBR = {
     },
   },
   practice: {
+    timesTablesLabel_one: 'Tabuada do {{tables}}',
+    timesTablesLabel_other: 'Tabuadas do {{tables}}',
     title: 'Treino',
     subtitle: 'Sem cronômetro, sem adversário: vá com calma!',
     level: 'Nível',

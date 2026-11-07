@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   answerQuestion,
+  clampTimeLimit,
   correctCount,
   isLastQuestion,
   isSeriesFinished,
@@ -8,8 +9,10 @@ import {
   ratePractice,
   resolvePracticeOptions,
   startSeries,
+  timeOutQuestion,
+  toggleTable,
 } from './practice';
-import type { PracticeCatalog, PracticeNotion } from '../services/practice';
+import type { PracticeCatalog, PracticeNotion, PracticeTopic } from '../services/practice';
 
 const catalog: PracticeCatalog = {
   CP: { addition: ['addition'], double: ['double'] },
@@ -20,6 +23,8 @@ const catalog: PracticeCatalog = {
 };
 
 const notion: PracticeNotion = { level: 'CM1', category: 'addition', promptType: 'addition' };
+const notionTopic: PracticeTopic = { kind: 'notion', ...notion };
+const timesTablesTopic: PracticeTopic = { kind: 'timesTables', tables: [6] };
 
 describe('resolvePracticeOptions', () => {
   it('lists the categories of the level and waits for a category', () => {
@@ -72,9 +77,9 @@ describe('resolvePracticeOptions', () => {
 
 describe('practice series', () => {
   it('records each answer once, then moves on until the end', () => {
-    let series = startSeries(notion, 5, 1);
+    let series = startSeries(notionTopic, 5, 1, null);
     series = answerQuestion(series, 12, 12);
-    expect(series.pending).toEqual({ given: 12, outcome: 'correct' });
+    expect(series.pending).toEqual({ kind: 'answered', given: 12, outcome: 'correct' });
     expect(answerQuestion(series, 3, 12)).toBe(series);
     series = nextQuestion(series);
     expect(nextQuestion(series)).toBe(series);
@@ -88,6 +93,41 @@ describe('practice series', () => {
     }
     expect(isSeriesFinished(series)).toBe(true);
     expect(correctCount(series)).toBe(4);
+  });
+
+  it('keeps the time limit chosen at start', () => {
+    expect(startSeries(timesTablesTopic, 5, 1, null).timeLimitSeconds).toBeNull();
+    expect(startSeries(timesTablesTopic, 5, 1, 10).timeLimitSeconds).toBe(10);
+  });
+
+  it('counts a timed-out question as incorrect and ignores late answers', () => {
+    const series = startSeries(timesTablesTopic, 5, 1, 10);
+    expect(timeOutQuestion(series).pending).toEqual({ kind: 'timedOut' });
+    expect(nextQuestion(timeOutQuestion(series)).outcomes).toEqual(['incorrect']);
+    expect(timeOutQuestion(answerQuestion(series, 6, 6)).pending).toMatchObject({
+      kind: 'answered',
+    });
+    expect(answerQuestion(timeOutQuestion(series), 6, 6).pending).toEqual({ kind: 'timedOut' });
+    expect(correctCount(nextQuestion(timeOutQuestion(series)))).toBe(0);
+  });
+});
+
+describe('clampTimeLimit', () => {
+  it.each([
+    [1, 2],
+    [2, 2],
+    [50, 50],
+    [99, 99],
+    [100, 99],
+    [12.6, 13],
+    [NaN, 10],
+  ])('clamps %s to %s', (value, expected) => expect(clampTimeLimit(value)).toBe(expected));
+});
+
+describe('toggleTable', () => {
+  it('adds a table in order and removes a selected one', () => {
+    expect(toggleTable([7], 6)).toEqual([6, 7]);
+    expect(toggleTable([6, 7], 6)).toEqual([7]);
   });
 });
 

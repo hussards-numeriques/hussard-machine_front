@@ -3,6 +3,7 @@ import type { SubscriptionPlanKey } from '../services/subscription';
 import { ApiError } from '../services/http';
 import type { WsErrorCode } from '../services/gameSchemas';
 import type { QuestionPrompt } from '../types';
+import type { PracticeTopic } from '../services/practice';
 
 export type PromptType = QuestionPrompt['type'];
 
@@ -84,6 +85,18 @@ export const isPromptType = (value: string): value is PromptType =>
 
 export const resolvePromptTypeLabel = (type: PromptType, t: TFunction): string =>
   t(`promptTypes.${type}`);
+
+export const resolvePracticeTopicLabel = (
+  topic: PracticeTopic,
+  t: TFunction,
+  locale: string
+): string => {
+  if (topic.kind === 'notion') return resolvePromptTypeLabel(topic.promptType, t);
+  const tables = new Intl.ListFormat(locale, { style: 'long', type: 'conjunction' }).format(
+    topic.tables.map(String)
+  );
+  return t('practice.timesTablesLabel', { count: topic.tables.length, tables });
+};
 
 export const resolveQuestLabel = (id: string, t: TFunction): string =>
   isOneOf(QUEST_IDS, id) ? t(`quests.labels.${id}`) : id;

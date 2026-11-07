@@ -14,6 +14,10 @@ export interface PracticeNotion {
   promptType: PromptType;
 }
 
+export type PracticeTopic =
+  | ({ kind: 'notion' } & PracticeNotion)
+  | { kind: 'timesTables'; tables: number[] };
+
 export interface PracticeQuestion {
   prompt: QuestionPrompt;
   answer: number;
@@ -54,12 +58,34 @@ export const fetchPracticeCatalog = async (
   return practiceCatalogSchema.parse(await response.json());
 };
 
+const practiceTimesTablesSchema = z
+  .object({ tables: z.array(z.number().int()) })
+  .transform(({ tables }) => tables);
+
+export const fetchPracticeTimesTables = async (
+  authorizedFetch: AuthorizedFetch
+): Promise<number[]> => {
+  const response = await authorizedFetch(`${getApiUrl()}/practice/times-tables`);
+  if (!response.ok) {
+    throw await apiErrorFrom(response, 'Failed to fetch practice times tables');
+  }
+  return practiceTimesTablesSchema.parse(await response.json());
+};
+
+const questionPath = (topic: PracticeTopic): string => {
+  if (topic.kind === 'notion') {
+    const path = [topic.level, topic.category, topic.promptType].map(encodeURIComponent).join('/');
+    return `/practice/${path}`;
+  }
+  const query = new URLSearchParams(topic.tables.map((table) => ['tables', String(table)]));
+  return `/practice/times-tables/question?${query.toString()}`;
+};
+
 export const fetchPracticeQuestion = async (
   authorizedFetch: AuthorizedFetch,
-  { level, category, promptType }: PracticeNotion
+  topic: PracticeTopic
 ): Promise<PracticeQuestion> => {
-  const path = [level, category, promptType].map(encodeURIComponent).join('/');
-  const response = await authorizedFetch(`${getApiUrl()}/practice/${path}`);
+  const response = await authorizedFetch(`${getApiUrl()}${questionPath(topic)}`);
   if (!response.ok) {
     throw await apiErrorFrom(response, 'Failed to fetch practice question');
   }

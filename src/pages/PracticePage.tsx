@@ -68,9 +68,12 @@ export const PracticePage: React.FC = () => {
     []
   );
   const handleStart = (notion: PracticeNotion) =>
-    setSeries(startSeries(notion, length, Date.now()));
+    setSeries(startSeries({ kind: 'notion', ...notion }, length, Date.now(), null));
   const handleReplay = () =>
-    setSeries((current) => current && startSeries(current.notion, current.length, Date.now()));
+    setSeries(
+      (current) =>
+        current && startSeries(current.topic, current.length, Date.now(), current.timeLimitSeconds)
+    );
   const handleBackToSetup = () => setSeries(null);
 
   if (authLoading || status.isLoading) return <LoadingScreen />;

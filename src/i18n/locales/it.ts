@@ -538,6 +538,8 @@ export const it = {
     },
   },
   practice: {
+    timesTablesLabel_one: 'Tabellina del {{tables}}',
+    timesTablesLabel_other: 'Tabelline del {{tables}}',
     title: 'Allenamento',
     subtitle: 'Niente cronometro, niente avversari: prenditi il tuo tempo!',
     level: 'Livello',

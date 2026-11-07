@@ -530,6 +530,8 @@ export const en = {
     },
   },
   practice: {
+    timesTablesLabel_one: 'Table of {{tables}}',
+    timesTablesLabel_other: 'Tables of {{tables}}',
     title: 'Practice',
     subtitle: 'No timer, no opponent: take your time!',
     level: 'Grade',

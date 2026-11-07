@@ -10,6 +10,7 @@ import { cn } from '../../lib/utils';
 import { formatInteger } from '../../lib/mathFormat';
 import {
   resolveApiErrorMessage,
+  resolvePracticeTopicLabel,
   resolvePromptTypeLabel,
   resolveQuestionCategoryLabel,
 } from '../../lib/labels';
@@ -139,11 +140,11 @@ const WrongFeedback: React.FC<{
 };
 
 export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNext, onQuit }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const question = usePracticeQuestion(series);
   const index = currentQuestionIndex(series);
   const nextLabel = isLastQuestion(series) ? t('practice.seeResult') : t('practice.next');
-  const { notion, pending } = series;
+  const { topic, pending } = series;
 
   if (isSubscriptionRequiredError(question.error)) {
     return <Navigate to="/subscription" replace />;
@@ -182,10 +183,10 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
             disabled={false}
           />
         )}
-        {pending?.outcome === 'correct' && (
+        {pending?.kind === 'answered' && pending.outcome === 'correct' && (
           <CorrectFeedback questionIndex={index} nextLabel={nextLabel} onNext={onNext} />
         )}
-        {pending?.outcome === 'incorrect' && (
+        {pending?.kind === 'answered' && pending.outcome === 'incorrect' && (
           <WrongFeedback
             given={pending.given}
             answer={answer}
@@ -201,8 +202,9 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
     <div className="min-h-screen p-4 pt-20 max-w-md mx-auto w-full space-y-5">
       <div className="flex items-center justify-between gap-3">
         <span className="truncate rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary-dark">
-          {resolveQuestionCategoryLabel(notion.category, t)} ·{' '}
-          {resolvePromptTypeLabel(notion.promptType, t)}
+          {topic.kind === 'notion'
+            ? `${resolveQuestionCategoryLabel(topic.category, t)} · ${resolvePromptTypeLabel(topic.promptType, t)}`
+            : resolvePracticeTopicLabel(topic, t, i18n.language)}
         </span>
         <button
           type="button"
@@ -219,8 +221,10 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
         className={cn(
           'bg-white rounded-3xl shadow-xl border-2 p-6 text-center space-y-6 transition-colors duration-300',
           pending === null && 'border-slate-100',
-          pending?.outcome === 'correct' && 'border-emerald-300 bg-emerald-50/40',
-          pending?.outcome === 'incorrect' && 'border-amber-300'
+          pending?.kind === 'answered' &&
+            pending.outcome === 'correct' &&
+            'border-emerald-300 bg-emerald-50/40',
+          pending?.kind === 'answered' && pending.outcome === 'incorrect' && 'border-amber-300'
         )}
       >
         {renderBody()}

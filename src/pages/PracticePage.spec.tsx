@@ -37,6 +37,7 @@ vi.mock('../hooks/usePlayerProfile', () => ({
 vi.mock('../services/practice', () => ({
   fetchPracticeCatalog: mocks.fetchCatalog,
   fetchPracticeQuestion: mocks.fetchQuestion,
+  fetchPracticeTimesTables: vi.fn(),
 }));
 
 const catalog: PracticeCatalog = {
@@ -135,6 +136,7 @@ describe('PracticePage', () => {
     expect(screen.getByLabelText('4 bonnes réponses sur 5')).toHaveTextContent('4/5');
     expect(mocks.fetchQuestion).toHaveBeenCalledTimes(5);
     expect(mocks.fetchQuestion.mock.calls[0][1]).toEqual({
+      kind: 'notion',
       level: 'CM1',
       category: 'double',
       promptType: 'double',

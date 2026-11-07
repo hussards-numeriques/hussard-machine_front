@@ -544,6 +544,8 @@ export const de = {
     },
   },
   practice: {
+    timesTablesLabel_one: '{{tables}}er-Reihe',
+    timesTablesLabel_other: '{{tables}}er-Reihen',
     title: 'Training',
     subtitle: 'Kein Zeitlimit, kein Gegner: Lass dir Zeit!',
     level: 'Klassenstufe',

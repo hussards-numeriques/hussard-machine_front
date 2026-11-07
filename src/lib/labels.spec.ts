@@ -4,6 +4,7 @@ import { ApiError, apiErrorFrom } from '../services/http';
 import {
   resolveApiErrorMessage,
   resolveIconLabel,
+  resolvePracticeTopicLabel,
   resolveQuestionCategoryLabel,
   resolveQuestLabel,
   resolveTitleLabel,
@@ -52,5 +53,25 @@ describe('API errors', () => {
     expect(error.code).toBeNull();
     expect(resolveApiErrorMessage(error, 'fallback', i18n.t)).toBe('fallback');
     expect(resolveApiErrorMessage(new ApiError(500, 'x'), 'fallback', i18n.t)).toBe('fallback');
+  });
+});
+
+describe('resolvePracticeTopicLabel', () => {
+  it('lists the selected times tables', () => {
+    const label = (tables: number[]) =>
+      resolvePracticeTopicLabel({ kind: 'timesTables', tables }, i18n.t, 'fr');
+    expect(label([6])).toBe('Table de 6');
+    expect(label([6, 7])).toBe('Tables de 6 et 7');
+    expect(label([6, 7, 8])).toBe('Tables de 6, 7 et 8');
+  });
+
+  it('labels a notion by its prompt type', () => {
+    expect(
+      resolvePracticeTopicLabel(
+        { kind: 'notion', level: 'CM1', category: 'division', promptType: 'division_table' },
+        i18n.t,
+        'fr'
+      )
+    ).toBe('Tables de division');
   });
 });

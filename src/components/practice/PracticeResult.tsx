@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import { Mascot } from '../Mascot';
 import { cn } from '../../lib/utils';
-import { resolvePromptTypeLabel } from '../../lib/labels';
+import { resolvePracticeTopicLabel } from '../../lib/labels';
 import { correctCount, ratePractice, type PracticeSeries } from '../../lib/practice';
 
 interface PracticeResultProps {
@@ -40,7 +40,7 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
   onReplay,
   onChangeNotion,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const correct = correctCount(series);
   const rating = ratePractice(correct, series.length);
   const isGreat = rating === 'perfect' || rating === 'great';
@@ -65,7 +65,7 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
         <div className="space-y-1">
           <h1 className="text-3xl font-black text-primary-dark">{t('practice.finishedTitle')}</h1>
           <p className="text-sm font-bold text-slate-400">
-            {resolvePromptTypeLabel(series.notion.promptType, t)}
+            {resolvePracticeTopicLabel(series.topic, t, i18n.language)}
           </p>
         </div>
         <p
