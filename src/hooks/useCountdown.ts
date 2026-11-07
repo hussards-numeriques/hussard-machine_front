@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 export const computeRemainingSeconds = (
   durationSeconds: number,
@@ -14,13 +14,11 @@ export const useCountdown = (
   durationSeconds: number | null,
   startTimeSeconds: number | null
 ): number | null => {
-  const [remaining, setRemaining] = React.useState<number | null>(null);
+  const [remaining, setRemaining] = useState<number | null>(null);
 
-  React.useEffect(() => {
-    if (durationSeconds === null) {
-      setRemaining(null);
-      return;
-    }
+  useEffect(() => {
+    if (durationSeconds === null) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRemaining(computeRemainingSeconds(durationSeconds, startTimeSeconds));
     const interval = window.setInterval(() => {
       setRemaining(computeRemainingSeconds(durationSeconds, startTimeSeconds));
@@ -28,5 +26,5 @@ export const useCountdown = (
     return () => window.clearInterval(interval);
   }, [durationSeconds, startTimeSeconds]);
 
-  return remaining;
+  return durationSeconds === null ? null : remaining;
 };

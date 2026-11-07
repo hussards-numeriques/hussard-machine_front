@@ -1,7 +1,8 @@
-import React from 'react';
+import type { FC } from 'react';
+import { useEffect } from 'react';
 import { useSound } from '../hooks/useSound';
 
-export const CountdownBadge: React.FC<{ remainingSeconds: number; ticking: boolean }> = ({
+export const CountdownBadge: FC<{ remainingSeconds: number; ticking: boolean }> = ({
   remainingSeconds,
   ticking,
 }) => {
@@ -9,7 +10,7 @@ export const CountdownBadge: React.FC<{ remainingSeconds: number; ticking: boole
   const isLow = remainingSeconds <= 3;
   const shouldTick = ticking && isLow && remainingSeconds > 0;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (shouldTick) play('tick');
   }, [shouldTick, remainingSeconds, play]);
 
