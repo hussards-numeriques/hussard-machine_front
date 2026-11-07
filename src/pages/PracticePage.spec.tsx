@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   active: true,
   fetchCatalog: vi.fn(),
   fetchQuestion: vi.fn(),
+  fetchTimesTables: vi.fn(),
 }));
 
 vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
@@ -37,7 +38,7 @@ vi.mock('../hooks/usePlayerProfile', () => ({
 vi.mock('../services/practice', () => ({
   fetchPracticeCatalog: mocks.fetchCatalog,
   fetchPracticeQuestion: mocks.fetchQuestion,
-  fetchPracticeTimesTables: vi.fn(),
+  fetchPracticeTimesTables: mocks.fetchTimesTables,
 }));
 
 const catalog: PracticeCatalog = {
@@ -63,6 +64,11 @@ const renderPage = () =>
     </MemoryRouter>
   );
 
+const timesTablesMode = async () =>
+  fireEvent.click(await screen.findByRole('button', { name: 'Tables de multiplication' }));
+
+const table = (value: number) => screen.getByRole('button', { name: `Table de ${value}` });
+
 const answer = async (value: number) => {
   fireEvent.change(await screen.findByPlaceholderText('?'), { target: { value: String(value) } });
   fireEvent.click(screen.getByRole('button', { name: 'Valider' }));
@@ -73,6 +79,7 @@ describe('PracticePage', () => {
     vi.clearAllMocks();
     mocks.active = true;
     mocks.fetchCatalog.mockResolvedValue(catalog);
+    mocks.fetchTimesTables.mockResolvedValue([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     let value = 0;
     mocks.fetchQuestion.mockImplementation(async () => doubleOf(++value));
   });
@@ -161,5 +168,156 @@ describe('PracticePage', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Réessayer' }));
     await waitFor(() => expect(screen.getByPlaceholderText('?')).toBeInTheDocument());
+  });
+
+  it('starts a notion series with no clock by default', async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: /Double/ }));
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    expect(await screen.findByText('Question 1 sur 10')).toBeInTheDocument();
+    expect(mocks.fetchQuestion.mock.calls[0][1]).toEqual({
+      kind: 'notion',
+      level: 'CM1',
+      category: 'double',
+      promptType: 'double',
+    });
+    expect(screen.queryByText(/^\d+s$/)).not.toBeInTheDocument();
+  });
+
+  it('requires at least one table', async () => {
+    renderPage();
+
+    await timesTablesMode();
+    const start = screen.getByRole('button', { name: "C'est parti !" });
+    expect(start).toBeDisabled();
+    expect(screen.getByText('Choisis au moins une table.')).toBeInTheDocument();
+
+    fireEvent.click(table(6));
+    expect(start).toBeEnabled();
+    fireEvent.click(table(6));
+    expect(start).toBeDisabled();
+  });
+
+  it('plays combined times tables and replays them', async () => {
+    renderPage();
+
+    await timesTablesMode();
+    fireEvent.click(table(7));
+    fireEvent.click(table(6));
+    fireEvent.click(screen.getByRole('button', { name: '5' }));
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    expect(await screen.findByText('Question 1 sur 5')).toBeInTheDocument();
+    expect(screen.getByText('Tables de 6 et 7')).toBeInTheDocument();
+    expect(mocks.fetchQuestion.mock.calls[0][1]).toEqual({ kind: 'timesTables', tables: [6, 7] });
+
+    for (let index = 1; index <= 5; index++) {
+      await answer(index * 2);
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: index === 5 ? 'Voir mon résultat' : 'Question suivante',
+        })
+      );
+    }
+
+    expect(screen.getByText('Tables de 6 et 7')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Changer de tables' })).toBeInTheDocument();
+    mocks.fetchQuestion.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: 'Rejouer ces tables' }));
+    expect(await screen.findByText('Question 1 sur 5')).toBeInTheDocument();
+    expect(mocks.fetchQuestion.mock.calls[0][1]).toEqual({ kind: 'timesTables', tables: [6, 7] });
+  });
+
+  it('keeps choices when switching mode', async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: /Double/ }));
+    await timesTablesMode();
+    fireEvent.click(table(6));
+    fireEvent.click(screen.getByRole('button', { name: 'Par notion' }));
+    expect(screen.getByRole('button', { name: /Double/ })).toHaveAttribute('aria-pressed', 'true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Tables de multiplication' }));
+    expect(table(6)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it.each([
+    ['1', '2'],
+    ['100', '99'],
+    ['', '10'],
+  ])('clamps the typed time limit %j to %s', async (typed, expected) => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: typed } });
+    fireEvent.blur(field);
+
+    expect(field).toHaveValue(Number(expected));
+  });
+
+  it('counts a timeout as a mistake', { timeout: 15000 }, async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: /Double/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: '2' } });
+    fireEvent.blur(field);
+    fireEvent.click(screen.getByRole('button', { name: '5' }));
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    expect(await screen.findByText('Temps écoulé !', {}, { timeout: 3500 })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
+    for (const value of [4, 6, 8]) {
+      await answer(value);
+      fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
+    }
+    await answer(10);
+    fireEvent.click(screen.getByRole('button', { name: 'Voir mon résultat' }));
+
+    expect(await screen.findByLabelText('4 bonnes réponses sur 5')).toBeInTheDocument();
+  });
+
+  it('times out on the last question', { timeout: 15000 }, async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: /Double/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: '2' } });
+    fireEvent.blur(field);
+    fireEvent.click(screen.getByRole('button', { name: '5' }));
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    for (const value of [2, 4, 6, 8]) {
+      await answer(value);
+      fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
+    }
+    expect(await screen.findByText('Temps écoulé !', {}, { timeout: 3500 })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Voir mon résultat' }));
+
+    expect(screen.getByLabelText('4 bonnes réponses sur 5')).toBeInTheDocument();
+  });
+
+  it('shows the error screen when times tables fail', async () => {
+    mocks.fetchTimesTables.mockRejectedValueOnce(new Error('network'));
+    renderPage();
+
+    expect(
+      await screen.findByText("Impossible de charger l'entraînement pour le moment.")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
+
+    expect(await screen.findByLabelText('Niveau')).toBeInTheDocument();
+    expect(mocks.fetchTimesTables).toHaveBeenCalledTimes(2);
+  });
+
+  it('redirects when times tables report an expired subscription', async () => {
+    mocks.fetchTimesTables.mockRejectedValue(new ApiError(403, 'expired', 'SUBSCRIPTION_REQUIRED'));
+    renderPage();
+    expect(await screen.findByText('Subscription page')).toBeInTheDocument();
   });
 });

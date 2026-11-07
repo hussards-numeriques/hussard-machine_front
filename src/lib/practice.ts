@@ -154,3 +154,5 @@ const CHEERS = ['bravo', 'super', 'awesome', 'perfect', 'strong'] as const;
 export type Cheer = (typeof CHEERS)[number];
 
 export const cheerFor = (questionIndex: number): Cheer => CHEERS[questionIndex % CHEERS.length];
+
+export type PracticeMode = 'notion' | 'timesTables';

@@ -43,6 +43,7 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
   const { t, i18n } = useTranslation();
   const correct = correctCount(series);
   const rating = ratePractice(correct, series.length);
+  const isTables = series.topic.kind === 'timesTables';
   const isGreat = rating === 'perfect' || rating === 'great';
 
   useEffect(() => {
@@ -81,10 +82,10 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
         <p className="text-lg font-bold text-slate-600">{t(`practice.ratings.${rating}`)}</p>
         <div className="space-y-3 pt-2">
           <Button size="lg" className="w-full" onClick={onReplay}>
-            {t('practice.replay')}
+            {t(isTables ? 'practice.replayTables' : 'practice.replay')}
           </Button>
           <Button variant="secondary" className="w-full" onClick={onChangeNotion}>
-            {t('practice.changeNotion')}
+            {t(isTables ? 'practice.changeTables' : 'practice.changeNotion')}
           </Button>
         </div>
         <Link

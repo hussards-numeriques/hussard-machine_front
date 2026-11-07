@@ -4,11 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { usePlayerProfile } from '../hooks/usePlayerProfile';
-import { isSubscriptionRequiredError, usePracticeCatalog } from '../hooks/usePractice';
+import {
+  isSubscriptionRequiredError,
+  usePracticeCatalog,
+  usePracticeTimesTables,
+} from '../hooks/usePractice';
 import { useResolvedAnswerInputMode } from '../hooks/useAnswerInputMode';
 import { digitRecognitionPort } from '../services/digit-recognition';
 import { LoadingScreen } from '../components/LoadingScreen';
-import type { PracticeNotion } from '../services/practice';
+import type { PracticeTopic } from '../services/practice';
 import { Button } from '../components/Button';
 import { PracticeSetup } from '../components/practice/PracticeSetup';
 import { PracticeRun } from '../components/practice/PracticeRun';
@@ -22,6 +26,7 @@ import {
   startSeries,
   timeOutQuestion,
   type PracticeChoice,
+  type PracticeMode,
   type PracticeSeries,
   type SeriesLength,
 } from '../lib/practice';
@@ -45,6 +50,7 @@ export const PracticePage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const status = useSubscriptionStatus();
   const catalog = usePracticeCatalog();
+  const timesTables = usePracticeTimesTables();
   const profileLevel = usePlayerProfile().data?.level;
   const inputMode = useResolvedAnswerInputMode();
   const [draft, setDraft] = useState<DraftChoice>({
@@ -52,6 +58,9 @@ export const PracticePage: React.FC = () => {
     category: null,
     promptType: null,
   });
+  const [mode, setMode] = useState<PracticeMode>('notion');
+  const [selectedTables, setSelectedTables] = useState<number[]>([]);
+  const [timeLimitSeconds, setTimeLimitSeconds] = useState<number | null>(null);
   const [length, setLength] = useState<SeriesLength>(DEFAULT_SERIES_LENGTH);
   const [series, setSeries] = useState<PracticeSeries | null>(null);
 
@@ -72,8 +81,8 @@ export const PracticePage: React.FC = () => {
     () => setSeries((current) => current && timeOutQuestion(current)),
     []
   );
-  const handleStart = (notion: PracticeNotion) =>
-    setSeries(startSeries({ kind: 'notion', ...notion }, length, Date.now(), null));
+  const handleStart = (topic: PracticeTopic) =>
+    setSeries(startSeries(topic, length, Date.now(), timeLimitSeconds));
   const handleReplay = () =>
     setSeries(
       (current) =>
@@ -86,7 +95,8 @@ export const PracticePage: React.FC = () => {
   if (
     !isAuthenticated ||
     status.data?.active !== true ||
-    isSubscriptionRequiredError(catalog.error)
+    isSubscriptionRequiredError(catalog.error) ||
+    isSubscriptionRequiredError(timesTables.error)
   ) {
     return <Navigate to="/subscription" replace />;
   }
@@ -105,8 +115,17 @@ export const PracticePage: React.FC = () => {
     );
   }
 
-  if (catalog.isError) return <PracticeCatalogError onRetry={() => void catalog.refetch()} />;
-  if (!catalog.data) return <LoadingScreen />;
+  if (catalog.isError || timesTables.isError) {
+    return (
+      <PracticeCatalogError
+        onRetry={() => {
+          void catalog.refetch();
+          void timesTables.refetch();
+        }}
+      />
+    );
+  }
+  if (!catalog.data || !timesTables.data) return <LoadingScreen />;
 
   const choice: PracticeChoice = {
     ...draft,
@@ -117,10 +136,17 @@ export const PracticePage: React.FC = () => {
   return (
     <PracticeSetup
       catalog={catalog.data}
+      timesTables={timesTables.data}
+      mode={mode}
       choice={choice}
+      selectedTables={selectedTables}
       length={length}
+      timeLimitSeconds={timeLimitSeconds}
+      onModeChange={setMode}
       onChoiceChange={setDraft}
+      onTablesChange={setSelectedTables}
       onLengthChange={setLength}
+      onTimeLimitChange={setTimeLimitSeconds}
       onStart={handleStart}
     />
   );
