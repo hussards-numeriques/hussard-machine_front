@@ -97,7 +97,9 @@ Route structure (`AppLayout` vs `GameLayout`), role of `GamePage` as view orches
 ### [practice.md](practice.md)
 
 Mode entraînement réservé aux abonnés Calc Rush+ : route `/practice`, `GET /practice/catalog` et
-`GET /practice/{level}/{category}/{prompt_type}` (`services/practice.ts`, `hooks/usePractice.ts`),
+`GET /practice/{level}/{category}/{prompt_type}`, plus les routes de tables de multiplication
+`GET /practice/times-tables` et `GET /practice/times-tables/question` (`services/practice.ts`,
+`hooks/usePractice.ts`), temps limité optionnel par question (`useCountdown`),
 logique pure de série (`lib/practice.ts`), écrans configuration / question / résultat
 (`components/practice/`), points d'entrée visibles uniquement pour les abonnés.
 → Read when: touching practice mode, the topic (prompt type) labels, or the subscriber-only entry points.

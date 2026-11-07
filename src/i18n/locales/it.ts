@@ -317,7 +317,8 @@ export const it = {
     seats: 'Posti',
     createGame: 'Crea la partita',
     practice: 'Allenati',
-    practiceDetails: 'Scegli un argomento e rispondi alle domande al tuo ritmo, senza cronometro.',
+    practiceDetails:
+      'Scegli un argomento o le tue tabelline e rispondi alle domande al tuo ritmo, con o senza cronometro.',
     errors: {
       nameRequired: 'Inserisci prima il tuo nickname!',
       seatsRange: 'Il numero di posti deve essere tra 2 e 30.',
@@ -541,7 +542,7 @@ export const it = {
     timesTablesLabel_one: 'Tabellina del {{tables}}',
     timesTablesLabel_other: 'Tabelline del {{tables}}',
     title: 'Allenamento',
-    subtitle: 'Niente cronometro, niente avversari: prenditi il tuo tempo!',
+    subtitle: 'Niente avversari, e il cronometro solo se lo vuoi!',
     level: 'Livello',
     category: 'Categoria',
     notion: 'Argomento',
@@ -638,7 +639,7 @@ export const it = {
       },
       practice: {
         title: 'Modalità allenamento',
-        text: 'Ripassa un argomento tutte le volte che vuoi, al tuo ritmo, senza cronometro.',
+        text: 'Ripassa un argomento o le tue tabelline tutte le volte che vuoi, al tuo ritmo, con o senza cronometro.',
       },
       crown: {
         title: 'Corona',
@@ -719,7 +720,7 @@ export const it = {
       title: 'Condizioni generali di vendita',
       purpose: {
         title: 'Oggetto',
-        body: "Le presenti condizioni disciplinano la vendita dell'abbonamento opzionale Calc Rush+ (1, 3 o 12 mesi), con pagamento unico e senza rinnovo automatico. Per tutta la sua durata, sblocca: la creazione di partite private (scelta del livello delle domande, invito di giocatori tramite codice, aggiunta di robot), senza guadagno di XP né effetto sulla classifica; l'avanzamento delle missioni e dei titoli cosmetici; la modalità allenamento (serie di domande su un argomento a scelta, senza cronometro né avversari), senza guadagno di XP né effetto sulla classifica; e una corona visualizzata nel menu del giocatore. Non offre alcun vantaggio nelle partite classificate: XP, livello, grado e serie restano identici per tutti i giocatori, con o senza abbonamento. Unirsi a una partita privata con un codice resta gratuito.",
+        body: "Le presenti condizioni disciplinano la vendita dell'abbonamento opzionale Calc Rush+ (1, 3 o 12 mesi), con pagamento unico e senza rinnovo automatico. Per tutta la sua durata, sblocca: la creazione di partite private (scelta del livello delle domande, invito di giocatori tramite codice, aggiunta di robot), senza guadagno di XP né effetto sulla classifica; l'avanzamento delle missioni e dei titoli cosmetici; la modalità allenamento (serie di domande su un argomento o su tabelline a scelta, con cronometro facoltativo e senza avversari), senza guadagno di XP né effetto sulla classifica; e una corona visualizzata nel menu del giocatore. Non offre alcun vantaggio nelle partite classificate: XP, livello, grado e serie restano identici per tutti i giocatori, con o senza abbonamento. Unirsi a una partita privata con un codice resta gratuito.",
       },
       subscriber: {
         title: 'Sottoscrittore',

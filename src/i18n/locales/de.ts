@@ -322,7 +322,8 @@ export const de = {
     seats: 'Plätze',
     createGame: 'Spiel erstellen',
     practice: 'Trainieren',
-    practiceDetails: 'Wähle ein Thema und beantworte Fragen in deinem Tempo, ohne Zeitlimit.',
+    practiceDetails:
+      'Wähle ein Thema oder deine Einmaleins-Reihen und beantworte Fragen in deinem Tempo, mit oder ohne Zeitlimit.',
     errors: {
       nameRequired: 'Gib zuerst deinen Nutzernamen ein!',
       seatsRange: 'Die Anzahl der Plätze muss zwischen 2 und 30 liegen.',
@@ -547,7 +548,7 @@ export const de = {
     timesTablesLabel_one: '{{tables}}er-Reihe',
     timesTablesLabel_other: '{{tables}}er-Reihen',
     title: 'Training',
-    subtitle: 'Kein Zeitlimit, kein Gegner: Lass dir Zeit!',
+    subtitle: 'Kein Gegner und ein Zeitlimit nur, wenn du willst!',
     level: 'Klassenstufe',
     category: 'Kategorie',
     notion: 'Thema',
@@ -644,7 +645,7 @@ export const de = {
       },
       practice: {
         title: 'Trainingsmodus',
-        text: 'Übe ein Thema so oft du willst, in deinem Tempo, ohne Zeitlimit.',
+        text: 'Übe ein Thema oder deine Einmaleins-Reihen so oft du willst, in deinem Tempo, mit oder ohne Zeitlimit.',
       },
       crown: {
         title: 'Krone',
@@ -725,7 +726,7 @@ export const de = {
       title: 'Allgemeine Verkaufsbedingungen',
       purpose: {
         title: 'Gegenstand',
-        body: 'Diese Bedingungen regeln den Verkauf des optionalen Abonnements Calc Rush+ (1, 3 oder 12 Monate) gegen Einmalzahlung und ohne automatische Verlängerung. Während seiner Laufzeit schaltet es frei: die Erstellung privater Partien (Wahl des Fragenniveaus, Einladung von Spielern per Code, Hinzufügen von Robotern) ohne XP-Gewinn und ohne Auswirkung auf die Rangliste; den Fortschritt bei Quests und kosmetischen Titeln; den Trainingsmodus (Fragenserien zu einem frei gewählten Thema, ohne Zeitlimit und ohne Gegner) ohne XP-Gewinn und ohne Auswirkung auf die Rangliste; und eine Krone, die im Spielermenü angezeigt wird. Es verschafft keinerlei Vorteil in gewerteten Partien: XP, Level, Rang und Serie bleiben für alle Spieler gleich, mit oder ohne Abonnement. Das Beitreten zu einer privaten Partie mit einem Code bleibt kostenlos.',
+        body: 'Diese Bedingungen regeln den Verkauf des optionalen Abonnements Calc Rush+ (1, 3 oder 12 Monate) gegen Einmalzahlung und ohne automatische Verlängerung. Während seiner Laufzeit schaltet es frei: die Erstellung privater Partien (Wahl des Fragenniveaus, Einladung von Spielern per Code, Hinzufügen von Robotern) ohne XP-Gewinn und ohne Auswirkung auf die Rangliste; den Fortschritt bei Quests und kosmetischen Titeln; den Trainingsmodus (Fragenserien zu einem frei gewählten Thema oder frei gewählten Einmaleins-Reihen, mit optionalem Zeitlimit und ohne Gegner) ohne XP-Gewinn und ohne Auswirkung auf die Rangliste; und eine Krone, die im Spielermenü angezeigt wird. Es verschafft keinerlei Vorteil in gewerteten Partien: XP, Level, Rang und Serie bleiben für alle Spieler gleich, mit oder ohne Abonnement. Das Beitreten zu einer privaten Partie mit einem Code bleibt kostenlos.',
       },
       subscriber: {
         title: 'Abonnent',

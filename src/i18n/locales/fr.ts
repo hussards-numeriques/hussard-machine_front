@@ -316,7 +316,8 @@ export const fr = {
     seats: 'Places',
     createGame: 'Créer la partie',
     practice: "S'entraîner",
-    practiceDetails: 'Choisis une notion et enchaîne les questions à ton rythme, sans chrono.',
+    practiceDetails:
+      'Choisis une notion ou tes tables et enchaîne les questions à ton rythme, avec ou sans chrono.',
     errors: {
       nameRequired: "Entre ton pseudo d'abord !",
       seatsRange: 'Le nombre de places doit être entre 2 et 30.',
@@ -541,7 +542,7 @@ export const fr = {
     timesTablesLabel_one: 'Table de {{tables}}',
     timesTablesLabel_other: 'Tables de {{tables}}',
     title: 'Entraînement',
-    subtitle: "Pas de chrono, pas d'adversaire : prends ton temps !",
+    subtitle: "Pas d'adversaire, et le chrono seulement si tu le veux !",
     level: 'Niveau',
     category: 'Catégorie',
     notion: 'Notion',
@@ -638,7 +639,7 @@ export const fr = {
       },
       practice: {
         title: 'Mode entraînement',
-        text: 'Révise une notion en boucle, à ton rythme, sans chrono.',
+        text: 'Révise une notion ou tes tables en boucle, à ton rythme, avec ou sans chrono.',
       },
       crown: {
         title: 'Couronne',
@@ -719,7 +720,7 @@ export const fr = {
       title: 'Conditions générales de vente',
       purpose: {
         title: 'Objet',
-        body: "Les présentes conditions régissent la vente de l'abonnement optionnel Calc Rush+ (1, 3 ou 12 mois), en paiement unique et sans reconduction automatique. Pendant sa durée, il débloque : la création de parties privées (choix du niveau des questions, invitation de joueurs par code, ajout de robots), sans gain d'XP ni effet sur le classement ; la progression des quêtes et titres cosmétiques ; le mode entraînement (séries de questions sur une notion au choix, sans chrono ni adversaire), sans gain d'XP ni effet sur le classement ; et une couronne affichée dans le menu joueur. Il ne donne aucun avantage dans les parties classées : XP, niveau, grade et streak restent identiques pour tous les joueurs, avec ou sans abonnement. Rejoindre une partie privée avec un code reste gratuit.",
+        body: "Les présentes conditions régissent la vente de l'abonnement optionnel Calc Rush+ (1, 3 ou 12 mois), en paiement unique et sans reconduction automatique. Pendant sa durée, il débloque : la création de parties privées (choix du niveau des questions, invitation de joueurs par code, ajout de robots), sans gain d'XP ni effet sur le classement ; la progression des quêtes et titres cosmétiques ; le mode entraînement (séries de questions sur une notion ou des tables de multiplication au choix, avec chrono optionnel et sans adversaire), sans gain d'XP ni effet sur le classement ; et une couronne affichée dans le menu joueur. Il ne donne aucun avantage dans les parties classées : XP, niveau, grade et streak restent identiques pour tous les joueurs, avec ou sans abonnement. Rejoindre une partie privée avec un code reste gratuit.",
       },
       subscriber: {
         title: 'Souscripteur',

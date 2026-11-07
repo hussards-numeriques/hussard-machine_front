@@ -105,7 +105,7 @@ calc-rush_front/
 │   │   ├── gameSchemas.ts            # zod schemas for Game + WS server messages
 │   │   ├── gameConfig.ts             # GET /game/config (zod-validated)
 │   │   ├── profile.ts                # GET /me/details, POST /me/promote, POST /me/demote (zod-validated)
-│   │   ├── practice.ts               # GET /practice/catalog, GET /practice/{level}/{category}/{prompt_type}
+│   │   ├── practice.ts               # GET /practice/catalog, GET /practice/{level}/{category}/{prompt_type}, GET /practice/times-tables[/question]
 │   │   └── digit-recognition/
 │   │       ├── port.ts               # DigitRecognitionPort interface
 │   │       ├── index.ts              # Exports the singleton instance (OnnxCrnnAdapter)

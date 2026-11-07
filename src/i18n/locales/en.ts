@@ -311,7 +311,8 @@ export const en = {
     seats: 'Seats',
     createGame: 'Create the game',
     practice: 'Practice',
-    practiceDetails: 'Pick a topic and answer questions at your own pace, no timer.',
+    practiceDetails:
+      'Pick a topic or your times tables and answer questions at your own pace, with or without a timer.',
     errors: {
       nameRequired: 'Enter your username first!',
       seatsRange: 'The number of seats must be between 2 and 30.',
@@ -533,7 +534,7 @@ export const en = {
     timesTablesLabel_one: 'Table of {{tables}}',
     timesTablesLabel_other: 'Tables of {{tables}}',
     title: 'Practice',
-    subtitle: 'No timer, no opponent: take your time!',
+    subtitle: 'No opponent, and a timer only if you want one!',
     level: 'Grade',
     category: 'Category',
     notion: 'Topic',
@@ -630,7 +631,7 @@ export const en = {
       },
       practice: {
         title: 'Practice mode',
-        text: 'Work on one topic over and over, at your own pace, no timer.',
+        text: 'Work on a topic or your times tables over and over, at your own pace, with or without a timer.',
       },
       crown: {
         title: 'Crown',
@@ -711,7 +712,7 @@ export const en = {
       title: 'Terms of Sale',
       purpose: {
         title: 'Purpose',
-        body: 'These terms govern the sale of the optional Calc Rush+ subscription (1, 3 or 12 months), paid in a single payment with no automatic renewal. For its duration, it unlocks: the creation of private games (choice of question level, inviting players with a code, adding bots), with no XP gain and no effect on the leaderboard; progress on quests and cosmetic titles; practice mode (question series on a chosen topic, with no timer and no opponent), with no XP gain and no effect on the leaderboard; and a crown displayed in the player menu. It gives no advantage in ranked games: XP, level, grade and streak remain identical for all players, with or without a subscription. Joining a private game with a code remains free.',
+        body: 'These terms govern the sale of the optional Calc Rush+ subscription (1, 3 or 12 months), paid in a single payment with no automatic renewal. For its duration, it unlocks: the creation of private games (choice of question level, inviting players with a code, adding bots), with no XP gain and no effect on the leaderboard; progress on quests and cosmetic titles; practice mode (question series on a chosen topic or chosen times tables, with an optional timer and no opponent), with no XP gain and no effect on the leaderboard; and a crown displayed in the player menu. It gives no advantage in ranked games: XP, level, grade and streak remain identical for all players, with or without a subscription. Joining a private game with a code remains free.',
       },
       subscriber: {
         title: 'Subscriber',

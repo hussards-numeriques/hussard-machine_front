@@ -319,7 +319,8 @@ export const ptBR = {
     seats: 'Vagas',
     createGame: 'Criar a partida',
     practice: 'Treinar',
-    practiceDetails: 'Escolha um tema e responda às perguntas no seu ritmo, sem cronômetro.',
+    practiceDetails:
+      'Escolha um tema ou suas tabuadas e responda às perguntas no seu ritmo, com ou sem cronômetro.',
     errors: {
       nameRequired: 'Digite seu apelido primeiro!',
       seatsRange: 'O número de vagas deve ficar entre 2 e 30.',
@@ -543,7 +544,7 @@ export const ptBR = {
     timesTablesLabel_one: 'Tabuada do {{tables}}',
     timesTablesLabel_other: 'Tabuadas do {{tables}}',
     title: 'Treino',
-    subtitle: 'Sem cronômetro, sem adversário: vá com calma!',
+    subtitle: 'Sem adversário, e com cronômetro só se você quiser!',
     level: 'Nível',
     category: 'Categoria',
     notion: 'Tema',
@@ -640,7 +641,7 @@ export const ptBR = {
       },
       practice: {
         title: 'Modo treino',
-        text: 'Pratique um tema quantas vezes quiser, no seu ritmo, sem cronômetro.',
+        text: 'Pratique um tema ou suas tabuadas quantas vezes quiser, no seu ritmo, com ou sem cronômetro.',
       },
       crown: {
         title: 'Coroa',
@@ -721,7 +722,7 @@ export const ptBR = {
       title: 'Condições gerais de venda',
       purpose: {
         title: 'Objeto',
-        body: 'Estas condições regem a venda da assinatura opcional Calc Rush+ (1, 3 ou 12 meses), com pagamento único e sem renovação automática. Durante sua vigência, ela libera: a criação de partidas privadas (escolha do nível das perguntas, convite de jogadores por código, adição de robôs), sem ganho de XP nem efeito no ranking; o progresso das missões e dos títulos cosméticos; o modo treino (séries de perguntas sobre um tema à escolha, sem cronômetro nem adversário), sem ganho de XP nem efeito no ranking; e uma coroa exibida no menu do jogador. Ela não dá nenhuma vantagem nas partidas classificadas: XP, nível, grau e sequência continuam idênticos para todos os jogadores, com ou sem assinatura. Entrar em uma partida privada com um código continua gratuito.',
+        body: 'Estas condições regem a venda da assinatura opcional Calc Rush+ (1, 3 ou 12 meses), com pagamento único e sem renovação automática. Durante sua vigência, ela libera: a criação de partidas privadas (escolha do nível das perguntas, convite de jogadores por código, adição de robôs), sem ganho de XP nem efeito no ranking; o progresso das missões e dos títulos cosméticos; o modo treino (séries de perguntas sobre um tema ou tabuadas à escolha, com cronômetro opcional e sem adversário), sem ganho de XP nem efeito no ranking; e uma coroa exibida no menu do jogador. Ela não dá nenhuma vantagem nas partidas classificadas: XP, nível, grau e sequência continuam idênticos para todos os jogadores, com ou sem assinatura. Entrar em uma partida privada com um código continua gratuito.',
       },
       subscriber: {
         title: 'Assinante',
