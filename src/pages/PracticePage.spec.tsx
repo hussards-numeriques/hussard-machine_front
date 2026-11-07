@@ -74,6 +74,22 @@ const answer = async (value: number) => {
   fireEvent.click(screen.getByRole('button', { name: 'Valider' }));
 };
 
+const clickWhenEnabled = async (name: string) => {
+  await waitFor(() => expect(screen.getByRole('button', { name })).toBeEnabled());
+  fireEvent.click(screen.getByRole('button', { name }));
+};
+
+const playTimesTablesSeries = async () => {
+  for (let index = 1; index <= 5; index++) {
+    await answer(index * 2);
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: index === 5 ? 'Voir mon résultat' : 'Question suivante',
+      })
+    );
+  }
+};
+
 describe('PracticePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -258,6 +274,74 @@ describe('PracticePage', () => {
     expect(field).toHaveValue(Number(expected));
   });
 
+  it('uses a typed time limit without waiting for blur', async () => {
+    renderPage();
+
+    await timesTablesMode();
+    fireEvent.click(table(6));
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    fireEvent.change(screen.getByLabelText('Secondes par question'), { target: { value: '15' } });
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    expect(await screen.findByText('Question 1 sur 10')).toBeInTheDocument();
+    expect(await screen.findByText(/^1[45]s$/)).toBeInTheDocument();
+  });
+
+  it('keeps a partial entry unclamped while typing', async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: '1' } });
+    expect(field).toHaveValue(1);
+    fireEvent.change(field, { target: { value: '12' } });
+    fireEvent.blur(field);
+    expect(field).toHaveValue(12);
+  });
+
+  it('commits the typed time limit on Enter', async () => {
+    renderPage();
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: '1' } });
+    fireEvent.keyDown(field, { key: 'Enter' });
+
+    expect(field).toHaveValue(2);
+  });
+
+  it('keeps the time limit and tables through replay and the return to setup', async () => {
+    renderPage();
+
+    await timesTablesMode();
+    fireEvent.click(table(7));
+    fireEvent.click(table(6));
+    fireEvent.click(screen.getByRole('button', { name: '5' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    const field = screen.getByLabelText('Secondes par question');
+    fireEvent.change(field, { target: { value: '15' } });
+    fireEvent.blur(field);
+    fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+
+    expect(await screen.findByText('Question 1 sur 5')).toBeInTheDocument();
+    await playTimesTablesSeries();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Rejouer ces tables' }));
+    expect(await screen.findByText('Question 1 sur 5')).toBeInTheDocument();
+    expect(await screen.findByText(/^1[45]s$/)).toBeInTheDocument();
+    await playTimesTablesSeries();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Changer de tables' }));
+    expect(await screen.findByRole('button', { name: 'Limité' })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
+    expect(screen.getByLabelText('Secondes par question')).toHaveValue(15);
+    expect(table(6)).toHaveAttribute('aria-pressed', 'true');
+    expect(table(7)).toHaveAttribute('aria-pressed', 'true');
+    expect(table(8)).toHaveAttribute('aria-pressed', 'false');
+  });
+
   it('counts a timeout as a mistake', { timeout: 15000 }, async () => {
     renderPage();
 
@@ -270,7 +354,7 @@ describe('PracticePage', () => {
     fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
 
     expect(await screen.findByText('Temps écoulé !', {}, { timeout: 3500 })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
+    await clickWhenEnabled('Question suivante');
     for (const value of [4, 6, 8]) {
       await answer(value);
       fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
@@ -297,7 +381,7 @@ describe('PracticePage', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
     }
     expect(await screen.findByText('Temps écoulé !', {}, { timeout: 3500 })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Voir mon résultat' }));
+    await clickWhenEnabled('Voir mon résultat');
 
     expect(screen.getByLabelText('4 bonnes réponses sur 5')).toBeInTheDocument();
   });

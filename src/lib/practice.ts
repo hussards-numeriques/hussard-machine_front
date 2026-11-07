@@ -54,6 +54,9 @@ export const clampTimeLimit = (value: number): number =>
     ? DEFAULT_TIME_LIMIT_SECONDS
     : Math.min(TIME_LIMIT_MAX_SECONDS, Math.max(TIME_LIMIT_MIN_SECONDS, Math.round(value)));
 
+export const isWithinTimeLimitRange = (value: number): boolean =>
+  value >= TIME_LIMIT_MIN_SECONDS && value <= TIME_LIMIT_MAX_SECONDS;
+
 export const toggleTable = (tables: number[], table: number): number[] =>
   (tables.includes(table) ? tables.filter((t) => t !== table) : [...tables, table]).sort(
     (a, b) => a - b

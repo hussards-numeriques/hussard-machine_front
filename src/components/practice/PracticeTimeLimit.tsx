@@ -5,6 +5,7 @@ import {
   TIME_LIMIT_MAX_SECONDS,
   TIME_LIMIT_MIN_SECONDS,
   clampTimeLimit,
+  isWithinTimeLimitRange,
 } from '../../lib/practice';
 import { ChoiceButton } from './PracticeSetupControls';
 
@@ -37,6 +38,12 @@ const SecondsField: React.FC<{ value: number; onChange: (value: number) => void 
   const { t } = useTranslation();
   const [draft, setDraft] = useState<string | null>(null);
 
+  const handleChange = (typed: string) => {
+    setDraft(typed);
+    const parsed = parseFloat(typed);
+    if (Number.isInteger(parsed) && isWithinTimeLimitRange(parsed)) onChange(parsed);
+  };
+
   const commit = () => {
     if (draft === null) return;
     onChange(clampTimeLimit(parseFloat(draft)));
@@ -56,8 +63,11 @@ const SecondsField: React.FC<{ value: number; onChange: (value: number) => void 
         inputMode="numeric"
         aria-label={t('practice.timeLimitSeconds')}
         value={draft ?? value}
-        onChange={(event) => setDraft(event.target.value)}
+        onChange={(event) => handleChange(event.target.value)}
         onBlur={commit}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') commit();
+        }}
         className="w-20 rounded-xl border-2 border-slate-300 bg-white p-3 text-center text-2xl font-black text-slate-700 outline-none focus:border-primary"
       />
       <StepButton
