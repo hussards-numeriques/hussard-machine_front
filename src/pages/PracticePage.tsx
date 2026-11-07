@@ -20,6 +20,7 @@ import {
   isSeriesFinished,
   nextQuestion,
   startSeries,
+  timeOutQuestion,
   type PracticeChoice,
   type PracticeSeries,
   type SeriesLength,
@@ -67,6 +68,10 @@ export const PracticePage: React.FC = () => {
     () => setSeries((current) => current && nextQuestion(current)),
     []
   );
+  const handleTimeOut = useCallback(
+    () => setSeries((current) => current && timeOutQuestion(current)),
+    []
+  );
   const handleStart = (notion: PracticeNotion) =>
     setSeries(startSeries({ kind: 'notion', ...notion }, length, Date.now(), null));
   const handleReplay = () =>
@@ -95,6 +100,7 @@ export const PracticePage: React.FC = () => {
         onAnswer={handleAnswer}
         onNext={handleNext}
         onQuit={handleBackToSetup}
+        onTimeOut={handleTimeOut}
       />
     );
   }

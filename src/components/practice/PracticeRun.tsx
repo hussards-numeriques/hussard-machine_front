@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AnswerInput } from '../AnswerInput';
 import { Button } from '../Button';
+import { CountdownBadge } from '../CountdownBadge';
 import { Mascot } from '../Mascot';
 import { QuestionPrompt } from '../QuestionPrompt/QuestionPrompt';
 import { cn } from '../../lib/utils';
@@ -20,6 +21,7 @@ import {
   isLastQuestion,
   type PracticeSeries,
 } from '../../lib/practice';
+import { useCountdown } from '../../hooks/useCountdown';
 import { isSubscriptionRequiredError, usePracticeQuestion } from '../../hooks/usePractice';
 
 const CORRECT_AUTO_ADVANCE_MS = 1400;
@@ -29,7 +31,22 @@ interface PracticeRunProps {
   onAnswer: (given: number, expected: number) => void;
   onNext: () => void;
   onQuit: () => void;
+  onTimeOut: () => void;
 }
+
+const QuestionClock: React.FC<{ seconds: number; onExpire: () => void }> = ({
+  seconds,
+  onExpire,
+}) => {
+  const [startTime] = useState(() => Date.now() / 1000);
+  const remaining = useCountdown(seconds, startTime);
+
+  useEffect(() => {
+    if (remaining === 0) onExpire();
+  }, [remaining, onExpire]);
+
+  return <CountdownBadge remainingSeconds={remaining ?? seconds} ticking />;
+};
 
 const ProgressSteps: React.FC<{ current: number; total: number }> = ({ current, total }) => {
   const { t } = useTranslation();
@@ -96,26 +113,29 @@ const CorrectFeedback: React.FC<{
 };
 
 const WrongFeedback: React.FC<{
-  given: number;
+  title: string;
+  given: number | null;
   answer: number;
   nextLabel: string;
   onNext: () => void;
-}> = ({ given, answer, nextLabel, onNext }) => {
+}> = ({ title, given, answer, nextLabel, onNext }) => {
   const { t } = useTranslation();
   return (
     <div className="space-y-4 animate-pop-in">
       <p role="status" className="text-2xl font-black text-amber-600">
-        {t('practice.wrongTitle')}
+        {title}
       </p>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl bg-slate-50 p-3 space-y-1">
-          <span className="block text-xs font-bold uppercase text-slate-400">
-            {t('practice.yourAnswer')}
-          </span>
-          <span className="block text-3xl font-black text-slate-400 line-through tabular-nums">
-            {formatInteger(given)}
-          </span>
-        </div>
+      <div className={cn('grid gap-3', given === null ? 'grid-cols-1' : 'grid-cols-2')}>
+        {given !== null && (
+          <div className="rounded-2xl bg-slate-50 p-3 space-y-1">
+            <span className="block text-xs font-bold uppercase text-slate-400">
+              {t('practice.yourAnswer')}
+            </span>
+            <span className="block text-3xl font-black text-slate-400 line-through tabular-nums">
+              {formatInteger(given)}
+            </span>
+          </div>
+        )}
         <div className="rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-3 space-y-1">
           <span className="block text-xs font-bold uppercase text-emerald-700">
             {t('practice.rightAnswer')}
@@ -139,12 +159,19 @@ const WrongFeedback: React.FC<{
   );
 };
 
-export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNext, onQuit }) => {
+export const PracticeRun: React.FC<PracticeRunProps> = ({
+  series,
+  onAnswer,
+  onNext,
+  onQuit,
+  onTimeOut,
+}) => {
   const { t, i18n } = useTranslation();
   const question = usePracticeQuestion(series);
   const index = currentQuestionIndex(series);
   const nextLabel = isLastQuestion(series) ? t('practice.seeResult') : t('practice.next');
-  const { topic, pending } = series;
+  const { topic, pending, timeLimitSeconds } = series;
+  const clockActive = question.data !== undefined && pending === null;
 
   if (isSubscriptionRequiredError(question.error)) {
     return <Navigate to="/subscription" replace />;
@@ -188,7 +215,17 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
         )}
         {pending?.kind === 'answered' && pending.outcome === 'incorrect' && (
           <WrongFeedback
+            title={t('practice.wrongTitle')}
             given={pending.given}
+            answer={answer}
+            nextLabel={nextLabel}
+            onNext={onNext}
+          />
+        )}
+        {pending?.kind === 'timedOut' && (
+          <WrongFeedback
+            title={t('practice.timedOutTitle')}
+            given={null}
             answer={answer}
             nextLabel={nextLabel}
             onNext={onNext}
@@ -206,6 +243,9 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
             ? `${resolveQuestionCategoryLabel(topic.category, t)} · ${resolvePromptTypeLabel(topic.promptType, t)}`
             : resolvePracticeTopicLabel(topic, t, i18n.language)}
         </span>
+        {clockActive && timeLimitSeconds !== null && (
+          <QuestionClock key={index} seconds={timeLimitSeconds} onExpire={onTimeOut} />
+        )}
         <button
           type="button"
           onClick={onQuit}
@@ -224,7 +264,9 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({ series, onAnswer, onNe
           pending?.kind === 'answered' &&
             pending.outcome === 'correct' &&
             'border-emerald-300 bg-emerald-50/40',
-          pending?.kind === 'answered' && pending.outcome === 'incorrect' && 'border-amber-300'
+          (pending?.kind === 'timedOut' ||
+            (pending?.kind === 'answered' && pending.outcome === 'incorrect')) &&
+            'border-amber-300'
         )}
       >
         {renderBody()}

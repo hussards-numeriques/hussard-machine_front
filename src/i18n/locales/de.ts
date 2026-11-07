@@ -568,6 +568,7 @@ export const de = {
       strong: 'Klasse!',
     },
     wrongTitle: 'Nicht ganz…',
+    timedOutTitle: 'Die Zeit ist um!',
     yourAnswer: 'Deine Antwort',
     rightAnswer: 'Die richtige Antwort',
     wrongEncouragement: 'Nicht schlimm, so lernt man!',

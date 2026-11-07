@@ -564,6 +564,7 @@ export const ptBR = {
       strong: 'Mandou bem!',
     },
     wrongTitle: 'Quase…',
+    timedOutTitle: 'O tempo acabou!',
     yourAnswer: 'Sua resposta',
     rightAnswer: 'A resposta certa',
     wrongEncouragement: 'Tudo bem, é assim que se aprende!',

@@ -561,6 +561,7 @@ export const es = {
       strong: '¡Increíble!',
     },
     wrongTitle: 'No del todo…',
+    timedOutTitle: '¡Se acabó el tiempo!',
     yourAnswer: 'Tu respuesta',
     rightAnswer: 'La respuesta correcta',
     wrongEncouragement: '¡No pasa nada, así se aprende!',

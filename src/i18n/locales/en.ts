@@ -554,6 +554,7 @@ export const en = {
       strong: 'Amazing!',
     },
     wrongTitle: 'Not quite…',
+    timedOutTitle: "Time's up!",
     yourAnswer: 'Your answer',
     rightAnswer: 'The right answer',
     wrongEncouragement: "No worries, that's how we learn!",

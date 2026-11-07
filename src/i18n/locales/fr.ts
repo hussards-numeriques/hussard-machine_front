@@ -562,6 +562,7 @@ export const fr = {
       strong: 'Trop fort !',
     },
     wrongTitle: 'Pas tout à fait…',
+    timedOutTitle: 'Temps écoulé !',
     yourAnswer: 'Ta réponse',
     rightAnswer: 'La bonne réponse',
     wrongEncouragement: "Pas grave, c'est comme ça qu'on apprend !",

@@ -562,6 +562,7 @@ export const it = {
       strong: 'Fortissimo!',
     },
     wrongTitle: 'Non proprio…',
+    timedOutTitle: 'Tempo scaduto!',
     yourAnswer: 'La tua risposta',
     rightAnswer: 'La risposta giusta',
     wrongEncouragement: 'Non importa, è così che si impara!',
