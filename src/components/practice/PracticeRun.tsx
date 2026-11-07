@@ -25,6 +25,7 @@ import { useCountdown } from '../../hooks/useCountdown';
 import { isSubscriptionRequiredError, usePracticeQuestion } from '../../hooks/usePractice';
 
 const CORRECT_AUTO_ADVANCE_MS = 1400;
+const TIMED_OUT_LOCK_MS = 800;
 
 interface PracticeRunProps {
   series: PracticeSeries;
@@ -117,9 +118,18 @@ const WrongFeedback: React.FC<{
   given: number | null;
   answer: number;
   nextLabel: string;
+  lockMs: number;
   onNext: () => void;
-}> = ({ title, given, answer, nextLabel, onNext }) => {
+}> = ({ title, given, answer, nextLabel, lockMs, onNext }) => {
   const { t } = useTranslation();
+  const [unlocked, setUnlocked] = useState(lockMs === 0);
+
+  useEffect(() => {
+    if (lockMs === 0) return;
+    const timeout = window.setTimeout(() => setUnlocked(true), lockMs);
+    return () => window.clearTimeout(timeout);
+  }, [lockMs]);
+
   return (
     <div className="space-y-4 animate-pop-in">
       <p role="status" className="text-2xl font-black text-amber-600">
@@ -152,7 +162,14 @@ const WrongFeedback: React.FC<{
         <Mascot pose="clindoeil" size={40} title="Rushy" />
         <p className="text-sm font-semibold text-slate-500">{t('practice.wrongEncouragement')}</p>
       </div>
-      <Button size="lg" className="w-full" autoFocus onClick={onNext}>
+      <Button
+        key={unlocked ? 'unlocked' : 'locked'}
+        size="lg"
+        className="w-full"
+        disabled={!unlocked}
+        autoFocus={unlocked}
+        onClick={onNext}
+      >
         {nextLabel}
       </Button>
     </div>
@@ -219,6 +236,7 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({
             given={pending.given}
             answer={answer}
             nextLabel={nextLabel}
+            lockMs={0}
             onNext={onNext}
           />
         )}
@@ -228,6 +246,7 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({
             given={null}
             answer={answer}
             nextLabel={nextLabel}
+            lockMs={TIMED_OUT_LOCK_MS}
             onNext={onNext}
           />
         )}
@@ -238,7 +257,12 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({
   return (
     <div className="min-h-screen p-4 pt-20 max-w-md mx-auto w-full space-y-5">
       <div className="flex items-center justify-between gap-3">
-        <span className="truncate rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary-dark">
+        <span
+          className={cn(
+            'rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary-dark',
+            topic.kind === 'notion' && 'truncate'
+          )}
+        >
           {topic.kind === 'notion'
             ? `${resolveQuestionCategoryLabel(topic.category, t)} · ${resolvePromptTypeLabel(topic.promptType, t)}`
             : resolvePracticeTopicLabel(topic, t, i18n.language)}

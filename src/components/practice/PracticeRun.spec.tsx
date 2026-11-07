@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { PracticeRun } from './PracticeRun';
 import {
@@ -52,13 +52,15 @@ const buildSeries = (
 describe('PracticeRun time limit', () => {
   const onTimeOut = vi.fn();
 
+  const onNext = vi.fn();
+
   const renderRun = (series: PracticeSeries) =>
     render(
       <MemoryRouter>
         <PracticeRun
           series={series}
           onAnswer={vi.fn()}
-          onNext={vi.fn()}
+          onNext={onNext}
           onQuit={vi.fn()}
           onTimeOut={onTimeOut}
         />
@@ -70,6 +72,7 @@ describe('PracticeRun time limit', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     onTimeOut.mockClear();
+    onNext.mockClear();
     questionState.data = { prompt: '6 x 3', answer: 18 };
     questionState.isError = false;
     questionState.error = null;
@@ -158,5 +161,35 @@ describe('PracticeRun time limit', () => {
     expect(screen.getByTestId('practice-correction')).toHaveTextContent('18');
     expect(screen.queryByText('Ta réponse')).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+  });
+
+  it('shows the clock when a limit is set', () => {
+    renderRun(buildSeries(10));
+    expect(screen.getByText(/^\d+s$/)).toBeInTheDocument();
+  });
+
+  it('locks the next button briefly after a timeout', () => {
+    renderRun(buildSeries(2, { kind: 'timedOut' }));
+    const next = screen.getByRole('button', { name: 'Question suivante' });
+    expect(next).toBeDisabled();
+    expect(next).not.toHaveFocus();
+    fireEvent.click(next);
+    advance(799);
+    expect(onNext).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Question suivante' })).toBeDisabled();
+
+    advance(1);
+    const unlocked = screen.getByRole('button', { name: 'Question suivante' });
+    expect(unlocked).toBeEnabled();
+    expect(unlocked).toHaveFocus();
+    fireEvent.click(unlocked);
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it('enables the next button immediately after a wrong answer', () => {
+    renderRun(buildSeries(2, { kind: 'answered', given: 5, outcome: 'incorrect' }));
+    const next = screen.getByRole('button', { name: 'Question suivante' });
+    expect(next).toBeEnabled();
+    expect(next).toHaveFocus();
   });
 });
