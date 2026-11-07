@@ -1,5 +1,17 @@
 # Calc Rush Front
 
+## [0.38.0] - 2026-11-07
+
+### Added
+
+- Practice: new multiplication tables module, independent of level. Pick one table or combine several, from 1 to 10.
+- Practice: optional time limit per question, from 2 to 99 seconds, for every practice series. No limit by default. A timed-out question counts as a mistake and shows the correction.
+
+### Changed
+
+- Copy and terms of sale in all six languages now describe the timer as optional and mention the tables module.
+- The in-game countdown moved to the shared `useCountdown` hook and `CountdownBadge` component, with no change in behaviour.
+
 ## [0.37.0] - 2026-10-30
 
 ### Added
