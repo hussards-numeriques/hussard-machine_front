@@ -571,7 +571,7 @@ export const en = {
     },
     replay: 'Play this topic again',
     changeNotion: 'Change topic',
-    mode: 'What do you want to practise?',
+    mode: 'What do you want to practice?',
     modeNotion: 'By topic',
     modeTimesTables: 'Times tables',
     tables: 'Your tables',
