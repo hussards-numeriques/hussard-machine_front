@@ -17,8 +17,12 @@ export const useCountdown = (
   const [remaining, setRemaining] = useState<number | null>(null);
 
   useEffect(() => {
-    if (durationSeconds === null) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (durationSeconds === null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRemaining(null);
+      return;
+    }
+
     setRemaining(computeRemainingSeconds(durationSeconds, startTimeSeconds));
     const interval = window.setInterval(() => {
       setRemaining(computeRemainingSeconds(durationSeconds, startTimeSeconds));

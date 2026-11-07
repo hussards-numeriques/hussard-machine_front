@@ -50,4 +50,24 @@ describe('useCountdown', () => {
     });
     expect(result.current).toBe(3);
   });
+
+  it('does not expose a stale value when the duration returns after being null', () => {
+    const recorded: Array<number | null> = [];
+    const { rerender } = renderHook(
+      ({ duration, start }: { duration: number | null; start: number | null }) => {
+        const value = useCountdown(duration, start);
+        recorded.push(value);
+        return value;
+      },
+      { initialProps: { duration: 5 as number | null, start: (T - 3) as number | null } }
+    );
+    expect(recorded[recorded.length - 1]).toBe(2);
+
+    rerender({ duration: null, start: null });
+    const afterNullIndex = recorded.length;
+    rerender({ duration: 10, start: T });
+
+    expect(recorded.slice(afterNullIndex)).not.toContain(2);
+    expect(recorded[recorded.length - 1]).toBe(10);
+  });
 });
