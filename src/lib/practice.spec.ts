@@ -8,6 +8,7 @@ import {
   nextQuestion,
   ratePractice,
   resolvePracticeOptions,
+  resolveTimeLimitSeconds,
   startSeries,
   timeOutQuestion,
   toggleTable,
@@ -140,5 +141,12 @@ describe('ratePractice', () => {
     [0, 5, 'keepGoing'],
   ] as const)('%i/%i is %s', (correct, total, rating) => {
     expect(ratePractice(correct, total)).toBe(rating);
+  });
+});
+
+describe('resolveTimeLimitSeconds', () => {
+  it('gives the seconds only when the limit is enabled', () => {
+    expect(resolveTimeLimitSeconds({ enabled: true, seconds: 7 })).toBe(7);
+    expect(resolveTimeLimitSeconds({ enabled: false, seconds: 7 })).toBeNull();
   });
 });

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useResolvedAnswerInputMode } from '../../hooks/useAnswerInputMode';
 import {
-  DEFAULT_TIME_LIMIT_SECONDS,
+  HANDWRITING_COMFORTABLE_SECONDS,
   TIME_LIMIT_MAX_SECONDS,
   TIME_LIMIT_MIN_SECONDS,
   clampTimeLimit,
   isWithinTimeLimitRange,
+  type TimeLimitSetting,
 } from '../../lib/practice';
 import { ChoiceButton } from './PracticeSetupControls';
 
 interface PracticeTimeLimitProps {
-  value: number | null;
-  onChange: (value: number | null) => void;
+  setting: TimeLimitSetting;
+  onChange: (setting: TimeLimitSetting) => void;
 }
 
 const StepButton: React.FC<{
@@ -76,26 +78,41 @@ const SecondsField: React.FC<{ value: number; onChange: (value: number) => void 
         disabled={value >= TIME_LIMIT_MAX_SECONDS}
         onClick={() => onChange(clampTimeLimit(value + 1))}
       />
+      <output aria-live="polite" className="sr-only">
+        {value} s
+      </output>
     </div>
   );
 };
 
-export const PracticeTimeLimit: React.FC<PracticeTimeLimitProps> = ({ value, onChange }) => {
+export const PracticeTimeLimit: React.FC<PracticeTimeLimitProps> = ({ setting, onChange }) => {
   const { t } = useTranslation();
+  const inputMode = useResolvedAnswerInputMode();
+  const { enabled, seconds } = setting;
+  const isTightForHandwriting =
+    enabled && inputMode === 'handwriting' && seconds < HANDWRITING_COMFORTABLE_SECONDS;
+
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-2">
-        <ChoiceButton selected={value === null} onClick={() => onChange(null)}>
+        <ChoiceButton selected={!enabled} onClick={() => onChange({ ...setting, enabled: false })}>
           {t('practice.timeLimitNone')}
         </ChoiceButton>
-        <ChoiceButton
-          selected={value !== null}
-          onClick={() => onChange(value ?? DEFAULT_TIME_LIMIT_SECONDS)}
-        >
+        <ChoiceButton selected={enabled} onClick={() => onChange({ ...setting, enabled: true })}>
           {t('practice.timeLimitOn')}
         </ChoiceButton>
       </div>
-      {value !== null && <SecondsField value={value} onChange={onChange} />}
+      {enabled && (
+        <SecondsField
+          value={seconds}
+          onChange={(next) => onChange({ enabled: true, seconds: next })}
+        />
+      )}
+      {isTightForHandwriting && (
+        <p className="text-sm font-semibold text-amber-700">
+          {t('practice.timeLimitHandwritingHint')}
+        </p>
+      )}
     </div>
   );
 };

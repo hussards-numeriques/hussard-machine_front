@@ -15,20 +15,24 @@ import { LoadingScreen } from '../components/LoadingScreen';
 import type { PracticeTopic } from '../services/practice';
 import { Button } from '../components/Button';
 import { PracticeSetup } from '../components/practice/PracticeSetup';
+import type { TimesTablesState } from '../components/practice/PracticeTablesPicker';
 import { PracticeRun } from '../components/practice/PracticeRun';
 import { PracticeResult } from '../components/practice/PracticeResult';
 import { isLevel, type Level } from '../lib/grades';
 import {
   DEFAULT_SERIES_LENGTH,
+  DEFAULT_TIME_LIMIT_SETTING,
   answerQuestion,
   isSeriesFinished,
   nextQuestion,
+  resolveTimeLimitSeconds,
   startSeries,
   timeOutQuestion,
   type PracticeChoice,
   type PracticeMode,
   type PracticeSeries,
   type SeriesLength,
+  type TimeLimitSetting,
 } from '../lib/practice';
 
 type DraftChoice = Omit<PracticeChoice, 'level'> & { level: Level | null };
@@ -46,6 +50,16 @@ const PracticeCatalogError: React.FC<{ onRetry: () => void }> = ({ onRetry }) =>
   );
 };
 
+const resolveTimesTablesState = ({
+  data,
+  isError,
+  refetch,
+}: ReturnType<typeof usePracticeTimesTables>): TimesTablesState => {
+  if (data) return { status: 'ready', tables: data };
+  if (isError) return { status: 'error', onRetry: () => void refetch() };
+  return { status: 'loading' };
+};
+
 export const PracticePage: React.FC = () => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const status = useSubscriptionStatus();
@@ -60,7 +74,7 @@ export const PracticePage: React.FC = () => {
   });
   const [mode, setMode] = useState<PracticeMode>('notion');
   const [selectedTables, setSelectedTables] = useState<number[]>([]);
-  const [timeLimitSeconds, setTimeLimitSeconds] = useState<number | null>(null);
+  const [timeLimit, setTimeLimit] = useState<TimeLimitSetting>(DEFAULT_TIME_LIMIT_SETTING);
   const [length, setLength] = useState<SeriesLength>(DEFAULT_SERIES_LENGTH);
   const [series, setSeries] = useState<PracticeSeries | null>(null);
 
@@ -82,7 +96,7 @@ export const PracticePage: React.FC = () => {
     []
   );
   const handleStart = (topic: PracticeTopic) =>
-    setSeries(startSeries(topic, length, Date.now(), timeLimitSeconds));
+    setSeries(startSeries(topic, length, Date.now(), resolveTimeLimitSeconds(timeLimit)));
   const handleReplay = () =>
     setSeries(
       (current) =>
@@ -103,7 +117,7 @@ export const PracticePage: React.FC = () => {
 
   if (series !== null) {
     return isSeriesFinished(series) ? (
-      <PracticeResult series={series} onReplay={handleReplay} onChangeNotion={handleBackToSetup} />
+      <PracticeResult series={series} onReplay={handleReplay} onBackToSetup={handleBackToSetup} />
     ) : (
       <PracticeRun
         series={series}
@@ -115,17 +129,8 @@ export const PracticePage: React.FC = () => {
     );
   }
 
-  if (catalog.isError || timesTables.isError) {
-    return (
-      <PracticeCatalogError
-        onRetry={() => {
-          void catalog.refetch();
-          void timesTables.refetch();
-        }}
-      />
-    );
-  }
-  if (!catalog.data || !timesTables.data) return <LoadingScreen />;
+  if (catalog.isError) return <PracticeCatalogError onRetry={() => void catalog.refetch()} />;
+  if (!catalog.data) return <LoadingScreen />;
 
   const choice: PracticeChoice = {
     ...draft,
@@ -136,17 +141,17 @@ export const PracticePage: React.FC = () => {
   return (
     <PracticeSetup
       catalog={catalog.data}
-      timesTables={timesTables.data}
+      timesTables={resolveTimesTablesState(timesTables)}
       mode={mode}
       choice={choice}
       selectedTables={selectedTables}
       length={length}
-      timeLimitSeconds={timeLimitSeconds}
+      timeLimit={timeLimit}
       onModeChange={setMode}
       onChoiceChange={setDraft}
       onTablesChange={setSelectedTables}
       onLengthChange={setLength}
-      onTimeLimitChange={setTimeLimitSeconds}
+      onTimeLimitChange={setTimeLimit}
       onStart={handleStart}
     />
   );

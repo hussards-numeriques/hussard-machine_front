@@ -9,12 +9,7 @@ import { Mascot } from '../Mascot';
 import { QuestionPrompt } from '../QuestionPrompt/QuestionPrompt';
 import { cn } from '../../lib/utils';
 import { formatInteger } from '../../lib/mathFormat';
-import {
-  resolveApiErrorMessage,
-  resolvePracticeTopicLabel,
-  resolvePromptTypeLabel,
-  resolveQuestionCategoryLabel,
-} from '../../lib/labels';
+import { resolveApiErrorMessage, resolvePracticeRunLabel } from '../../lib/labels';
 import {
   cheerFor,
   currentQuestionIndex,
@@ -95,7 +90,10 @@ const CorrectFeedback: React.FC<{
       disableForReducedMotion: true,
     });
     const timeout = window.setTimeout(onNext, CORRECT_AUTO_ADVANCE_MS);
-    return () => window.clearTimeout(timeout);
+    return () => {
+      window.clearTimeout(timeout);
+      confetti.reset();
+    };
   }, [onNext]);
 
   return (
@@ -257,15 +255,8 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({
   return (
     <div className="min-h-screen p-4 pt-20 max-w-md mx-auto w-full space-y-5">
       <div className="flex items-center justify-between gap-3">
-        <span
-          className={cn(
-            'rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary-dark',
-            topic.kind === 'notion' && 'truncate'
-          )}
-        >
-          {topic.kind === 'notion'
-            ? `${resolveQuestionCategoryLabel(topic.category, t)} · ${resolvePromptTypeLabel(topic.promptType, t)}`
-            : resolvePracticeTopicLabel(topic, t, i18n.language)}
+        <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary-dark">
+          {resolvePracticeRunLabel(topic, t, i18n.language)}
         </span>
         {clockActive && timeLimitSeconds !== null && (
           <QuestionClock key={index} seconds={timeLimitSeconds} onExpire={onTimeOut} />

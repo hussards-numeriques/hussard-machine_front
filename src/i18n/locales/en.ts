@@ -531,8 +531,8 @@ export const en = {
     },
   },
   practice: {
-    timesTablesLabel_one: 'Table of {{tables}}',
-    timesTablesLabel_other: 'Tables of {{tables}}',
+    timesTablesLabel_one: '{{tables}} times table',
+    timesTablesLabel_other: '{{tables}} times tables',
     title: 'Practice',
     subtitle: 'No opponent, and a timer only if you want one!',
     level: 'Grade',
@@ -583,6 +583,8 @@ export const en = {
     timeLimitSeconds: 'Seconds per question',
     timeLimitDecrease: 'Less time',
     timeLimitIncrease: 'More time',
+    timeLimitHandwritingHint:
+      'With handwriting, such a short time is hard. The keypad is faster: you can switch modes in the settings.',
     replayTables: 'Play these tables again',
     changeTables: 'Change tables',
   },

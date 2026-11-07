@@ -597,6 +597,8 @@ export const de = {
     timeLimitSeconds: 'Sekunden pro Frage',
     timeLimitDecrease: 'Weniger Zeit',
     timeLimitIncrease: 'Mehr Zeit',
+    timeLimitHandwritingHint:
+      'Mit Handschrift ist so wenig Zeit schwierig. Der Ziffernblock ist schneller: Du kannst den Modus in den Einstellungen ändern.',
     replayTables: 'Diese Reihen nochmal',
     changeTables: 'Reihen wechseln',
   },

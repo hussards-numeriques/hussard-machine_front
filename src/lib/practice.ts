@@ -45,9 +45,24 @@ export const resolvePracticeOptions = (
 
 export type PracticeOutcome = 'correct' | 'incorrect';
 
+export interface TimeLimitSetting {
+  enabled: boolean;
+  seconds: number;
+}
+
+export const HANDWRITING_COMFORTABLE_SECONDS = 5;
+
 export const TIME_LIMIT_MIN_SECONDS = 2;
 export const TIME_LIMIT_MAX_SECONDS = 99;
 export const DEFAULT_TIME_LIMIT_SECONDS = 10;
+
+export const DEFAULT_TIME_LIMIT_SETTING: TimeLimitSetting = {
+  enabled: false,
+  seconds: DEFAULT_TIME_LIMIT_SECONDS,
+};
+
+export const resolveTimeLimitSeconds = ({ enabled, seconds }: TimeLimitSetting): number | null =>
+  enabled ? seconds : null;
 
 export const clampTimeLimit = (value: number): number =>
   Number.isNaN(value)

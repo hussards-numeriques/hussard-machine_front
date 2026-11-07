@@ -62,8 +62,12 @@ exporté par `services/gameSchemas.ts`). Erreurs (`ApiError.code`) : `INVALID_TO
   `usePlayerProfile().data.level`), catégories en tuiles avec symbole, notions (étape masquée
   s'il n'y en a qu'une). Tables : `PracticeTablesPicker` (au moins une table). Puis longueur
   5/10/20 et `PracticeTimeLimit` (« Sans limite » par défaut, ou « Limité » avec un champ de
-  secondes de 2 à 99 et boutons −/+). Les choix (mode, tables, temps) sont conservés dans
-  `PracticePage` entre la configuration et la série.
+  secondes de 2 à 99 et boutons −/+, valeur conservée quand on désactive puis réactive la
+  limite). En saisie manuscrite, un avertissement s'affiche sous 5 s
+  (`practice.timeLimitHandwritingHint`). Les choix (mode, tables, temps) sont conservés dans
+  `PracticePage` entre la configuration et la série. Un échec du chargement des tables
+  n'affecte que ce parcours (`TimesTablesState` : erreur et « Réessayer » dans
+  `PracticeTablesPicker`) ; seul un échec du catalogue affiche `PracticeCatalogError`.
 - `PracticeRun` : barre de progression segmentée (neutre, sans bon/faux), `QuestionPrompt`
   et `AnswerInput` du jeu (remontés par question via `key`). Si `timeLimitSeconds` est défini,
   un `CountdownBadge` décompte chaque question ; à zéro, `onTimeOut` appelle `timeOutQuestion` :

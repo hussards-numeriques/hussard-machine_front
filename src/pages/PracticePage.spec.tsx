@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PracticePage } from './PracticePage';
+import { ANSWER_INPUT_MODE_STORAGE_KEY } from '../hooks/useAnswerInputMode';
 import { renderWithQueryClient } from '../test-utils';
 import { ApiError } from '../services/http';
 import type { PracticeCatalog, PracticeQuestion } from '../services/practice';
@@ -13,7 +14,7 @@ const mocks = vi.hoisted(() => ({
   fetchTimesTables: vi.fn(),
 }));
 
-vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
+vi.mock('canvas-confetti', () => ({ default: Object.assign(vi.fn(), { reset: vi.fn() }) }));
 
 vi.mock('../contexts/useAuth', () => ({
   useAuth: () => ({
@@ -93,6 +94,7 @@ const playTimesTablesSeries = async () => {
 describe('PracticePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
     mocks.active = true;
     mocks.fetchCatalog.mockResolvedValue(catalog);
     mocks.fetchTimesTables.mockResolvedValue([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -386,17 +388,52 @@ describe('PracticePage', () => {
     expect(screen.getByLabelText('4 bonnes réponses sur 5')).toBeInTheDocument();
   });
 
-  it('shows the error screen when times tables fail', async () => {
+  it('keeps the notion flow usable when times tables fail and lets the tables retry', async () => {
     mocks.fetchTimesTables.mockRejectedValueOnce(new Error('network'));
     renderPage();
 
+    expect(await screen.findByLabelText('Niveau')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Tables de multiplication' }));
     expect(
       await screen.findByText("Impossible de charger l'entraînement pour le moment.")
     ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: "C'est parti !" })).toBeDisabled();
+
     fireEvent.click(screen.getByRole('button', { name: 'Réessayer' }));
 
-    expect(await screen.findByLabelText('Niveau')).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: 'Table de 6' })).toBeInTheDocument();
     expect(mocks.fetchTimesTables).toHaveBeenCalledTimes(2);
+  });
+
+  it('remembers the chosen limit when it is turned off and back on', async () => {
+    renderPage();
+    await screen.findByLabelText('Niveau');
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    fireEvent.change(screen.getByLabelText('Secondes par question'), { target: { value: '5' } });
+    fireEvent.blur(screen.getByLabelText('Secondes par question'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sans limite' }));
+    expect(screen.queryByLabelText('Secondes par question')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+
+    expect(screen.getByLabelText('Secondes par question')).toHaveValue(5);
+  });
+
+  it.each([
+    ['handwriting', '4', true],
+    ['handwriting', '5', false],
+    ['keypad', '2', false],
+  ])('with %s input and a limit of %s, the hint shows: %s', async (inputMode, seconds, shown) => {
+    localStorage.setItem(ANSWER_INPUT_MODE_STORAGE_KEY, inputMode);
+    renderPage();
+    await screen.findByLabelText('Niveau');
+    fireEvent.click(screen.getByRole('button', { name: 'Limité' }));
+    fireEvent.change(screen.getByLabelText('Secondes par question'), {
+      target: { value: seconds },
+    });
+    fireEvent.blur(screen.getByLabelText('Secondes par question'));
+
+    expect(screen.queryAllByText(/En écriture manuscrite/)).toHaveLength(shown ? 1 : 0);
   });
 
   it('redirects when times tables report an expired subscription', async () => {

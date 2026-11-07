@@ -593,6 +593,8 @@ export const ptBR = {
     timeLimitSeconds: 'Segundos por pergunta',
     timeLimitDecrease: 'Menos tempo',
     timeLimitIncrease: 'Mais tempo',
+    timeLimitHandwritingHint:
+      'Com escrita à mão, um tempo tão curto é difícil. O teclado numérico é mais rápido: você pode mudar de modo nas configurações.',
     replayTables: 'Jogar estas tabuadas de novo',
     changeTables: 'Mudar de tabuadas',
   },

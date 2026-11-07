@@ -143,6 +143,12 @@ Numeric text field with a "Submit" button. Submission via Enter or click.
 Draw canvas with handwritten number recognition. The player writes the **whole number**
 (one or several digits) on the canvas; a CRNN model reads the full sequence at once.
 
+Recognition runs 700 ms after the last stroke to preview the number, but "Valider" does not
+wait for it: while ink is unread, a click runs recognition at once (or joins the one already
+running) and submits the result once. It never submits a previous value: a new stroke or
+"Effacer" cancels the pending result, an unreadable drawing clears the value, and nothing is
+submitted once the input is unmounted.
+
 ### Experimental badge
 
 A small amber badge (`data-testid="handwriting-beta-badge"`) straddles the top-right

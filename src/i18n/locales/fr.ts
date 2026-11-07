@@ -591,6 +591,8 @@ export const fr = {
     timeLimitSeconds: 'Secondes par question',
     timeLimitDecrease: 'Moins de temps',
     timeLimitIncrease: 'Plus de temps',
+    timeLimitHandwritingHint:
+      'En écriture manuscrite, un temps aussi court est difficile. Le pavé numérique est plus rapide : tu peux changer de mode dans les réglages.',
     replayTables: 'Rejouer ces tables',
     changeTables: 'Changer de tables',
   },

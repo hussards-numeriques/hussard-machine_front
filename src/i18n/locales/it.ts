@@ -591,6 +591,8 @@ export const it = {
     timeLimitSeconds: 'Secondi per domanda',
     timeLimitDecrease: 'Meno tempo',
     timeLimitIncrease: 'Più tempo',
+    timeLimitHandwritingHint:
+      'Con la scrittura a mano, un tempo così breve è difficile. Il tastierino numerico è più veloce: puoi cambiare modalità nelle impostazioni.',
     replayTables: 'Rigioca queste tabelline',
     changeTables: 'Cambia tabelline',
   },

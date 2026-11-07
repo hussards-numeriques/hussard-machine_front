@@ -11,7 +11,7 @@ import { correctCount, ratePractice, type PracticeSeries } from '../../lib/pract
 interface PracticeResultProps {
   series: PracticeSeries;
   onReplay: () => void;
-  onChangeNotion: () => void;
+  onBackToSetup: () => void;
 }
 
 const OutcomeStars: React.FC<{ series: PracticeSeries }> = ({ series }) => {
@@ -38,7 +38,7 @@ const OutcomeStars: React.FC<{ series: PracticeSeries }> = ({ series }) => {
 export const PracticeResult: React.FC<PracticeResultProps> = ({
   series,
   onReplay,
-  onChangeNotion,
+  onBackToSetup,
 }) => {
   const { t, i18n } = useTranslation();
   const correct = correctCount(series);
@@ -53,6 +53,9 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
       origin: { y: 0.6 },
       disableForReducedMotion: true,
     });
+    return () => {
+      confetti.reset();
+    };
   }, [rating]);
 
   return (
@@ -84,7 +87,7 @@ export const PracticeResult: React.FC<PracticeResultProps> = ({
           <Button size="lg" className="w-full" onClick={onReplay}>
             {t(isTables ? 'practice.replayTables' : 'practice.replay')}
           </Button>
-          <Button variant="secondary" className="w-full" onClick={onChangeNotion}>
+          <Button variant="secondary" className="w-full" onClick={onBackToSetup}>
             {t(isTables ? 'practice.changeTables' : 'practice.changeNotion')}
           </Button>
         </div>

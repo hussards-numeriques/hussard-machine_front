@@ -2,45 +2,95 @@ import React, { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../Button';
 import { Mascot } from '../Mascot';
-import { LEVELS, isLevel, resolveLevelLabel } from '../../lib/grades';
-import { resolvePromptTypeLabel, resolveQuestionCategoryLabel } from '../../lib/labels';
+import { LEVELS } from '../../lib/grades';
 import {
   SERIES_LENGTHS,
-  resolveCategorySymbol,
   resolvePracticeOptions,
   type PracticeChoice,
   type PracticeMode,
   type SeriesLength,
+  type TimeLimitSetting,
 } from '../../lib/practice';
 import type { PracticeCatalog, PracticeNotion, PracticeTopic } from '../../services/practice';
+import { CategoryPicker, LevelSelect, NotionPicker } from './PracticeNotionControls';
 import { ChoiceButton, Step } from './PracticeSetupControls';
-import { PracticeTablesPicker } from './PracticeTablesPicker';
+import { PracticeTablesPicker, type TimesTablesState } from './PracticeTablesPicker';
 import { PracticeTimeLimit } from './PracticeTimeLimit';
+
+interface SetupStep {
+  key: string;
+  title: string;
+  content: ReactNode;
+}
 
 interface PracticeSetupProps {
   catalog: PracticeCatalog;
-  timesTables: number[];
+  timesTables: TimesTablesState;
   mode: PracticeMode;
   choice: PracticeChoice;
   selectedTables: number[];
   length: SeriesLength;
-  timeLimitSeconds: number | null;
+  timeLimit: TimeLimitSetting;
   onModeChange: (mode: PracticeMode) => void;
   onChoiceChange: (choice: PracticeChoice) => void;
   onTablesChange: (tables: number[]) => void;
   onLengthChange: (length: SeriesLength) => void;
-  onTimeLimitChange: (seconds: number | null) => void;
+  onTimeLimitChange: (setting: TimeLimitSetting) => void;
   onStart: (topic: PracticeTopic) => void;
 }
 
 const resolveTopic = (
   mode: PracticeMode,
   notion: PracticeNotion | null,
-  tables: number[]
+  tables: number[],
+  tablesAvailable: boolean
 ): PracticeTopic | null => {
   if (mode === 'notion') return notion && { kind: 'notion', ...notion };
-  return tables.length > 0 ? { kind: 'timesTables', tables } : null;
+  return tablesAvailable && tables.length > 0 ? { kind: 'timesTables', tables } : null;
 };
+
+const ModePicker: React.FC<{ mode: PracticeMode; onChange: (mode: PracticeMode) => void }> = ({
+  mode,
+  onChange,
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <ChoiceButton
+        selected={mode === 'notion'}
+        onClick={() => onChange('notion')}
+        className="text-sm"
+      >
+        {t('practice.modeNotion')}
+      </ChoiceButton>
+      <ChoiceButton
+        selected={mode === 'timesTables'}
+        onClick={() => onChange('timesTables')}
+        className="text-sm"
+      >
+        {t('practice.modeTimesTables')}
+      </ChoiceButton>
+    </div>
+  );
+};
+
+const LengthPicker: React.FC<{
+  length: SeriesLength;
+  onChange: (length: SeriesLength) => void;
+}> = ({ length, onChange }) => (
+  <div className="grid grid-cols-3 gap-2">
+    {SERIES_LENGTHS.map((option) => (
+      <ChoiceButton
+        key={option}
+        selected={option === length}
+        onClick={() => onChange(option)}
+        className="text-2xl font-black"
+      >
+        {option}
+      </ChoiceButton>
+    ))}
+  </div>
+);
 
 export const PracticeSetup: React.FC<PracticeSetupProps> = ({
   catalog,
@@ -49,7 +99,7 @@ export const PracticeSetup: React.FC<PracticeSetupProps> = ({
   choice,
   selectedTables,
   length,
-  timeLimitSeconds,
+  timeLimit,
   onModeChange,
   onChoiceChange,
   onTablesChange,
@@ -60,153 +110,74 @@ export const PracticeSetup: React.FC<PracticeSetupProps> = ({
   const { t } = useTranslation();
   const options = resolvePracticeOptions(catalog, choice);
   const levels = LEVELS.filter((level) => catalog[level] !== undefined);
-  const hasNotionStep = options.promptTypes.length > 1;
-  const topic = resolveTopic(mode, options.notion, selectedTables);
+  const topic = resolveTopic(mode, options.notion, selectedTables, timesTables.status === 'ready');
 
-  const handleLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const next = event.target.value;
-    if (isLevel(next)) onChoiceChange({ ...choice, level: next });
+  const notionSteps: SetupStep[] = [
+    {
+      key: 'level',
+      title: t('practice.level'),
+      content: (
+        <LevelSelect
+          levels={levels}
+          value={choice.level}
+          onChange={(level) => onChoiceChange({ ...choice, level })}
+        />
+      ),
+    },
+    {
+      key: 'category',
+      title: t('practice.category'),
+      content: (
+        <CategoryPicker
+          categories={options.categories}
+          selected={options.category}
+          onChange={(category) => onChoiceChange({ ...choice, category, promptType: null })}
+        />
+      ),
+    },
+  ];
+  if (options.promptTypes.length > 1) {
+    notionSteps.push({
+      key: 'notion',
+      title: t('practice.notion'),
+      content: (
+        <NotionPicker
+          promptTypes={options.promptTypes}
+          selected={options.notion?.promptType ?? null}
+          onChange={(promptType) => onChoiceChange({ ...choice, promptType })}
+        />
+      ),
+    });
+  }
+
+  const timesTablesStep: SetupStep = {
+    key: 'tables',
+    title: t('practice.tables'),
+    content: (
+      <PracticeTablesPicker
+        state={timesTables}
+        selected={selectedTables}
+        onChange={onTablesChange}
+      />
+    ),
   };
 
-  const steps: { key: string; title: string; content: ReactNode }[] = [
+  const steps: SetupStep[] = [
     {
       key: 'mode',
       title: t('practice.mode'),
-      content: (
-        <div className="grid grid-cols-2 gap-2">
-          <ChoiceButton
-            selected={mode === 'notion'}
-            onClick={() => onModeChange('notion')}
-            className="text-sm"
-          >
-            {t('practice.modeNotion')}
-          </ChoiceButton>
-          <ChoiceButton
-            selected={mode === 'timesTables'}
-            onClick={() => onModeChange('timesTables')}
-            className="text-sm"
-          >
-            {t('practice.modeTimesTables')}
-          </ChoiceButton>
-        </div>
-      ),
+      content: <ModePicker mode={mode} onChange={onModeChange} />,
     },
-    ...(mode === 'notion'
-      ? [
-          {
-            key: 'level',
-            title: t('practice.level'),
-            content: (
-              <select
-                aria-label={t('practice.level')}
-                className="w-full p-3 rounded-xl border-2 border-slate-300 outline-none font-bold text-slate-700 bg-white focus:border-primary"
-                value={choice.level}
-                onChange={handleLevelChange}
-              >
-                {levels.map((level) => (
-                  <option key={level} value={level}>
-                    {resolveLevelLabel(level, t, 'long')}
-                  </option>
-                ))}
-              </select>
-            ),
-          },
-          {
-            key: 'category',
-            title: t('practice.category'),
-            content: (
-              <>
-                <div className="grid grid-cols-2 gap-2">
-                  {options.categories.map((category) => (
-                    <ChoiceButton
-                      key={category}
-                      selected={category === options.category}
-                      onClick={() => onChoiceChange({ ...choice, category, promptType: null })}
-                      className="flex items-center gap-2 text-left text-sm"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-xl bg-secondary/30 px-1 text-sm font-black text-yellow-900"
-                      >
-                        {resolveCategorySymbol(category)}
-                      </span>
-                      {resolveQuestionCategoryLabel(category, t)}
-                    </ChoiceButton>
-                  ))}
-                </div>
-                {options.category === null && (
-                  <p className="text-sm font-semibold text-slate-400">
-                    {t('practice.chooseCategory')}
-                  </p>
-                )}
-              </>
-            ),
-          },
-          ...(hasNotionStep
-            ? [
-                {
-                  key: 'notion',
-                  title: t('practice.notion'),
-                  content: (
-                    <>
-                      <div className="flex flex-col gap-2">
-                        {options.promptTypes.map((promptType) => (
-                          <ChoiceButton
-                            key={promptType}
-                            selected={promptType === options.notion?.promptType}
-                            onClick={() => onChoiceChange({ ...choice, promptType })}
-                            className="text-left"
-                          >
-                            {resolvePromptTypeLabel(promptType, t)}
-                          </ChoiceButton>
-                        ))}
-                      </div>
-                      {options.notion === null && (
-                        <p className="text-sm font-semibold text-slate-400">
-                          {t('practice.chooseNotion')}
-                        </p>
-                      )}
-                    </>
-                  ),
-                },
-              ]
-            : []),
-        ]
-      : [
-          {
-            key: 'tables',
-            title: t('practice.tables'),
-            content: (
-              <PracticeTablesPicker
-                tables={timesTables}
-                selected={selectedTables}
-                onChange={onTablesChange}
-              />
-            ),
-          },
-        ]),
+    ...(mode === 'notion' ? notionSteps : [timesTablesStep]),
     {
       key: 'length',
       title: t('practice.length'),
-      content: (
-        <div className="grid grid-cols-3 gap-2">
-          {SERIES_LENGTHS.map((option) => (
-            <ChoiceButton
-              key={option}
-              selected={option === length}
-              onClick={() => onLengthChange(option)}
-              className="text-2xl font-black"
-            >
-              {option}
-            </ChoiceButton>
-          ))}
-        </div>
-      ),
+      content: <LengthPicker length={length} onChange={onLengthChange} />,
     },
     {
       key: 'timeLimit',
       title: t('practice.timeLimit'),
-      content: <PracticeTimeLimit value={timeLimitSeconds} onChange={onTimeLimitChange} />,
+      content: <PracticeTimeLimit setting={timeLimit} onChange={onTimeLimitChange} />,
     },
   ];
 

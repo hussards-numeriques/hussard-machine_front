@@ -98,6 +98,15 @@ export const resolvePracticeTopicLabel = (
   return t('practice.timesTablesLabel', { count: topic.tables.length, tables });
 };
 
+export const resolvePracticeRunLabel = (
+  topic: PracticeTopic,
+  t: TFunction,
+  locale: string
+): string =>
+  topic.kind === 'notion'
+    ? `${resolveQuestionCategoryLabel(topic.category, t)} · ${resolvePromptTypeLabel(topic.promptType, t)}`
+    : resolvePracticeTopicLabel(topic, t, locale);
+
 export const resolveQuestLabel = (id: string, t: TFunction): string =>
   isOneOf(QUEST_IDS, id) ? t(`quests.labels.${id}`) : id;
 

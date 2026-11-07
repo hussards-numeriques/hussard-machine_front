@@ -590,6 +590,8 @@ export const es = {
     timeLimitSeconds: 'Segundos por pregunta',
     timeLimitDecrease: 'Menos tiempo',
     timeLimitIncrease: 'Más tiempo',
+    timeLimitHandwritingHint:
+      'Con escritura a mano, un tiempo tan corto es difícil. El teclado numérico es más rápido: puedes cambiar de modo en los ajustes.',
     replayTables: 'Repetir estas tablas',
     changeTables: 'Cambiar de tablas',
   },

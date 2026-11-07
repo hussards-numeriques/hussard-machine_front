@@ -59,6 +59,16 @@ async function drawNumber(canvas: HTMLCanvasElement) {
   });
 }
 
+const stroke = (canvas: HTMLCanvasElement) => {
+  fireEvent.pointerDown(canvas, { clientX: 10, clientY: 10, pointerId: 1 });
+  fireEvent.pointerUp(canvas, { pointerId: 1 });
+};
+
+const flush = () =>
+  act(async () => {
+    await vi.advanceTimersByTimeAsync(0);
+  });
+
 describe('HandwritingInput', () => {
   it('renders the sign, clear and submit controls', () => {
     renderInput();
@@ -160,5 +170,115 @@ describe('HandwritingInput', () => {
   it('disables controls when disabled prop is true', () => {
     renderInput(vi.fn(), true);
     expect(screen.getByRole('button', { name: 'Valider' })).toBeDisabled();
+  });
+
+  describe('validating before recognition has finished', () => {
+    const valider = () => screen.getByRole('button', { name: 'Valider' });
+
+    it('validates a first stroke right away', async () => {
+      const onSubmit = vi.fn();
+      vi.mocked(digitRecognitionPort.recognizeNumber).mockResolvedValueOnce(7);
+      renderInput(onSubmit);
+      stroke(document.querySelector('canvas')!);
+      expect(valider()).toBeEnabled();
+      fireEvent.click(valider());
+      await flush();
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith(7);
+    });
+
+    it('submits the new drawing, never the previous value', async () => {
+      const onSubmit = vi.fn();
+      vi.mocked(digitRecognitionPort.recognizeNumber)
+        .mockResolvedValueOnce(4)
+        .mockResolvedValueOnce(42);
+      renderInput(onSubmit);
+      const canvas = document.querySelector('canvas')!;
+      await drawNumber(canvas);
+      stroke(canvas);
+      fireEvent.click(valider());
+      await flush();
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith(42);
+    });
+
+    it('waits for a recognition already running and submits once', async () => {
+      const onSubmit = vi.fn();
+      let finish: (value: number) => void = () => {};
+      vi.mocked(digitRecognitionPort.recognizeNumber).mockReturnValueOnce(
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+      );
+      renderInput(onSubmit);
+      stroke(document.querySelector('canvas')!);
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(700);
+      });
+      fireEvent.click(valider());
+      fireEvent.click(valider());
+      expect(onSubmit).not.toHaveBeenCalled();
+      await act(async () => {
+        finish(12);
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledWith(12);
+    });
+
+    it('shows the error and keeps no value when the drawing is unreadable', async () => {
+      const onSubmit = vi.fn();
+      vi.mocked(digitRecognitionPort.recognizeNumber)
+        .mockResolvedValueOnce(4)
+        .mockResolvedValueOnce(null);
+      renderInput(onSubmit);
+      const canvas = document.querySelector('canvas')!;
+      await drawNumber(canvas);
+      stroke(canvas);
+      fireEvent.click(valider());
+      await flush();
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('current-answer')).toHaveTextContent('');
+      expect(valider()).toBeDisabled();
+    });
+
+    it('does not submit once unmounted', async () => {
+      const onSubmit = vi.fn();
+      let finish: (value: number) => void = () => {};
+      vi.mocked(digitRecognitionPort.recognizeNumber).mockReturnValueOnce(
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+      );
+      const { unmount } = renderInput(onSubmit);
+      stroke(document.querySelector('canvas')!);
+      fireEvent.click(valider());
+      unmount();
+      await act(async () => {
+        finish(12);
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('does not submit when cleared during recognition', async () => {
+      const onSubmit = vi.fn();
+      let finish: (value: number) => void = () => {};
+      vi.mocked(digitRecognitionPort.recognizeNumber).mockReturnValueOnce(
+        new Promise((resolve) => {
+          finish = resolve;
+        })
+      );
+      renderInput(onSubmit);
+      stroke(document.querySelector('canvas')!);
+      fireEvent.click(valider());
+      fireEvent.click(screen.getByRole('button', { name: 'Effacer' }));
+      await act(async () => {
+        finish(12);
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('current-answer')).toHaveTextContent('');
+    });
   });
 });

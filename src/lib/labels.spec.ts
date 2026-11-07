@@ -4,6 +4,7 @@ import { ApiError, apiErrorFrom } from '../services/http';
 import {
   resolveApiErrorMessage,
   resolveIconLabel,
+  resolvePracticeRunLabel,
   resolvePracticeTopicLabel,
   resolveQuestionCategoryLabel,
   resolveQuestLabel,
@@ -73,5 +74,33 @@ describe('resolvePracticeTopicLabel', () => {
         'fr'
       )
     ).toBe('Tables de division');
+  });
+
+  it.each([
+    ['fr', 'Table de 6', 'Tables de 6 et 7'],
+    ['en', '6 times table', '6 and 7 times tables'],
+    ['es', 'Tabla del 6', 'Tablas del 6 y 7'],
+    ['de', '6er-Reihe', '6 und 7er-Reihen'],
+    ['it', 'Tabellina del 6', 'Tabelline del 6 e 7'],
+    ['pt-BR', 'Tabuada do 6', 'Tabuadas do 6 e 7'],
+  ])('labels one or several times tables in %s', (locale, one, several) => {
+    const t = i18n.getFixedT(locale);
+    expect(resolvePracticeTopicLabel({ kind: 'timesTables', tables: [6] }, t, locale)).toBe(one);
+    expect(resolvePracticeTopicLabel({ kind: 'timesTables', tables: [6, 7] }, t, locale)).toBe(
+      several
+    );
+  });
+
+  it('adds the category to the notion label of a running series', () => {
+    expect(
+      resolvePracticeRunLabel(
+        { kind: 'notion', level: 'CM1', category: 'division', promptType: 'division_table' },
+        i18n.t,
+        'fr'
+      )
+    ).toBe('Division · Tables de division');
+    expect(resolvePracticeRunLabel({ kind: 'timesTables', tables: [6] }, i18n.t, 'fr')).toBe(
+      'Table de 6'
+    );
   });
 });

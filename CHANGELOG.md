@@ -1,5 +1,22 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- Handwriting: "Valider" now submits the latest drawing at once, without waiting for the 700 ms recognition delay. It could previously submit the value of an earlier drawing.
+- In-game countdown: no brief flash of the previous value when the question changes.
+- Practice: if the times tables list fails to load, the notion flow stays usable and the tables step offers a retry.
+- Practice: turning the time limit off and back on keeps the chosen value, and a long label wraps instead of being cut off.
+- Practice: confetti no longer covers the next question.
+- Flaky test on the last-question correction screen.
+
+### Changed
+
+- Practice: a hint suggests the keypad when handwriting with a limit under 5 seconds.
+- English label for times tables, for example "6 and 7 times tables".
+- Practice setup split into smaller components.
+
 ## [0.38.0] - 2026-11-07
 
 ### Added

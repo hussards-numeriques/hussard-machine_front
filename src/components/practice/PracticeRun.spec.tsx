@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import confetti from 'canvas-confetti';
 import { MemoryRouter } from 'react-router-dom';
 import { PracticeRun } from './PracticeRun';
 import {
@@ -28,7 +29,7 @@ vi.mock('../../hooks/usePractice', async (importOriginal) => ({
   usePracticeQuestion: () => questionState,
 }));
 
-vi.mock('canvas-confetti', () => ({ default: vi.fn() }));
+vi.mock('canvas-confetti', () => ({ default: Object.assign(vi.fn(), { reset: vi.fn() }) }));
 
 vi.mock('../../contexts/useAuth', () => ({
   useAuth: () => ({ isAuthenticated: false, isLoading: false }),
@@ -54,18 +55,19 @@ describe('PracticeRun time limit', () => {
 
   const onNext = vi.fn();
 
-  const renderRun = (series: PracticeSeries) =>
-    render(
-      <MemoryRouter>
-        <PracticeRun
-          series={series}
-          onAnswer={vi.fn()}
-          onNext={onNext}
-          onQuit={vi.fn()}
-          onTimeOut={onTimeOut}
-        />
-      </MemoryRouter>
-    );
+  const runElement = (series: PracticeSeries) => (
+    <MemoryRouter>
+      <PracticeRun
+        series={series}
+        onAnswer={vi.fn()}
+        onNext={onNext}
+        onQuit={vi.fn()}
+        onTimeOut={onTimeOut}
+      />
+    </MemoryRouter>
+  );
+
+  const renderRun = (series: PracticeSeries) => render(runElement(series));
 
   const advance = (ms: number) => act(() => vi.advanceTimersByTime(ms));
 
@@ -105,17 +107,7 @@ describe('PracticeRun time limit', () => {
     expect(onTimeOut).not.toHaveBeenCalled();
 
     questionState.data = { prompt: '6 x 3', answer: 18 };
-    rerender(
-      <MemoryRouter>
-        <PracticeRun
-          series={series}
-          onAnswer={vi.fn()}
-          onNext={vi.fn()}
-          onQuit={vi.fn()}
-          onTimeOut={onTimeOut}
-        />
-      </MemoryRouter>
-    );
+    rerender(runElement(series));
     advance(1900);
     expect(onTimeOut).not.toHaveBeenCalled();
     advance(350);
@@ -140,19 +132,19 @@ describe('PracticeRun time limit', () => {
   it('restarts the clock on the next question', () => {
     const { rerender } = renderRun(buildSeries(2));
     advance(1500);
-    rerender(
-      <MemoryRouter>
-        <PracticeRun
-          series={buildSeries(2, null, 1)}
-          onAnswer={vi.fn()}
-          onNext={vi.fn()}
-          onQuit={vi.fn()}
-          onTimeOut={onTimeOut}
-        />
-      </MemoryRouter>
-    );
+    rerender(runElement(buildSeries(2, null, 1)));
     advance(1500);
     expect(onTimeOut).not.toHaveBeenCalled();
+  });
+
+  it('clears the confetti when leaving the cheer', () => {
+    vi.mocked(confetti.reset).mockClear();
+    const { rerender } = renderRun(
+      buildSeries(null, { kind: 'answered', given: 18, outcome: 'correct' })
+    );
+    expect(confetti.reset).not.toHaveBeenCalled();
+    rerender(runElement(buildSeries(null, null, 1)));
+    expect(confetti.reset).toHaveBeenCalledTimes(1);
   });
 
   it('shows the correction when time is up', () => {
