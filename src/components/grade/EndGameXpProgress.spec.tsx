@@ -100,7 +100,10 @@ describe('EndGameXpProgress', () => {
     render(<EndGameXpProgress progress={progress} config={config} />);
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1100);
+      await vi.advanceTimersByTimeAsync(100);
+    });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
     });
 
     expect(confetti).toHaveBeenCalledTimes(1);
@@ -116,10 +119,45 @@ describe('EndGameXpProgress', () => {
     render(<EndGameXpProgress progress={progress} config={config} />);
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1100);
+      await vi.advanceTimersByTimeAsync(100);
+    });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
     });
 
     expect(confetti).toHaveBeenCalledTimes(1);
+  });
+
+  it('reveals the new grade only after the old grade bar has filled', async () => {
+    vi.useFakeTimers();
+    const progress: XpProgress = {
+      before: { experience: 80, canPromote: false },
+      after: { experience: 120, canPromote: false },
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(100);
+    });
+    expect(screen.queryByText('Nouveau grade !')).not.toBeInTheDocument();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+    expect(screen.getByText('Nouveau grade !')).toBeInTheDocument();
+  });
+
+  it('does not show the grade-up celebration without a grade crossing', async () => {
+    vi.useFakeTimers();
+    const progress: XpProgress = {
+      before: { experience: 100, canPromote: false },
+      after: { experience: 140, canPromote: false },
+    };
+    render(<EndGameXpProgress progress={progress} config={config} />);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(screen.queryByText('Nouveau grade !')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('grade-up-celebration')).not.toBeInTheDocument();
   });
 
   it('shows the player level next to the title when given', () => {

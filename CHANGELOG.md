@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.39.2] - 2026-11-11
+
+### Changed
+
+- End-of-game grade-up (e.g. Bronze → Silver) is now a staged celebration: the old grade bar fills first, then a medal in the new grade's metal drops in with a shine and a "New rank!" headline, the card glows in the grade colour, confetti bursts in the grade's metal tones, and the next bar starts filling. A dedicated `gradeUp` fanfare plays at the reveal, after the XP fill blops. Animations and confetti are skipped when the device asks for reduced motion. Translated in all six languages.
+
 ## [0.39.1] - 2026-11-11
 
 ### Added

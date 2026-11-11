@@ -469,6 +469,7 @@ export const it = {
   grade: {
     progression: 'Progressi',
     maxGrade: 'Grado massimo — promozione disponibile!',
+    newGrade: 'Nuovo grado!',
     promoteLink: 'Passa al livello successivo',
     xpToNext: '{{xp}} XP per {{grade}}',
     guide: {

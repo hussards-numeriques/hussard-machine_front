@@ -29,6 +29,11 @@ export default {
         'quest-pulse': 'quest-pulse 1s ease-in-out infinite',
         weigh: 'weigh 0.7s ease-in-out infinite',
         'countdown-pop': 'countdown-pop 0.35s ease-out',
+        'medal-drop': 'medal-drop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+        'medal-shine': 'medal-shine 1.6s ease-in-out 0.5s both',
+        'grade-burst': 'grade-burst 0.9s ease-out both',
+        'grade-label-pop': 'grade-label-pop 0.6s ease-out both',
+        'rise-in': 'rise-in 0.5s ease-out both',
       },
       keyframes: {
         weigh: {
@@ -74,6 +79,28 @@ export default {
         'countdown-pop': {
           '0%': { transform: 'scale(1.3)', opacity: '0' },
           '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        'medal-drop': {
+          '0%': { transform: 'scale(0.2) rotate(-200deg)', opacity: '0' },
+          '70%': { transform: 'scale(1.15) rotate(10deg)', opacity: '1' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1' },
+        },
+        'medal-shine': {
+          '0%': { transform: 'translateX(-120%) skewX(-20deg)' },
+          '100%': { transform: 'translateX(220%) skewX(-20deg)' },
+        },
+        'grade-burst': {
+          '0%': { transform: 'scale(0.3)', opacity: '0.9' },
+          '100%': { transform: 'scale(2.4)', opacity: '0' },
+        },
+        'grade-label-pop': {
+          '0%': { transform: 'scale(1)' },
+          '40%': { transform: 'scale(1.45)' },
+          '100%': { transform: 'scale(1.1)' },
+        },
+        'rise-in': {
+          '0%': { transform: 'translateY(8px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
       },
     },

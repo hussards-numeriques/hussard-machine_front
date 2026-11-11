@@ -6,7 +6,7 @@ export type SoundId =
   | 'go'
   | 'tap'
   | 'xp'
-  | 'levelUp'
+  | 'gradeUp'
   | 'unlock'
   | 'victory'
   | 'finish';
@@ -26,6 +26,7 @@ export const midiToFrequency = (midi: number): number =>
   A4_FREQUENCY_HZ * 2 ** ((midi - A4_MIDI) / 12);
 
 const G3 = 55;
+const C4 = 60;
 const D4 = 62;
 const G4 = 67;
 const C5 = 72;
@@ -36,6 +37,9 @@ const E6 = 88;
 const G6 = 91;
 const A6 = 93;
 const C7 = 96;
+const E7 = 100;
+const G7 = 103;
+const C8 = 108;
 
 const note = (
   midi: number,
@@ -94,12 +98,19 @@ export const SOUND_NOTES: Record<SoundId, readonly SoundNote[]> = {
   ],
   tap: [note(G5, 0, 0.04, 0.2, 'triangle')],
   xp: xpFillNotes(GOURD_MAX_BLOPS),
-  levelUp: [
-    ...arpeggio([G4, C5, E5, G5, C6, E6, G6], 0.07, 0.35, 0.3, 'triangle'),
-    note(C6, 0.55, 0.9, 0.3, 'triangle'),
-    note(E6, 0.55, 0.9, 0.25, 'triangle'),
-    note(G6, 0.55, 0.9, 0.25, 'triangle'),
-    note(C7, 0.6, 0.9, 0.12),
+  gradeUp: [
+    note(C4, 0, 0.35, 0.4, 'triangle'),
+    note(G3, 0, 0.45, 0.3, 'triangle'),
+    ...arpeggio([C5, E5, G5, C6, E6], 0.045, 0.25, 0.28, 'triangle'),
+    note(C6, 0.26, 1.3, 0.3, 'triangle'),
+    note(E6, 0.26, 1.3, 0.26, 'triangle'),
+    note(G6, 0.26, 1.3, 0.26, 'triangle'),
+    note(C5, 0.26, 1.3, 0.22, 'triangle'),
+    note(C7, 0.3, 1.1, 0.1),
+    ...arpeggio([E7, G7, C8, G7, C8], 0.09, 0.18, 0.07).map((n) => ({
+      ...n,
+      startSeconds: n.startSeconds + 0.45,
+    })),
   ],
   unlock: [note(E6, 0, 0.9, 0.4), note(E6 + 7, 0.04, 0.8, 0.2), note(C7, 0.12, 0.9, 0.25)],
   victory: [

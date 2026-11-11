@@ -5,13 +5,19 @@ import { Link } from 'react-router-dom';
 import type { GameConfig } from '../../types';
 import type { XpProgress } from '../../hooks/useXpProgress';
 import { computeGradeDiffSegments, computeGradeProgress } from '../../lib/gradeProgress';
-import { resolveGradeBarColor, resolveGradeBarLightColor } from '../../lib/grades';
+import {
+  resolveGradeBarColor,
+  resolveGradeBarLightColor,
+  resolveGradeConfettiColors,
+  resolveGradeMetal,
+} from '../../lib/grades';
 import { cn } from '../../lib/utils';
 import { useSound } from '../../hooks/useSound';
 import { xpBlopCount, xpFillNotes } from '../../lib/sounds';
 import { PlayerLevel } from '../PlayerLevel';
 import { GradeLabelRow } from './GradeLabelRow';
 import { XpBarFooter } from './XpBarFooter';
+import { GradeUpCelebration } from './GradeUpCelebration';
 
 interface EndGameXpProgressProps {
   progress: XpProgress;
@@ -20,7 +26,12 @@ interface EndGameXpProgressProps {
 }
 
 const TRANSITION_DURATION_MS = 700;
-const GLOW_DURATION_MS = 2000;
+const REVEAL_DELAY_MS = TRANSITION_DURATION_MS + 150;
+const GLOW_DURATION_MS = 2500;
+
+const prefersReducedMotion = (): boolean =>
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const PromoteLink: React.FC = () => {
   const { t } = useTranslation();
@@ -41,7 +52,9 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
   const { before, after } = progress;
   const [animated, setAnimated] = useState(false);
   const [glowing, setGlowing] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
+  const medalRef = useRef<HTMLDivElement>(null);
   const firedEffectRef = useRef(false);
 
   useEffect(() => {
@@ -68,41 +81,54 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
     : beforeGradeIndex;
 
   const justCrossedGrade = after != null && afterGradeIndex > beforeGradeIndex;
+  const newGrade = config.grades[afterGradeIndex];
   const gainedXp = after != null ? after.experience - before.experience : 0;
   const hasGainedXp = gainedXp > 0;
   const experiencePerGrade = config.experience_per_grade;
 
   useEffect(() => {
     if (!animated || !hasGainedXp) return;
-    play(justCrossedGrade ? 'levelUp' : xpFillNotes(xpBlopCount(gainedXp, experiencePerGrade)));
-  }, [animated, hasGainedXp, justCrossedGrade, gainedXp, experiencePerGrade, play]);
+    play(xpFillNotes(xpBlopCount(gainedXp, experiencePerGrade)));
+  }, [animated, hasGainedXp, gainedXp, experiencePerGrade, play]);
 
   useEffect(() => {
-    if (!animated || !justCrossedGrade || firedEffectRef.current) {
+    if (!animated || !justCrossedGrade || revealed) {
       return;
     }
-    firedEffectRef.current = true;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setGlowing(true);
+    const revealTimeout = window.setTimeout(() => {
+      setRevealed(true);
+      setGlowing(true);
+      play('gradeUp');
+    }, REVEAL_DELAY_MS);
+    return () => window.clearTimeout(revealTimeout);
+  }, [animated, justCrossedGrade, revealed, play]);
 
-    const rect = barRef.current?.getBoundingClientRect();
-    confetti({
-      particleCount: 24,
-      spread: 45,
-      startVelocity: 20,
-      gravity: 1.2,
-      scalar: 0.7,
-      origin: rect
-        ? {
-            x: (rect.left + rect.width / 2) / window.innerWidth,
-            y: (rect.top + rect.height / 2) / window.innerHeight,
-          }
-        : { x: 0.5, y: 0.5 },
-    });
-
-    const timeout = window.setTimeout(() => setGlowing(false), GLOW_DURATION_MS);
-    return () => window.clearTimeout(timeout);
-  }, [animated, justCrossedGrade]);
+  useEffect(() => {
+    if (!revealed) {
+      return;
+    }
+    if (!firedEffectRef.current && !prefersReducedMotion()) {
+      firedEffectRef.current = true;
+      const rect = (medalRef.current ?? barRef.current)?.getBoundingClientRect();
+      confetti({
+        particleCount: 120,
+        spread: 100,
+        startVelocity: 38,
+        gravity: 0.9,
+        ticks: 260,
+        scalar: 1,
+        colors: resolveGradeConfettiColors(newGrade),
+        origin: rect
+          ? {
+              x: (rect.left + rect.width / 2) / window.innerWidth,
+              y: (rect.top + rect.height / 2) / window.innerHeight,
+            }
+          : { x: 0.5, y: 0.5 },
+      });
+    }
+    const glowTimeout = window.setTimeout(() => setGlowing(false), GLOW_DURATION_MS);
+    return () => window.clearTimeout(glowTimeout);
+  }, [revealed, newGrade]);
 
   const currentGradeIndex = computeGradeProgress(
     (after ?? before).experience,
@@ -161,10 +187,24 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
     config
   );
 
+  const highlightedGradeIndex =
+    justCrossedGrade && !revealed ? beforeGradeIndex : currentGradeIndex;
+
   return (
     <div
       ref={barRef}
-      className="w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2"
+      className={cn(
+        'w-full max-w-md bg-white p-6 rounded-3xl shadow-lg border-2 border-slate-100 space-y-2 transition-shadow duration-500',
+        justCrossedGrade && resolveGradeMetal(newGrade)
+      )}
+      style={
+        glowing
+          ? {
+              borderColor: 'var(--metal-mid)',
+              boxShadow: '0 0 0 3px var(--metal-light), 0 0 32px 4px var(--metal-mid)',
+            }
+          : undefined
+      }
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -182,15 +222,20 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
         </span>
       </div>
 
+      {justCrossedGrade && (
+        <GradeUpCelebration grade={newGrade} revealed={revealed} medalRef={medalRef} />
+      )}
+
       <GradeLabelRow
         segments={diffSegments.map((segment, i) => ({
           grade: segment.grade,
-          isCurrent: i === currentGradeIndex,
+          isCurrent: i === highlightedGradeIndex,
         }))}
+        poppedGrade={revealed ? newGrade : undefined}
       />
 
       <div className="flex gap-1">
-        {diffSegments.map((segment) => {
+        {diffSegments.map((segment, i) => {
           const floorPercent = Math.min(segment.beforeFillPercent, segment.afterFillPercent);
           const gainPercent = Math.max(0, segment.afterFillPercent - segment.beforeFillPercent);
           const lossPercent = Math.max(0, segment.beforeFillPercent - segment.afterFillPercent);
@@ -217,6 +262,8 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
                       left: `${floorPercent}%`,
                       width: animated ? `${gainPercent}%` : '0%',
                       transitionDuration: `${TRANSITION_DURATION_MS}ms`,
+                      transitionDelay:
+                        justCrossedGrade && i > beforeGradeIndex ? `${REVEAL_DELAY_MS}ms` : '0ms',
                     }}
                   />
                 )}
@@ -234,7 +281,8 @@ export const EndGameXpProgress: React.FC<EndGameXpProgressProps> = ({
               {glowing && isCrossedSegment && (
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 pointer-events-none rounded-full animate-glow-pulse shadow-[0_0_12px_4px_rgba(251,191,36,0.7)]"
+                  className="absolute inset-0 pointer-events-none rounded-full motion-safe:animate-glow-pulse"
+                  style={{ boxShadow: '0 0 12px 4px var(--metal-mid)' }}
                 />
               )}
             </div>

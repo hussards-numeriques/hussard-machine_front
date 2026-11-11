@@ -25,7 +25,7 @@ Short synthesized sound effects (no music) tied to stimulating actions. Everythi
 | `go`        | `LaunchCountdownOverlay`, 0                                                                                         |
 | `tap`       | `KeypadInput` digit / backspace                                                                                     |
 | `xp`        | `EndGameXpProgress` bar animation: 3 to 16 rising blops (`xpBlopCount`), scaled by XP gained vs one grade           |
-| `levelUp`   | `EndGameXpProgress` when a grade was just crossed (instead of `xp`)                                                 |
+| `gradeUp`   | `EndGameXpProgress` at the grade-up reveal (~850 ms), after the `xp` fill blops                                     |
 | `unlock`    | `TitleUnlockToast` appears                                                                                          |
 | `victory`   | `PodiumView` when the current player is in the top 3                                                                |
 | `finish`    | `PodiumView` otherwise                                                                                              |

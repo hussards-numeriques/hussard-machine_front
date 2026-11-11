@@ -462,6 +462,7 @@ export const en = {
   grade: {
     progression: 'Progression',
     maxGrade: 'Max rank — promotion available!',
+    newGrade: 'New rank!',
     promoteLink: 'Move up a level',
     xpToNext: '{{xp}} XP to {{grade}}',
     guide: {

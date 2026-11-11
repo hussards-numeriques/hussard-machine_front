@@ -471,6 +471,7 @@ export const ptBR = {
   grade: {
     progression: 'Progresso',
     maxGrade: 'Grau máximo — promoção disponível!',
+    newGrade: 'Novo grau!',
     promoteLink: 'Subir de nível',
     xpToNext: '{{xp}} XP para {{grade}}',
     guide: {

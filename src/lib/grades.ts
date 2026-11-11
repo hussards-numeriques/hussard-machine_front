@@ -48,6 +48,14 @@ const GRADE_METALS: Record<Grade, string> = {
   DIAMOND: 'grade-metal-diamond',
 };
 
+const GRADE_CONFETTI_COLORS: Record<Grade, string[]> = {
+  BRONZE: ['#7a4420', '#b87333', '#eab285'],
+  SILVER: ['#64748b', '#b6c2d1', '#f8fafc'],
+  GOLD: ['#a16207', '#eab308', '#fef08a'],
+  PLATINE: ['#5b21b6', '#a78bfa', '#ede9fe'],
+  DIAMOND: ['#0e7490', '#22d3ee', '#ecfeff'],
+};
+
 export const DEFAULT_GRADE_STYLE = 'bg-slate-100 text-slate-600 border-slate-300';
 
 export const DEFAULT_GRADE_METAL = 'grade-metal-default';
@@ -74,3 +82,6 @@ export const resolveGradeMetal = (grade: string): string =>
 
 export const resolveLevelLabel = (level: string, t: TFunction, form: 'short' | 'long'): string =>
   isLevel(level) ? t(`levels.${form}.${level}`) : level;
+
+export const resolveGradeConfettiColors = (grade: string): string[] | undefined =>
+  isGrade(grade) ? GRADE_CONFETTI_COLORS[grade] : undefined;
