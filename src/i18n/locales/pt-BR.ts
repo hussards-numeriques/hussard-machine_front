@@ -209,11 +209,13 @@ export const ptBR = {
       INVALID_REDEEM_CODE: 'Código inválido.',
       INVALID_WEBHOOK_SIGNATURE: 'Assinatura inválida.',
       PRACTICE_NOT_AVAILABLE: 'Este tema não está disponível neste nível.',
+      RATE_LIMITED: 'Muitas requisições, tente novamente em instantes.',
     },
     ws: {
       JOIN_FAILED: 'Você não pode entrar nesta partida.',
       ADD_BOT_FAILED: 'Você não pode adicionar este bot.',
       REMOVE_PLAYER_FAILED: 'Você não pode remover este jogador.',
+      RATE_LIMITED: 'Muitas ações seguidas, vá com mais calma.',
     },
   },
   rarity: {
@@ -256,6 +258,7 @@ export const ptBR = {
     noAccount: 'Não tem conta? Cadastre-se',
     haveAccount: 'Já tem conta? Entre',
     genericError: 'Ocorreu um erro.',
+    rateLimited: 'Muitas tentativas, tente novamente em alguns minutos.',
     validation: {
       usernameRequired: 'Digite seu apelido.',
       passwordRequired: 'Digite sua senha.',

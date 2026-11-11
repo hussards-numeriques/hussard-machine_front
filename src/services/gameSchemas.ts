@@ -128,7 +128,12 @@ export const gameSchema = z.object({
   level: z.enum(LEVELS).optional().catch(undefined),
 }) satisfies z.ZodType<Game>;
 
-const WS_ERROR_CODES = ['JOIN_FAILED', 'ADD_BOT_FAILED', 'REMOVE_PLAYER_FAILED'] as const;
+const WS_ERROR_CODES = [
+  'JOIN_FAILED',
+  'ADD_BOT_FAILED',
+  'REMOVE_PLAYER_FAILED',
+  'RATE_LIMITED',
+] as const;
 export type WsErrorCode = (typeof WS_ERROR_CODES)[number];
 
 export const serverMessageSchema = z.discriminatedUnion('type', [

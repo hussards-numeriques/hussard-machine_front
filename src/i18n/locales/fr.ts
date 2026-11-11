@@ -206,11 +206,13 @@ export const fr = {
       INVALID_REDEEM_CODE: 'Code invalide.',
       INVALID_WEBHOOK_SIGNATURE: 'Signature invalide.',
       PRACTICE_NOT_AVAILABLE: "Cette notion n'est pas disponible à ce niveau.",
+      RATE_LIMITED: 'Trop de requêtes, réessaie dans un instant.',
     },
     ws: {
       JOIN_FAILED: 'Impossible de rejoindre cette partie.',
       ADD_BOT_FAILED: "Impossible d'ajouter ce bot.",
       REMOVE_PLAYER_FAILED: 'Impossible de retirer ce joueur.',
+      RATE_LIMITED: "Trop d'actions à la suite, ralentis un peu.",
     },
   },
   rarity: {
@@ -253,6 +255,7 @@ export const fr = {
     noAccount: "Pas de compte ? S'inscrire",
     haveAccount: 'Déjà un compte ? Se connecter',
     genericError: 'Une erreur est survenue.',
+    rateLimited: 'Trop de tentatives, réessaie dans quelques minutes.',
     validation: {
       usernameRequired: 'Entre ton pseudo.',
       passwordRequired: 'Entre ton mot de passe.',

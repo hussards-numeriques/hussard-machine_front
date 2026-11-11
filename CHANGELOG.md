@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.39.1] - 2026-11-11
+
+### Added
+
+- Rate limiting: the back and FastAuth can now answer `429`. The new `RATE_LIMITED` API and WebSocket error code is translated in all six languages, and the login/signup form shows a friendly message instead of the raw server text when too many attempts were made.
+
 ## [0.39.0] - 2026-11-11
 
 ### Added

@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import i18n from '../i18n';
+import { AuthError } from '../services/AuthClient';
 import { ApiError, apiErrorFrom } from '../services/http';
 import {
   resolveApiErrorMessage,
+  resolveAuthErrorMessage,
   resolveIconLabel,
   resolvePracticeRunLabel,
   resolvePracticeTopicLabel,
@@ -54,6 +56,37 @@ describe('API errors', () => {
     expect(error.code).toBeNull();
     expect(resolveApiErrorMessage(error, 'fallback', i18n.t)).toBe('fallback');
     expect(resolveApiErrorMessage(new ApiError(500, 'x'), 'fallback', i18n.t)).toBe('fallback');
+  });
+});
+
+describe('rate limit errors', () => {
+  it('translates a 429 API error through its RATE_LIMITED code', async () => {
+    const error = await apiErrorFrom(
+      new Response(JSON.stringify({ detail: 'RATE_LIMITED' }), {
+        status: 429,
+        headers: { 'Retry-After': '12' },
+      }),
+      'Failed to fetch practice question'
+    );
+    expect(error.status).toBe(429);
+    expect(error.code).toBe('RATE_LIMITED');
+    expect(resolveApiErrorMessage(error, 'fallback', i18n.t)).toBe(
+      'Trop de requêtes, réessaie dans un instant.'
+    );
+  });
+
+  it('shows a translated message instead of the raw FastAuth 429 text', () => {
+    const error = new AuthError(429, 'Rate limit exceeded: 10 per 1 minute');
+    expect(resolveAuthErrorMessage(error, i18n.t)).toBe(
+      'Trop de tentatives, réessaie dans quelques minutes.'
+    );
+  });
+
+  it('keeps the server message for other auth errors', () => {
+    expect(resolveAuthErrorMessage(new AuthError(401, 'Bad credentials'), i18n.t)).toBe(
+      'Bad credentials'
+    );
+    expect(resolveAuthErrorMessage(new Error('boom'), i18n.t)).toBe('Une erreur est survenue.');
   });
 });
 

@@ -15,6 +15,7 @@ const API_ERROR_CODES = [
   'INVALID_REDEEM_CODE',
   'INVALID_WEBHOOK_SIGNATURE',
   'PRACTICE_NOT_AVAILABLE',
+  'RATE_LIMITED',
 ] as const;
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];
 

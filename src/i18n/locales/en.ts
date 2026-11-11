@@ -202,11 +202,13 @@ export const en = {
       INVALID_REDEEM_CODE: 'Invalid code.',
       INVALID_WEBHOOK_SIGNATURE: 'Invalid signature.',
       PRACTICE_NOT_AVAILABLE: 'This topic is not available at this grade.',
+      RATE_LIMITED: 'Too many requests, try again in a moment.',
     },
     ws: {
       JOIN_FAILED: "You can't join this game.",
       ADD_BOT_FAILED: "You can't add this bot.",
       REMOVE_PLAYER_FAILED: "You can't remove this player.",
+      RATE_LIMITED: 'Too many actions in a row, slow down a little.',
     },
   },
   rarity: {
@@ -249,6 +251,7 @@ export const en = {
     noAccount: 'No account? Sign up',
     haveAccount: 'Already have an account? Log in',
     genericError: 'Something went wrong.',
+    rateLimited: 'Too many attempts, try again in a few minutes.',
     validation: {
       usernameRequired: 'Enter your username.',
       passwordRequired: 'Enter your password.',

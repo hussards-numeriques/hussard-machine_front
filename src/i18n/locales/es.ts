@@ -208,11 +208,13 @@ export const es = {
       INVALID_REDEEM_CODE: 'Código no válido.',
       INVALID_WEBHOOK_SIGNATURE: 'Firma no válida.',
       PRACTICE_NOT_AVAILABLE: 'Este tema no está disponible en este nivel.',
+      RATE_LIMITED: 'Demasiadas solicitudes, inténtalo de nuevo en un momento.',
     },
     ws: {
       JOIN_FAILED: 'No puedes unirte a esta partida.',
       ADD_BOT_FAILED: 'No puedes añadir este bot.',
       REMOVE_PLAYER_FAILED: 'No puedes expulsar a este jugador.',
+      RATE_LIMITED: 'Demasiadas acciones seguidas, ve un poco más despacio.',
     },
   },
   rarity: {
@@ -255,6 +257,7 @@ export const es = {
     noAccount: '¿No tienes cuenta? Regístrate',
     haveAccount: '¿Ya tienes cuenta? Inicia sesión',
     genericError: 'Ha ocurrido un error.',
+    rateLimited: 'Demasiados intentos, inténtalo de nuevo en unos minutos.',
     validation: {
       usernameRequired: 'Escribe tu apodo.',
       passwordRequired: 'Escribe tu contraseña.',

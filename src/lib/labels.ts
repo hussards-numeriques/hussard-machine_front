@@ -1,5 +1,6 @@
 import type { TFunction } from 'i18next';
 import type { SubscriptionPlanKey } from '../services/subscription';
+import { AuthError } from '../services/AuthClient';
 import { ApiError } from '../services/http';
 import type { WsErrorCode } from '../services/gameSchemas';
 import type { QuestionPrompt } from '../types';
@@ -130,3 +131,8 @@ export const resolveWsErrorMessage = (code: WsErrorCode, t: TFunction): string =
 
 export const resolveApiErrorMessage = (error: unknown, fallback: string, t: TFunction): string =>
   error instanceof ApiError && error.code !== null ? t(`errors.api.${error.code}`) : fallback;
+
+export const resolveAuthErrorMessage = (error: unknown, t: TFunction): string => {
+  if (!(error instanceof AuthError)) return t('auth.genericError');
+  return error.status === 429 ? t('auth.rateLimited') : error.message;
+};

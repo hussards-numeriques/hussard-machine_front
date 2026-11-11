@@ -4,7 +4,7 @@ import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useAuth } from '../contexts/useAuth';
-import { AuthError } from '../services/AuthClient';
+import { resolveAuthErrorMessage } from '../lib/labels';
 import { Button } from './Button';
 import { Input } from './Input';
 
@@ -65,7 +65,7 @@ const LoginForm = ({ onClose }: { onClose: () => void }) => {
         await login(value);
         onClose();
       } catch (err) {
-        setServerError(err instanceof AuthError ? err.message : t('auth.genericError'));
+        setServerError(resolveAuthErrorMessage(err, t));
       }
     },
   });
@@ -141,7 +141,7 @@ const RegisterForm = ({ onClose }: { onClose: () => void }) => {
         await register(value);
         onClose();
       } catch (err) {
-        setServerError(err instanceof AuthError ? err.message : t('auth.genericError'));
+        setServerError(resolveAuthErrorMessage(err, t));
       }
     },
   });
