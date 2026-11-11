@@ -180,6 +180,12 @@ export const fr = {
   },
   icons: {
     'subscriber-star': 'Étoile Abonné',
+    'practice-bronze': 'Apprenti assidu',
+    'practice-silver': 'Entraîné',
+    'practice-gold': "Entraîné d'élite",
+    'practice-diamond': "Maître de l'Entraînement",
+    unlocked: 'Icône {{rarity}} débloquée !',
+    equip: 'Équiper cette icône',
   },
   subscriptionPlans: {
     ONE_MONTH: '1 mois',

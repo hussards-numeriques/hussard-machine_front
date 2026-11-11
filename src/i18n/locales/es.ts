@@ -182,6 +182,12 @@ export const es = {
   },
   icons: {
     'subscriber-star': 'Estrella de Suscriptor',
+    'practice-bronze': 'Aprendiz constante',
+    'practice-silver': 'Entrenado',
+    'practice-gold': 'Entrenado de élite',
+    'practice-diamond': 'Maestro del Entrenamiento',
+    unlocked: '¡Icono {{rarity}} desbloqueado!',
+    equip: 'Equipar este icono',
   },
   subscriptionPlans: {
     ONE_MONTH: '1 mes',

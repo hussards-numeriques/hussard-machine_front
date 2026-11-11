@@ -4,6 +4,7 @@ import { isLevel, type Level } from '../lib/grades';
 import { isPromptType, type PromptType } from '../lib/labels';
 import { getApiUrl } from './apiConfig';
 import { questionPromptSchema } from './gameSchemas';
+import type { PlayerIcon } from './icons';
 import { apiErrorFrom, type AuthorizedFetch } from './http';
 
 export type PracticeCatalog = Partial<Record<Level, Record<string, PromptType[]>>>;
@@ -21,6 +22,7 @@ export type PracticeTopic =
 export interface PracticeQuestion {
   prompt: QuestionPrompt;
   answer: number;
+  unlockedIcon?: PlayerIcon;
 }
 
 type RawCatalog = Record<string, Record<string, string[]>>;
@@ -43,10 +45,25 @@ const practiceCatalogSchema = z
   .record(z.string(), z.record(z.string(), z.array(z.string())))
   .transform(toPracticeCatalog);
 
-const practiceQuestionSchema = z.object({
-  prompt: questionPromptSchema,
-  answer: z.number().int(),
-}) satisfies z.ZodType<PracticeQuestion>;
+const unlockedIconSchema = z.object({
+  id: z.string(),
+  rarity: z.string(),
+  url: z.string(),
+});
+
+const practiceQuestionSchema = z
+  .object({
+    prompt: questionPromptSchema,
+    answer: z.number().int(),
+    unlocked_icon: unlockedIconSchema.nullish(),
+  })
+  .transform(
+    ({ prompt, answer, unlocked_icon }): PracticeQuestion => ({
+      prompt,
+      answer,
+      unlockedIcon: unlocked_icon ?? undefined,
+    })
+  );
 
 export const fetchPracticeCatalog = async (
   authorizedFetch: AuthorizedFetch

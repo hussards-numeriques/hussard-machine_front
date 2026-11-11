@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.39.0] - 2026-11-11
+
+### Added
+
+- Practice: every question counts toward profile icons, unlocked at 100, 300, 1000 and 3000 questions (`practice-bronze`, `practice-silver`, `practice-gold`, `practice-diamond`). A toast announces the new icon, with a link to equip it, and `/icons` shows it immediately. Icon names and toast copy translated in all six languages.
+
 ## [0.38.1] - 2026-11-07
 
 ### Fixed

@@ -176,6 +176,12 @@ export const en = {
   },
   icons: {
     'subscriber-star': 'Subscriber Star',
+    'practice-bronze': 'Dedicated Apprentice',
+    'practice-silver': 'Trained',
+    'practice-gold': 'Elite Trainee',
+    'practice-diamond': 'Training Master',
+    unlocked: '{{rarity}} icon unlocked!',
+    equip: 'Equip this icon',
   },
   subscriptionPlans: {
     ONE_MONTH: '1 month',

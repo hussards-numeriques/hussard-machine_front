@@ -441,4 +441,46 @@ describe('PracticePage', () => {
     renderPage();
     expect(await screen.findByText('Subscription page')).toBeInTheDocument();
   });
+
+  describe('icon unlock toast', () => {
+    const unlockedIcon = {
+      id: 'practice-bronze',
+      rarity: 'BRONZE',
+      url: 'http://localhost:8000/static/icons/practice-bronze.svg',
+    };
+
+    const startDoubleSeries = async () => {
+      renderPage();
+      fireEvent.click(await screen.findByRole('button', { name: /Double/ }));
+      fireEvent.click(screen.getByRole('button', { name: '5' }));
+      fireEvent.click(screen.getByRole('button', { name: "C'est parti !" }));
+      expect(await screen.findByText('Question 1 sur 5')).toBeInTheDocument();
+    };
+
+    it('shows the toast when a question carries an unlocked icon and keeps it on the next question', async () => {
+      let value = 0;
+      mocks.fetchQuestion.mockImplementation(async () => {
+        value += 1;
+        return value === 1 ? { ...doubleOf(value), unlockedIcon } : doubleOf(value);
+      });
+      await startDoubleSeries();
+
+      expect(await screen.findByText('Icône Commun débloquée !')).toBeInTheDocument();
+      expect(screen.getByText('Apprenti assidu')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Équiper cette icône' })).toHaveAttribute(
+        'href',
+        '/icons'
+      );
+
+      await answer(2);
+      fireEvent.click(screen.getByRole('button', { name: 'Question suivante' }));
+      expect(await screen.findByText('Question 2 sur 5')).toBeInTheDocument();
+      expect(screen.getAllByText('Icône Commun débloquée !')).toHaveLength(1);
+    });
+
+    it('shows no toast when no question carries an unlocked icon', async () => {
+      await startDoubleSeries();
+      expect(screen.queryByText(/débloquée/)).not.toBeInTheDocument();
+    });
+  });
 });

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
 import { useSubscriptionStatus } from '../hooks/useSubscription';
 import { usePlayerProfile } from '../hooks/usePlayerProfile';
@@ -12,10 +13,13 @@ import {
 import { useResolvedAnswerInputMode } from '../hooks/useAnswerInputMode';
 import { digitRecognitionPort } from '../services/digit-recognition';
 import { LoadingScreen } from '../components/LoadingScreen';
+import type { PlayerIcon } from '../services/icons';
+import { MY_ICONS_QUERY_KEY } from '../hooks/useIcons';
 import type { PracticeTopic } from '../services/practice';
 import { Button } from '../components/Button';
 import { PracticeSetup } from '../components/practice/PracticeSetup';
 import type { TimesTablesState } from '../components/practice/PracticeTablesPicker';
+import { IconUnlockToast } from '../components/icons/IconUnlockToast';
 import { PracticeRun } from '../components/practice/PracticeRun';
 import { PracticeResult } from '../components/practice/PracticeResult';
 import { isLevel, type Level } from '../lib/grades';
@@ -60,7 +64,9 @@ const resolveTimesTablesState = ({
   return { status: 'loading' };
 };
 
-export const PracticePage: React.FC = () => {
+const PracticeFlow: React.FC<{ onIconUnlocked: (icon: PlayerIcon) => void }> = ({
+  onIconUnlocked,
+}) => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const status = useSubscriptionStatus();
   const catalog = usePracticeCatalog();
@@ -125,6 +131,7 @@ export const PracticePage: React.FC = () => {
         onNext={handleNext}
         onQuit={handleBackToSetup}
         onTimeOut={handleTimeOut}
+        onIconUnlocked={onIconUnlocked}
       />
     );
   }
@@ -154,5 +161,27 @@ export const PracticePage: React.FC = () => {
       onTimeLimitChange={setTimeLimit}
       onStart={handleStart}
     />
+  );
+};
+
+export const PracticePage: React.FC = () => {
+  const queryClient = useQueryClient();
+  const [unlockedIcons, setUnlockedIcons] = useState<PlayerIcon[]>([]);
+
+  const handleIconUnlocked = useCallback(
+    (icon: PlayerIcon) => {
+      setUnlockedIcons((current) =>
+        current.some(({ id }) => id === icon.id) ? current : [...current, icon]
+      );
+      void queryClient.invalidateQueries({ queryKey: MY_ICONS_QUERY_KEY });
+    },
+    [queryClient]
+  );
+
+  return (
+    <>
+      <PracticeFlow onIconUnlocked={handleIconUnlocked} />
+      <IconUnlockToast icons={unlockedIcons} />
+    </>
   );
 };

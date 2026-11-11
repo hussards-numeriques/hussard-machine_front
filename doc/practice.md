@@ -21,6 +21,12 @@ Le sujet de la série est un `PracticeTopic` (`services/practice.ts`), union dis
 | `GET /practice/times-tables`                            | Bearer | `{ tables: number[] }` : tables proposées (statique)             |
 | `GET /practice/times-tables/question?tables=2&tables=7` | Bearer | `{ prompt, answer }` : une question sur l'une des tables passées |
 
+Les deux routes de question renvoient aussi `unlocked_icon: { id, rarity, url } | null`
+(optionnel : absent ou `null` = rien de débloqué). Chaque question demandée compte comme un
+effort d'entraînement ; le back accorde une icône de profil à 100 / 300 / 1000 / 3000 questions
+(`practice-bronze`, `practice-silver`, `practice-gold`, `practice-diamond`), et le champ n'est
+renseigné que sur la requête qui franchit le seuil.
+
 `prompt` a exactement le format de `question.prompt` du WebSocket (`questionPromptSchema`,
 exporté par `services/gameSchemas.ts`). Erreurs (`ApiError.code`) : `INVALID_TOKEN`,
 `ACCOUNT_NOT_FOUND`, `SUBSCRIPTION_REQUIRED` (403, abonnement expiré), `INVALID_LEVEL`,
@@ -53,6 +59,16 @@ exporté par `services/gameSchemas.ts`). Erreurs (`ApiError.code`) : `INVALID_TO
   secondes restantes (`null` sans durée), rafraîchies toutes les 250 ms ; partagé avec
   `GameView`. `components/CountdownBadge.tsx` affiche `{n}s` (rouge à 3 s ou moins, son `tick`
   quand `ticking`), partagé avec `GameView`.
+
+## Icônes débloquées
+
+`PracticeQuestion.unlockedIcon?: PlayerIcon` (mappé depuis `unlocked_icon`, `null`/absent →
+`undefined`). `usePracticeQuestion(series, onIconUnlocked)` appelle le callback dès qu'une question
+(courante ou préchargée) porte une icône : le déblocage a lieu à la requête, donc le toast peut
+apparaître pendant la question précédente. `PracticePage` garde la liste des icônes débloquées
+(dédoublonnées par `id`), invalide `MY_ICONS_QUERY_KEY` et rend `IconUnlockToast` au-dessus de
+tous les écrans (configuration, série, résultat) : le toast reste affiché 10 s même quand la
+question ou l'écran change.
 
 ## Écrans (`pages/PracticePage.tsx` orchestre)
 
@@ -94,11 +110,11 @@ entraînement » listé en premier dans `PERKS` de `/subscription`.
 `changeTables`), `promptTypes.*` (libellé de chaque notion, résolu par
 `resolvePromptTypeLabel` ; `isPromptType` s'appuie sur un `Record<PromptType, true>` donc un
 nouveau type de prompt oublié casse `tsc`), `errors.api.PRACTICE_NOT_AVAILABLE`,
-`home.practice*`, `subscription.perks.practice`.
+`home.practice*`, `subscription.perks.practice`, `icons.unlocked` / `icons.equip` (toast d'icône).
 
 ## Tests
 
 `lib/practice.spec.ts`, `services/practice.spec.ts`, `components/practice/PracticeRun.spec.tsx`
 (temps limité, verrou du bouton après un temps écoulé), `pages/PracticePage.spec.tsx` (garde,
-configuration, série complète, relance), plus les cas de visibilité dans `Header.spec.tsx`
+configuration, série complète, relance, toast d'icône), `components/icons/IconUnlockToast.spec.tsx`, plus les cas de visibilité dans `Header.spec.tsx`
 et `HomePage.spec.tsx`.

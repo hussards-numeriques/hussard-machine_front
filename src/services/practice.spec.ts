@@ -61,6 +61,30 @@ describe('fetchPracticeQuestion', () => {
     });
   });
 
+  it('maps unlocked_icon to unlockedIcon', async () => {
+    const icon = { id: 'practice-silver', rarity: 'SILVER', url: 'http://x/practice-silver.svg' };
+    const question = await fetchPracticeQuestion(
+      respond({ prompt: { type: 'double', value: 4 }, answer: 8, unlocked_icon: icon }),
+      notion
+    );
+
+    expect(question.unlockedIcon).toEqual(icon);
+  });
+
+  it('treats a null or missing unlocked_icon as absent', async () => {
+    const withNull = await fetchPracticeQuestion(
+      respond({ prompt: { type: 'double', value: 4 }, answer: 8, unlocked_icon: null }),
+      notion
+    );
+    const without = await fetchPracticeQuestion(
+      respond({ prompt: { type: 'double', value: 4 }, answer: 8 }),
+      notion
+    );
+
+    expect(withNull.unlockedIcon).toBeUndefined();
+    expect(without.unlockedIcon).toBeUndefined();
+  });
+
   it('rejects a malformed prompt', async () => {
     await expect(
       fetchPracticeQuestion(respond({ prompt: { type: 'division_table' }, answer: 8 }), notion)

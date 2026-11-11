@@ -16,6 +16,7 @@ import {
   isLastQuestion,
   type PracticeSeries,
 } from '../../lib/practice';
+import type { PlayerIcon } from '../../services/icons';
 import { useCountdown } from '../../hooks/useCountdown';
 import { isSubscriptionRequiredError, usePracticeQuestion } from '../../hooks/usePractice';
 
@@ -28,6 +29,7 @@ interface PracticeRunProps {
   onNext: () => void;
   onQuit: () => void;
   onTimeOut: () => void;
+  onIconUnlocked: (icon: PlayerIcon) => void;
 }
 
 const QuestionClock: React.FC<{ seconds: number; onExpire: () => void }> = ({
@@ -180,9 +182,10 @@ export const PracticeRun: React.FC<PracticeRunProps> = ({
   onNext,
   onQuit,
   onTimeOut,
+  onIconUnlocked,
 }) => {
   const { t, i18n } = useTranslation();
-  const question = usePracticeQuestion(series);
+  const question = usePracticeQuestion(series, onIconUnlocked);
   const index = currentQuestionIndex(series);
   const nextLabel = isLastQuestion(series) ? t('practice.seeResult') : t('practice.next');
   const { topic, pending, timeLimitSeconds } = series;

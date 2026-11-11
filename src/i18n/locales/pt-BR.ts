@@ -183,6 +183,12 @@ export const ptBR = {
   },
   icons: {
     'subscriber-star': 'Estrela Assinante',
+    'practice-bronze': 'Aprendiz dedicado',
+    'practice-silver': 'Treinado',
+    'practice-gold': 'Treinado de elite',
+    'practice-diamond': 'Mestre do Treino',
+    unlocked: 'Ícone {{rarity}} desbloqueado!',
+    equip: 'Equipar este ícone',
   },
   subscriptionPlans: {
     ONE_MONTH: '1 mês',

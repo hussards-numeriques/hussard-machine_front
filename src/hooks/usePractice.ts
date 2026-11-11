@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/useAuth';
 import { ApiError, type AuthorizedFetch } from '../services/http';
@@ -7,6 +8,7 @@ import {
   fetchPracticeTimesTables,
   type PracticeTopic,
 } from '../services/practice';
+import type { PlayerIcon } from '../services/icons';
 import {
   currentQuestionIndex,
   isLastQuestion,
@@ -68,33 +70,46 @@ const usePracticeQuestionAt = (
   topic: PracticeTopic,
   runId: number,
   index: number,
-  enabled: boolean
+  enabled: boolean,
+  onIconUnlocked: (icon: PlayerIcon) => void
 ) => {
   const authorizedFetch = useAuthorizedFetch();
   const queryClient = useQueryClient();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ['practice-question', runId, index],
     queryFn: () =>
       fetchPracticeQuestion(authorizedFetch, topic).catch(refreshSubscriptionOnExpiry(queryClient)),
     enabled,
     staleTime: Infinity,
   });
+  const unlockedIcon = query.data?.unlockedIcon;
+
+  useEffect(() => {
+    if (unlockedIcon) onIconUnlocked(unlockedIcon);
+  }, [unlockedIcon, onIconUnlocked]);
+
+  return query;
 };
 
-export const usePracticeQuestion = (series: PracticeSeries) => {
+export const usePracticeQuestion = (
+  series: PracticeSeries,
+  onIconUnlocked: (icon: PlayerIcon) => void
+) => {
   const index = currentQuestionIndex(series);
   const current = usePracticeQuestionAt(
     series.topic,
     series.runId,
     index,
-    !isSeriesFinished(series)
+    !isSeriesFinished(series),
+    onIconUnlocked
   );
   usePracticeQuestionAt(
     series.topic,
     series.runId,
     index + 1,
-    current.isSuccess && !isLastQuestion(series)
+    current.isSuccess && !isLastQuestion(series),
+    onIconUnlocked
   );
   return current;
 };

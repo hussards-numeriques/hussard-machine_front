@@ -63,6 +63,7 @@ describe('PracticeRun time limit', () => {
         onNext={onNext}
         onQuit={vi.fn()}
         onTimeOut={onTimeOut}
+        onIconUnlocked={vi.fn()}
       />
     </MemoryRouter>
   );

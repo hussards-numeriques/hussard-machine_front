@@ -72,7 +72,13 @@ const TITLE_IDS = [
   'perfect-games-gold',
 ] as const;
 
-const ICON_IDS = ['subscriber-star'] as const;
+const ICON_IDS = [
+  'subscriber-star',
+  'practice-bronze',
+  'practice-silver',
+  'practice-gold',
+  'practice-diamond',
+] as const;
 
 const isOneOf = <K extends string>(ids: readonly K[], value: string): value is K =>
   (ids as readonly string[]).includes(value);

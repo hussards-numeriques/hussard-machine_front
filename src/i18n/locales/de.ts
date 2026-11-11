@@ -183,6 +183,12 @@ export const de = {
   },
   icons: {
     'subscriber-star': 'Abo-Stern',
+    'practice-bronze': 'Fleißiger Lehrling',
+    'practice-silver': 'Trainiert',
+    'practice-gold': 'Elite-Trainierter',
+    'practice-diamond': 'Trainingsmeister',
+    unlocked: 'Icon „{{rarity}}“ freigeschaltet!',
+    equip: 'Icon ausrüsten',
   },
   subscriptionPlans: {
     ONE_MONTH: '1 Monat',
