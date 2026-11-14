@@ -67,11 +67,12 @@ Built with React 19, TypeScript, Vite, and Tailwind CSS.
 
 ## SEO
 
-SEO is configured via static files, no library needed:
+SEO is configured via static files plus one route-aware component, no library needed:
 
-- `index.html` - Meta tags (description, author, theme-color), canonical URL, Open Graph, Twitter Cards
+- `index.html` - Meta tags (description, author, theme-color), Open Graph, Twitter Cards. **No canonical here**: every route serves this same file, so a static canonical would declare every page a duplicate of the home page.
+- `src/components/SeoHead.tsx` + `src/lib/seo.ts` - On each route change, sets a self-referencing `<link rel="canonical">` and the document title (`PAGE_TITLE_KEYS` maps public pages to their i18n title key). Add new public pages to `PAGE_TITLE_KEYS` and to the sitemap.
 - `public/robots.txt` - Crawler directives + sitemap reference
-- `public/sitemap.xml` - Single-page sitemap
+- `public/sitemap.xml` - Public pages sitemap
 - `public/manifest.json` - PWA manifest (name, icons, theme)
 - `public/icon.png` - Favicon and app icon
 

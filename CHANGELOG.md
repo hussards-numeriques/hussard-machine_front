@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [Unreleased]
+
+### Fixed
+
+- SEO: every page declared the home page as its canonical URL (static `<link rel="canonical">` in `index.html`, served for every route), so Google treated `/progression` and the legal pages as duplicates of the home page and left them out of the index. The static canonical is gone; a new `SeoHead` component sets a self-referencing canonical and a page-specific document title (e.g. « Mentions légales - Calc Rush ») on every route change.
+
 ## [0.39.2] - 2026-11-11
 
 ### Changed

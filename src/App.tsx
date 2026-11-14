@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ApiError } from './services/http';
 import { AppLayout } from './layouts/AppLayout';
 import { GameLayout } from './layouts/GameLayout';
+import { SeoHead } from './components/SeoHead';
 import { HomePage } from './pages/HomePage';
 import { GamePage } from './pages/GamePage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -41,6 +42,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <SeoHead />
         {NativeAppBridge && (
           <Suspense>
             <NativeAppBridge />
