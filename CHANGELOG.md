@@ -1,5 +1,11 @@
 # Calc Rush Front
 
+## [0.39.4] - 2026-11-14
+
+### Fixed
+
+- SEO: search engine crawlers now get the French site. Googlebot announces `en-US`, so the `auto` language resolved to English and Google indexed English titles and content under `<html lang="fr">`. Crawlers (Googlebot, Google-InspectionTool, Bingbot, …) now always resolve `auto` to French; real visitors keep their browser language.
+
 ## [0.39.3] - 2026-11-14
 
 ### Fixed
