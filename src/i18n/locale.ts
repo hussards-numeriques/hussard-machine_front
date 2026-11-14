@@ -3,6 +3,17 @@ export type Locale = (typeof LOCALES)[number];
 export type LocalePreference = 'auto' | Locale;
 
 export const FALLBACK_LOCALE: Locale = 'en';
+export const SITE_LOCALE: Locale = 'fr';
+
+const CRAWLER_PATTERN =
+  /googlebot|google-inspectiontool|storebot-google|bingbot|duckduckbot|applebot|yandexbot|baiduspider|qwantbot/i;
+
+export const isCrawler = (userAgent: string): boolean => CRAWLER_PATTERN.test(userAgent);
+
+export const deviceLanguages = (
+  userAgent: string,
+  languages: readonly string[]
+): readonly string[] => (isCrawler(userAgent) ? [SITE_LOCALE] : languages);
 
 export const LOCALE_NAMES: Record<Locale, string> = {
   fr: 'Français',

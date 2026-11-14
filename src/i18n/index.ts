@@ -1,6 +1,11 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { isLocalePreference, resolveLocale, type LocalePreference } from './locale';
+import {
+  deviceLanguages,
+  isLocalePreference,
+  resolveLocale,
+  type LocalePreference,
+} from './locale';
 import { fr } from './locales/fr';
 import { en } from './locales/en';
 import { es } from './locales/es';
@@ -19,8 +24,11 @@ export const readLocalePreference = (): LocalePreference => {
   }
 };
 
+const browserLanguages = (): readonly string[] =>
+  deviceLanguages(navigator.userAgent, navigator.languages);
+
 export const applyLocale = (preference: LocalePreference): void => {
-  const locale = resolveLocale(preference, navigator.languages);
+  const locale = resolveLocale(preference, browserLanguages());
   void i18n.changeLanguage(locale);
   document.documentElement.lang = locale;
 };
@@ -34,7 +42,7 @@ void i18n.use(initReactI18next).init({
     'pt-BR': { translation: ptBR },
     de: { translation: de },
   },
-  lng: resolveLocale(readLocalePreference(), navigator.languages),
+  lng: resolveLocale(readLocalePreference(), browserLanguages()),
   fallbackLng: 'fr',
   interpolation: { escapeValue: false },
   initAsync: false,
